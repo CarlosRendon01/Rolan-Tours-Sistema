@@ -516,20 +516,6 @@
   margin-left: 2px;
 }
 
-.formulario-cotizacion input:required:invalid {
-  border-color: #dc2626;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
-}
-
-.formulario-cotizacion input:required:valid {
-  border-color: #10b981;
-}
-
-.formulario-cotizacion select:required:invalid {
-  border-color: #dc2626;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
-}
-
 /* Estilos para campos readonly */
 .formulario-cotizacion input:read-only {
   background-color: #f1f5f9;

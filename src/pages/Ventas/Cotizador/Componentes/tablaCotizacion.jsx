@@ -58,7 +58,10 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina) || 1;
     const indiceInicio = (paginaActual - 1) * registrosPorPagina;
     const indiceFin = indiceInicio + registrosPorPagina;
-    const cotizacionesPaginadas = cotizacionesFiltradas.slice(indiceInicio, indiceFin);
+    const cotizacionesPaginadas = cotizacionesFiltradas.slice(
+      indiceInicio,
+      indiceFin
+    );
 
     return {
       totalRegistros,
@@ -70,11 +73,14 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
   }, [cotizacionesFiltradas, paginaActual, registrosPorPagina]);
 
   // Handlers optimizados
-  const cambiarPagina = useCallback((nuevaPagina) => {
-    if (nuevaPagina >= 1 && nuevaPagina <= datosePaginacion.totalPaginas) {
-      setPaginaActual(nuevaPagina);
-    }
-  }, [datosePaginacion.totalPaginas]);
+  const cambiarPagina = useCallback(
+    (nuevaPagina) => {
+      if (nuevaPagina >= 1 && nuevaPagina <= datosePaginacion.totalPaginas) {
+        setPaginaActual(nuevaPagina);
+      }
+    },
+    [datosePaginacion.totalPaginas]
+  );
 
   const manejarCambioRegistros = useCallback((evento) => {
     const valor = parseInt(evento.target.value, 10);
@@ -89,22 +95,28 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     setPaginaActual(1);
   }, []);
 
-  const manejarAccionEditar = useCallback((cotizacion) => {
-    if (typeof onEditar === 'function') {
-      onEditar(cotizacion);
-    }
-  }, [onEditar]);
-
-  const manejarAccionEliminar = useCallback((cotizacionId) => {
-    if (typeof onEliminar === 'function') {
-      const confirmar = window.confirm(
-        "¿Estás seguro de eliminar esta cotización?\n\nEsta acción no se puede deshacer."
-      );
-      if (confirmar) {
-        onEliminar(cotizacionId);
+  const manejarAccionEditar = useCallback(
+    (cotizacion) => {
+      if (typeof onEditar === "function") {
+        onEditar(cotizacion);
       }
-    }
-  }, [onEliminar]);
+    },
+    [onEditar]
+  );
+
+  const manejarAccionEliminar = useCallback(
+    (cotizacionId) => {
+      if (typeof onEliminar === "function") {
+        const confirmar = window.confirm(
+          "¿Estás seguro de eliminar esta cotización?\n\nEsta acción no se puede deshacer."
+        );
+        if (confirmar) {
+          onEliminar(cotizacionId);
+        }
+      }
+    },
+    [onEliminar]
+  );
 
   // Generar números de páginas
   const numerosPaginas = useMemo(() => {
@@ -127,17 +139,28 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
         </div>
 
         {/* Estadísticas como región informativa */}
-        <section className="cotizaciones-contenedor-estadisticas" aria-label="Estadísticas de cotizaciones">
+        <section
+          className="cotizaciones-contenedor-estadisticas"
+          aria-label="Estadísticas de cotizaciones"
+        >
           <div className="cotizaciones-estadistica">
-            <div className="cotizaciones-icono-estadistica-circular" aria-hidden="true">
+            <div
+              className="cotizaciones-icono-estadistica-circular"
+              aria-hidden="true"
+            >
               <FileText size={20} />
             </div>
             <div className="cotizaciones-info-estadistica">
-              <span className="cotizaciones-label-estadistica">COTIZACIONES</span>
+              <span className="cotizaciones-label-estadistica">
+                COTIZACIONES
+              </span>
             </div>
           </div>
           <div className="cotizaciones-estadistica">
-            <div className="cotizaciones-icono-estadistica-cuadrado" aria-hidden="true">
+            <div
+              className="cotizaciones-icono-estadistica-cuadrado"
+              aria-hidden="true"
+            >
               <BarChart3 size={20} />
             </div>
             <div className="cotizaciones-info-estadistica">
@@ -210,72 +233,92 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
               </caption>
               <thead>
                 <tr className="cotizaciones-fila-encabezado">
-                  <th scope="col" abbr="Folio">FOLIO</th>
-                  <th scope="col" abbr="Fecha Salida">FECHA SALIDA</th>
-                  <th scope="col" abbr="Fecha Regreso">FECHA REGRESO</th>
-                  <th scope="col" abbr="Destino">DESTINO</th>
-                  <th scope="col" abbr="Acciones">ACCIONES</th>
+                  <th scope="col" abbr="Folio">
+                    FOLIO
+                  </th>
+                  <th scope="col" abbr="Fecha Salida">
+                    FECHA SALIDA
+                  </th>
+                  <th scope="col" abbr="Fecha Regreso">
+                    FECHA REGRESO
+                  </th>
+                  <th scope="col" abbr="Destino">
+                    DESTINO
+                  </th>
+                  <th scope="col" abbr="Acciones">
+                    ACCIONES
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {datosePaginacion.cotizacionesPaginadas.map((cotizacion, index) => (
-                  <tr
-                    key={`cotizacion-${cotizacion.id}`}
-                    className="cotizaciones-fila-cotizacion"
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <td data-label="Folio">
-                      <span className="cotizaciones-badge-folio">
-                        {cotizacion.folio || "Sin folio"}
-                      </span>
-                    </td>
-                    <td data-label="Fecha Salida">
-                      <time
-                        className="cotizaciones-fecha"
-                        dateTime={cotizacion.fechaSalida}
-                      >
-                        {formatearFecha(cotizacion.fechaSalida)}
-                      </time>
-                    </td>
-                    <td data-label="Fecha Regreso">
-                      <time
-                        className="cotizaciones-fecha"
-                        dateTime={cotizacion.fechaRegreso}
-                      >
-                        {formatearFecha(cotizacion.fechaRegreso)}
-                      </time>
-                    </td>
-                    <td data-label="Destino">
-                      <span className="cotizaciones-destino">
-                        {cotizacion.destino || "Sin destino"}
-                      </span>
-                    </td>
-                    <td data-label="Acciones">
-                      <div className="cotizaciones-botones-accion" role="group" aria-label="Acciones de cotización">
-                        <button
-                          type="button"
-                          className="cotizaciones-boton-accion cotizaciones-editar"
-                          onClick={() => manejarAccionEditar(cotizacion)}
-                          aria-label={`Editar cotización ${cotizacion.folio || cotizacion.id}`}
-                          title="Editar cotización"
+                {datosePaginacion.cotizacionesPaginadas.map(
+                  (cotizacion, index) => (
+                    <tr
+                      key={`cotizacion-${cotizacion.id}`}
+                      className="cotizaciones-fila-cotizacion"
+                      style={{ animationDelay: `${index * 0.05}s` }}
+                    >
+                      <td data-label="Folio">
+                        <span className="cotizaciones-badge-folio">
+                          {cotizacion.folio || "Sin folio"}
+                        </span>
+                      </td>
+                      <td data-label="Fecha Salida">
+                        <time
+                          className="cotizaciones-fecha"
+                          dateTime={cotizacion.fechaSalida}
                         >
-                          <Edit size={16} aria-hidden="true" />
-                          <span className="sr-only">Editar</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="cotizaciones-boton-accion cotizaciones-eliminar"
-                          onClick={() => manejarAccionEliminar(cotizacion.id)}
-                          aria-label={`Eliminar cotización ${cotizacion.folio || cotizacion.id}`}
-                          title="Eliminar cotización"
+                          {formatearFecha(cotizacion.fechaSalida)}
+                        </time>
+                      </td>
+                      <td data-label="Fecha Regreso">
+                        <time
+                          className="cotizaciones-fecha"
+                          dateTime={cotizacion.fechaRegreso}
                         >
-                          <Trash2 size={16} aria-hidden="true" />
-                          <span className="sr-only">Eliminar</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          {formatearFecha(cotizacion.fechaRegreso)}
+                        </time>
+                      </td>
+                      <td data-label="Destino">
+                        <span className="cotizaciones-destino">
+                          {cotizacion.destino || "Sin destino"}
+                        </span>
+                      </td>
+                      <td data-label="Acciones">
+                        <div
+                          className="cotizaciones-botones-accion"
+                          role="group"
+                          aria-label="Acciones de cotización"
+                        >
+                          <button
+                            type="button"
+                            className="cotizaciones-boton-accion cotizaciones-editar"
+                            onClick={() => manejarAccionEditar(cotizacion)}
+                            aria-label={`Editar cotización ${
+                              cotizacion.folio || cotizacion.id
+                            }`}
+                            title="Editar cotización"
+                          >
+                            <Edit size={16} aria-hidden="true" />
+                            <span className="sr-only">Editar</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="cotizaciones-boton-accion cotizaciones-eliminar"
+                            onClick={() => manejarAccionEliminar(cotizacion.id)}
+                            aria-label={`Eliminar cotización ${
+                              cotizacion.folio || cotizacion.id
+                            }`}
+                            title="Eliminar cotización"
+                          >
+                            <Trash2 size={16} aria-hidden="true" />
+                            <span className="sr-only">Eliminar</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>
@@ -288,8 +331,11 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
               aria-atomic="true"
             >
               Mostrando registros del {datosePaginacion.indiceInicio + 1} al{" "}
-              {Math.min(datosePaginacion.indiceFin, datosePaginacion.totalRegistros)} de un total de {datosePaginacion.totalRegistros}{" "}
-              registros
+              {Math.min(
+                datosePaginacion.indiceFin,
+                datosePaginacion.totalRegistros
+              )}{" "}
+              de un total de {datosePaginacion.totalRegistros} registros
               {terminoBusqueda && (
                 <span style={{ color: "#6c757d", marginLeft: "0.5rem" }}>
                   (filtrado de {cotizaciones.length} registros totales)
@@ -297,7 +343,10 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
               )}
             </div>
 
-            <nav className="cotizaciones-controles-paginacion" aria-label="Paginación de tabla">
+            <nav
+              className="cotizaciones-controles-paginacion"
+              aria-label="Paginación de tabla"
+            >
               <button
                 type="button"
                 className="cotizaciones-boton-paginacion"
@@ -309,13 +358,18 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                 Anterior
               </button>
 
-              <div className="cotizaciones-numeros-paginacion" role="group" aria-label="Páginas">
+              <div
+                className="cotizaciones-numeros-paginacion"
+                role="group"
+                aria-label="Páginas"
+              >
                 {numerosPaginas.map((numero) => (
                   <button
                     key={`pagina-${numero}`}
                     type="button"
-                    className={`cotizaciones-numero-pagina ${paginaActual === numero ? "cotizaciones-activo" : ""
-                      }`}
+                    className={`cotizaciones-numero-pagina ${
+                      paginaActual === numero ? "cotizaciones-activo" : ""
+                    }`}
                     onClick={() => cambiarPagina(numero)}
                     aria-label={`Ir a página ${numero}`}
                     aria-current={paginaActual === numero ? "page" : undefined}
@@ -339,9 +393,20 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
           </footer>
         </section>
       ) : (
-        <section className="cotizaciones-contenedor-tabla" aria-label="Estado sin datos">
-          <div className="cotizaciones-tabla-vacia" role="status" aria-live="polite">
-            <FileText className="cotizaciones-icono-vacio" size={48} aria-hidden="true" />
+        <section
+          className="cotizaciones-contenedor-tabla"
+          aria-label="Estado sin datos"
+        >
+          <div
+            className="cotizaciones-tabla-vacia"
+            role="status"
+            aria-live="polite"
+          >
+            <FileText
+              className="cotizaciones-icono-vacio"
+              size={48}
+              aria-hidden="true"
+            />
             <p>No hay cotizaciones registradas</p>
           </div>
 
@@ -349,7 +414,10 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
             <div className="cotizaciones-informacion-registros">
               Sin elementos
             </div>
-            <nav className="cotizaciones-controles-paginacion" aria-label="Paginación deshabilitada">
+            <nav
+              className="cotizaciones-controles-paginacion"
+              aria-label="Paginación deshabilitada"
+            >
               <button
                 type="button"
                 className="cotizaciones-boton-paginacion"

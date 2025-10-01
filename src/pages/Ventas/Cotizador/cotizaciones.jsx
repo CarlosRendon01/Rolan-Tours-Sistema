@@ -1,48 +1,43 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import NuevaCotizacion from "./Componentes/nuevaCotizacion";
 import TablaCotizacion from "./Componentes/tablaCotizacion";
 import "./Componentes/nuevaCotizacion.css";
 import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
 import "./cotizaciones.css";
-//hola
+
 const Cotizacion = () => {
-  // Estado para almacenar todas las cotizaciones
   const [cotizaciones, setCotizaciones] = useState([]);
 
-  // Estado para manejar la cotización que se está editando
   const [cotizacionEditar, setCotizacionEditar] = useState(null);
 
-  // Función para guardar o actualizar una cotización
-  const handleGuardarCotizacion = (nuevaCotizacion, esEdicion = false) => {
-    if (esEdicion) {
-      // Actualizar cotización existente
-      setCotizaciones((prev) =>
-        prev.map((cot) =>
-          cot.id === nuevaCotizacion.id ? nuevaCotizacion : cot
-        )
-      );
-      setCotizacionEditar(null); // Limpiar estado de edición
-      console.log("Cotización actualizada:", nuevaCotizacion);
-    } else {
-      // Agregar nueva cotización
-      setCotizaciones((prev) => [...prev, nuevaCotizacion]);
-      console.log("Nueva cotización agregada:", nuevaCotizacion);
-    }
-  };
+  const handleGuardarCotizacion = useCallback(
+    (nuevaCotizacion, esEdicion = false) => {
+      if (esEdicion) {
+        setCotizaciones((prev) =>
+          prev.map((cot) =>
+            cot.id === nuevaCotizacion.id ? nuevaCotizacion : cot
+          )
+        );
+        setCotizacionEditar(null);
+        console.log("Cotización actualizada:", nuevaCotizacion);
+      } else {
+        setCotizaciones((prev) => [...prev, nuevaCotizacion]);
+        console.log("Nueva cotización agregada:", nuevaCotizacion);
+      }
+    },
+    []
+  );
 
-  // Función para iniciar la edición de una cotización
-  const handleEditarCotizacion = (cotizacion) => {
+  const handleEditarCotizacion = useCallback((cotizacion) => {
     setCotizacionEditar(cotizacion);
     console.log("Editando cotización:", cotizacion);
-  };
+  }, []);
 
-  // Función para cancelar la edición
-  const handleCancelarEdicion = () => {
+  const handleCancelarEdicion = useCallback(() => {
     setCotizacionEditar(null);
-  };
+  }, []);
 
-  // Función para eliminar una cotización
-  const handleEliminarCotizacion = (id) => {
+  const handleEliminarCotizacion = useCallback((id) => {
     const cotizacionAEliminar = cotizaciones.find((cot) => cot.id === id);
     const folio = cotizacionAEliminar?.folio || id;
 
@@ -54,7 +49,7 @@ const Cotizacion = () => {
       setCotizaciones((prev) => prev.filter((cot) => cot.id !== id));
       console.log("Cotización eliminada con ID:", id);
     }
-  };
+  }, []);
 
   return (
     <div className="cotizacion-container">

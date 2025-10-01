@@ -488,7 +488,6 @@
 
 /* Líneas decorativas animadas para cotizaciones */
 @keyframes cotizaciones-pulse {
-
   0%,
   100% {
     transform: scaleY(1);
@@ -742,7 +741,8 @@
     font-size: 0.7rem;
   }
 
-  .cotizaciones-numeros-paginacion .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
+  .cotizaciones-numeros-paginacion
+    .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
     display: none;
   }
 }
