@@ -1,8 +1,6 @@
 import React from "react";
 import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
 import Cotizaciones from "./cotizaciones";
-// import "./cotizaciones.css";
-
 const PrincipalCotizacion = () => {
   return (
     <PrincipalComponente>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./nuevaCotizacion.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -12,29 +12,23 @@ const NuevaCotizacion = ({
   const [mostrarModal, setMostrarModal] = useState(false);
   const [pasoActual, setPasoActual] = useState(1);
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [erroresCampos, setErroresCampos] = useState({}); // Estado para errores por campo
+  const [erroresCampos, setErroresCampos] = useState({});
   const [formData, setFormData] = useState({
-    // Campos existentes
     folio: "",
     fechaSalida: "",
     fechaRegreso: "",
     dias: "",
-    numeroPasajeros: "",
     totalKilometros: "",
     costoCasetas: "",
     tipoCaminos: "terraceria",
     estado: "",
     tipoCliente: "",
     atiende: "",
-    // Nuevos campos agregados
     id: "",
     cliente: "",
-    pipelineId: "",
     nombreLead: "",
     nombreResponsable: "",
-    estadoGeneral: "inactivo",
     estadoCotizacion: "inactivo",
-    numeroCotizacion: "",
     medioContacto: "",
     servicioTransporte: "",
     tipoServicio: "",
@@ -51,79 +45,120 @@ const NuevaCotizacion = ({
     descripcion: "",
   });
 
-  // Función para validar campos obligatorios por paso
-  const validarPaso = (paso) => {
-    const camposObligatorios = {
-      1: [
-        { campo: "cliente", nombre: "Cliente" },
-        { campo: "nombreResponsable", nombre: "Nombre Responsable" },
-        { campo: "numeroCotizacion", nombre: "Número Cotización" },
-      ],
-      2: [
-        { campo: "medioContacto", nombre: "Medio de Contacto" },
-        { campo: "pax", nombre: "PAX" },
-        { campo: "puntoIntermedio", nombre: "Punto Intermedio" },
-        { campo: "destinoServicio", nombre: "Destino Servicio" },
-      ],
-      3: [
-        { campo: "fechaSalida", nombre: "Fecha Salida" },
-        { campo: "fechaRegreso", nombre: "Fecha Regreso" },
-        { campo: "numeroPasajeros", nombre: "Número de Pasajeros" },
-      ],
-    };
+  const generarFolioAutomatico = useCallback(() => {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+    const dia = fecha.getDate().toString().padStart(2, "0");
+    const timestamp = Date.now().toString().slice(-6);
+    return `${año}${mes}${dia}${timestamp}`;
+  }, []);
 
-    const camposDelPaso = camposObligatorios[paso];
-    const errores = {};
+  const validarPaso = useCallback(
+    (paso) => {
+      const camposObligatorios = {
+        1: [
+          { campo: "cliente", nombre: "Cliente" },
+          { campo: "nombreResponsable", nombre: "Nombre Responsable" },
+        ],
+        2: [
+          { campo: "medioContacto", nombre: "N° Télefonico" },
+          { campo: "pax", nombre: "N° pasajeros" },
+          { campo: "puntoIntermedio", nombre: "Punto Intermedio" },
+          { campo: "destinoServicio", nombre: "Destino Servicio" },
+        ],
+        3: [
+          { campo: "fechaSalida", nombre: "Fecha Salida" },
+          { campo: "fechaRegreso", nombre: "Fecha Regreso" },
+        ],
+      };
 
-    camposDelPaso.forEach(({ campo, nombre }) => {
-      if (!formData[campo] || formData[campo].toString().trim() === "") {
-        errores[campo] = `${nombre} es obligatorio`;
-      }
-    });
+      const camposDelPaso = camposObligatorios[paso];
+      const errores = {};
 
-    return errores;
-  };
+      camposDelPaso.forEach(({ campo, nombre }) => {
+        if (!formData[campo] || formData[campo].toString().trim() === "") {
+          errores[campo] = `${nombre} es obligatorio`;
+        }
+      });
 
-  // Función para limpiar errores de un campo específico
-  const limpiarErrorCampo = (nombreCampo) => {
+      return errores;
+    },
+    [formData]
+  );
+
+  const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErroresCampos((prev) => {
       const nuevosErrores = { ...prev };
       delete nuevosErrores[nombreCampo];
       return nuevosErrores;
     });
-  };
+  }, []);
 
-  // Función para limpiar todos los errores
-  const limpiarTodosErrores = () => {
+  const limpiarTodosErrores = useCallback(() => {
     setErroresCampos({});
-  };
+  }, []);
 
-  // Efecto para manejar la edición
+  const cerrarModal = useCallback(() => {
+    setMostrarModal(false);
+    setPasoActual(1);
+    setModoEdicion(false);
+    limpiarTodosErrores();
+    if (onCancelarEdicion) {
+      onCancelarEdicion();
+    }
+    setFormData({
+      folio: generarFolioAutomatico(),
+      fechaSalida: "",
+      fechaRegreso: "",
+      dias: "",
+      totalKilometros: "",
+      costoCasetas: "",
+      tipoCaminos: "terraceria",
+      estado: "",
+      tipoCliente: "",
+      atiende: "",
+      id: "",
+      cliente: "",
+      nombreLead: "",
+      nombreResponsable: "",
+      estadoCotizacion: "inactivo",
+      medioContacto: "",
+      servicioTransporte: "",
+      tipoServicio: "",
+      pax: "",
+      tipoClienteNum: "",
+      origenServicio: "Oaxaca",
+      puntoIntermedio: "",
+      destinoServicio: "",
+      vehiculoRequerido: "",
+      campana: "",
+      fechaCreacion: new Date().toISOString().split("T")[0],
+      tipoClienteFrec: "solo_una_vez",
+      precio: "",
+      descripcion: "",
+    });
+  }, [onCancelarEdicion, generarFolioAutomatico, limpiarTodosErrores]);
+
   useEffect(() => {
     if (cotizacionEditar) {
       setModoEdicion(true);
       setFormData({
-        // Campos existentes
         folio: cotizacionEditar.folio || "",
         fechaSalida: cotizacionEditar.fechaSalida || "",
         fechaRegreso: cotizacionEditar.fechaRegreso || "",
         dias: cotizacionEditar.dias || "",
-        numeroPasajeros: cotizacionEditar.numeroPasajeros || "",
         totalKilometros: cotizacionEditar.totalKilometros || "",
         costoCasetas: cotizacionEditar.costoCasetas || "",
         tipoCaminos: cotizacionEditar.tipoCaminos || "terraceria",
         estado: cotizacionEditar.estado || "",
         tipoCliente: cotizacionEditar.tipoCliente || "",
         atiende: cotizacionEditar.atiende || "",
-        // Nuevos campos
         id: cotizacionEditar.id || "",
         cliente: cotizacionEditar.cliente || "",
-        pipelineId: cotizacionEditar.pipelineId || "",
         nombreLead: cotizacionEditar.nombreLead || "",
         nombreResponsable: cotizacionEditar.nombreResponsable || "",
-        estadoGeneral: cotizacionEditar.estadoGeneral || "inactivo",
         estadoCotizacion: cotizacionEditar.estadoCotizacion || "inactivo",
-        numeroCotizacion: cotizacionEditar.numeroCotizacion || "",
         medioContacto: cotizacionEditar.medioContacto || "",
         servicioTransporte: cotizacionEditar.servicioTransporte || "",
         tipoServicio: cotizacionEditar.tipoServicio || "",
@@ -143,41 +178,36 @@ const NuevaCotizacion = ({
       });
       setMostrarModal(true);
       setPasoActual(1);
-      limpiarTodosErrores(); // Limpiar errores al cargar edición
+      limpiarTodosErrores();
     }
-  }, [cotizacionEditar]);
+  }, [cotizacionEditar, limpiarTodosErrores]);
 
   const toggleBoton = () => {
     setActivo(!activo);
   };
 
-  const abrirModal = () => {
+  const abrirModal = useCallback(() => {
     setMostrarModal(true);
     setPasoActual(1);
     setModoEdicion(false);
-    limpiarTodosErrores(); // Limpiar errores al abrir modal
-    // Reiniciar formulario para nueva cotización
+    limpiarTodosErrores();
+
     setFormData({
       folio: generarFolioAutomatico(),
       fechaSalida: "",
       fechaRegreso: "",
       dias: "",
-      numeroPasajeros: "",
       totalKilometros: "",
       costoCasetas: "",
       tipoCaminos: "terraceria",
       estado: "",
       tipoCliente: "",
       atiende: "",
-      // Nuevos campos
       id: "",
       cliente: "",
-      pipelineId: "",
       nombreLead: "",
       nombreResponsable: "",
-      estadoGeneral: "inactivo",
       estadoCotizacion: "inactivo",
-      numeroCotizacion: "",
       medioContacto: "",
       servicioTransporte: "",
       tipoServicio: "",
@@ -193,66 +223,8 @@ const NuevaCotizacion = ({
       precio: "",
       descripcion: "",
     });
-  };
+  }, [generarFolioAutomatico, limpiarTodosErrores]);
 
-  const cerrarModal = () => {
-    setMostrarModal(false);
-    setPasoActual(1);
-    setModoEdicion(false);
-    limpiarTodosErrores(); // Limpiar errores al cerrar
-
-    if (onCancelarEdicion) {
-      onCancelarEdicion();
-    }
-    // Reiniciar formulario
-    setFormData({
-      folio: generarFolioAutomatico(),
-      fechaSalida: "",
-      fechaRegreso: "",
-      dias: "",
-      numeroPasajeros: "",
-      totalKilometros: "",
-      costoCasetas: "",
-      tipoCaminos: "terraceria",
-      estado: "",
-      tipoCliente: "",
-      atiende: "",
-      id: "",
-      cliente: "",
-      pipelineId: "",
-      nombreLead: "",
-      nombreResponsable: "",
-      estadoGeneral: "inactivo",
-      estadoCotizacion: "inactivo",
-      numeroCotizacion: "",
-      medioContacto: "",
-      servicioTransporte: "",
-      tipoServicio: "",
-      pax: "",
-      tipoClienteNum: "",
-      origenServicio: "Oaxaca",
-      puntoIntermedio: "",
-      destinoServicio: "",
-      vehiculoRequerido: "",
-      campana: "",
-      fechaCreacion: new Date().toISOString().split("T")[0],
-      tipoClienteFrec: "solo_una_vez",
-      precio: "",
-      descripcion: "",
-    });
-  };
-
-  // Función para generar folio automático
-  const generarFolioAutomatico = () => {
-    const fecha = new Date();
-    const año = fecha.getFullYear();
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-    const dia = fecha.getDate().toString().padStart(2, "0");
-    const timestamp = Date.now().toString().slice(-6);
-    return `${año}${mes}${dia}${timestamp}`;
-  };
-
-  // Función para calcular días entre fechas
   const calcularDias = (fechaInicio, fechaFin) => {
     if (!fechaInicio || !fechaFin) return "";
     const inicio = new Date(fechaInicio);
@@ -262,7 +234,6 @@ const NuevaCotizacion = ({
     return dias > 0 ? dias.toString() : "";
   };
 
-  // Efecto para calcular días automáticamente
   useEffect(() => {
     const dias = calcularDias(formData.fechaSalida, formData.fechaRegreso);
     if (dias && dias !== formData.dias) {
@@ -271,16 +242,13 @@ const NuevaCotizacion = ({
         dias: dias,
       }));
     }
-  }, [formData.fechaSalida, formData.fechaRegreso]);
+  }, [formData.fechaSalida, formData.fechaRegreso, formData.dias]);
 
-  // Función mejorada para siguiente paso con validación individual
-  const siguientePaso = () => {
+  const siguientePaso = useCallback(() => {
     const errores = validarPaso(pasoActual);
 
     if (Object.keys(errores).length > 0) {
       setErroresCampos(errores);
-
-      // Enfocar el primer campo con error
       const primerCampoConError = Object.keys(errores)[0];
       const elemento = document.querySelector(
         `[name="${primerCampoConError}"]`
@@ -292,35 +260,29 @@ const NuevaCotizacion = ({
 
       return;
     }
-
-    // Si todo está válido, avanzar al siguiente paso
     if (pasoActual < 3) {
       setPasoActual(pasoActual + 1);
     }
-  };
+  }, [pasoActual, validarPaso]);
 
-  const pasoAnterior = () => {
-    limpiarTodosErrores(); // Limpiar errores al retroceder
+  const pasoAnterior = useCallback(() => {
+    limpiarTodosErrores();
 
     if (pasoActual > 1) {
       setPasoActual(pasoActual - 1);
     }
-  };
+  }, [pasoActual, limpiarTodosErrores]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     let newValue = value;
 
-    // Limpiar error del campo cuando el usuario empiece a escribir
     if (erroresCampos[name] && newValue.trim() !== "") {
       limpiarErrorCampo(name);
     }
 
-    // Convertir valores de select a booleano para estados
-    if (name === "estadoGeneral" || name === "estadoCotizacion") {
+    if (name === "estadoCotizacion") {
       newValue = value === "activo";
-    } else if (type === "checkbox") {
-      newValue = checked;
     }
 
     setFormData((prev) => ({
@@ -329,67 +291,65 @@ const NuevaCotizacion = ({
     }));
   };
 
-  // Función de validación final antes de guardar
-  const validarFormularioCompleto = () => {
+  const validarFormularioCompleto = useCallback(() => {
     const erroresPaso1 = validarPaso(1);
     const erroresPaso2 = validarPaso(2);
     const erroresPaso3 = validarPaso(3);
 
     return { ...erroresPaso1, ...erroresPaso2, ...erroresPaso3 };
-  };
+  }, [validarPaso]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      const erroresCompletos = validarFormularioCompleto();
+      if (Object.keys(erroresCompletos).length > 0) {
+        setErroresCampos(erroresCompletos);
+        const erroresPaso1 = validarPaso(1);
+        const erroresPaso2 = validarPaso(2);
+        const erroresPaso3 = validarPaso(3);
+        if (Object.keys(erroresPaso1).length > 0) {
+          setPasoActual(1);
+        } else if (Object.keys(erroresPaso2).length > 0) {
+          setPasoActual(2);
+        } else if (Object.keys(erroresPaso3).length > 0) {
+          setPasoActual(3);
+        }
+        setTimeout(() => {
+          const primerCampoConError = Object.keys(erroresCompletos)[0];
+          const elemento = document.querySelector(
+            `[name="${primerCampoConError}"]`
+          );
+          if (elemento) {
+            elemento.focus();
+            elemento.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }, 100);
 
-    // Validación final completa usando el mismo sistema
-    const erroresCompletos = validarFormularioCompleto();
-
-    if (Object.keys(erroresCompletos).length > 0) {
-      // Mostrar errores individuales en lugar de alerta
-      setErroresCampos(erroresCompletos);
-
-      // Ir al primer paso que tenga errores
-      const erroresPaso1 = validarPaso(1);
-      const erroresPaso2 = validarPaso(2);
-      const erroresPaso3 = validarPaso(3);
-
-      if (Object.keys(erroresPaso1).length > 0) {
-        setPasoActual(1);
-      } else if (Object.keys(erroresPaso2).length > 0) {
-        setPasoActual(2);
-      } else if (Object.keys(erroresPaso3).length > 0) {
-        setPasoActual(3);
+        return;
+      }
+      const cotizacionData = {
+        id: modoEdicion ? cotizacionEditar.id : Date.now(),
+        ...formData,
+      };
+      if (onGuardarCotizacion) {
+        onGuardarCotizacion(cotizacionData, modoEdicion);
       }
 
-      // Enfocar el primer campo con error
-      setTimeout(() => {
-        const primerCampoConError = Object.keys(erroresCompletos)[0];
-        const elemento = document.querySelector(
-          `[name="${primerCampoConError}"]`
-        );
-        if (elemento) {
-          elemento.focus();
-          elemento.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, 100);
+      cerrarModal();
+    },
+    [
+      validarFormularioCompleto,
+      validarPaso,
+      modoEdicion,
+      cotizacionEditar,
+      formData,
+      onGuardarCotizacion,
+      cerrarModal,
+    ]
+  );
 
-      return;
-    }
-
-    const cotizacionData = {
-      id: modoEdicion ? cotizacionEditar.id : Date.now(),
-      ...formData,
-    };
-
-    if (onGuardarCotizacion) {
-      onGuardarCotizacion(cotizacionData, modoEdicion);
-    }
-
-    cerrarModal();
-  };
-
-  // Componente optimizado para mostrar mensaje de error por campo
-  const MensajeError = ({ nombreCampo }) => {
+  const MensajeError = React.memo(({ nombreCampo }) => {
     const error = erroresCampos[nombreCampo];
     if (!error) return null;
 
@@ -399,7 +359,7 @@ const NuevaCotizacion = ({
         {error}
       </div>
     );
-  };
+  });
 
   return (
     <div className="nCotización-container">
@@ -415,7 +375,6 @@ const NuevaCotizacion = ({
             className={`icono-verde ${activo ? "girar" : ""}`}
           />
         </button>
-
         {activo && (
           <button
             className="boton-agregar animar-aparicion"
@@ -425,7 +384,6 @@ const NuevaCotizacion = ({
           </button>
         )}
       </div>
-
       {mostrarModal && (
         <div className="modal-overlay" onClick={cerrarModal}>
           <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>
@@ -474,7 +432,6 @@ const NuevaCotizacion = ({
               {pasoActual === 1 && (
                 <div className="paso-contenido">
                   <h3>Información General</h3>
-
                   <div className="fila">
                     <label>
                       ID:
@@ -487,16 +444,17 @@ const NuevaCotizacion = ({
                       />
                     </label>
                     <label>
-                      Pipeline ID: (Opcional)
+                      Folio: <span className="required">*</span>
                       <input
-                        type="number"
-                        name="pipelineId"
-                        value={formData.pipelineId}
+                        type="text"
+                        name="folio"
+                        value={formData.folio}
                         onChange={handleInputChange}
+                        readOnly
+                        placeholder="Auto-generado"
                       />
                     </label>
                   </div>
-
                   <label>
                     Cliente: <span className="required">*</span>
                     <input
@@ -536,52 +494,14 @@ const NuevaCotizacion = ({
 
                   <div className="fila">
                     <label>
-                      Número Cotización: <span className="required">*</span>
+                      Fecha Creación:
                       <input
-                        type="number"
-                        name="numeroCotizacion"
-                        value={formData.numeroCotizacion}
-                        onChange={handleInputChange}
-                        className={
-                          erroresCampos.numeroCotizacion ? "campo-error" : ""
-                        }
-                      />
-                      <MensajeError nombreCampo="numeroCotizacion" />
-                    </label>
-                    <label>
-                      Folio: (Auto-generado)
-                      <input
-                        type="text"
-                        name="folio"
-                        value={formData.folio}
+                        type="date"
+                        name="fechaCreacion"
+                        value={formData.fechaCreacion}
                         onChange={handleInputChange}
                         readOnly
                       />
-                    </label>
-                  </div>
-
-                  <label>
-                    Fecha Creación:
-                    <input
-                      type="date"
-                      name="fechaCreacion"
-                      value={formData.fechaCreacion}
-                      onChange={handleInputChange}
-                      readOnly
-                    />
-                  </label>
-
-                  <div className="fila">
-                    <label>
-                      Estado General:
-                      <select
-                        name="estadoGeneral"
-                        value={formData.estadoGeneral ? "activo" : "inactivo"}
-                        onChange={handleInputChange}
-                      >
-                        <option value="inactivo">Inactivo</option>
-                        <option value="activo">Activo</option>
-                      </select>
                     </label>
                     <label>
                       Estado Cotización:
@@ -623,7 +543,7 @@ const NuevaCotizacion = ({
 
                   <div className="fila">
                     <label>
-                      Medio de Contacto: <span className="required">*</span>
+                      N° Télefonico: <span className="required">*</span>
                       <input
                         type="text"
                         name="medioContacto"
@@ -676,7 +596,7 @@ const NuevaCotizacion = ({
 
                   <div className="fila">
                     <label>
-                      PAX: <span className="required">*</span>
+                      N° pasajeros: <span className="required">*</span>
                       <input
                         type="number"
                         name="pax"
@@ -818,20 +738,6 @@ const NuevaCotizacion = ({
                         onChange={handleInputChange}
                         readOnly
                       />
-                    </label>
-                    <label>
-                      N° Pasajeros: <span className="required">*</span>
-                      <input
-                        type="number"
-                        name="numeroPasajeros"
-                        value={formData.numeroPasajeros}
-                        onChange={handleInputChange}
-                        className={
-                          erroresCampos.numeroPasajeros ? "campo-error" : ""
-                        }
-                        min="1"
-                      />
-                      <MensajeError nombreCampo="numeroPasajeros" />
                     </label>
                   </div>
 
