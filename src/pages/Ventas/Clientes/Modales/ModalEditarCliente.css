@@ -1,0 +1,463 @@
+/* ===============================
+   MODAL EDITAR CLIENTE - ESTILO DE COTIZACIÓN
+   Adaptado del diseño de cotización
+   =============================== */
+
+/* Overlay del modal EDITAR */
+.superposicion-modal-editar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: aparecer-editar 0.3s ease;
+}
+
+@keyframes aparecer-editar {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Contenido del modal EDITAR */
+.contenido-modal-editar {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 380px;
+  max-width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: deslizar-entrada-editar 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  margin-top: 60px;
+}
+
+@keyframes deslizar-entrada-editar {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header del modal EDITAR */
+.encabezado-modal-editar {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  padding: 25px;
+  margin: 0;
+  position: relative;
+  color: white;
+}
+
+.encabezado-modal-editar::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.1) 100%);
+}
+
+.titulo-modal-editar {
+  margin: 0;
+  text-align: center;
+  color: white;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.titulo-modal-editar svg {
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.boton-cerrar-modal-editar {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.boton-cerrar-modal-editar:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.boton-cerrar-modal-editar:active {
+  transform: scale(0.95);
+}
+
+.boton-cerrar-modal-editar:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Cuerpo del modal EDITAR */
+.cuerpo-modal-editar {
+  padding: 25px;
+  background: #fff;
+  max-height: calc(80vh - 100px);
+  overflow-y: auto;
+}
+
+/* Scrollbar personalizado EDITAR */
+.cuerpo-modal-editar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cuerpo-modal-editar::-webkit-scrollbar-track {
+  background: #f1f3f4;
+  border-radius: 3px;
+}
+
+.cuerpo-modal-editar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.cuerpo-modal-editar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Grid del formulario EDITAR */
+.cuadricula-formulario-editar {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25px;
+}
+
+.campo-formulario-editar {
+  font-weight: 500;
+  font-size: 13px;
+  color: #475569;
+  margin-bottom: 18px;
+  display: block;
+}
+
+.etiqueta-formulario-editar {
+  font-weight: 500;
+  font-size: 13px;
+  color: #475569;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.etiqueta-formulario-editar svg {
+  color: #1e40af;
+  width: 16px;
+  height: 16px;
+}
+
+.entrada-formulario-editar {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  margin-top: 6px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  background-color: #fafbfc;
+  font-family: inherit;
+}
+
+.entrada-formulario-editar:focus {
+  outline: none;
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+  background-color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.entrada-formulario-editar:hover {
+  border-color: #cbd5e1;
+}
+
+.entrada-formulario-editar::placeholder {
+  color: #9ca3af;
+}
+
+/* Estados de error EDITAR */
+.entrada-error {
+  border-color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+
+.mensaje-error {
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Select personalizado EDITAR */
+select.entrada-formulario-editar {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 1.25em 1.25em;
+  padding-right: 2.5rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+select.entrada-formulario-editar:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%231e40af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Acciones del modal EDITAR */
+.acciones-modal-editar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  gap: 10px;
+}
+
+/* Estilos de botones EDITAR */
+.boton-cancelar-editar,
+.boton-guardar-editar {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  min-width: 90px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.boton-cancelar-editar::before,
+.boton-guardar-editar::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
+}
+
+.boton-cancelar-editar:hover::before,
+.boton-guardar-editar:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.boton-cancelar-editar {
+  background-color: white;
+  color: #dc2626;
+  border: 2px solid #dc2626;
+}
+
+.boton-cancelar-editar:hover {
+  background-color: #dc2626;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.boton-guardar-editar {
+  background-color: #1e40af;
+  color: white;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+}
+
+.boton-guardar-editar:hover {
+  background-color: #1e3a8a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.boton-guardar-editar svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Estado de loading EDITAR */
+.boton-guardar-editar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #9ca3af;
+}
+
+.boton-guardar-editar.loading {
+  pointer-events: none;
+}
+
+.boton-guardar-editar.loading svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ===============================
+   ESTILOS PERSONALIZADOS PARA SWEETALERT2 - EDITAR
+   =============================== */
+
+.swal-popup-custom-editar {
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  border: none !important;
+  font-family: inherit !important;
+}
+
+.swal-title-custom-editar {
+  color: #374151 !important;
+  font-weight: 600 !important;
+  font-size: 1.25rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.swal-content-custom-editar {
+  color: #6b7280 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+.swal-button-custom-editar {
+  background: #27ae60 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal-button-custom-editar:hover {
+  background: #229954 !important;
+}
+
+.swal-button-error-editar {
+  background: #dc2626 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal-button-error-editar:hover {
+  background: #b91c1c !important;
+}
+
+/* ===============================
+   ÍCONO DE ÉXITO - PALOMITA EN CÍRCULO (SIN ANIMACIÓN)
+   =============================== */
+
+/* Contenedor del ícono */
+.swal2-icon.swal2-success.swal-icon-success-custom {
+  border: 4px solid #1e40af !important;
+  background: transparent !important;
+  width: 80px !important;
+  height: 80px !important;
+  border-radius: 50% !important;
+  position: relative !important;
+  margin: 1.5rem auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+
+/* OCULTAR todos los elementos default de SweetAlert2 */
+.swal2-icon.swal2-success.swal-icon-success-custom .swal2-success-ring,
+.swal2-icon.swal2-success.swal-icon-success-custom .swal2-success-line-tip,
+.swal2-icon.swal2-success.swal-icon-success-custom .swal2-success-line-long,
+.swal2-icon.swal2-success.swal-icon-success-custom .swal2-success-fix,
+.swal2-icon.swal2-success.swal-icon-success-custom .swal2-success-circular-line-left,
+.swal2-icon.swal2-success.swal-icon-success-custom .swal2-success-circular-line-right,
+.swal2-icon.swal2-success.swal-icon-success-custom [class^='swal2-success'],
+.swal2-icon.swal2-success.swal-icon-success-custom [class*='swal2-success'] {
+  display: none !important;
+}
+
+.swal2-icon.swal2-success.swal-icon-success-custom::before,
+.swal2-icon.swal2-success.swal-icon-success-custom::after {
+  display: none !important;
+}
+/* Palomita azul */
+.swal2-icon.swal2-success.swal-icon-success-custom .swal2-icon-content {
+  font-size: 3.5rem !important;
+  color: #1e40af !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  position: static !important;
+  transform: none !important;
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+/* Barra de progreso del timer en azul */
+.swal2-timer-progress-bar {
+  background: #1e40af !important;
+}
+
+.modal-icon-simple {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}

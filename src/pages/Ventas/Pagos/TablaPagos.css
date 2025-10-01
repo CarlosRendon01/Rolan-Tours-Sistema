@@ -1,0 +1,1058 @@
+/* TablaPagos.css - Versión Independiente con Navegación */
+
+/* ===========================================
+   ESTILOS PARA LA NAVEGACIÓN DE PESTAÑAS
+   =========================================== */
+
+.navegacion-pestanas {
+  background: #ffffff;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.contenedor-pestanas {
+  display: flex;
+  gap: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.contenedor-pestanas::-webkit-scrollbar {
+  display: none;
+}
+
+.pestana-vista {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 2rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  position: relative;
+  min-width: fit-content;
+}
+
+.pestana-vista:hover {
+  background: #f8fafc;
+  color: #3b82f6;
+  border-bottom-color: #e2e8f0;
+}
+
+.pestana-vista.activa {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  background: linear-gradient(to bottom, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
+  font-weight: 600;
+}
+
+.pestana-vista.activa::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+}
+
+.texto-pestana {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+}
+
+.titulo-pestana {
+  font-weight: inherit;
+  line-height: 1;
+}
+
+.descripcion-pestana {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.contenido-vista {
+  padding: 0;
+  background: #f8f9fa;
+  min-height: calc(100vh - 80px);
+}
+
+/* Animación suave entre vistas */
+.contenido-vista > * {
+  animation: transicionVista 0.4s ease-out;
+}
+
+@keyframes transicionVista {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================================
+   ESTILOS EXISTENTES MEJORADOS
+   =========================================== */
+
+.pagos-contenedor-principal {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  margin: 1rem;
+}
+
+/* Header moderno para pagos */
+.pagos-encabezado {
+  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pagos-encabezado::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+  opacity: 0.5;
+}
+
+.pagos-seccion-logo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 2;
+  position: relative;
+}
+
+.pagos-icono-principal {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.pagos-titulo {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0;
+  color: white;
+  letter-spacing: -0.025em;
+}
+
+.pagos-subtitulo {
+  font-size: 0.875rem;
+  color: #cbd5e1;
+  margin: 0;
+  font-weight: 400;
+}
+
+.pagos-estadisticas-header {
+  display: flex;
+  gap: 1.5rem;
+  z-index: 2;
+  position: relative;
+}
+
+/* Tarjetas de estadísticas mejoradas con colores específicos */
+.pagos-tarjeta-estadistica {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: white;
+  min-width: 120px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Tarjeta Total - Azul */
+.pagos-tarjeta-estadistica.total {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.3));
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.pagos-tarjeta-estadistica.total:hover {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+}
+
+.pagos-tarjeta-estadistica.total::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(59, 130, 246, 0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.pagos-tarjeta-estadistica.total:hover::before {
+  transform: translateX(100%);
+}
+
+/* Tarjeta Pagados - Verde */
+.pagos-tarjeta-estadistica.pagados {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.3));
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.pagos-tarjeta-estadistica.pagados:hover {
+  background: linear-gradient(135deg, #10b981, #059669);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+}
+
+.pagos-tarjeta-estadistica.pagados::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(16, 185, 129, 0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.pagos-tarjeta-estadistica.pagados:hover::before {
+  transform: translateX(100%);
+}
+
+/* Tarjeta Pendientes - Amarillo/Naranja */
+.pagos-tarjeta-estadistica.pendientes {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.3));
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.pagos-tarjeta-estadistica.pendientes:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+}
+
+.pagos-tarjeta-estadistica.pendientes::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(245, 158, 11, 0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.pagos-tarjeta-estadistica.pendientes:hover::before {
+  transform: translateX(100%);
+}
+
+/* Tarjeta Vencidos - Rojo */
+.pagos-tarjeta-estadistica.vencidos {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.3));
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.pagos-tarjeta-estadistica.vencidos:hover {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+}
+
+.pagos-tarjeta-estadistica.vencidos::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(239, 68, 68, 0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.pagos-tarjeta-estadistica.vencidos:hover::before {
+  transform: translateX(100%);
+}
+
+.pagos-icono-estadistica {
+  width: 20px;
+  height: 20px;
+  opacity: 0.9;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.pagos-valor-estadistica {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.pagos-etiqueta-estadistica {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  z-index: 2;
+}
+
+/* Controles para pagos */
+.pagos-controles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.pagos-seccion-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.pagos-control-registros {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.pagos-selector-registros {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #374151;
+}
+
+.pagos-selector-registros:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.pagos-filtro-estado {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pagos-selector-filtro {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #374151;
+}
+
+.pagos-selector-filtro:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.pagos-seccion-derecha {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pagos-boton-agregar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.pagos-boton-agregar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+/* Animación del icono en el botón agregar */
+.pagos-boton-agregar svg {
+  transition: transform 0.3s ease;
+}
+
+.pagos-boton-agregar:hover svg {
+  transform: rotate(180deg);
+}
+
+.pagos-boton-agregar:active svg {
+  transform: rotate(360deg);
+}
+
+.pagos-control-busqueda {
+  position: relative;
+}
+
+.pagos-entrada-buscar {
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  width: 280px;
+  transition: all 0.2s ease;
+  background: white;
+  color: #374151;
+}
+
+.pagos-entrada-buscar:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  width: 320px;
+}
+
+.pagos-entrada-buscar::placeholder {
+  color: #9ca3af;
+}
+
+.pagos-icono-buscar {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  pointer-events: none;
+}
+
+/* Tabla de pagos */
+.pagos-contenedor-tabla {
+  overflow-x: auto;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.pagos-tabla {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.pagos-tabla thead {
+  background: #ffffff;
+}
+
+.pagos-fila-encabezado th {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-weight: 700;
+  background: #ffffff;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  border-bottom: 2px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.pagos-fila-encabezado th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.pagos-fila-encabezado th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.pagos-tabla tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.pagos-tabla tbody tr:hover {
+  background: #f8fafc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.pagos-fila-pago td {
+  padding: 1rem 1.5rem;
+  vertical-align: middle;
+  color: #374151;
+}
+
+.pagos-columna-id {
+  font-weight: 600;
+  color: #6b7280;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+.pagos-columna-cliente {
+  font-weight: 600;
+  color: #111827;
+}
+
+.pagos-columna-monto {
+  font-weight: 700;
+  color: #059669;
+  font-size: 0.9375rem;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+.pagos-columna-factura {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-weight: 500;
+  color: #6b7280;
+  font-size: 0.8125rem;
+}
+
+/* Estados para pagos */
+.pagos-badge-estado {
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 90px;
+  justify-content: center;
+}
+
+.pagos-estado-pagado {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.pagos-estado-pendiente {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.pagos-estado-vencido {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.pagos-indicador-estado {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pagos-estado-pagado .pagos-indicador-estado {
+  background: #059669;
+}
+
+.pagos-estado-pendiente .pagos-indicador-estado {
+  background: #d97706;
+}
+
+.pagos-estado-vencido .pagos-indicador-estado {
+  background: #dc2626;
+}
+
+/* Botones de acción para pagos */
+.pagos-columna-acciones {
+  width: 140px;
+}
+
+.pagos-botones-accion {
+  display: flex;
+  gap: 0.375rem;
+  justify-content: flex-end;
+}
+
+.pagos-boton-accion {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.pagos-boton-accion.pagos-ver {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.pagos-boton-accion.pagos-ver:hover {
+  background: #0369a1;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.25);
+}
+
+.pagos-boton-accion.pagos-editar {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.pagos-boton-accion.pagos-editar:hover {
+  background: #f59e0b;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+.pagos-boton-accion.pagos-eliminar {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.pagos-boton-accion.pagos-eliminar:hover {
+  background: #dc2626;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+/* Pie de tabla para pagos */
+.pagos-pie-tabla {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.pagos-informacion-registros {
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+.pagos-controles-paginacion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagos-boton-paginacion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.pagos-boton-paginacion:hover:not(:disabled) {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.pagos-boton-paginacion:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #f9fafb;
+}
+
+.pagos-numeros-paginacion {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pagos-numero-pagina {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 36px;
+  text-align: center;
+}
+
+.pagos-numero-pagina:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.pagos-numero-pagina.pagos-activo {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.25);
+}
+
+/* Estado vacío para pagos */
+.pagos-estado-vacio {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6b7280;
+}
+
+.pagos-icono-vacio {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  color: #d1d5db;
+}
+
+.pagos-mensaje-vacio {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.pagos-submensaje-vacio {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Estados de carga para pagos */
+.pagos-cargando {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+.pagos-cargando::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: pagos-spin 0.8s linear infinite;
+}
+
+@keyframes pagos-spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Animaciones para pagos */
+@keyframes pagos-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pagos-contenedor-principal {
+  animation: pagos-fadeIn 0.4s ease-out;
+}
+
+.pagos-fila-pago {
+  animation: pagos-fadeIn 0.3s ease-out;
+}
+
+/* Responsive Design para pagos */
+@media (max-width: 1024px) {
+  .pagos-encabezado {
+    padding: 1.5rem;
+  }
+  
+  .pagos-estadisticas-header {
+    gap: 1rem;
+  }
+  
+  .pagos-tarjeta-estadistica {
+    padding: 0.75rem 1rem;
+    min-width: 100px;
+  }
+
+  .pagos-valor-estadistica {
+    font-size: 1.25rem;
+  }
+
+  .pestana-vista {
+    padding: 1rem 1.5rem;
+  }
+
+  .texto-pestana {
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navegacion-pestanas {
+    padding: 0 0.5rem;
+  }
+
+  .pestana-vista {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .descripcion-pestana {
+    display: none;
+  }
+
+  .pagos-encabezado {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 1rem;
+    text-align: center;
+  }
+  
+  .pagos-titulo {
+    font-size: 1.5rem;
+  }
+  
+  .pagos-estadisticas-header {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .pagos-controles {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .pagos-seccion-izquierda,
+  .pagos-seccion-derecha {
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .pagos-entrada-buscar {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .pagos-entrada-buscar:focus {
+    width: 100%;
+  }
+  
+  /* Tabla responsive tipo tarjetas para pagos */
+  .pagos-tabla thead {
+    display: none;
+  }
+  
+  .pagos-tabla tbody,
+  .pagos-tabla tr,
+  .pagos-tabla td {
+    display: block;
+  }
+  
+  .pagos-tabla tr {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  
+  .pagos-tabla td {
+    padding: 0.75rem 0;
+    border: none;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .pagos-tabla td:last-child {
+    border-bottom: none;
+  }
+  
+  .pagos-tabla td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: 120px;
+    flex-shrink: 0;
+  }
+  
+  .pagos-botones-accion {
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+  
+  .pagos-pie-tabla {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .pagos-controles-paginacion {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .pestana-vista {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .contenedor-pestanas {
+    gap: 0;
+  }
+
+  .pagos-encabezado {
+    padding: 1rem;
+  }
+  
+  .pagos-icono-principal {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pagos-titulo {
+    font-size: 1.25rem;
+  }
+  
+  .pagos-tarjeta-estadistica {
+    padding: 0.5rem 0.75rem;
+    min-width: 80px;
+  }
+  
+  .pagos-valor-estadistica {
+    font-size: 1.125rem;
+  }
+
+  .pagos-icono-estadistica {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .pagos-boton-agregar {
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+  }
+  
+  .pagos-tabla td:before {
+    width: 100px;
+    font-size: 0.6875rem;
+  }
+  
+  .pagos-botones-accion {
+    gap: 0.25rem;
+    justify-content: flex-start;
+  }
+  
+  .pagos-boton-accion {
+    width: 28px;
+    height: 28px;
+  }
+
+  .pagos-contenedor-principal {
+    margin: 0.5rem;
+  }
+}
