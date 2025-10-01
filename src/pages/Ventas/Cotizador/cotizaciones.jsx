@@ -4,7 +4,7 @@ import TablaCotizacion from "./Componentes/tablaCotizacion";
 import "./Componentes/nuevaCotizacion.css";
 import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
 import "./cotizaciones.css";
-
+//hola
 const Cotizacion = () => {
   // Estado para almacenar todas las cotizaciones
   const [cotizaciones, setCotizaciones] = useState([]);
