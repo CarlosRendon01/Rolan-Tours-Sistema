@@ -17,6 +17,8 @@ const NuevaCotizacion = ({
     folio: "",
     fechaSalida: "",
     fechaRegreso: "",
+    horaSalida: "",
+    horaRegreso: "",
     dias: "",
     totalKilometros: "",
     costoCasetas: "",
@@ -70,6 +72,8 @@ const NuevaCotizacion = ({
         3: [
           { campo: "fechaSalida", nombre: "Fecha Salida" },
           { campo: "fechaRegreso", nombre: "Fecha Regreso" },
+          { campo: "horaSalida", nombre: "Hora Salida" },
+          { campo: "horaRegreso", nombre: "Hora Regreso" },
         ],
       };
 
@@ -111,6 +115,8 @@ const NuevaCotizacion = ({
       folio: generarFolioAutomatico(),
       fechaSalida: "",
       fechaRegreso: "",
+      horaSalida: "",
+      horaRegreso: "",
       dias: "",
       totalKilometros: "",
       costoCasetas: "",
@@ -147,6 +153,8 @@ const NuevaCotizacion = ({
         folio: cotizacionEditar.folio || "",
         fechaSalida: cotizacionEditar.fechaSalida || "",
         fechaRegreso: cotizacionEditar.fechaRegreso || "",
+        horaSalida: cotizacionEditar.horaSalida || "",
+        horaRegreso: cotizacionEditar.horaRegreso || "",
         dias: cotizacionEditar.dias || "",
         totalKilometros: cotizacionEditar.totalKilometros || "",
         costoCasetas: cotizacionEditar.costoCasetas || "",
@@ -196,6 +204,8 @@ const NuevaCotizacion = ({
       folio: generarFolioAutomatico(),
       fechaSalida: "",
       fechaRegreso: "",
+      horaSalida: "",
+      horaRegreso: "",
       dias: "",
       totalKilometros: "",
       costoCasetas: "",
@@ -225,24 +235,38 @@ const NuevaCotizacion = ({
     });
   }, [generarFolioAutomatico, limpiarTodosErrores]);
 
-  const calcularDias = (fechaInicio, fechaFin) => {
-    if (!fechaInicio || !fechaFin) return "";
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
-    const diferencia = fin.getTime() - inicio.getTime();
-    const dias = Math.ceil(diferencia / (1000 * 3600 * 24));
-    return dias > 0 ? dias.toString() : "";
+  const calcularDias = (fechaInicio, fechaFin, horaInicio, horaFin) => {
+    if (!fechaInicio || !fechaFin || !horaInicio || !horaFin) return "";
+    const horaInicioSolo = horaInicio.split(":")[0];
+    const horaFinSolo = horaFin.split(":")[0];
+    const inicio = new Date(`${fechaInicio}T${horaInicioSolo}:00:00`);
+    const fin = new Date(`${fechaFin}T${horaFinSolo}:00:00`);
+    const diferenciaHoras = (fin.getTime() - inicio.getTime()) / (1000 * 3600);
+    const dias = Math.ceil(diferenciaHoras / 24);
+
+    return dias > 0 ? dias.toString() : "0";
   };
 
   useEffect(() => {
-    const dias = calcularDias(formData.fechaSalida, formData.fechaRegreso);
+    const dias = calcularDias(
+      formData.fechaSalida,
+      formData.fechaRegreso,
+      formData.horaSalida,
+      formData.horaRegreso
+    );
     if (dias && dias !== formData.dias) {
       setFormData((prev) => ({
         ...prev,
         dias: dias,
       }));
     }
-  }, [formData.fechaSalida, formData.fechaRegreso, formData.dias]);
+  }, [
+    formData.fechaSalida,
+    formData.fechaRegreso,
+    formData.horaSalida,
+    formData.horaRegreso,
+    formData.dias,
+  ]);
 
   const siguientePaso = useCallback(() => {
     const errores = validarPaso(pasoActual);
@@ -725,6 +749,34 @@ const NuevaCotizacion = ({
                         }
                       />
                       <MensajeError nombreCampo="fechaRegreso" />
+                    </label>
+                  </div>
+                  <div className="fila">
+                    <label>
+                      Hora salida: <span className="required">*</span>
+                      <input
+                        type="time"
+                        name="horaSalida"
+                        value={formData.horaSalida}
+                        onChange={handleInputChange}
+                        className={
+                          erroresCampos.horaSalida ? "campo-error" : ""
+                        }
+                      />
+                      <MensajeError nombreCampo="horaSalida" />
+                    </label>
+                    <label>
+                      Hora regreso: <span className="required">*</span>
+                      <input
+                        type="time"
+                        name="horaRegreso"
+                        value={formData.horaRegreso}
+                        onChange={handleInputChange}
+                        className={
+                          erroresCampos.horaRegreso ? "campo-error" : ""
+                        }
+                      />
+                      <MensajeError nombreCampo="horaSalida" />
                     </label>
                   </div>
 
