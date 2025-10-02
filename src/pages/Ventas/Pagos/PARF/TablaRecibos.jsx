@@ -16,7 +16,8 @@ import {
   FileText,
   Filter
 } from 'lucide-react';
-import '../TablaPagos.css';
+// TablaRecibos.jsx
+import './TablaRecibos.css';
 
 const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
   const [paginaActual, setPaginaActual] = useState(1);

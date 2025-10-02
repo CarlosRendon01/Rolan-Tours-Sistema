@@ -17,7 +17,9 @@ import {
   DollarSign,
   Filter
 } from 'lucide-react';
-import '../TablaPagos.css';
+// TablaFacturas.jsx
+import './TablaFacturas.css';
+
 
 const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
   const [paginaActual, setPaginaActual] = useState(1);

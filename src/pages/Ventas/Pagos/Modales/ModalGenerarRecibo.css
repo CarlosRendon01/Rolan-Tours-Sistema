@@ -1,0 +1,480 @@
+/* ========================================
+   MODALGENERARRECIBO.CSS - ESTILOS DEL MODAL
+   ======================================== */
+
+.modal-recibo-superposicion {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  animation: modal-recibo-aparecerFade 0.3s ease-out;
+}
+
+.modal-recibo-contenedor {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: modal-recibo-deslizarArriba 0.3s ease-out;
+  overflow: hidden;
+}
+
+/* Encabezado del Modal */
+.modal-recibo-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-recibo-encabezado::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="cuadricula-modal-recibo" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23cuadricula-modal-recibo)"/></svg>');
+  opacity: 0.5;
+}
+
+.modal-recibo-encabezado-contenido {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 2;
+}
+
+.modal-recibo-envoltorio-icono {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-recibo-titulo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.modal-recibo-subtitulo {
+  font-size: 0.875rem;
+  margin: 0;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+.modal-recibo-boton-cerrar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.modal-recibo-boton-cerrar:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: rotate(90deg);
+}
+
+/* Cuerpo del Modal */
+.modal-recibo-cuerpo {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+  background: #f9fafb;
+}
+
+/* Documento del Recibo */
+.modal-recibo-documento {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+/* Encabezado del Documento */
+.modal-recibo-doc-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.modal-recibo-logo {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.modal-recibo-logo svg {
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.modal-recibo-empresa-nombre {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+}
+
+.modal-recibo-empresa-datos {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.modal-recibo-doc-info {
+  text-align: right;
+}
+
+.modal-recibo-doc-titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #6366f1;
+  margin: 0 0 0.5rem 0;
+}
+
+.modal-recibo-doc-numero {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+.modal-recibo-doc-fecha {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Separador */
+.modal-recibo-separador {
+  height: 2px;
+  background: linear-gradient(to right, #6366f1, transparent);
+  margin: 1.5rem 0;
+}
+
+/* Secciones del Recibo */
+.modal-recibo-seccion {
+  margin-bottom: 1.5rem;
+}
+
+.modal-recibo-seccion-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-recibo-seccion-titulo svg {
+  color: #6366f1;
+}
+
+.modal-recibo-seccion-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-recibo-dato {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.modal-recibo-dato-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+.modal-recibo-dato-valor {
+  font-size: 0.9375rem;
+  color: #111827;
+  text-align: right;
+  flex: 1;
+}
+
+.modal-recibo-codigo {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  background: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Total */
+.modal-recibo-total-contenedor {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border: 2px solid #bae6fd;
+}
+
+.modal-recibo-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-recibo-total-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0369a1;
+}
+
+.modal-recibo-total-monto {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0c4a6e;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+/* Pie del Documento */
+.modal-recibo-doc-pie {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px dashed #d1d5db;
+}
+
+.modal-recibo-firma {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-recibo-linea-firma {
+  width: 250px;
+  height: 1px;
+  background: #9ca3af;
+  margin: 0 auto 0.5rem;
+}
+
+.modal-recibo-firma-texto {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.modal-recibo-nota {
+  text-align: center;
+}
+
+.modal-recibo-nota p {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  margin: 0.25rem 0;
+  font-style: italic;
+}
+
+/* Pie del Modal */
+.modal-recibo-pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.modal-recibo-boton-secundario,
+.modal-recibo-boton-primario {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.modal-recibo-boton-secundario {
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.modal-recibo-boton-secundario:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.modal-recibo-boton-primario {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+.modal-recibo-boton-primario:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+}
+
+/* Animaciones */
+@keyframes modal-recibo-aparecerFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-recibo-deslizarArriba {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-recibo-superposicion {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-recibo-contenedor {
+    max-height: 95vh;
+    border-radius: 16px 16px 0 0;
+    animation: modal-recibo-deslizarDesdeAbajo 0.3s ease-out;
+  }
+
+  .modal-recibo-encabezado {
+    padding: 1rem 1.5rem;
+  }
+
+  .modal-recibo-titulo {
+    font-size: 1.25rem;
+  }
+
+  .modal-recibo-cuerpo {
+    padding: 1rem;
+  }
+
+  .modal-recibo-documento {
+    padding: 1.5rem;
+  }
+
+  .modal-recibo-doc-encabezado {
+    flex-direction: column;
+  }
+
+  .modal-recibo-doc-info {
+    text-align: left;
+  }
+
+  .modal-recibo-dato {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .modal-recibo-dato-label {
+    min-width: auto;
+  }
+
+  .modal-recibo-dato-valor {
+    text-align: left;
+  }
+
+  .modal-recibo-total-monto {
+    font-size: 1.5rem;
+  }
+
+  .modal-recibo-pie {
+    padding: 1rem 1.5rem;
+    flex-direction: column-reverse;
+  }
+
+  .modal-recibo-boton-secundario,
+  .modal-recibo-boton-primario {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@keyframes modal-recibo-deslizarDesdeAbajo {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar personalizado */
+.modal-recibo-cuerpo::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-recibo-cuerpo::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.modal-recibo-cuerpo::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.modal-recibo-cuerpo::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
