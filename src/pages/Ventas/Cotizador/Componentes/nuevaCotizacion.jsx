@@ -5,6 +5,7 @@ import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const NuevaCotizacion = ({
   onGuardarCotizacion,
+  onGuardarCliente,
   cotizacionEditar,
   onCancelarEdicion,
 }) => {
@@ -23,19 +24,14 @@ const NuevaCotizacion = ({
     totalKilometros: "",
     costoCasetas: "",
     tipoCaminos: "terraceria",
-    estado: "",
     tipoCliente: "",
-    atiende: "",
     id: "",
-    cliente: "",
-    nombreLead: "",
+    numeroLead: "",
     nombreResponsable: "",
     estadoCotizacion: "inactivo",
-    medioContacto: "",
     servicioTransporte: "",
     tipoServicio: "",
     pax: "",
-    tipoClienteNum: "",
     origenServicio: "Oaxaca",
     puntoIntermedio: "",
     destinoServicio: "",
@@ -45,7 +41,31 @@ const NuevaCotizacion = ({
     tipoClienteFrec: "solo_una_vez",
     precio: "",
     descripcion: "",
+    transporte: "",
+    restaurante: "",
+    tour: "",
+    hospedaje: "",
+    extrasSeleccionados: [],
+    total: "",
   });
+
+  const [datosCliente, setDatosCliente] = useState({
+    nombre: "",
+    apellidoPaterno: "",
+    apellidoMaterno: "",
+    email: "",
+    telefono: "",
+    canalContacto: "",
+  });
+
+  const generarIdCliente = useCallback(() => {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+    const dia = fecha.getDate().toString().padStart(2, "0");
+    const timestamp = Date.now().toString().slice(-6);
+    return `CLI-${año}${mes}${dia}-${timestamp}`;
+  }, []);
 
   const generarFolioAutomatico = useCallback(() => {
     const fecha = new Date();
@@ -59,36 +79,63 @@ const NuevaCotizacion = ({
   const validarPaso = useCallback(
     (paso) => {
       const camposObligatorios = {
-        1: [
-          { campo: "cliente", nombre: "Cliente" },
-          { campo: "nombreResponsable", nombre: "Nombre Responsable" },
-        ],
+        1: [{ campo: "nombreResponsable", nombre: "Nombre Responsable" }],
         2: [
-          { campo: "medioContacto", nombre: "N° Télefonico" },
+          { campo: "nombre", nombre: "Nombre", esCliente: true },
+          {
+            campo: "apellidoPaterno",
+            nombre: "Apellido Paterno",
+            esCliente: true,
+          },
+          {
+            campo: "apellidoMaterno",
+            nombre: "Apellido Materno",
+            esCliente: true,
+          },
+          { campo: "email", nombre: "Email", esCliente: true },
+          { campo: "telefono", nombre: "Teléfono", esCliente: true },
+          {
+            campo: "canalContacto",
+            nombre: "Canal de Contacto",
+            esCliente: true,
+          },
+        ],
+        3: [
           { campo: "pax", nombre: "N° pasajeros" },
           { campo: "puntoIntermedio", nombre: "Punto Intermedio" },
           { campo: "destinoServicio", nombre: "Destino Servicio" },
         ],
-        3: [
+        4: [
           { campo: "fechaSalida", nombre: "Fecha Salida" },
           { campo: "fechaRegreso", nombre: "Fecha Regreso" },
           { campo: "horaSalida", nombre: "Hora Salida" },
           { campo: "horaRegreso", nombre: "Hora Regreso" },
         ],
+        5: [],
       };
 
-      const camposDelPaso = camposObligatorios[paso];
+      const camposDelPaso = camposObligatorios[paso] || [];
       const errores = {};
 
-      camposDelPaso.forEach(({ campo, nombre }) => {
-        if (!formData[campo] || formData[campo].toString().trim() === "") {
+      camposDelPaso?.forEach(({ campo, nombre, esCliente }) => {
+        const datos = esCliente ? datosCliente : formData;
+        const valor = datos[campo];
+
+        if (!valor || valor.toString().trim() === "") {
           errores[campo] = `${nombre} es obligatorio`;
+        }
+
+        if (campo === "email" && valor && valor.trim() !== "") {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(valor)) {
+            errores[campo] = "Email inválido";
+          }
         }
       });
 
       return errores;
     },
-    [formData]
+    [formData, datosCliente]
   );
 
   const limpiarErrorCampo = useCallback((nombreCampo) => {
@@ -121,19 +168,14 @@ const NuevaCotizacion = ({
       totalKilometros: "",
       costoCasetas: "",
       tipoCaminos: "terraceria",
-      estado: "",
       tipoCliente: "",
-      atiende: "",
       id: "",
-      cliente: "",
-      nombreLead: "",
+      numeroLead: "",
       nombreResponsable: "",
       estadoCotizacion: "inactivo",
-      medioContacto: "",
       servicioTransporte: "",
       tipoServicio: "",
       pax: "",
-      tipoClienteNum: "",
       origenServicio: "Oaxaca",
       puntoIntermedio: "",
       destinoServicio: "",
@@ -143,6 +185,20 @@ const NuevaCotizacion = ({
       tipoClienteFrec: "solo_una_vez",
       precio: "",
       descripcion: "",
+      transporte: "",
+      restaurante: "",
+      tour: "",
+      hospedaje: "",
+      extrasSeleccionados: [],
+      total: "",
+    });
+    setDatosCliente({
+      nombre: "",
+      apellidoPaterno: "",
+      apellidoMaterno: "",
+      email: "",
+      telefono: "",
+      canalContacto: "",
     });
   }, [onCancelarEdicion, generarFolioAutomatico, limpiarTodosErrores]);
 
@@ -159,19 +215,14 @@ const NuevaCotizacion = ({
         totalKilometros: cotizacionEditar.totalKilometros || "",
         costoCasetas: cotizacionEditar.costoCasetas || "",
         tipoCaminos: cotizacionEditar.tipoCaminos || "terraceria",
-        estado: cotizacionEditar.estado || "",
         tipoCliente: cotizacionEditar.tipoCliente || "",
-        atiende: cotizacionEditar.atiende || "",
         id: cotizacionEditar.id || "",
-        cliente: cotizacionEditar.cliente || "",
-        nombreLead: cotizacionEditar.nombreLead || "",
+        numeroLead: cotizacionEditar.numeroLead || "",
         nombreResponsable: cotizacionEditar.nombreResponsable || "",
         estadoCotizacion: cotizacionEditar.estadoCotizacion || "inactivo",
-        medioContacto: cotizacionEditar.medioContacto || "",
         servicioTransporte: cotizacionEditar.servicioTransporte || "",
         tipoServicio: cotizacionEditar.tipoServicio || "",
         pax: cotizacionEditar.pax || "",
-        tipoClienteNum: cotizacionEditar.tipoClienteNum || "",
         origenServicio: cotizacionEditar.origenServicio || "Oaxaca",
         puntoIntermedio: cotizacionEditar.puntoIntermedio || "",
         destinoServicio: cotizacionEditar.destinoServicio || "",
@@ -183,7 +234,23 @@ const NuevaCotizacion = ({
         tipoClienteFrec: cotizacionEditar.tipoClienteFrec || "solo_una_vez",
         precio: cotizacionEditar.precio || "",
         descripcion: cotizacionEditar.descripcion || "",
+        transporte: cotizacionEditar.transporte || "",
+        restaurante: cotizacionEditar.restaurante || "",
+        tour: cotizacionEditar.tour || "",
+        hospedaje: cotizacionEditar.hospedaje || "",
+        extrasSeleccionados: cotizacionEditar.extrasSeleccionados || [],
+        total: cotizacionEditar.total || "",
       });
+      if (cotizacionEditar.cliente) {
+        setDatosCliente({
+          nombre: cotizacionEditar.cliente.nombre || "",
+          apellidoPaterno: cotizacionEditar.cliente.apellidoPaterno || "",
+          apellidoMaterno: cotizacionEditar.cliente.apellidoMaterno || "",
+          email: cotizacionEditar.cliente.email || "",
+          telefono: cotizacionEditar.cliente.telefono || "",
+          canalContacto: cotizacionEditar.cliente.canalContacto || "",
+        });
+      }
       setMostrarModal(true);
       setPasoActual(1);
       limpiarTodosErrores();
@@ -210,19 +277,14 @@ const NuevaCotizacion = ({
       totalKilometros: "",
       costoCasetas: "",
       tipoCaminos: "terraceria",
-      estado: "",
       tipoCliente: "",
-      atiende: "",
       id: "",
-      cliente: "",
-      nombreLead: "",
+      numeroLead: "",
       nombreResponsable: "",
       estadoCotizacion: "inactivo",
-      medioContacto: "",
       servicioTransporte: "",
       tipoServicio: "",
       pax: "",
-      tipoClienteNum: "",
       origenServicio: "Oaxaca",
       puntoIntermedio: "",
       destinoServicio: "",
@@ -232,6 +294,20 @@ const NuevaCotizacion = ({
       tipoClienteFrec: "solo_una_vez",
       precio: "",
       descripcion: "",
+      transporte: "",
+      restaurante: "",
+      tour: "",
+      hospedaje: "",
+      extrasSeleccionados: [],
+      total: "",
+    });
+    setDatosCliente({
+      nombre: "",
+      apellidoPaterno: "",
+      apellidoMaterno: "",
+      email: "",
+      telefono: "",
+      canalContacto: "",
     });
   }, [generarFolioAutomatico, limpiarTodosErrores]);
 
@@ -267,7 +343,6 @@ const NuevaCotizacion = ({
     formData.horaRegreso,
     formData.dias,
   ]);
-
   const siguientePaso = useCallback(() => {
     const errores = validarPaso(pasoActual);
 
@@ -281,10 +356,10 @@ const NuevaCotizacion = ({
         elemento.focus();
         elemento.scrollIntoView({ behavior: "smooth", block: "center" });
       }
-
       return;
     }
-    if (pasoActual < 3) {
+    if (pasoActual < 5) {
+      // CAMBIAR DE 4 A 5
       setPasoActual(pasoActual + 1);
     }
   }, [pasoActual, validarPaso]);
@@ -315,12 +390,65 @@ const NuevaCotizacion = ({
     }));
   };
 
+  const handleClienteInputChange = (e) => {
+    const { name, value } = e.target;
+
+    if (erroresCampos[name] && value.trim() !== "") {
+      limpiarErrorCampo(name);
+    }
+
+    setDatosCliente((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleExtraChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => {
+      const nuevosExtras = [...prev.extrasSeleccionados];
+
+      // Si se selecciona una opción, agregarla a la lista
+      if (value && !nuevosExtras.find((extra) => extra.tipo === name)) {
+        nuevosExtras.push({ tipo: name, valor: value });
+      } else if (value) {
+        // Si ya existe, actualizar el valor
+        const index = nuevosExtras.findIndex((extra) => extra.tipo === name);
+        nuevosExtras[index] = { tipo: name, valor: value };
+      } else {
+        // Si se deselecciona, remover de la lista
+        const index = nuevosExtras.findIndex((extra) => extra.tipo === name);
+        if (index > -1) nuevosExtras.splice(index, 1);
+      }
+
+      return {
+        ...prev,
+        [name]: value,
+        extrasSeleccionados: nuevosExtras,
+      };
+    });
+  };
+  const handleTotalChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      total: value,
+    }));
+  };
+
   const validarFormularioCompleto = useCallback(() => {
     const erroresPaso1 = validarPaso(1);
     const erroresPaso2 = validarPaso(2);
     const erroresPaso3 = validarPaso(3);
+    const erroresPaso4 = validarPaso(4);
 
-    return { ...erroresPaso1, ...erroresPaso2, ...erroresPaso3 };
+    return {
+      ...erroresPaso1,
+      ...erroresPaso2,
+      ...erroresPaso3,
+      ...erroresPaso4,
+    };
   }, [validarPaso]);
 
   const handleSubmit = useCallback(
@@ -332,13 +460,18 @@ const NuevaCotizacion = ({
         const erroresPaso1 = validarPaso(1);
         const erroresPaso2 = validarPaso(2);
         const erroresPaso3 = validarPaso(3);
+        const erroresPaso4 = validarPaso(4);
+
         if (Object.keys(erroresPaso1).length > 0) {
           setPasoActual(1);
         } else if (Object.keys(erroresPaso2).length > 0) {
           setPasoActual(2);
         } else if (Object.keys(erroresPaso3).length > 0) {
           setPasoActual(3);
+        } else if (Object.keys(erroresPaso4).length > 0) {
+          setPasoActual(4);
         }
+
         setTimeout(() => {
           const primerCampoConError = Object.keys(erroresCompletos)[0];
           const elemento = document.querySelector(
@@ -352,10 +485,23 @@ const NuevaCotizacion = ({
 
         return;
       }
+
+      const clienteData = {
+        id: generarIdCliente(),
+        ...datosCliente,
+        fechaRegistro: new Date().toISOString().split("T")[0],
+      };
+
+      if (onGuardarCliente) {
+        onGuardarCliente(clienteData);
+      }
+
       const cotizacionData = {
         id: modoEdicion ? cotizacionEditar.id : Date.now(),
         ...formData,
+        clienteId: clienteData.id,
       };
+
       if (onGuardarCotizacion) {
         onGuardarCotizacion(cotizacionData, modoEdicion);
       }
@@ -368,7 +514,10 @@ const NuevaCotizacion = ({
       modoEdicion,
       cotizacionEditar,
       formData,
+      datosCliente,
       onGuardarCotizacion,
+      onGuardarCliente,
+      generarIdCliente,
       cerrarModal,
     ]
   );
@@ -384,7 +533,6 @@ const NuevaCotizacion = ({
       </div>
     );
   });
-
   return (
     <div className="nCotización-container">
       <div className="botones-wrapper">
@@ -449,6 +597,30 @@ const NuevaCotizacion = ({
                 >
                   3
                 </span>
+                <div className="linea-paso"></div>
+                <span
+                  className={`paso ${
+                    pasoActual === 4
+                      ? "activo"
+                      : pasoActual > 4
+                      ? "completado"
+                      : ""
+                  }`}
+                >
+                  4
+                </span>
+                <div className="linea-paso"></div>
+                <span
+                  className={`paso ${
+                    pasoActual === 5
+                      ? "activo"
+                      : pasoActual > 5
+                      ? "completado"
+                      : ""
+                  }`}
+                >
+                  5
+                </span>
               </div>
             </div>
 
@@ -479,25 +651,14 @@ const NuevaCotizacion = ({
                       />
                     </label>
                   </div>
-                  <label>
-                    Cliente: <span className="required">*</span>
-                    <input
-                      type="text"
-                      name="cliente"
-                      value={formData.cliente}
-                      onChange={handleInputChange}
-                      className={erroresCampos.cliente ? "campo-error" : ""}
-                    />
-                    <MensajeError nombreCampo="cliente" />
-                  </label>
 
                   <div className="fila">
                     <label>
-                      Nombre Lead: (Opcional)
+                      N° de Lead: (Opcional)
                       <input
                         type="text"
-                        name="nombreLead"
-                        value={formData.nombreLead}
+                        name="numeroLead"
+                        value={formData.numeroLead}
                         onChange={handleInputChange}
                       />
                     </label>
@@ -563,21 +724,133 @@ const NuevaCotizacion = ({
 
               {pasoActual === 2 && (
                 <div className="paso-contenido">
+                  <h3>Datos del Cliente</h3>
+
+                  <label>
+                    Nombre: <span className="required">*</span>
+                    <input
+                      type="text"
+                      name="nombre"
+                      value={datosCliente.nombre}
+                      onChange={handleClienteInputChange}
+                      className={erroresCampos.nombre ? "campo-error" : ""}
+                    />
+                    <MensajeError nombreCampo="nombre" />
+                  </label>
+
+                  <div className="fila">
+                    <label>
+                      Apellido Paterno: <span className="required">*</span>
+                      <input
+                        type="text"
+                        name="apellidoPaterno"
+                        value={datosCliente.apellidoPaterno}
+                        onChange={handleClienteInputChange}
+                        className={
+                          erroresCampos.apellidoPaterno ? "campo-error" : ""
+                        }
+                      />
+                      <MensajeError nombreCampo="apellidoPaterno" />
+                    </label>
+                    <label>
+                      Apellido Materno: <span className="required">*</span>
+                      <input
+                        type="text"
+                        name="apellidoMaterno"
+                        value={datosCliente.apellidoMaterno}
+                        onChange={handleClienteInputChange}
+                        className={
+                          erroresCampos.apellidoMaterno ? "campo-error" : ""
+                        }
+                      />
+                      <MensajeError nombreCampo="apellidoMaterno" />
+                    </label>
+                  </div>
+
+                  <label>
+                    Email: <span className="required">*</span>
+                    <input
+                      type="email"
+                      name="email"
+                      value={datosCliente.email}
+                      onChange={handleClienteInputChange}
+                      className={erroresCampos.email ? "campo-error" : ""}
+                    />
+                    <MensajeError nombreCampo="email" />
+                  </label>
+
+                  <div className="fila">
+                    <label>
+                      Teléfono: <span className="required">*</span>
+                      <input
+                        type="text"
+                        name="telefono"
+                        value={datosCliente.telefono}
+                        onChange={handleClienteInputChange}
+                        className={erroresCampos.telefono ? "campo-error" : ""}
+                      />
+                      <MensajeError nombreCampo="telefono" />
+                    </label>
+                    <label>
+                      Canal de Contacto: <span className="required">*</span>
+                      <input
+                        type="text"
+                        name="canalContacto"
+                        value={datosCliente.canalContacto}
+                        onChange={handleClienteInputChange}
+                        className={
+                          erroresCampos.canalContacto ? "campo-error" : ""
+                        }
+                        placeholder="Ej: WhatsApp, Teléfono, Email"
+                      />
+                      <MensajeError nombreCampo="canalContacto" />
+                    </label>
+                  </div>
+
+                  <div className="botones-navegacion">
+                    <button
+                      type="button"
+                      onClick={pasoAnterior}
+                      className="btn-anterior"
+                    >
+                      Anterior
+                    </button>
+                    <div className="botones-derecha">
+                      <button
+                        type="button"
+                        onClick={cerrarModal}
+                        className="btn-cancelar"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={siguientePaso}
+                        className="btn-siguiente"
+                      >
+                        Siguiente
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {pasoActual === 3 && (
+                <div className="paso-contenido">
                   <h3>Datos del Servicio</h3>
 
                   <div className="fila">
                     <label>
-                      N° Télefonico: <span className="required">*</span>
+                      N° pasajeros: <span className="required">*</span>
                       <input
-                        type="text"
-                        name="medioContacto"
-                        value={formData.medioContacto}
+                        type="number"
+                        name="pax"
+                        value={formData.pax}
                         onChange={handleInputChange}
-                        className={
-                          erroresCampos.medioContacto ? "campo-error" : ""
-                        }
+                        className={erroresCampos.pax ? "campo-error" : ""}
+                        min="1"
                       />
-                      <MensajeError nombreCampo="medioContacto" />
+                      <MensajeError nombreCampo="pax" />
                     </label>
                     <label>
                       Servicio Transporte:
@@ -615,30 +888,6 @@ const NuevaCotizacion = ({
                         <option value="suburban">Suburban</option>
                         <option value="taxi">Taxi</option>
                       </select>
-                    </label>
-                  </div>
-
-                  <div className="fila">
-                    <label>
-                      N° pasajeros: <span className="required">*</span>
-                      <input
-                        type="number"
-                        name="pax"
-                        value={formData.pax}
-                        onChange={handleInputChange}
-                        className={erroresCampos.pax ? "campo-error" : ""}
-                        min="1"
-                      />
-                      <MensajeError nombreCampo="pax" />
-                    </label>
-                    <label>
-                      Tipo Cliente (Num): (Opcional)
-                      <input
-                        type="number"
-                        name="tipoClienteNum"
-                        value={formData.tipoClienteNum}
-                        onChange={handleInputChange}
-                      />
                     </label>
                   </div>
 
@@ -719,7 +968,7 @@ const NuevaCotizacion = ({
                 </div>
               )}
 
-              {pasoActual === 3 && (
+              {pasoActual === 4 && (
                 <div className="paso-contenido">
                   <h3>Detalles del Viaje</h3>
 
@@ -776,7 +1025,7 @@ const NuevaCotizacion = ({
                           erroresCampos.horaRegreso ? "campo-error" : ""
                         }
                       />
-                      <MensajeError nombreCampo="horaSalida" />
+                      <MensajeError nombreCampo="horaRegreso" />
                     </label>
                   </div>
 
@@ -843,27 +1092,6 @@ const NuevaCotizacion = ({
                     </label>
                   </div>
 
-                  <div className="fila">
-                    <label>
-                      Estado: (Opcional)
-                      <input
-                        type="text"
-                        name="estado"
-                        value={formData.estado}
-                        onChange={handleInputChange}
-                      />
-                    </label>
-                    <label>
-                      Atiende: (Opcional)
-                      <input
-                        type="text"
-                        name="atiende"
-                        value={formData.atiende}
-                        onChange={handleInputChange}
-                      />
-                    </label>
-                  </div>
-
                   <label>
                     Precio: (Opcional)
                     <input
@@ -887,6 +1115,122 @@ const NuevaCotizacion = ({
                       placeholder="Descripción del servicio..."
                     />
                   </label>
+
+                  <div className="botones-navegacion">
+                    <button
+                      type="button"
+                      onClick={pasoAnterior}
+                      className="btn-anterior"
+                    >
+                      Anterior
+                    </button>
+                    <div className="botones-derecha">
+                      <button
+                        type="button"
+                        onClick={cerrarModal}
+                        className="btn-cancelar"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={siguientePaso}
+                        className="btn-siguiente"
+                      >
+                        Siguiente
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {pasoActual === 5 && (
+                <div className="paso-contenido">
+                  <h3>Extras y Total</h3>
+
+                  <div className="extras-grid">
+                    <label>
+                      Transporte:
+                      <select
+                        name="transporte"
+                        value={formData.transporte}
+                        onChange={handleExtraChange}
+                      >
+                        <option value="">Seleccionar...</option>
+                        {/* Opciones se agregarán después */}
+                      </select>
+                    </label>
+
+                    <label>
+                      Restaurante:
+                      <select
+                        name="restaurante"
+                        value={formData.restaurante}
+                        onChange={handleExtraChange}
+                      >
+                        <option value="">Seleccionar...</option>
+                        {/* Opciones se agregarán después */}
+                      </select>
+                    </label>
+
+                    <label>
+                      Tour:
+                      <select
+                        name="tour"
+                        value={formData.tour}
+                        onChange={handleExtraChange}
+                      >
+                        <option value="">Seleccionar...</option>
+                        {/* Opciones se agregarán después */}
+                      </select>
+                    </label>
+
+                    <label>
+                      Hospedaje:
+                      <select
+                        name="hospedaje"
+                        value={formData.hospedaje}
+                        onChange={handleExtraChange}
+                      >
+                        <option value="">Seleccionar...</option>
+                        {/* Opciones se agregarán después */}
+                      </select>
+                    </label>
+                  </div>
+
+                  {/* Cuadro de Extras Seleccionados */}
+                  <div className="extras-seleccionados">
+                    <h4>Extras:</h4>
+                    <div className="extras-lista">
+                      {formData.extrasSeleccionados.length > 0 ? (
+                        formData.extrasSeleccionados.map((extra, index) => (
+                          <div key={index} className="extra-item">
+                            <span className="extra-tipo">{extra.tipo}:</span>
+                            <span className="extra-valor">{extra.valor}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="extras-vacio">
+                          No hay extras seleccionados
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Campo de Total */}
+                  <div className="total-container">
+                    <label>
+                      Total: <span className="required">*</span>
+                      <input
+                        type="number"
+                        name="total"
+                        value={formData.total}
+                        onChange={handleTotalChange}
+                        step="0.01"
+                        min="0"
+                        placeholder="0.00"
+                      />
+                    </label>
+                  </div>
 
                   <div className="botones-navegacion">
                     <button

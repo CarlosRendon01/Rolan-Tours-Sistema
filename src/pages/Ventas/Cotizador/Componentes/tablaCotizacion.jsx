@@ -16,12 +16,10 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
-  // Resetear página cuando cambien las cotizaciones
   useEffect(() => {
     setPaginaActual(1);
   }, [cotizaciones]);
 
-  // Función para formatear fecha memoizada
   const formatearFecha = useCallback((fecha) => {
     if (!fecha) return "-";
     try {
@@ -38,7 +36,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     }
   }, []);
 
-  // Filtrar cotizaciones según búsqueda - memoizado
   const cotizacionesFiltradas = useMemo(() => {
     if (!terminoBusqueda.trim()) return cotizaciones;
 
@@ -52,7 +49,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     );
   }, [cotizaciones, terminoBusqueda, formatearFecha]);
 
-  // Calcular paginación - memoizado
   const datosePaginacion = useMemo(() => {
     const totalRegistros = cotizacionesFiltradas.length;
     const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina) || 1;
@@ -72,7 +68,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     };
   }, [cotizacionesFiltradas, paginaActual, registrosPorPagina]);
 
-  // Handlers optimizados
   const cambiarPagina = useCallback(
     (nuevaPagina) => {
       if (nuevaPagina >= 1 && nuevaPagina <= datosePaginacion.totalPaginas) {
@@ -118,7 +113,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     [onEliminar]
   );
 
-  // Generar números de páginas
   const numerosPaginas = useMemo(() => {
     const { totalPaginas } = datosePaginacion;
     return Array.from({ length: totalPaginas }, (_, i) => i + 1);
@@ -126,7 +120,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
 
   return (
     <main className="cotizaciones-contenedor-principal" role="main">
-      {/* Header con información semántica */}
       <header className="cotizaciones-encabezado">
         <div className="cotizaciones-seccion-logo">
           <div className="cotizaciones-lineas-decorativas" aria-hidden="true">
@@ -138,7 +131,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
           <h1 className="cotizaciones-titulo">Gestión de Cotizaciones</h1>
         </div>
 
-        {/* Estadísticas como región informativa */}
         <section
           className="cotizaciones-contenedor-estadisticas"
           aria-label="Estadísticas de cotizaciones"
@@ -172,7 +164,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
         </section>
       </header>
 
-      {/* Controles como región de navegación */}
       <nav className="cotizaciones-controles" aria-label="Controles de tabla">
         <div className="cotizaciones-control-registros">
           <label htmlFor="select-registros">Mostrar</label>
@@ -221,7 +212,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
       {/* Contenido principal */}
       {cotizaciones.length > 0 ? (
         <section aria-label="Tabla de cotizaciones">
-          {/* Tabla con estructura semántica correcta */}
           <div className="cotizaciones-contenedor-tabla">
             <table
               className="cotizaciones-tabla"
@@ -281,7 +271,7 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                       </td>
                       <td data-label="Destino">
                         <span className="cotizaciones-destino">
-                          {cotizacion.destino || "Sin destino"}
+                          {cotizacion.destinoServicio || "Sin destino"}
                         </span>
                       </td>
                       <td data-label="Acciones">
@@ -323,7 +313,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
             </table>
           </div>
 
-          {/* Footer con información de paginación */}
           <footer className="cotizaciones-pie-tabla" role="contentinfo">
             <div
               className="cotizaciones-informacion-registros"

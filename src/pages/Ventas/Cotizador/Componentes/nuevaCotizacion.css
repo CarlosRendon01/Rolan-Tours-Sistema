@@ -1,4 +1,3 @@
-/* Contenedor principal */
 .nCotización-container {
   display: flex;
   align-items: center;
@@ -8,14 +7,12 @@
   z-index: 15;
 }
 
-/* Contenedor de botones */
 .botones-wrapper {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* Botón con ícono (agregar/cerrar) */
 .agregar-cotizacion {
   background-color: transparent;
   border: none;
@@ -29,7 +26,6 @@
   position: relative;
 }
 
-/* Ícono azul con rotación */
 .icono-verde {
   color: #dc2626;
   transition: transform 0.4s ease;
@@ -45,7 +41,6 @@
   color: #dc2626;
 }
 
-/* Segundo botón - mantenemos la animación */
 .boton-agregar {
   background-color: #dc2626;
   color: white;
@@ -68,15 +63,12 @@
   box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
 }
 
-/* Animación de aparición - mantenemos esta */
 @keyframes aparecer {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
-/* ----------- MODAL ----------- */
 
 .modal-overlay {
   position: fixed;
@@ -127,7 +119,6 @@
   }
 }
 
-/* Header del formulario con indicador de pasos */
 .header-formulario {
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
   padding: 25px;
@@ -162,7 +153,6 @@
   letter-spacing: -0.5px;
 }
 
-/* Indicador de pasos */
 .indicador-pasos {
   display: flex;
   align-items: center;
@@ -222,7 +212,6 @@
   transition: width 0.3s ease;
 }
 
-/* Contenido del paso */
 .paso-contenido {
   padding: 25px;
   animation: slideInStep 0.3s ease;
@@ -260,7 +249,6 @@
   background-color: #1e40af;
 }
 
-/* Formulario dentro del modal */
 .formulario-cotizacion {
   display: flex;
   flex-direction: column;
@@ -284,7 +272,6 @@
   border: 1px solid #e5e7eb;
   font-size: 14px;
   margin-top: 6px;
-  /* Optimizamos las transiciones para mejor rendimiento */
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
   background-color: #fafbfc;
@@ -328,7 +315,6 @@
   flex: 1;
 }
 
-/* ESTILOS OPTIMIZADOS PARA MENSAJES DE ERROR INDIVIDUALES */
 .mensaje-error {
   display: flex;
   align-items: center;
@@ -341,7 +327,6 @@
   background-color: #fef2f2;
   border-left: 3px solid #dc2626;
   border-radius: 3px;
-  /* Removemos animaciones costosas para mejor rendimiento */
 }
 
 .icono-error {
@@ -359,12 +344,10 @@
   flex-shrink: 0;
 }
 
-/* Campo con error - versión optimizada */
 .campo-error {
   border-color: #dc2626 !important;
   background-color: #fef2f2 !important;
   box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1) !important;
-  /* Removemos la animación shake para mejor rendimiento */
 }
 
 .campo-error:focus {
@@ -372,17 +355,14 @@
   box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15) !important;
 }
 
-/* Label con error - sin animaciones */
 .formulario-cotizacion label:has(.campo-error) {
   color: #dc2626;
 }
 
 .formulario-cotizacion label:has(.campo-error) .required {
   color: #dc2626;
-  /* Removemos la animación pulse */
 }
 
-/* Estilos para checkboxes */
 .checkboxes-fila {
   display: flex;
   gap: 20px;
@@ -409,7 +389,6 @@
   accent-color: #1e40af;
 }
 
-/* Botones de navegación */
 .botones-navegacion {
   display: flex;
   justify-content: space-between;
@@ -425,7 +404,6 @@
   gap: 10px;
 }
 
-/* Estilos de botones - optimizados */
 .formulario-cotizacion button {
   padding: 11px 20px;
   border: none;
@@ -433,13 +411,10 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
-  /* Simplificamos las transiciones */
   transition: background-color 0.2s ease, transform 0.1s ease;
   min-width: 90px;
   position: relative;
 }
-
-/* Removemos el efecto ::before costoso para mejor rendimiento */
 
 .btn-siguiente,
 .btn-guardar {
@@ -480,7 +455,6 @@
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
-/* Estados de validación */
 .formulario-cotizacion input:invalid:not(:placeholder-shown) {
   border-color: #dc2626;
 }
@@ -489,7 +463,6 @@
   border-color: #10b981;
 }
 
-/* Estilos para botones deshabilitados */
 .btn-disabled {
   background-color: #e5e7eb !important;
   color: #9ca3af !important;
@@ -509,14 +482,12 @@
   display: none !important;
 }
 
-/* Indicador de campo requerido */
 .required {
   color: #dc2626;
   font-weight: 600;
   margin-left: 2px;
 }
 
-/* Estilos para campos readonly */
 .formulario-cotizacion input:read-only {
   background-color: #f1f5f9;
   color: #64748b;
@@ -524,7 +495,6 @@
   border-color: #e2e8f0;
 }
 
-/* Estilo para inputs válidos */
 .formulario-cotizacion input:not(.campo-error):valid:not(:placeholder-shown) {
   border-color: #10b981;
   background-color: #f0fdf4;
@@ -535,7 +505,6 @@
   background-color: #f0fdf4;
 }
 
-/* Mejoras para el scroll del modal */
 .modal-contenido::-webkit-scrollbar {
   width: 6px;
 }
@@ -553,7 +522,6 @@
   background: #94a3b8;
 }
 
-/* Mejoras para responsividad */
 @media screen and (max-width: 480px) {
   .modal-contenido {
     width: 95%;
@@ -599,7 +567,6 @@
     transform: scale(0.9);
   }
 
-  /* Ajustar mensajes de error en móvil */
   .mensaje-error {
     font-size: 10px;
     padding: 3px 6px;
@@ -623,7 +590,6 @@
   }
 }
 
-/* Estilos específicos para campos de precio */
 .formulario-cotizacion input[name="precio"] {
   font-weight: 600;
   color: #059669;
