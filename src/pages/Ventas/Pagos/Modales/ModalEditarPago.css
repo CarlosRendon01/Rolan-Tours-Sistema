@@ -1,22 +1,22 @@
 /* ========================================
-   MODAL EDITAR PAGO - ESTILOS
+   MODAL EDITAR PAGO - ESTILOS CORREGIDOS
    ======================================== */
 
 /* Overlay */
 .modal-editar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-  animation: modal-editar-fade-in 0.2s ease-out;
-  backdrop-filter: blur(2px);
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+  padding: 1rem !important;
+  animation: modal-editar-fade-in 0.2s ease-out !important;
+  backdrop-filter: blur(2px) !important;
 }
 
 @keyframes modal-editar-fade-in {
@@ -30,17 +30,17 @@
 
 /* Contenedor principal */
 .modal-editar-contenedor {
-  background: white;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  animation: modal-editar-slide-up 0.3s ease-out;
-  position: relative;
-  display: flex;
-  flex-direction: column;
+  background: white !important;
+  border-radius: 12px !important;
+  width: 100% !important;
+  max-width: 600px !important;
+  max-height: 90vh !important;
+  overflow: hidden !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  animation: modal-editar-slide-up 0.3s ease-out !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 @keyframes modal-editar-slide-up {
@@ -56,128 +56,148 @@
 
 /* Header */
 .modal-editar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: white;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1.5rem !important;
+  border-bottom: none !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  color: white !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.modal-editar-header::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.1) 100%) !important;
 }
 
 .modal-editar-header-contenido {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  z-index: 2 !important;
 }
 
 .modal-editar-icono-principal {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
+  width: 48px !important;
+  height: 48px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .modal-editar-titulo {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0;
-  color: white;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  color: white !important;
 }
 
 .modal-editar-subtitulo {
-  font-size: 0.875rem;
-  margin: 0.25rem 0 0 0;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem !important;
+  margin: 0.25rem 0 0 0 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .modal-editar-boton-cerrar {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  backdrop-filter: blur(10px);
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s !important;
+  backdrop-filter: blur(10px) !important;
+  z-index: 2 !important;
 }
 
 .modal-editar-boton-cerrar:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: rotate(90deg) !important;
 }
 
 .modal-editar-boton-cerrar:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
 }
 
 /* Body */
 .modal-editar-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
+  padding: 1.5rem !important;
+  overflow-y: auto !important;
+  flex: 1 !important;
+  background: white !important;
 }
 
 /* Formulario */
 .modal-editar-formulario {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.25rem !important;
 }
 
 .modal-editar-campo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
 }
 
 .modal-editar-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #374151;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
 }
 
 .modal-editar-requerido {
-  color: #ef4444;
-  margin-left: 0.25rem;
+  color: #ef4444 !important;
+  margin-left: 0.25rem !important;
 }
 
 .modal-editar-input,
 .modal-editar-select,
 .modal-editar-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1.5px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  font-family: inherit;
-  transition: all 0.2s;
-  background: white;
+  width: 100% !important;
+  padding: 0.75rem !important;
+  border: 1.5px solid #d1d5db !important;
+  border-radius: 8px !important;
+  font-size: 0.9375rem !important;
+  font-family: inherit !important;
+  transition: all 0.2s !important;
+  background: white !important;
+  color: #111827 !important;
 }
 
 .modal-editar-input:focus,
 .modal-editar-select:focus,
 .modal-editar-textarea:focus {
-  outline: none;
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  outline: none !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
 }
 
 .modal-editar-input:disabled,
 .modal-editar-select:disabled,
 .modal-editar-textarea:disabled {
-  background: #f3f4f6;
-  cursor: not-allowed;
-  opacity: 0.6;
+  background: #f3f4f6 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
 }
 
 .modal-editar-input-error {
@@ -189,121 +209,123 @@
 }
 
 .modal-editar-mensaje-error {
-  font-size: 0.8125rem;
-  color: #ef4444;
-  margin-top: -0.25rem;
+  font-size: 0.8125rem !important;
+  color: #ef4444 !important;
+  margin-top: -0.25rem !important;
 }
 
 /* Input con prefijo */
 .modal-editar-input-grupo {
-  position: relative;
-  display: flex;
-  align-items: center;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .modal-editar-input-prefijo {
-  position: absolute;
-  left: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  pointer-events: none;
+  position: absolute !important;
+  left: 0.75rem !important;
+  font-weight: 600 !important;
+  color: #6b7280 !important;
+  pointer-events: none !important;
 }
 
 .modal-editar-input-monto {
-  padding-left: 2rem;
+  padding-left: 2rem !important;
 }
 
 /* Textarea */
 .modal-editar-textarea {
-  resize: vertical;
-  min-height: 80px;
+  resize: vertical !important;
+  min-height: 80px !important;
 }
 
-/* Select */
 .modal-editar-select {
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  padding-right: 2.5rem;
+  cursor: pointer !important;
+  appearance: none !important;
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  padding-right: 2.5rem !important;
 }
 
 /* Footer */
 .modal-editar-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid #e5e7eb;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  background: #f9fafb;
+  padding: 1rem 1.5rem !important;
+  border-top: 1px solid #e5e7eb !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 0.75rem !important;
+  background: #f9fafb !important;
 }
 
 .modal-editar-boton-cancelar,
 .modal-editar-boton-guardar {
-  padding: 0.625rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: none;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  border: none !important;
 }
 
 .modal-editar-boton-cancelar {
-  background: white;
-  color: #6b7280;
-  border: 1.5px solid #e5e7eb;
+  background: white !important;
+  color: #6b7280 !important;
+  border: 1.5px solid #d1d5db !important;
 }
 
 .modal-editar-boton-cancelar:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #d1d5db;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #dc2626 !important;
 }
 
 .modal-editar-boton-guardar {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: white;
-  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3) !important;
 }
 
 .modal-editar-boton-guardar:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4) !important;
 }
 
 .modal-editar-boton-guardar:disabled,
 .modal-editar-boton-cancelar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
   transform: none !important;
 }
 
 /* Loading Overlay */
 .modal-editar-loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  backdrop-filter: blur(4px);
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+  backdrop-filter: blur(4px) !important;
 }
 
 .modal-editar-spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid #e5e7eb;
-  border-top-color: #f59e0b;
-  border-radius: 50%;
-  animation: modal-editar-spin 0.8s linear infinite;
+  width: 48px !important;
+  height: 48px !important;
+  border: 4px solid #e5e7eb !important;
+  border-top-color: #2563eb !important;
+  border-radius: 50% !important;
+  animation: modal-editar-spin 0.8s linear infinite !important;
 }
 
 @keyframes modal-editar-spin {
@@ -314,54 +336,54 @@
 
 /* Scrollbar personalizada */
 .modal-editar-body::-webkit-scrollbar {
-  width: 8px;
+  width: 8px !important;
 }
 
 .modal-editar-body::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
+  background: #f1f5f9 !important;
+  border-radius: 4px !important;
 }
 
 .modal-editar-body::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: #cbd5e1 !important;
+  border-radius: 4px !important;
 }
 
 .modal-editar-body::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #94a3b8 !important;
 }
 
 /* Responsive */
 @media (max-width: 640px) {
   .modal-editar-overlay {
-    padding: 0;
+    padding: 0 !important;
   }
 
   .modal-editar-contenedor {
-    max-width: 100%;
-    max-height: 100vh;
-    border-radius: 0;
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
   }
 
   .modal-editar-header {
-    padding: 1.25rem;
+    padding: 1.25rem !important;
   }
 
   .modal-editar-titulo {
-    font-size: 1.125rem;
+    font-size: 1.125rem !important;
   }
 
   .modal-editar-body {
-    padding: 1.25rem;
+    padding: 1.25rem !important;
   }
 
   .modal-editar-footer {
-    flex-direction: column-reverse;
+    flex-direction: column-reverse !important;
   }
 
   .modal-editar-boton-cancelar,
   .modal-editar-boton-guardar {
-    width: 100%;
-    justify-content: center;
+    width: 100% !important;
+    justify-content: center !important;
   }
 }

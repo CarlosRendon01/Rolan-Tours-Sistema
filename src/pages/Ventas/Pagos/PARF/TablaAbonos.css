@@ -475,79 +475,79 @@
 }
 
 .abonos-boton-accion.abonos-ver {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: #0369a1;
+  color: #ffffff;
   border: 1px solid #bae6fd;
 }
 
 .abonos-boton-accion.abonos-ver:hover:not(:disabled) {
-  background: #0369a1;
-  color: white;
+  background: #ffffff;
+  color: rgb(49, 91, 228);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(3, 105, 161, 0.25);
 }
 
 .abonos-boton-accion.abonos-agregar {
-  background: #d1fae5;
-  color: #065f46;
+  background: #10b981;
+  color: #ffffff;
   border: 1px solid #a7f3d0;
 }
 
 .abonos-boton-accion.abonos-agregar:hover:not(:disabled) {
-  background: #10b981;
-  color: white;
+  background: #ffffff;
+  color: rgba(28, 231, 72, 0.795);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
 }
 
 .abonos-boton-accion.abonos-editar {
-  background: #fef3c7;
-  color: #92400e;
+  background: #f59e0b;
+  color: #ffffff;
   border: 1px solid #fde68a;
 }
 
 .abonos-boton-accion.abonos-editar:hover:not(:disabled) {
-  background: #f59e0b;
-  color: white;
+  background: #fef3c7; 
+  color: rgb(255, 208, 0);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
 }
 
 .abonos-boton-accion.abonos-recibo {
-  background: #dbeafe;
-  color: #1e40af;
+  background: #1e40af;
+  color: #ffffff;
   border: 1px solid #bfdbfe;
 }
 
 .abonos-boton-accion.abonos-recibo:hover:not(:disabled) {
-  background: #1e40af;
-  color: white;
+  background: #dbeafe;
+  color: rgb(0, 26, 255);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
 }
 
 .abonos-boton-accion.abonos-factura {
-  background: #e0e7ff;
-  color: #4338ca;
+  background: #6f00ff;
+  color: #ffffff;
   border: 1px solid #c7d2fe;
 }
 
 .abonos-boton-accion.abonos-factura:hover:not(:disabled) {
-  background: #4338ca;
-  color: white;
+  background: #e0e7ff;
+  color: rgb(0, 110, 255);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(67, 56, 202, 0.25);
 }
 
 .abonos-boton-accion.abonos-eliminar {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #dc2626;
+  color: #ffffff;
   border: 1px solid #fecaca;
 }
 
 .abonos-boton-accion.abonos-eliminar:hover:not(:disabled) {
-  background: #dc2626;
-  color: white;
+  background: #fee2e2;
+  color: rgb(255, 0, 0);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }

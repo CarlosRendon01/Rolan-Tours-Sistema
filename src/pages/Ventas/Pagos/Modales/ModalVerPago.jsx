@@ -1,10 +1,30 @@
 import React from 'react';
-import { X, User, DollarSign, Calendar, CreditCard, FileText, Package, Clock } from 'lucide-react';
+import { X, User, DollarSign, Calendar, CreditCard, FileText, Package, Clock, Hash } from 'lucide-react';
 import './ModalVerPago.css';
 
 const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
-  if (!estaAbierto || !pago) return null;
+  // Función para restaurar el scroll completamente
+  const restaurarScroll = React.useCallback(() => {
+    document.body.style.overflow = '';
+    document.body.style.overflowY = '';
+    document.documentElement.style.overflow = '';
+  }, []);
 
+  // Función mejorada para cerrar el modal
+  const manejarCierre = React.useCallback(() => {
+    restaurarScroll();
+    alCerrar();
+  }, [alCerrar, restaurarScroll]);
+
+  if (!estaAbierto || !pago) {
+    // Restaurar scroll cuando el modal no está visible
+    React.useEffect(() => {
+      restaurarScroll();
+    });
+    return null;
+  }
+
+  // Función para obtener color del estado
   const obtenerColorEstado = (estado) => {
     switch (estado?.toLowerCase()) {
       case 'pagado':
@@ -16,154 +36,166 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
     }
   };
 
+  // Manejar la tecla Escape y control del scroll
+  React.useEffect(() => {
+    const manejarTeclaEscape = (evento) => {
+      if (evento.key === 'Escape') {
+        manejarCierre();
+      }
+    };
+
+    if (estaAbierto) {
+      document.addEventListener('keydown', manejarTeclaEscape);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', manejarTeclaEscape);
+      restaurarScroll();
+    };
+  }, [estaAbierto, manejarCierre, restaurarScroll]);
+
   return (
-    <div className="modal-superposicion" onClick={alCerrar}>
-      <div className="modal-contenedor" onClick={(e) => e.stopPropagation()}>
-        {/* Encabezado del Modal */}
-        <div className="modal-encabezado">
-          <div className="modal-encabezado-contenido">
-            <div className="modal-envoltorio-icono">
-              <FileText size={24} />
-            </div>
-            <div>
-              <h2 className="modal-titulo">Detalles del Pago</h2>
-              <p className="modal-subtitulo">Información completa del registro</p>
-            </div>
-          </div>
+    <div className="superposicion-modal-pago" onClick={manejarCierre}>
+      <div className="contenido-modal-pago" onClick={(e) => e.stopPropagation()}>
+        <div className="encabezado-modal-pago">
           <button 
-            className="modal-boton-cerrar" 
-            onClick={alCerrar}
+            className="boton-cerrar-modal-pago" 
+            onClick={manejarCierre} 
             aria-label="Cerrar modal"
+            type="button"
           >
             <X size={20} />
           </button>
+          <h2 className="titulo-modal-pago">
+            <FileText size={24} />
+            Detalles del Pago
+          </h2>
         </div>
-
-        {/* Contenido del Modal */}
-        <div className="modal-cuerpo">
-          {/* Estado del Pago */}
-          <div className="modal-insignia-estado" style={{ 
-            backgroundColor: `${obtenerColorEstado(pago.estado)}15`,
-            borderColor: obtenerColorEstado(pago.estado)
-          }}>
-            <span className="modal-punto-estado" style={{ 
-              backgroundColor: obtenerColorEstado(pago.estado) 
-            }}></span>
-            <span style={{ color: obtenerColorEstado(pago.estado) }}>
+        
+        <div className="cuerpo-modal-pago">
+          {/* Insignia de Estado */}
+          <div className="contenedor-insignia-estado-pago">
+            <div 
+              className="insignia-estado-pago" 
+              style={{ 
+                backgroundColor: `${obtenerColorEstado(pago.estado)}15`,
+                borderColor: obtenerColorEstado(pago.estado),
+                color: obtenerColorEstado(pago.estado)
+              }}
+            >
+              <span 
+                className="punto-estado-pago" 
+                style={{ backgroundColor: obtenerColorEstado(pago.estado) }}
+              ></span>
               {pago.estado}
-            </span>
+            </div>
           </div>
 
-          {/* Cuadrícula de Información */}
-          <div className="modal-cuadricula-informacion">
-            {/* ID */}
-            <div className="modal-elemento-info">
-              <div className="modal-etiqueta-info">
-                <Package size={16} />
-                <span>ID del Pago</span>
+          <div className="lista-informacion-pago">
+            {/* ID del Pago */}
+            <div className="elemento-informacion-pago">
+              <div className="etiqueta-informacion-pago">
+                <Hash size={16} />
+                ID del Pago
               </div>
-              <div className="modal-valor-info">
+              <div className="valor-informacion-pago">
                 #{pago.id?.toString().padStart(3, '0')}
               </div>
             </div>
-
+            
             {/* Cliente */}
-            <div className="modal-elemento-info modal-info-destacado">
-              <div className="modal-etiqueta-info">
+            <div className="elemento-informacion-pago">
+              <div className="etiqueta-informacion-pago">
                 <User size={16} />
-                <span>Cliente</span>
+                Cliente
               </div>
-              <div className="modal-valor-info modal-valor-grande">
+              <div className="valor-informacion-pago">
                 {pago.cliente}
               </div>
             </div>
-
+            
             {/* Monto */}
-            <div className="modal-elemento-info modal-info-destacado">
-              <div className="modal-etiqueta-info">
+            <div className="elemento-informacion-pago elemento-destacado-pago">
+              <div className="etiqueta-informacion-pago">
                 <DollarSign size={16} />
-                <span>Monto</span>
+                Monto
               </div>
-              <div className="modal-valor-info modal-valor-monto">
+              <div className="valor-informacion-pago valor-monto-pago">
                 {pago.monto}
               </div>
             </div>
-
+            
             {/* Número de Factura */}
-            <div className="modal-elemento-info">
-              <div className="modal-etiqueta-info">
+            <div className="elemento-informacion-pago">
+              <div className="etiqueta-informacion-pago">
                 <FileText size={16} />
-                <span>Número de Factura</span>
+                Número de Factura
               </div>
-              <div className="modal-valor-info modal-valor-codigo">
-                {pago.numeroFactura}
+              <div className="valor-informacion-pago">
+                <span className="codigo-factura-pago">
+                  {pago.numeroFactura}
+                </span>
               </div>
             </div>
-
+            
             {/* Fecha de Pago */}
-            <div className="modal-elemento-info">
-              <div className="modal-etiqueta-info">
+            <div className="elemento-informacion-pago">
+              <div className="etiqueta-informacion-pago">
                 <Calendar size={16} />
-                <span>Fecha de Pago</span>
+                Fecha de Pago
               </div>
-              <div className="modal-valor-info">
-                {pago.fechaPago || <span className="modal-texto-vacio">No registrada</span>}
+              <div className="valor-informacion-pago">
+                {pago.fechaPago || <span className="texto-vacio-pago">No registrada</span>}
               </div>
             </div>
-
+            
             {/* Fecha de Vencimiento */}
-            <div className="modal-elemento-info">
-              <div className="modal-etiqueta-info">
+            <div className="elemento-informacion-pago">
+              <div className="etiqueta-informacion-pago">
                 <Clock size={16} />
-                <span>Fecha de Vencimiento</span>
+                Fecha de Vencimiento
               </div>
-              <div className="modal-valor-info">
-                {pago.fechaVencimiento || <span className="modal-texto-vacio">No especificada</span>}
+              <div className="valor-informacion-pago">
+                {pago.fechaVencimiento || <span className="texto-vacio-pago">No especificada</span>}
               </div>
             </div>
-
+            
             {/* Método de Pago */}
-            <div className="modal-elemento-info">
-              <div className="modal-etiqueta-info">
+            <div className="elemento-informacion-pago">
+              <div className="etiqueta-informacion-pago">
                 <CreditCard size={16} />
-                <span>Método de Pago</span>
+                Método de Pago
               </div>
-              <div className="modal-valor-info">
-                {pago.metodoPago || <span className="modal-texto-vacio">No especificado</span>}
+              <div className="valor-informacion-pago">
+                {pago.metodoPago || <span className="texto-vacio-pago">No especificado</span>}
               </div>
             </div>
-
+            
             {/* Concepto */}
-            <div className="modal-elemento-info modal-info-completo">
-              <div className="modal-etiqueta-info">
-                <FileText size={16} />
-                <span>Concepto</span>
+            {pago.concepto && (
+              <div className="elemento-informacion-pago">
+                <div className="etiqueta-informacion-pago">
+                  <FileText size={16} />
+                  Concepto
+                </div>
+                <div className="valor-informacion-pago">
+                  {pago.concepto}
+                </div>
               </div>
-              <div className="modal-valor-info modal-valor-concepto">
-                {pago.concepto || <span className="modal-texto-vacio">Sin concepto</span>}
-              </div>
-            </div>
+            )}
           </div>
-        </div>
-
-        {/* Pie del Modal */}
-        <div className="modal-pie">
-          <button 
-            className="modal-boton-secundario" 
-            onClick={alCerrar}
-          >
-            Cerrar
-          </button>
-          <button 
-            className="modal-boton-primario"
-            onClick={() => {
-              alert('Funcionalidad de impresión/descarga');
-              // Aquí iría la lógica para imprimir o descargar
-            }}
-          >
-            <FileText size={18} />
-            Generar Reporte
-          </button>
+          
+          {/* Botón de cerrar en la parte inferior */}
+          <div className="contenedor-boton-inferior-pago">
+            <button 
+              className="boton-cerrar-inferior-pago" 
+              onClick={manejarCierre}
+              type="button"
+            >
+              Cerrar
+            </button>
+          </div>
         </div>
       </div>
     </div>

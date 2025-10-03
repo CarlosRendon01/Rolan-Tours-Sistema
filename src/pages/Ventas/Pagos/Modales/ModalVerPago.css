@@ -1,282 +1,25 @@
-/* ========================================
-   MODALVERPAGO.CSS - ESTILOS DEL MODAL
-   ======================================== */
+/* ===============================
+   MODAL VER PAGO - ESTILO DE CLIENTE
+   Adaptado del diseño de ModalVerCliente
+   =============================== */
 
-/* Superposición del Modal */
-.modal-superposicion {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 1rem;
-  animation: modal-aparecerFade 0.3s ease-out;
+/* Overlay del modal PAGO */
+.superposicion-modal-pago {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+  animation: fadeInPago 0.3s ease !important;
 }
 
-/* Contenedor del Modal */
-.modal-contenedor {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  width: 100%;
-  max-width: 700px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  animation: modal-deslizarArriba 0.3s ease-out;
-  overflow: hidden;
-}
-
-/* Encabezado del Modal */
-.modal-encabezado {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.modal-encabezado::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="cuadricula-modal" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23cuadricula-modal)"/></svg>');
-  opacity: 0.5;
-}
-
-.modal-encabezado-contenido {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  z-index: 2;
-}
-
-.modal-envoltorio-icono {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.modal-titulo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  letter-spacing: -0.025em;
-}
-
-.modal-subtitulo {
-  font-size: 0.875rem;
-  margin: 0;
-  opacity: 0.9;
-  font-weight: 400;
-}
-
-.modal-boton-cerrar {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 2;
-  flex-shrink: 0;
-}
-
-.modal-boton-cerrar:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: rotate(90deg);
-}
-
-/* Cuerpo del Modal */
-.modal-cuerpo {
-  padding: 2rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-/* Insignia de Estado */
-.modal-insignia-estado {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 1.5rem;
-  border: 2px solid;
-}
-
-.modal-punto-estado {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* Cuadrícula de Información */
-.modal-cuadricula-informacion {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-
-.modal-elemento-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.modal-etiqueta-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.modal-etiqueta-info svg {
-  color: #9ca3af;
-  flex-shrink: 0;
-}
-
-.modal-valor-info {
-  font-size: 0.9375rem;
-  color: #111827;
-  font-weight: 500;
-  word-break: break-word;
-}
-
-/* Variantes de valores */
-.modal-valor-grande {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.modal-valor-monto {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #059669;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-}
-
-.modal-valor-codigo {
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-  font-weight: 600;
-  color: #3b82f6;
-  background: #eff6ff;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  display: inline-block;
-}
-
-.modal-valor-concepto {
-  line-height: 1.6;
-  color: #4b5563;
-}
-
-/* Elemento destacado */
-.modal-info-destacado {
-  background: #f9fafb;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-
-/* Elemento que ocupa toda la fila */
-.modal-info-completo {
-  grid-column: 1 / -1;
-  background: #f9fafb;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-
-/* Texto vacío */
-.modal-texto-vacio {
-  color: #9ca3af;
-  font-style: italic;
-  font-size: 0.875rem;
-}
-
-/* Pie del Modal */
-.modal-pie {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  padding: 1.5rem 2rem;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
-}
-
-.modal-boton-secundario,
-.modal-boton-primario {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-}
-
-.modal-boton-secundario {
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
-}
-
-.modal-boton-secundario:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-}
-
-.modal-boton-primario {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: white;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-}
-
-.modal-boton-primario:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
-}
-
-/* Animaciones */
-@keyframes modal-aparecerFade {
+@keyframes fadeInPago {
   from {
     opacity: 0;
   }
@@ -285,10 +28,23 @@
   }
 }
 
-@keyframes modal-deslizarArriba {
+/* Contenido del modal PAGO */
+.contenido-modal-pago {
+  background-color: #fff !important;
+  border-radius: 12px !important;
+  width: 380px !important;
+  max-width: 90% !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+  animation: slideInPago 0.3s ease !important;
+  overflow: hidden !important;
+  position: relative !important;
+  margin-top: 60px !important;
+}
+
+@keyframes slideInPago {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.95);
+    transform: translateY(-30px) scale(0.95);
   }
   to {
     opacity: 1;
@@ -296,74 +52,323 @@
   }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .modal-superposicion {
-    padding: 0;
-    align-items: flex-end;
-  }
+/* Header del modal PAGO */
+.encabezado-modal-pago {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  padding: 25px !important;
+  margin: 0 !important;
+  position: relative !important;
+  color: white !important;
+}
 
-  .modal-contenedor {
-    max-height: 95vh;
-    border-radius: 16px 16px 0 0;
-    animation: modal-deslizarDesdeAbajo 0.3s ease-out;
-  }
+.encabezado-modal-pago::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.1) 100%) !important;
+}
 
-  .modal-encabezado {
-    padding: 1rem 1.5rem;
-  }
+.titulo-modal-pago {
+  margin: 0 !important;
+  text-align: center !important;
+  color: white !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+}
 
-  .modal-titulo {
-    font-size: 1.25rem;
-  }
+.titulo-modal-pago svg {
+  color: white !important;
+  opacity: 0.9 !important;
+}
 
-  .modal-cuerpo {
-    padding: 1.5rem;
-  }
+.boton-cerrar-modal-pago {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  cursor: pointer !important;
+  padding: 8px !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: absolute !important;
+  right: 15px !important;
+  top: 15px !important;
+  backdrop-filter: blur(10px) !important;
+}
 
-  .modal-cuadricula-informacion {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
+.boton-cerrar-modal-pago:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: scale(1.05) !important;
+}
 
-  .modal-pie {
-    padding: 1rem 1.5rem;
-    flex-direction: column-reverse;
-  }
+.boton-cerrar-modal-pago:active {
+  transform: scale(0.95) !important;
+}
 
-  .modal-boton-secundario,
-  .modal-boton-primario {
-    width: 100%;
-    justify-content: center;
+/* Cuerpo del modal PAGO */
+.cuerpo-modal-pago {
+  padding: 25px !important;
+  background: #fff !important;
+  max-height: calc(80vh - 100px) !important;
+  overflow-y: auto !important;
+}
+
+/* Scrollbar personalizado PAGO */
+.cuerpo-modal-pago::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.cuerpo-modal-pago::-webkit-scrollbar-track {
+  background: #f1f3f4 !important;
+  border-radius: 3px !important;
+}
+
+.cuerpo-modal-pago::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 3px !important;
+}
+
+.cuerpo-modal-pago::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+
+/* Contenedor de Insignia de Estado */
+.contenedor-insignia-estado-pago {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-bottom: 20px !important;
+}
+
+/* Insignia de Estado */
+.insignia-estado-pago {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border: 2px solid !important;
+}
+
+.punto-estado-pago {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+
+/* Lista de información del pago */
+.lista-informacion-pago {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  margin-bottom: 25px !important;
+}
+
+.elemento-informacion-pago {
+  background: #fafbfc !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.elemento-informacion-pago:hover {
+  border-color: #1e40af !important;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1) !important;
+  background: white !important;
+}
+
+.etiqueta-informacion-pago {
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  color: #475569 !important;
+  margin-bottom: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.etiqueta-informacion-pago svg {
+  color: #1e40af !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.valor-informacion-pago {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  word-break: break-word !important;
+  line-height: 1.4 !important;
+  min-height: 1.4rem !important;
+}
+
+/* Elemento destacado - Monto */
+.elemento-destacado-pago {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
+  border: 2px solid #10b981 !important;
+}
+
+.elemento-destacado-pago:hover {
+  border-color: #059669 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+}
+
+.elemento-destacado-pago .etiqueta-informacion-pago svg {
+  color: #059669 !important;
+}
+
+.valor-monto-pago {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #059669 !important;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+}
+
+/* Código de factura */
+.codigo-factura-pago {
+  display: inline-block !important;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  color: #1e40af !important;
+  background: #eff6ff !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+}
+
+/* Texto vacío */
+.texto-vacio-pago {
+  color: #94a3b8 !important;
+  font-style: italic !important;
+}
+
+/* Contenedor del botón inferior PAGO */
+.contenedor-boton-inferior-pago {
+  display: flex !important;
+  justify-content: center !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #e5e7eb !important;
+  margin-top: 25px !important;
+}
+
+/* Botón de cerrar inferior PAGO */
+.boton-cerrar-inferior-pago {
+  background-color: white !important;
+  color: #dc2626 !important;
+  border: 2px solid #dc2626 !important;
+  border-radius: 8px !important;
+  padding: 11px 20px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  min-width: 90px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.boton-cerrar-inferior-pago::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translate(-50%, -50%) !important;
+  transition: width 0.4s, height 0.4s !important;
+}
+
+.boton-cerrar-inferior-pago:hover::before {
+  width: 300px !important;
+  height: 300px !important;
+}
+
+.boton-cerrar-inferior-pago:hover {
+  background-color: #dc2626 !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+}
+
+.boton-cerrar-inferior-pago:active {
+  transform: translateY(0) !important;
+}
+
+.boton-cerrar-inferior-pago:focus {
+  outline: 2px solid #dc2626 !important;
+  outline-offset: 2px !important;
+}
+
+/* Media Queries PAGO - Responsivo */
+@media screen and (max-width: 480px) {
+  .contenido-modal-pago {
+    width: 100% !important;
+    margin: 10px !important;
+    transform: scale(0.95) !important;
+  }
+  
+  .encabezado-modal-pago {
+    padding: 20px !important;
+  }
+  
+  .titulo-modal-pago {
+    font-size: 18px !important;
+  }
+  
+  .cuerpo-modal-pago {
+    padding: 20px !important;
+  }
+  
+  .boton-cerrar-modal-pago {
+    right: 10px !important;
+    top: 10px !important;
   }
 }
 
-@keyframes modal-deslizarDesdeAbajo {
-  from {
-    opacity: 0;
-    transform: translateY(100%);
+@media screen and (max-width: 768px) {
+  .superposicion-modal-pago {
+    padding: 20px !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .contenido-modal-pago {
+    max-width: 95% !important;
   }
 }
 
-/* Scrollbar personalizado para el cuerpo */
-.modal-cuerpo::-webkit-scrollbar {
-  width: 8px;
+/* Estados de enfoque para accesibilidad PAGO */
+.boton-cerrar-modal-pago:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5) !important;
+  outline-offset: 2px !important;
 }
 
-.modal-cuerpo::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
-}
-
-.modal-cuerpo::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-
-.modal-cuerpo::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+.elemento-informacion-pago:focus-within {
+  border-color: #1e40af !important;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1) !important;
+  background: white !important;
 }

@@ -55,7 +55,7 @@
   justify-content: space-between;
   padding: 1.5rem;
   border-bottom: 1px solid #e5e7eb;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
   color: white;
 }
 
@@ -254,7 +254,7 @@
 .modal-factura-boton-cancelar {
   padding: 0.625rem 1.5rem;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #ffffff;
   background: white;
   color: #4b5563;
   font-weight: 600;
@@ -264,7 +264,8 @@
 }
 
 .modal-factura-boton-cancelar:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: #e92525;
+  color: #ffffff;
   border-color: #9ca3af;
 }
 

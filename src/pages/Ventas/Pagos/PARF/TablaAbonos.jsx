@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  Search, 
-  Edit, 
-  Eye, 
-  ChevronLeft, 
-  ChevronRight, 
-  Trash2, 
-  Coins, 
+import {
+  Search,
+  Edit,
+  Eye,
+  ChevronLeft,
+  ChevronRight,
+  Trash2,
+  Coins,
   Plus,
   Receipt,
   BarChart3,
@@ -16,6 +16,14 @@ import {
   Filter
 } from 'lucide-react';
 import './TablaAbonos.css';
+import ModalNuevoPago from '../ModalesAbonos/ModalNuevoPago';
+import ModalAgregarAbono from '../ModalesAbonos/ModalAgregarAbono';
+import ModalVerAbono from '../ModalesAbonos/ModalVerAbono';
+import ModalEditarAbono from '../ModalesAbonos/ModalEditarAbono';
+import ModalReciboAbono from '../ModalesAbonos/ModalReciboAbono';
+import ModalFacturaAbono from '../ModalesAbonos/ModalFacturaAbono';
+import { modalEliminarPago } from '../ModalesAbonos/ModalEliminarAbono'; // ← AGREGAR ESTA LÍNEA
+
 
 
 const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
@@ -31,11 +39,11 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
   const [modalEditarPagoAbierto, setModalEditarPagoAbierto] = useState(false);
   const [modalReciboAbierto, setModalReciboAbierto] = useState(false);
   const [modalFacturaAbierto, setModalFacturaAbierto] = useState(false);
-  const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
+ 
   const [pagoSeleccionado, setPagoSeleccionado] = useState(null);
 
-  // Datos actualizados con nueva estructura
-  const datosAbonos = [
+  // Estado para los datos de abonos
+  const [datosAbonos, setDatosAbonos] = useState([
     {
       id: 1,
       cliente: {
@@ -161,7 +169,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
       fechaCreacion: '2025-09-05',
       fechaFinalizacion: '2025-09-25'
     }
-  ];
+  ]);
 
   // Estadísticas
   const estadisticas = useMemo(() => {
@@ -175,14 +183,14 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     }).length;
     const enProceso = datosAbonos.filter(abono => abono.estado === 'EN_PROCESO').length;
     const finalizados = datosAbonos.filter(abono => abono.estado === 'FINALIZADO').length;
-    
+
     return { totalClientes, proximosVencer, enProceso, finalizados };
-  }, []);
+  }, [datosAbonos]);
 
   // Filtrar datos
   const datosFiltrados = useMemo(() => {
     return datosAbonos.filter(abono => {
-      const cumpleBusqueda = 
+      const cumpleBusqueda =
         abono.cliente.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
         abono.id.toString().includes(terminoBusqueda) ||
         abono.numeroContrato.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
@@ -190,7 +198,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
       return cumpleBusqueda;
     });
-  }, [terminoBusqueda]);
+  }, [terminoBusqueda, datosAbonos]);
 
   // Paginación
   const totalRegistros = datosFiltrados.length;
@@ -245,16 +253,164 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     setModalFacturaAbierto(true);
   };
 
-  const abrirModalEliminar = (pago) => {
-    setPagoSeleccionado(pago);
-    setModalEliminarAbierto(true);
+  
+  // Función para guardar nuevo pago
+  const guardarNuevoPago = (datosPago) => {
+    // Generar el nuevo ID
+    const nuevoId = datosAbonos.length > 0
+      ? Math.max(...datosAbonos.map(p => p.id)) + 1
+      : 1;
+
+    // Crear el objeto del nuevo pago
+    const nuevoPago = {
+      id: nuevoId,
+      cliente: {
+        id: Date.now(),
+        nombre: datosPago.nombreCliente,
+        email: datosPago.emailCliente,
+        telefono: datosPago.telefonoCliente
+      },
+      servicio: {
+        tipo: datosPago.tipoServicio,
+        descripcion: datosPago.descripcionServicio,
+        fechaTour: datosPago.fechaTour
+      },
+      planPago: {
+        montoTotal: parseFloat(datosPago.montoTotal),
+        abonosPlaneados: parseInt(datosPago.numeroAbonos),
+        abonoMinimo: parseFloat(datosPago.abonoMinimo),
+        montoPagado: 0,
+        saldoPendiente: parseFloat(datosPago.montoTotal),
+        abonosRealizados: 0
+      },
+      historialAbonos: [],
+      estado: 'EN_PROCESO',
+      proximoVencimiento: datosPago.fechaPrimerAbono,
+      numeroContrato: datosPago.numeroContrato || `CONT-${String(nuevoId).padStart(3, '0')}`,
+      facturaGenerada: false,
+      fechaCreacion: new Date().toISOString().split('T')[0],
+      frecuenciaPago: datosPago.frecuenciaPago,
+      observaciones: datosPago.observaciones
+    };
+
+    // Agregar el nuevo pago al estado
+    setDatosAbonos(prevDatos => [...prevDatos, nuevoPago]);
+
+    // Mostrar mensaje de éxito (opcional)
+    console.log('✅ Nuevo pago agregado exitosamente:', nuevoPago);
   };
 
-  // Manejador de acciones
+  // Función para agregar un abono a un pago existente
+  const guardarAbono = (datosAbono) => {
+    setDatosAbonos(prevDatos => {
+      return prevDatos.map(pago => {
+        if (pago.id === datosAbono.pagoId) {
+          // Calcular nuevos valores
+          const nuevoMontoPagado = pago.planPago.montoPagado + datosAbono.montoAbono;
+          const nuevoSaldoPendiente = pago.planPago.montoTotal - nuevoMontoPagado;
+          const nuevosAbonosRealizados = pago.planPago.abonosRealizados + 1;
+
+          // Determinar si el pago se completa
+          const pagoCompletado = nuevoSaldoPendiente === 0;
+
+          // Crear el nuevo abono para el historial
+          const nuevoAbono = {
+            numeroAbono: datosAbono.numeroAbono,
+            monto: datosAbono.montoAbono,
+            fecha: datosAbono.fechaAbono,
+            metodoPago: datosAbono.metodoPago,
+            referencia: datosAbono.referencia,
+            observaciones: datosAbono.observaciones
+          };
+
+          // Calcular próximo vencimiento si no está finalizado
+          let proximoVencimiento = pago.proximoVencimiento;
+          if (!pagoCompletado && pago.frecuenciaPago) {
+            const fechaActual = new Date(datosAbono.fechaAbono);
+            const diasASumar = pago.frecuenciaPago === 'semanal' ? 7 :
+              pago.frecuenciaPago === 'quincenal' ? 15 : 30;
+            fechaActual.setDate(fechaActual.getDate() + diasASumar);
+            proximoVencimiento = fechaActual.toISOString().split('T')[0];
+          }
+
+          // Retornar el pago actualizado
+          return {
+            ...pago,
+            planPago: {
+              ...pago.planPago,
+              montoPagado: nuevoMontoPagado,
+              saldoPendiente: nuevoSaldoPendiente,
+              abonosRealizados: nuevosAbonosRealizados
+            },
+            historialAbonos: [...pago.historialAbonos, nuevoAbono],
+            estado: pagoCompletado ? 'FINALIZADO' : 'EN_PROCESO',
+            proximoVencimiento: pagoCompletado ? 'Finalizado' : proximoVencimiento,
+            ...(pagoCompletado && { fechaFinalizacion: datosAbono.fechaAbono })
+          };
+        }
+        return pago;
+      });
+    });
+
+    console.log('✅ Abono agregado exitosamente');
+  };
+
+  const guardarEdicionPago = (datosActualizados) => {
+    setDatosAbonos(prevDatos => {
+      return prevDatos.map(pago => {
+        if (pago.id === datosActualizados.id) {
+          // Calcular el nuevo saldo pendiente basado en los abonos ya realizados
+          const nuevoMontoTotal = parseFloat(datosActualizados.montoTotal);
+          const montoPagado = pago.planPago.montoPagado; // Mantener lo que ya se pagó
+          const nuevoSaldoPendiente = nuevoMontoTotal - montoPagado;
+
+          return {
+            ...pago,
+            cliente: {
+              ...pago.cliente,
+              nombre: datosActualizados.nombreCliente,
+              email: datosActualizados.emailCliente,
+              telefono: datosActualizados.telefonoCliente
+            },
+            servicio: {
+              ...pago.servicio,
+              tipo: datosActualizados.tipoServicio,
+              descripcion: datosActualizados.descripcionServicio,
+              fechaTour: datosActualizados.fechaTour
+            },
+            planPago: {
+              ...pago.planPago,
+              montoTotal: nuevoMontoTotal,
+              abonosPlaneados: parseInt(datosActualizados.numeroAbonos),
+              abonoMinimo: parseFloat(datosActualizados.abonoMinimo),
+              saldoPendiente: nuevoSaldoPendiente
+            },
+            proximoVencimiento: datosActualizados.fechaPrimerAbono || pago.proximoVencimiento,
+            numeroContrato: datosActualizados.numeroContrato,
+            frecuenciaPago: datosActualizados.frecuenciaPago,
+            observaciones: datosActualizados.observaciones
+          };
+        }
+        return pago;
+      });
+    });
+
+    console.log('✅ Pago editado exitosamente');
+  };
+
+  // ← AGREGAR ESTA FUNCIÓN AQUÍ
+  const eliminarPago = (pagoId) => {
+    setDatosAbonos(prevDatos =>
+      prevDatos.filter(pago => pago.id !== pagoId)
+    );
+    console.log('✅ Pago eliminado exitosamente');
+  };
+
+
   const manejarAccion = async (accion, pago) => {
     setCargando(true);
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     switch (accion) {
       case 'ver':
         abrirModalVerPago(pago);
@@ -272,12 +428,13 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         abrirModalFactura(pago);
         break;
       case 'eliminar':
-        abrirModalEliminar(pago);
+        // ← REEMPLAZAR ESTA LÍNEA
+        await modalEliminarPago(pago, eliminarPago);
         break;
       default:
         break;
     }
-    
+
     setCargando(false);
   };
 
@@ -289,11 +446,11 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     if (pago.estado === 'FINALIZADO') {
       return { texto: 'Finalizado', clase: 'abonos-estado-pagado' };
     }
-    
+
     const fechaVencimiento = new Date(pago.proximoVencimiento);
     const hoy = new Date();
     const diferenciaEnDias = Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
-    
+
     if (diferenciaEnDias < 0) {
       return { texto: 'Vencido', clase: 'abonos-estado-vencido' };
     } else if (diferenciaEnDias <= 7) {
@@ -306,7 +463,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
   const generarNumerosPaginacion = () => {
     const numeros = [];
     const maximoVisibles = 5;
-    
+
     if (totalPaginas <= maximoVisibles) {
       for (let i = 1; i <= totalPaginas; i++) {
         numeros.push(i);
@@ -334,7 +491,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         numeros.push(totalPaginas);
       }
     }
-    
+
     return numeros;
   };
 
@@ -448,7 +605,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
             <h3 className="abonos-mensaje-vacio">No se encontraron pagos</h3>
             <p className="abonos-submensaje-vacio">
               {terminoBusqueda
-                ? 'Intenta ajustar los filtros de búsqueda' 
+                ? 'Intenta ajustar los filtros de búsqueda'
                 : 'No hay pagos por abonos registrados en el sistema'}
             </p>
           </div>
@@ -472,24 +629,24 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                 const progreso = calcularProgreso(pago.planPago.montoPagado, pago.planPago.montoTotal);
                 const estadoContrato = obtenerEstadoContrato(pago);
                 const ultimoAbono = pago.historialAbonos[pago.historialAbonos.length - 1];
-                
+
                 return (
-                  <tr key={pago.id} className="abonos-fila-pago" style={{animationDelay: `${indice * 0.05}s`}}>
+                  <tr key={pago.id} className="abonos-fila-pago" style={{ animationDelay: `${indice * 0.05}s` }}>
                     <td data-label="ID" className="abonos-columna-id">#{pago.id.toString().padStart(3, '0')}</td>
                     <td data-label="Cliente" className="abonos-columna-cliente">{pago.cliente.nombre}</td>
                     <td data-label="Servicio">
-                      <div style={{display: 'flex', flexDirection: 'column', gap: '0.25rem'}}>
-                        <span style={{fontWeight: '600', fontSize: '0.875rem'}}>{pago.servicio.tipo}</span>
-                        <span style={{fontSize: '0.75rem', color: '#6b7280'}}>{pago.servicio.descripcion}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        <span style={{ fontWeight: '600', fontSize: '0.875rem' }}>{pago.servicio.tipo}</span>
+                        <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>{pago.servicio.descripcion}</span>
                       </div>
                     </td>
                     <td data-label="Progreso">
-                      <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                           <div style={{
-                            width: '80px', 
-                            height: '8px', 
-                            background: '#f3f4f6', 
+                            width: '80px',
+                            height: '8px',
+                            background: '#f3f4f6',
                             borderRadius: '4px',
                             overflow: 'hidden'
                           }}>
@@ -500,25 +657,29 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                               transition: 'width 0.3s'
                             }}></div>
                           </div>
-                          <span style={{fontSize: '0.75rem', fontWeight: '600'}}>{progreso}%</span>
+                          <span style={{ fontSize: '0.75rem', fontWeight: '600' }}>{progreso}%</span>
                         </div>
-                        <div style={{fontSize: '0.75rem', color: '#6b7280'}}>
+                        <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
                           ${pago.planPago.montoPagado.toLocaleString()} / ${pago.planPago.montoTotal.toLocaleString()}
                         </div>
-                        <div style={{fontSize: '0.75rem', color: '#6b7280'}}>
+                        <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
                           {pago.planPago.abonosRealizados} de {pago.planPago.abonosPlaneados} abonos
                         </div>
                       </div>
                     </td>
                     <td data-label="Último Abono">
-                      <div style={{display: 'flex', flexDirection: 'column', gap: '0.25rem'}}>
-                        <span className="abonos-columna-monto">${ultimoAbono.monto.toLocaleString()}</span>
-                        <span style={{fontSize: '0.75rem', color: '#6b7280'}}>{ultimoAbono.fecha}</span>
-                      </div>
+                      {ultimoAbono ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                          <span className="abonos-columna-monto">${ultimoAbono.monto.toLocaleString()}</span>
+                          <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>{ultimoAbono.fecha}</span>
+                        </div>
+                      ) : (
+                        <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>Sin abonos</span>
+                      )}
                     </td>
                     <td data-label="Próximo Venc.">
                       {pago.proximoVencimiento === 'Finalizado' ? (
-                        <span style={{color: '#10b981', fontWeight: '600'}}>Finalizado</span>
+                        <span style={{ color: '#10b981', fontWeight: '600' }}>Finalizado</span>
                       ) : (
                         <span>{pago.proximoVencimiento}</span>
                       )}
@@ -532,54 +693,55 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                     </td>
                     <td data-label="Acciones" className="abonos-columna-acciones">
                       <div className="abonos-botones-accion">
-                        <button 
-                          className="abonos-boton-accion abonos-ver" 
-                          onClick={() => manejarAccion('ver', pago)} 
+                        <button
+                          className="abonos-boton-accion abonos-ver"
+                          onClick={() => manejarAccion('ver', pago)}
                           title="Ver historial de abonos"
                           disabled={cargando}
                         >
                           <Eye size={14} />
                         </button>
                         {pago.estado !== 'FINALIZADO' && (
-                          <button 
-                            className="abonos-boton-accion abonos-agregar" 
-                            onClick={() => manejarAccion('agregarAbono', pago)} 
+                          <button
+                            className="abonos-boton-accion abonos-agregar"
+                            onClick={() => manejarAccion('agregarAbono', pago)}
                             title="Agregar nuevo abono"
                             disabled={cargando}
-                            style={{background: '#d1fae5', color: '#065f46', border: '1px solid #a7f3d0'}}
                           >
                             <Plus size={14} />
                           </button>
                         )}
-                        <button 
-                          className="abonos-boton-accion abonos-editar" 
-                          onClick={() => manejarAccion('editar', pago)} 
+
+                        <button
+                          className="abonos-boton-accion abonos-editar"
+                          onClick={() => manejarAccion('editar', pago)}
                           title={pago.estado === 'FINALIZADO' ? 'No se puede editar (finalizado)' : 'Editar pago'}
                           disabled={cargando || pago.estado === 'FINALIZADO'}
                         >
                           <Edit size={14} />
                         </button>
-                        <button 
-                          className="abonos-boton-accion abonos-recibo" 
-                          onClick={() => manejarAccion('generarRecibo', pago)} 
+
+                        <button
+                          className="abonos-boton-accion abonos-recibo"
+                          onClick={() => manejarAccion('generarRecibo', pago)}
                           title="Generar recibo de pago"
                           disabled={cargando}
-                          style={{background: '#dbeafe', color: '#1e40af', border: '1px solid #bfdbfe'}}
                         >
                           <Receipt size={14} />
                         </button>
-                        <button 
-                          className="abonos-boton-accion abonos-factura" 
-                          onClick={() => manejarAccion('generarFactura', pago)} 
+
+                        <button
+                          className="abonos-boton-accion abonos-factura"
+                          onClick={() => manejarAccion('generarFactura', pago)}
                           title="Generar factura"
                           disabled={cargando}
-                          style={{background: '#e0e7ff', color: '#4338ca', border: '1px solid #c7d2fe'}}
                         >
                           <FileText size={14} />
                         </button>
-                        <button 
-                          className="abonos-boton-accion abonos-eliminar" 
-                          onClick={() => manejarAccion('eliminar', pago)} 
+
+                        <button
+                          className="abonos-boton-accion abonos-eliminar"
+                          onClick={() => manejarAccion('eliminar', pago)}
                           title="Eliminar pago"
                           disabled={cargando}
                         >
@@ -601,7 +763,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
           <div className="abonos-informacion-registros">
             Mostrando <strong>{indiceInicio + 1}</strong> a <strong>{Math.min(indiceFinal, totalRegistros)}</strong> de <strong>{totalRegistros}</strong> registros
             {terminoBusqueda && (
-              <span style={{color: '#6b7280', marginLeft: '0.5rem'}}>
+              <span style={{ color: '#6b7280', marginLeft: '0.5rem' }}>
                 (filtrado de {datosAbonos.length} registros totales)
               </span>
             )}
@@ -620,7 +782,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
             <div className="abonos-numeros-paginacion">
               {generarNumerosPaginacion().map((numero, indice) => (
                 numero === '...' ? (
-                  <span key={`ellipsis-${indice}`} style={{padding: '0.5rem', color: '#9ca3af'}}>
+                  <span key={`ellipsis-${indice}`} style={{ padding: '0.5rem', color: '#9ca3af' }}>
                     ...
                   </span>
                 ) : (
@@ -648,69 +810,57 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         </div>
       )}
 
-      {/* Indicadores de modales (para desarrollo futuro) */}
-      {modalNuevoPagoAbierto && (
-        <div style={{position: 'fixed', bottom: '20px', right: '20px', background: '#3b82f6', color: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 1000}}>
-          Modal Nuevo Pago (en desarrollo)
-          <button onClick={() => setModalNuevoPagoAbierto(false)} style={{marginLeft: '1rem', background: 'white', color: '#3b82f6', border: 'none', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer'}}>
-            Cerrar
-          </button>
-        </div>
-      )}
+      {/* Modal Nuevo Pago */}
+      <ModalNuevoPago
+        abierto={modalNuevoPagoAbierto}
+        onCerrar={() => setModalNuevoPagoAbierto(false)}
+        onGuardar={guardarNuevoPago}
+      />
+
+      {/* Modal Agregar Abono */}
+      <ModalAgregarAbono
+        abierto={modalAgregarAbonoAbierto}
+        onCerrar={() => setModalAgregarAbonoAbierto(false)}
+        onGuardar={guardarAbono}
+        pagoSeleccionado={pagoSeleccionado}
+      />
+
+      {/* Indicadores de modales temporales (para desarrollo futuro) */}
+
+
+
+      {/* Modal Ver Abono */}
+      <ModalVerAbono
+        abierto={modalVerPagoAbierto}
+        onCerrar={() => setModalVerPagoAbierto(false)}
+        pagoSeleccionado={pagoSeleccionado}
+      />
+
+
+      <ModalEditarAbono
+        abierto={modalEditarPagoAbierto}
+        onCerrar={() => setModalEditarPagoAbierto(false)}
+        onGuardar={guardarEdicionPago}
+        pagoSeleccionado={pagoSeleccionado}
+      />
+
+
+      <ModalReciboAbono
+        abierto={modalReciboAbierto}
+        onCerrar={() => setModalReciboAbierto(false)}
+        pagoSeleccionado={pagoSeleccionado}
+      />
+
+
+      <ModalFacturaAbono
+        abierto={modalFacturaAbierto}
+        onCerrar={() => setModalFacturaAbierto(false)}
+        pagoSeleccionado={pagoSeleccionado}
+      />
+
+
+
       
-      {modalAgregarAbonoAbierto && pagoSeleccionado && (
-        <div style={{position: 'fixed', bottom: '20px', right: '20px', background: '#10b981', color: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 1000}}>
-          Modal Agregar Abono - {pagoSeleccionado.cliente.nombre}
-          <button onClick={() => setModalAgregarAbonoAbierto(false)} style={{marginLeft: '1rem', background: 'white', color: '#10b981', border: 'none', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer'}}>
-            Cerrar
-          </button>
-        </div>
-      )}
-      
-      {modalVerPagoAbierto && pagoSeleccionado && (
-        <div style={{position: 'fixed', bottom: '20px', right: '20px', background: '#0369a1', color: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 1000}}>
-          Modal Ver Pago - {pagoSeleccionado.cliente.nombre}
-          <button onClick={() => setModalVerPagoAbierto(false)} style={{marginLeft: '1rem', background: 'white', color: '#0369a1', border: 'none', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer'}}>
-            Cerrar
-          </button>
-        </div>
-      )}
-      
-      {modalEditarPagoAbierto && pagoSeleccionado && (
-        <div style={{position: 'fixed', bottom: '20px', right: '20px', background: '#f59e0b', color: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 1000}}>
-          Modal Editar Pago - {pagoSeleccionado.cliente.nombre}
-          <button onClick={() => setModalEditarPagoAbierto(false)} style={{marginLeft: '1rem', background: 'white', color: '#f59e0b', border: 'none', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer'}}>
-            Cerrar
-          </button>
-        </div>
-      )}
-      
-      {modalReciboAbierto && pagoSeleccionado && (
-        <div style={{position: 'fixed', bottom: '20px', right: '20px', background: '#1e40af', color: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 1000}}>
-          Modal Generar Recibo - {pagoSeleccionado.cliente.nombre}
-          <button onClick={() => setModalReciboAbierto(false)} style={{marginLeft: '1rem', background: 'white', color: '#1e40af', border: 'none', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer'}}>
-            Cerrar
-          </button>
-        </div>
-      )}
-      
-      {modalFacturaAbierto && pagoSeleccionado && (
-        <div style={{position: 'fixed', bottom: '20px', right: '20px', background: '#4338ca', color: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 1000}}>
-          Modal Generar Factura - {pagoSeleccionado.cliente.nombre}
-          <button onClick={() => setModalFacturaAbierto(false)} style={{marginLeft: '1rem', background: 'white', color: '#4338ca', border: 'none', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer'}}>
-            Cerrar
-          </button>
-        </div>
-      )}
-      
-      {modalEliminarAbierto && pagoSeleccionado && (
-        <div style={{position: 'fixed', bottom: '20px', right: '20px', background: '#dc2626', color: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 1000}}>
-          Modal Eliminar Pago - {pagoSeleccionado.cliente.nombre}
-          <button onClick={() => setModalEliminarAbierto(false)} style={{marginLeft: '1rem', background: 'white', color: '#dc2626', border: 'none', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer'}}>
-            Cerrar
-          </button>
-        </div>
-      )}
     </div>
   );
 };
