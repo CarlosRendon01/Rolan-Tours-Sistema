@@ -1,22 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Search, 
-  Edit, 
-  Eye, 
   ChevronLeft, 
   ChevronRight, 
   Trash2, 
   Receipt, 
-  Plus,
   Download,
   Printer,
   BarChart3,
   CheckCircle,
   Clock,
-  FileText,
-  Filter
+  FileText
 } from 'lucide-react';
-// TablaRecibos.jsx
 import './TablaRecibos.css';
 
 const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
@@ -115,15 +110,9 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
       await new Promise(resolve => setTimeout(resolve, 500));
       
       switch (accion) {
-        case 'ver':
-          alert(`Visualizando recibo: ${recibo.numeroRecibo}\nCliente: ${recibo.cliente}`);
-          break;
-        case 'editar':
-          alert(`Editando recibo: ${recibo.numeroRecibo}`);
-          break;
         case 'eliminar':
-          if (window.confirm(`¿Eliminar recibo ${recibo.numeroRecibo}?`)) {
-            alert('Recibo eliminado');
+          if (window.confirm(`¿Eliminar recibo ${recibo.numeroRecibo}?\n\nCliente: ${recibo.cliente}\nMonto: ${recibo.monto}`)) {
+            alert('Recibo eliminado exitosamente');
           }
           break;
         case 'descargar':
@@ -131,6 +120,8 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
           break;
         case 'imprimir':
           alert(`Enviando a imprimir recibo: ${recibo.numeroRecibo}`);
+          break;
+        default:
           break;
       }
     } catch (error) {
@@ -140,20 +131,16 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
     }
   };
 
-  const abrirModalAgregar = () => {
-    alert('Se abrirá el modal para agregar un nuevo recibo.');
-  };
-
   const obtenerClaseEstado = (estado) => {
     switch (estado.toLowerCase()) {
       case 'emitido':
-        return 'pagos-estado-pagado';
+        return 'recibos-estado-emitido';
       case 'pendiente':
-        return 'pagos-estado-pendiente';
+        return 'recibos-estado-pendiente';
       case 'cancelado':
-        return 'pagos-estado-vencido';
+        return 'recibos-estado-cancelado';
       default:
-        return 'pagos-estado-pendiente';
+        return 'recibos-estado-pendiente';
     }
   };
 
@@ -193,53 +180,53 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
   };
 
   return (
-    <div className={`pagos-contenedor-principal ${cargando ? 'pagos-cargando' : ''}`}>
+    <div className={`recibos-contenedor-principal ${cargando ? 'recibos-cargando' : ''}`}>
       {/* Header */}
-      <div className="pagos-encabezado">
-        <div className="pagos-seccion-logo">
-          <div className="pagos-icono-principal">
+      <div className="recibos-encabezado">
+        <div className="recibos-seccion-logo">
+          <div className="recibos-icono-principal">
             <Receipt size={24} />
           </div>
           <div>
-            <h1 className="pagos-titulo">Gestión de Recibos</h1>
-            <p className="pagos-subtitulo">Documentos de comprobante de pago</p>
+            <h1 className="recibos-titulo">Gestión de Recibos</h1>
+            <p className="recibos-subtitulo">Comprobantes de pago generados</p>
           </div>
         </div>
 
-        <div className="pagos-estadisticas-header">
-          <div className="pagos-tarjeta-estadistica total">
-            <BarChart3 className="pagos-icono-estadistica" size={20} />
-            <span className="pagos-valor-estadistica">{estadisticas.totalRecibos}</span>
-            <span className="pagos-etiqueta-estadistica">Total</span>
+        <div className="recibos-estadisticas-header">
+          <div className="recibos-tarjeta-estadistica total">
+            <BarChart3 className="recibos-icono-estadistica" size={20} />
+            <span className="recibos-valor-estadistica">{estadisticas.totalRecibos}</span>
+            <span className="recibos-etiqueta-estadistica">Total</span>
           </div>
-          <div className="pagos-tarjeta-estadistica pagados">
-            <CheckCircle className="pagos-icono-estadistica" size={20} />
-            <span className="pagos-valor-estadistica">{estadisticas.emitidos}</span>
-            <span className="pagos-etiqueta-estadistica">Emitidos</span>
+          <div className="recibos-tarjeta-estadistica pagados">
+            <CheckCircle className="recibos-icono-estadistica" size={20} />
+            <span className="recibos-valor-estadistica">{estadisticas.emitidos}</span>
+            <span className="recibos-etiqueta-estadistica">Emitidos</span>
           </div>
-          <div className="pagos-tarjeta-estadistica pendientes">
-            <Clock className="pagos-icono-estadistica" size={20} />
-            <span className="pagos-valor-estadistica">{estadisticas.pendientes}</span>
-            <span className="pagos-etiqueta-estadistica">Pendientes</span>
+          <div className="recibos-tarjeta-estadistica pendientes">
+            <Clock className="recibos-icono-estadistica" size={20} />
+            <span className="recibos-valor-estadistica">{estadisticas.pendientes}</span>
+            <span className="recibos-etiqueta-estadistica">Pendientes</span>
           </div>
-          <div className="pagos-tarjeta-estadistica vencidos">
-            <Receipt className="pagos-icono-estadistica" size={20} />
-            <span className="pagos-valor-estadistica">${estadisticas.montoTotal.toLocaleString()}</span>
-            <span className="pagos-etiqueta-estadistica">Total Facturado</span>
+          <div className="recibos-tarjeta-estadistica vencidos">
+            <Receipt className="recibos-icono-estadistica" size={20} />
+            <span className="recibos-valor-estadistica">${estadisticas.montoTotal.toLocaleString()}</span>
+            <span className="recibos-etiqueta-estadistica">Total</span>
           </div>
         </div>
       </div>
 
       {/* Controles */}
-      <div className="pagos-controles">
-        <div className="pagos-seccion-izquierda">
-          <div className="pagos-control-registros">
+      <div className="recibos-controles">
+        <div className="recibos-seccion-izquierda">
+          <div className="recibos-control-registros">
             <label htmlFor="registros">Mostrar</label>
             <select
               id="registros"
               value={registrosPorPagina}
               onChange={manejarCambioRegistros}
-              className="pagos-selector-registros"
+              className="recibos-selector-registros"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
@@ -250,13 +237,13 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
             <span>registros</span>
           </div>
 
-          <div className="pagos-filtro-estado">
+          <div className="recibos-filtro-estado">
             <label htmlFor="filtro-vista">Vista:</label>
             <select
               id="filtro-vista"
               value={vistaActual}
               onChange={onCambiarVista}
-              className="pagos-selector-filtro"
+              className="recibos-selector-filtro"
             >
               <option value="pagos">Gestión de Pagos</option>
               <option value="abonos">Pagos por Abonos</option>
@@ -266,47 +253,38 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
           </div>
         </div>
 
-        <div className="pagos-seccion-derecha">
-          <button
-            className="pagos-boton-agregar"
-            onClick={abrirModalAgregar}
-            disabled={cargando}
-          >
-            <Plus size={18} />
-            <span>Nuevo Recibo</span>
-          </button>
-
-          <div className="pagos-control-busqueda">
+        <div className="recibos-seccion-derecha">
+          <div className="recibos-control-busqueda">
             <input
               type="text"
               placeholder="Buscar cliente, recibo..."
               value={terminoBusqueda}
               onChange={manejarBusqueda}
-              className="pagos-entrada-buscar"
+              className="recibos-entrada-buscar"
             />
-            <Search className="pagos-icono-buscar" size={18} />
+            <Search className="recibos-icono-buscar" size={18} />
           </div>
         </div>
       </div>
 
       {/* Tabla */}
-      <div className="pagos-contenedor-tabla">
+      <div className="recibos-contenedor-tabla">
         {datosPaginados.length === 0 ? (
-          <div className="pagos-estado-vacio">
-            <div className="pagos-icono-vacio">
+          <div className="recibos-estado-vacio">
+            <div className="recibos-icono-vacio">
               <FileText size={64} />
             </div>
-            <h3 className="pagos-mensaje-vacio">No se encontraron recibos</h3>
-            <p className="pagos-submensaje-vacio">
+            <h3 className="recibos-mensaje-vacio">No se encontraron recibos</h3>
+            <p className="recibos-submensaje-vacio">
               {terminoBusqueda
                 ? 'Intenta ajustar los filtros de búsqueda' 
                 : 'No hay recibos registrados en el sistema'}
             </p>
           </div>
         ) : (
-          <table className="pagos-tabla">
+          <table className="recibos-tabla">
             <thead>
-              <tr className="pagos-fila-encabezado">
+              <tr className="recibos-fila-encabezado">
                 <th>Recibo</th>
                 <th>Cliente</th>
                 <th>Monto</th>
@@ -319,10 +297,10 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
             </thead>
             <tbody>
               {datosPaginados.map((recibo, indice) => (
-                <tr key={recibo.id} className="pagos-fila-pago" style={{animationDelay: `${indice * 0.05}s`}}>
-                  <td data-label="Recibo" className="pagos-columna-factura">{recibo.numeroRecibo}</td>
-                  <td data-label="Cliente" className="pagos-columna-cliente">{recibo.cliente}</td>
-                  <td data-label="Monto" className="pagos-columna-monto">{recibo.monto}</td>
+                <tr key={recibo.id} className="recibos-fila-pago" style={{animationDelay: `${indice * 0.05}s`}}>
+                  <td data-label="Recibo" className="recibos-columna-factura">{recibo.numeroRecibo}</td>
+                  <td data-label="Cliente" className="recibos-columna-cliente">{recibo.cliente}</td>
+                  <td data-label="Monto" className="recibos-columna-monto">{recibo.monto}</td>
                   <td data-label="Fecha">{recibo.fechaEmision}</td>
                   <td data-label="Concepto">
                     <div style={{maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}} title={recibo.concepto}>
@@ -331,53 +309,31 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
                   </td>
                   <td data-label="Método Pago">{recibo.metodoPago}</td>
                   <td data-label="Estado">
-                    <span className={`pagos-badge-estado ${obtenerClaseEstado(recibo.estado)}`}>
-                      <span className="pagos-indicador-estado"></span>
+                    <span className={`recibos-badge-estado ${obtenerClaseEstado(recibo.estado)}`}>
+                      <span className="recibos-indicador-estado"></span>
                       {recibo.estado}
                     </span>
                   </td>
-                  <td data-label="Acciones" className="pagos-columna-acciones">
-                    <div className="pagos-botones-accion">
+                  <td data-label="Acciones" className="recibos-columna-acciones">
+                    <div className="recibos-botones-accion">
                       <button 
-                        className="pagos-boton-accion pagos-ver" 
-                        onClick={() => manejarAccion('ver', recibo)} 
-                        title="Ver recibo"
+                        className="recibos-boton-accion recibos-descargar" 
+                        onClick={() => manejarAccion('descargar', recibo)} 
+                        title="Descargar PDF"
                         disabled={cargando}
                       >
-                        <Eye size={14} />
+                        <Download size={14} />
                       </button>
-                      {recibo.estado === 'Emitido' && (
-                        <>
-                          <button 
-                            className="pagos-boton-accion pagos-editar" 
-                            onClick={() => manejarAccion('descargar', recibo)} 
-                            title="Descargar PDF"
-                            disabled={cargando}
-                          >
-                            <Download size={14} />
-                          </button>
-                          <button 
-                            className="pagos-boton-accion pagos-editar" 
-                            onClick={() => manejarAccion('imprimir', recibo)} 
-                            title="Imprimir recibo"
-                            disabled={cargando}
-                          >
-                            <Printer size={14} />
-                          </button>
-                        </>
-                      )}
-                      {recibo.estado === 'Pendiente' && (
-                        <button 
-                          className="pagos-boton-accion pagos-editar" 
-                          onClick={() => manejarAccion('editar', recibo)} 
-                          title="Editar recibo"
-                          disabled={cargando}
-                        >
-                          <Edit size={14} />
-                        </button>
-                      )}
                       <button 
-                        className="pagos-boton-accion pagos-eliminar" 
+                        className="recibos-boton-accion recibos-imprimir" 
+                        onClick={() => manejarAccion('imprimir', recibo)} 
+                        title="Imprimir recibo"
+                        disabled={cargando}
+                      >
+                        <Printer size={14} />
+                      </button>
+                      <button 
+                        className="recibos-boton-accion recibos-eliminar" 
                         onClick={() => manejarAccion('eliminar', recibo)} 
                         title="Eliminar recibo"
                         disabled={cargando}
@@ -395,8 +351,8 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
 
       {/* Paginación */}
       {datosPaginados.length > 0 && (
-        <div className="pagos-pie-tabla">
-          <div className="pagos-informacion-registros">
+        <div className="recibos-pie-tabla">
+          <div className="recibos-informacion-registros">
             Mostrando <strong>{indiceInicio + 1}</strong> a <strong>{Math.min(indiceFinal, totalRegistros)}</strong> de <strong>{totalRegistros}</strong> registros
             {terminoBusqueda && (
               <span style={{color: '#6b7280', marginLeft: '0.5rem'}}>
@@ -405,9 +361,9 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
             )}
           </div>
 
-          <div className="pagos-controles-paginacion">
+          <div className="recibos-controles-paginacion">
             <button
-              className="pagos-boton-paginacion"
+              className="recibos-boton-paginacion"
               onClick={() => cambiarPagina(paginaActual - 1)}
               disabled={paginaActual === 1 || cargando}
             >
@@ -415,7 +371,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
               Anterior
             </button>
 
-            <div className="pagos-numeros-paginacion">
+            <div className="recibos-numeros-paginacion">
               {generarNumerosPaginacion().map((numero, indice) => (
                 numero === '...' ? (
                   <span key={`ellipsis-${indice}`} style={{padding: '0.5rem', color: '#9ca3af'}}>
@@ -424,7 +380,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
                 ) : (
                   <button
                     key={numero}
-                    className={`pagos-numero-pagina ${paginaActual === numero ? 'pagos-activo' : ''}`}
+                    className={`recibos-numero-pagina ${paginaActual === numero ? 'recibos-activo' : ''}`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
                   >
@@ -435,7 +391,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
             </div>
 
             <button
-              className="pagos-boton-paginacion"
+              className="recibos-boton-paginacion"
               onClick={() => cambiarPagina(paginaActual + 1)}
               disabled={paginaActual === totalPaginas || cargando}
             >
