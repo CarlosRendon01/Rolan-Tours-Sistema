@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./nuevaCotizacion.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -58,6 +58,12 @@ const NuevaCotizacion = ({
     canalContacto: "",
   });
 
+  // Referencias para los inputs de autocompletado de Google Maps
+  const puntoIntermedioRef = useRef(null);
+  const destinoServicioRef = useRef(null);
+  const autocompleteIntermedio = useRef(null);
+  const autocompleteDestino = useRef(null);
+
   const generarIdCliente = useCallback(() => {
     const fecha = new Date();
     const año = fecha.getFullYear();
@@ -67,6 +73,8 @@ const NuevaCotizacion = ({
     return `CLI-${año}${mes}${dia}-${timestamp}`;
   }, []);
 
+  const validarNombre = useCallback(() => {}, []);
+
   const generarFolioAutomatico = useCallback(() => {
     const fecha = new Date();
     const año = fecha.getFullYear();
@@ -75,6 +83,77 @@ const NuevaCotizacion = ({
     const timestamp = Date.now().toString().slice(-6);
     return `${año}${mes}${dia}${timestamp}`;
   }, []);
+
+  // Inicializar Google Maps Autocomplete
+  useEffect(() => {
+    if (!mostrarModal || pasoActual !== 3) return;
+
+    const loadGoogleMapsScript = () => {
+      if (window.google && window.google.maps) {
+        initAutocomplete();
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDRBiAAnsJI_Ccb88ZYA3KZx4FCVxf8ZIk&libraries=places&language=es`;
+      script.async = true;
+      script.defer = true;
+      script.onload = initAutocomplete;
+      document.head.appendChild(script);
+    };
+
+    const initAutocomplete = () => {
+      if (!puntoIntermedioRef.current || !destinoServicioRef.current) return;
+
+      // Autocomplete para Punto Intermedio
+      if (!autocompleteIntermedio.current) {
+        autocompleteIntermedio.current =
+          new window.google.maps.places.Autocomplete(
+            puntoIntermedioRef.current,
+            {
+              componentRestrictions: { country: "mx" },
+              fields: ["formatted_address", "geometry", "name"],
+            }
+          );
+
+        autocompleteIntermedio.current.addListener("place_changed", () => {
+          const place = autocompleteIntermedio.current.getPlace();
+          if (place.formatted_address || place.name) {
+            setFormData((prev) => ({
+              ...prev,
+              puntoIntermedio: place.formatted_address || place.name,
+            }));
+            limpiarErrorCampo("puntoIntermedio");
+          }
+        });
+      }
+
+      // Autocomplete para Destino Servicio
+      if (!autocompleteDestino.current) {
+        autocompleteDestino.current =
+          new window.google.maps.places.Autocomplete(
+            destinoServicioRef.current,
+            {
+              componentRestrictions: { country: "mx" },
+              fields: ["formatted_address", "geometry", "name"],
+            }
+          );
+
+        autocompleteDestino.current.addListener("place_changed", () => {
+          const place = autocompleteDestino.current.getPlace();
+          if (place.formatted_address || place.name) {
+            setFormData((prev) => ({
+              ...prev,
+              destinoServicio: place.formatted_address || place.name,
+            }));
+            limpiarErrorCampo("destinoServicio");
+          }
+        });
+      }
+    };
+
+    loadGoogleMapsScript();
+  }, [mostrarModal, pasoActual]);
 
   const validarPaso = useCallback(
     (paso) => {
@@ -241,6 +320,7 @@ const NuevaCotizacion = ({
         extrasSeleccionados: cotizacionEditar.extrasSeleccionados || [],
         total: cotizacionEditar.total || "",
       });
+
       if (cotizacionEditar.cliente) {
         setDatosCliente({
           nombre: cotizacionEditar.cliente.nombre || "",
@@ -251,6 +331,7 @@ const NuevaCotizacion = ({
           canalContacto: cotizacionEditar.cliente.canalContacto || "",
         });
       }
+
       setMostrarModal(true);
       setPasoActual(1);
       limpiarTodosErrores();
@@ -330,7 +411,7 @@ const NuevaCotizacion = ({
       formData.horaSalida,
       formData.horaRegreso
     );
-    if (dias && dias !== formData.dias) {
+    if (dias !== "" && dias !== formData.dias) {
       setFormData((prev) => ({
         ...prev,
         dias: dias,
@@ -341,8 +422,8 @@ const NuevaCotizacion = ({
     formData.fechaRegreso,
     formData.horaSalida,
     formData.horaRegreso,
-    formData.dias,
   ]);
+
   const siguientePaso = useCallback(() => {
     const errores = validarPaso(pasoActual);
 
@@ -359,7 +440,6 @@ const NuevaCotizacion = ({
       return;
     }
     if (pasoActual < 5) {
-      // CAMBIAR DE 4 A 5
       setPasoActual(pasoActual + 1);
     }
   }, [pasoActual, validarPaso]);
@@ -409,15 +489,12 @@ const NuevaCotizacion = ({
     setFormData((prev) => {
       const nuevosExtras = [...prev.extrasSeleccionados];
 
-      // Si se selecciona una opción, agregarla a la lista
       if (value && !nuevosExtras.find((extra) => extra.tipo === name)) {
         nuevosExtras.push({ tipo: name, valor: value });
       } else if (value) {
-        // Si ya existe, actualizar el valor
         const index = nuevosExtras.findIndex((extra) => extra.tipo === name);
         nuevosExtras[index] = { tipo: name, valor: value };
       } else {
-        // Si se deselecciona, remover de la lista
         const index = nuevosExtras.findIndex((extra) => extra.tipo === name);
         if (index > -1) nuevosExtras.splice(index, 1);
       }
@@ -429,6 +506,7 @@ const NuevaCotizacion = ({
       };
     });
   };
+
   const handleTotalChange = (e) => {
     const { value } = e.target;
     setFormData((prev) => ({
@@ -533,6 +611,7 @@ const NuevaCotizacion = ({
       </div>
     );
   });
+
   return (
     <div className="nCotización-container">
       <div className="botones-wrapper">
@@ -905,6 +984,7 @@ const NuevaCotizacion = ({
                   <label>
                     Punto Intermedio: <span className="required">*</span>
                     <input
+                      ref={puntoIntermedioRef}
                       type="text"
                       name="puntoIntermedio"
                       value={formData.puntoIntermedio}
@@ -912,6 +992,8 @@ const NuevaCotizacion = ({
                       className={
                         erroresCampos.puntoIntermedio ? "campo-error" : ""
                       }
+                      placeholder="Busca un lugar..."
+                      autoComplete="off"
                     />
                     <MensajeError nombreCampo="puntoIntermedio" />
                   </label>
@@ -919,6 +1001,7 @@ const NuevaCotizacion = ({
                   <label>
                     Destino Servicio: <span className="required">*</span>
                     <input
+                      ref={destinoServicioRef}
                       type="text"
                       name="destinoServicio"
                       value={formData.destinoServicio}
@@ -926,6 +1009,8 @@ const NuevaCotizacion = ({
                       className={
                         erroresCampos.destinoServicio ? "campo-error" : ""
                       }
+                      placeholder="Busca un lugar..."
+                      autoComplete="off"
                     />
                     <MensajeError nombreCampo="destinoServicio" />
                   </label>
@@ -1143,6 +1228,7 @@ const NuevaCotizacion = ({
                   </div>
                 </div>
               )}
+
               {pasoActual === 5 && (
                 <div className="paso-contenido">
                   <h3>Extras y Total</h3>
@@ -1197,7 +1283,6 @@ const NuevaCotizacion = ({
                     </label>
                   </div>
 
-                  {/* Cuadro de Extras Seleccionados */}
                   <div className="extras-seleccionados">
                     <h4>Extras:</h4>
                     <div className="extras-lista">
@@ -1216,7 +1301,6 @@ const NuevaCotizacion = ({
                     </div>
                   </div>
 
-                  {/* Campo de Total */}
                   <div className="total-container">
                     <label>
                       Total: <span className="required">*</span>
