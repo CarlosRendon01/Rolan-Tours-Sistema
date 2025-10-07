@@ -1,0 +1,399 @@
+/* ========================================
+   ESTILOS PARA SWEETALERT2 - MODAL ELIMINAR FACTURA
+   ======================================== */
+
+/* Popup principal */
+.eliminar-factura-popup {
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  font-family: inherit !important;
+}
+
+.eliminar-factura-popup-cargando {
+  border-radius: 16px !important;
+  padding: 2rem !important;
+}
+
+/* Títulos */
+.eliminar-factura-titulo {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.eliminar-factura-titulo-exito {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #059669 !important;
+  margin-bottom: 0 !important;
+}
+
+.eliminar-factura-titulo-error {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: #dc2626 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.eliminar-factura-titulo-cargando {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #4b5563 !important;
+}
+
+/* Contenedor HTML */
+.eliminar-factura-html {
+  margin: 0 !important;
+  padding: 0.5rem 0 !important;
+}
+
+/* Contenido principal */
+.eliminar-factura-contenido {
+  text-align: center;
+}
+
+.eliminar-factura-texto {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.eliminar-factura-numero {
+  font-size: 1.125rem;
+  color: #1f2937;
+  margin: 0.5rem 0;
+  font-weight: 700;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+.eliminar-factura-serie {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0.25rem 0;
+  font-weight: 500;
+}
+
+.eliminar-factura-cliente {
+  font-size: 1rem;
+  color: #1f2937;
+  margin: 0.25rem 0;
+  font-weight: 600;
+}
+
+.eliminar-factura-rfc {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin: 0.25rem 0;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+.eliminar-factura-monto {
+  font-size: 1.125rem;
+  color: #3b82f6;
+  margin: 0.25rem 0 0.75rem 0;
+  font-weight: 700;
+}
+
+/* Información adicional de la factura */
+.eliminar-factura-info {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  text-align: left;
+}
+
+.eliminar-factura-info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.375rem 0;
+  font-size: 0.8125rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.eliminar-factura-info-item:last-child {
+  border-bottom: none;
+}
+
+.eliminar-factura-info-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.eliminar-factura-info-value {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 0.75rem;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+/* Badge de estado */
+.eliminar-factura-estado {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin: 0.5rem 0;
+}
+
+.eliminar-factura-estado.timbrada {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.eliminar-factura-estado.cancelada {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Advertencia */
+.eliminar-factura-advertencia {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.75rem;
+  background: #fef3c7;
+  border: 2px solid #fbbf24;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+  margin: 1rem 0 0.75rem 0;
+  text-align: left;
+}
+
+.eliminar-factura-advertencia-icono {
+  width: 18px;
+  height: 18px;
+  color: #b45309;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.eliminar-factura-advertencia p {
+  font-size: 0.8125rem;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.eliminar-factura-advertencia strong {
+  font-weight: 700;
+  color: #92400e;
+}
+
+/* Advertencia especial para facturas timbradas */
+.eliminar-factura-advertencia-critica {
+  background: #fee2e2;
+  border: 2px solid #dc2626;
+  border-left: 4px solid #dc2626;
+}
+
+.eliminar-factura-advertencia-critica p {
+  color: #991b1b;
+}
+
+.eliminar-factura-advertencia-critica strong {
+  color: #7f1d1d;
+}
+
+.eliminar-factura-advertencia-critica .eliminar-factura-advertencia-icono {
+  color: #dc2626;
+}
+
+.eliminar-factura-aviso {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: 0.75rem;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Contenido de éxito */
+.eliminar-factura-exito-contenido {
+  text-align: center;
+}
+
+.eliminar-factura-exito-texto {
+  font-size: 1rem;
+  color: #059669;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.eliminar-factura-exito-detalle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+.eliminar-factura-exito-numero {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Iconos */
+.eliminar-factura-icono {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+  font-size: 2.5rem !important;
+  margin: 0.5rem auto !important;
+}
+
+.eliminar-factura-icono-exito {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+}
+
+.eliminar-factura-icono-error {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+/* Botones */
+.eliminar-factura-acciones {
+  margin-top: 1rem !important;
+}
+
+.eliminar-factura-boton-confirmar {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+}
+
+.eliminar-factura-boton-confirmar:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+.eliminar-factura-boton-cancelar {
+  background: white !important;
+  color: #6b7280 !important;
+  border: 1.5px solid #e5e7eb !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  margin-right: 0.5rem !important;
+}
+
+.eliminar-factura-boton-cancelar:hover {
+  background: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+
+.eliminar-factura-boton-exito {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) !important;
+}
+
+.eliminar-factura-boton-exito:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4) !important;
+}
+
+.eliminar-factura-boton-error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.9375rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Timer progress bar */
+.swal2-timer-progress-bar {
+  background: #10b981 !important;
+}
+
+/* Animaciones suaves */
+.swal2-show {
+  animation: swal2-show 0.3s !important;
+}
+
+.swal2-hide {
+  animation: swal2-hide 0.2s !important;
+}
+
+/* Loading spinner personalizado */
+.swal2-loading {
+  border-color: #3b82f6 transparent #3b82f6 transparent !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .eliminar-factura-popup {
+    padding: 1.25rem !important;
+    width: 90% !important;
+    max-width: 380px !important;
+  }
+
+  .eliminar-factura-titulo,
+  .eliminar-factura-titulo-exito {
+    font-size: 1.125rem !important;
+  }
+
+  .eliminar-factura-numero {
+    font-size: 1rem !important;
+  }
+
+  .eliminar-factura-cliente {
+    font-size: 0.9375rem !important;
+  }
+
+  .eliminar-factura-monto {
+    font-size: 1rem !important;
+  }
+
+  .eliminar-factura-info {
+    padding: 0.625rem;
+  }
+
+  .eliminar-factura-info-item {
+    font-size: 0.75rem;
+    padding: 0.25rem 0;
+  }
+
+  .eliminar-factura-advertencia {
+    padding: 0.625rem;
+    gap: 0.5rem;
+  }
+
+  .eliminar-factura-advertencia p {
+    font-size: 0.75rem;
+  }
+
+  .eliminar-factura-boton-confirmar,
+  .eliminar-factura-boton-cancelar,
+  .eliminar-factura-boton-exito {
+    padding: 0.5rem 1.25rem !important;
+    font-size: 0.8125rem !important;
+  }
+}

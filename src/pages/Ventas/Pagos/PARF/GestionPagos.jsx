@@ -347,14 +347,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
           </div>
 
           <div className="pagos-seccion-derecha">
-            <button
-              className="pagos-boton-agregar"
-              onClick={abrirModalAgregar}
-              disabled={cargando}
-            >
-              <Plus size={18} />
-              <span>Nuevo Pago</span>
-            </button>
+           
 
             <div className="pagos-control-busqueda">
               <input

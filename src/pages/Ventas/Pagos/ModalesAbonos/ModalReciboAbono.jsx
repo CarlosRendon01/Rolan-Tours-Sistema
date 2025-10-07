@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { 
   X, 
-  Printer, 
   Download, 
   Receipt, 
   Calendar, 
@@ -11,6 +10,7 @@ import {
   CheckCircle 
 } from 'lucide-react';
 import './ModalReciboAbono.css';
+import { generarPDFReciboAbono } from './generarPDFReciboAbono';
 
 // ============================================
 // UTILIDADES
@@ -52,9 +52,47 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
     }, 100);
   };
 
-  const manejarDescargar = () => {
-    // TODO: Integrar con biblioteca de generación de PDFs (jsPDF, pdfmake, etc)
-    alert('Función de descarga de PDF en desarrollo. Se integrará con biblioteca de generación de PDFs.');
+  const manejarDescargar = async () => {
+    try {
+      setImprimiendo(true);
+
+      // Mapear los datos del pago al formato que espera generarPDFReciboAbono
+      const datosRecibo = {
+        numeroRecibo: numeroRecibo,
+        cliente: {
+          nombre: pagoSeleccionado.cliente.nombre,
+          email: pagoSeleccionado.cliente.email,
+          telefono: pagoSeleccionado.cliente.telefono || ''
+        },
+        servicio: {
+          tipo: pagoSeleccionado.servicio.tipo,
+          descripcion: pagoSeleccionado.servicio.descripcion,
+          fechaTour: pagoSeleccionado.servicio.fechaTour
+        },
+        numeroContrato: pagoSeleccionado.numeroContrato,
+        numeroAbono: ultimoAbono ? ultimoAbono.numeroAbono : 1,
+        montoAbono: ultimoAbono ? ultimoAbono.monto : 0,
+        fechaAbono: ultimoAbono ? ultimoAbono.fecha : new Date().toISOString(),
+        metodoPago: ultimoAbono ? ultimoAbono.metodoPago : 'No especificado',
+        referencia: ultimoAbono ? ultimoAbono.referencia : '',
+        montoTotal: pagoSeleccionado.planPago.montoTotal,
+        montoPagado: pagoSeleccionado.planPago.montoPagado,
+        saldoPendiente: pagoSeleccionado.planPago.saldoPendiente,
+        abonosRealizados: pagoSeleccionado.planPago.abonosRealizados,
+        abonosPlaneados: pagoSeleccionado.planPago.abonosPlaneados,
+        estado: pagoSeleccionado.estado,
+        observaciones: pagoSeleccionado.observaciones || ''
+      };
+
+      await generarPDFReciboAbono(datosRecibo);
+      
+      console.log('PDF de abono generado exitosamente');
+    } catch (error) {
+      console.error('Error al generar el PDF:', error);
+      alert('Error al generar el PDF del recibo de abono. Por favor, intente nuevamente.');
+    } finally {
+      setImprimiendo(false);
+    }
   };
 
   const manejarClickOverlay = (e) => {
@@ -257,6 +295,7 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
           <button 
             className="modal-recibo-boton modal-recibo-boton-secundario" 
             onClick={onCerrar}
+            disabled={imprimiendo}
           >
             <X size={18} />
             Cerrar
@@ -267,9 +306,8 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
             disabled={imprimiendo}
           >
             <Download size={18} />
-            Descargar PDF
+            {imprimiendo ? 'Generando PDF...' : 'Descargar PDF'}
           </button>
-         
         </div>
       </div>
     </div>

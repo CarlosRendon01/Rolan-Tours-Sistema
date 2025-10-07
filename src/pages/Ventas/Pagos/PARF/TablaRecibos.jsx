@@ -1,153 +1,318 @@
-import React, { useState, useMemo } from 'react';
-import { 
-  Search, 
-  ChevronLeft, 
-  ChevronRight, 
-  Trash2, 
-  Receipt, 
+import React, { useState, useMemo, useCallback } from 'react';
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Trash2,
+  Receipt,
   Download,
   Printer,
   BarChart3,
   CheckCircle,
   Clock,
-  FileText
+  FileText,
+  AlertCircle,
+  X,
+  FileSpreadsheet
 } from 'lucide-react';
 import './TablaRecibos.css';
+import { generarPDFRecibo, imprimirRecibo } from '../ModalesRecibos/generarPDFRecibo';
+import { modalEliminarRecibo } from '../ModalesRecibos/ModalEliminarRecibo';
 
-const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
+const TablaRecibos = ({
+  datosIniciales = [],
+  vistaActual = 'recibos',
+  onCambiarVista = () => { },
+  onEliminar = null,
+  onDescargar = null,
+  onImprimir = null
+}) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Datos de ejemplo para recibos
-  const datosRecibos = [
+  // Datos de ejemplo mejorados - Solo recibos EMITIDOS y CANCELADOS
+  const datosRecibosEjemplo = [
     {
       id: 1,
-      numeroRecibo: 'REC-001',
+      numeroRecibo: 'REC-2025-001',
       cliente: 'Roberto Sánchez Morales',
-      monto: '$8,000.00',
-      fechaEmision: '20/09/2025',
+      monto: 8000.00,
+      fechaEmision: '2025-09-20',
       concepto: 'Abono 3/5 - Marketing Digital',
       metodoPago: 'Transferencia',
       estado: 'Emitido'
     },
     {
       id: 2,
-      numeroRecibo: 'REC-002',
+      numeroRecibo: 'REC-2025-002',
       cliente: 'Diana Torres Vega',
-      monto: '$4,500.00',
-      fechaEmision: '18/09/2025',
+      monto: 4500.00,
+      fechaEmision: '2025-09-18',
       concepto: 'Abono 2/4 - Análisis de Mercado',
       metodoPago: 'Efectivo',
       estado: 'Emitido'
     },
     {
       id: 3,
-      numeroRecibo: 'REC-003',
+      numeroRecibo: 'REC-2025-003',
       cliente: 'Fernando Ramírez Cruz',
-      monto: '$9,000.00',
-      fechaEmision: '22/09/2025',
+      monto: 9000.00,
+      fechaEmision: '2025-09-22',
       concepto: 'Abono 3/5 - Sistema ERP',
       metodoPago: 'Cheque',
       estado: 'Emitido'
+    },
+    {
+      id: 4,
+      numeroRecibo: 'REC-2025-004',
+      cliente: 'María González López',
+      monto: 5500.00,
+      fechaEmision: '2025-09-15',
+      concepto: 'Abono 1/3 - Consultoría Fiscal',
+      metodoPago: 'Transferencia',
+      estado: 'Emitido'
+    },
+    {
+      id: 5,
+      numeroRecibo: 'REC-2025-005',
+      cliente: 'Carlos Mendoza Ruiz',
+      monto: 12000.00,
+      fechaEmision: '2025-09-10',
+      concepto: 'Pago completo - Desarrollo Web',
+      metodoPago: 'Transferencia',
+      estado: 'Cancelado'
+    },
+    {
+      id: 6,
+      numeroRecibo: 'REC-2025-006',
+      cliente: 'Ana Patricia Flores',
+      monto: 3200.00,
+      fechaEmision: '2025-09-25',
+      concepto: 'Abono 2/2 - Capacitación Personal',
+      metodoPago: 'Efectivo',
+      estado: 'Emitido'
+    },
+    {
+      id: 7,
+      numeroRecibo: 'REC-2025-007',
+      cliente: 'Jorge Luis Martínez',
+      monto: 7800.00,
+      fechaEmision: '2025-09-28',
+      concepto: 'Abono 4/6 - Auditoría Contable',
+      metodoPago: 'Cheque',
+      estado: 'Emitido'
+    },
+    {
+      id: 8,
+      numeroRecibo: 'REC-2025-008',
+      cliente: 'Patricia Hernández Díaz',
+      monto: 6500.00,
+      fechaEmision: '2025-09-30',
+      concepto: 'Abono 1/4 - Diseño Gráfico',
+      metodoPago: 'Transferencia',
+      estado: 'Emitido'
+    },
+    {
+      id: 9,
+      numeroRecibo: 'REC-2025-009',
+      cliente: 'Luis Alberto Castro',
+      monto: 15000.00,
+      fechaEmision: '2025-08-12',
+      concepto: 'Pago único - Asesoría Legal',
+      metodoPago: 'Transferencia',
+      estado: 'Cancelado'
     }
   ];
 
-  // Cálculo de estadísticas
+  const datosRecibos = datosIniciales.length > 0 ? datosIniciales : datosRecibosEjemplo;
+
+  // Formatear moneda
+  const formatearMoneda = useCallback((monto) => {
+    if (typeof monto === 'string') {
+      monto = parseFloat(monto.replace(/[$,]/g, ''));
+    }
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(monto || 0);
+  }, []);
+
+  // Formatear fecha
+  const formatearFecha = useCallback((fecha) => {
+    try {
+      const date = new Date(fecha);
+      return new Intl.DateTimeFormat('es-MX', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(date);
+    } catch {
+      return fecha;
+    }
+  }, []);
+
+  // Cálculo de estadísticas - Solo Emitidos y Cancelados
   const estadisticas = useMemo(() => {
     const totalRecibos = datosRecibos.length;
     const emitidos = datosRecibos.filter(r => r.estado === 'Emitido').length;
-    const pendientes = datosRecibos.filter(r => r.estado === 'Pendiente').length;
+    const cancelados = datosRecibos.filter(r => r.estado === 'Cancelado').length;
     const montoTotal = datosRecibos.reduce((total, recibo) => {
-      const monto = parseFloat(recibo.monto.replace(/[$,]/g, ''));
+      const monto = typeof recibo.monto === 'number' ? recibo.monto : parseFloat(recibo.monto?.replace(/[$,]/g, '') || 0);
       return total + monto;
     }, 0);
 
-    return { totalRecibos, emitidos, pendientes, montoTotal };
-  }, []);
+    // Calcular monto solo de emitidos (sin cancelados)
+    const montoEmitidos = datosRecibos
+      .filter(r => r.estado === 'Emitido')
+      .reduce((total, recibo) => {
+        const monto = typeof recibo.monto === 'number' ? recibo.monto : parseFloat(recibo.monto?.replace(/[$,]/g, '') || 0);
+        return total + monto;
+      }, 0);
+
+    return { totalRecibos, emitidos, cancelados, montoTotal, montoEmitidos };
+  }, [datosRecibos]);
 
   // Filtrar datos según búsqueda
   const datosFiltrados = useMemo(() => {
-    return datosRecibos.filter(recibo => {
-      const cumpleBusqueda = 
-        recibo.cliente.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-        recibo.id.toString().includes(terminoBusqueda) ||
-        recibo.numeroRecibo.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-        recibo.concepto.toLowerCase().includes(terminoBusqueda.toLowerCase());
+    let datos = [...datosRecibos];
 
-      return cumpleBusqueda;
-    });
-  }, [terminoBusqueda]);
+    // Filtrar por búsqueda
+    if (terminoBusqueda) {
+      datos = datos.filter(recibo => {
+        const searchTerm = terminoBusqueda.toLowerCase();
+        return (
+          recibo.cliente?.toLowerCase().includes(searchTerm) ||
+          recibo.id?.toString().includes(searchTerm) ||
+          recibo.numeroRecibo?.toLowerCase().includes(searchTerm) ||
+          recibo.concepto?.toLowerCase().includes(searchTerm) ||
+          recibo.metodoPago?.toLowerCase().includes(searchTerm)
+        );
+      });
+    }
+
+    return datos;
+  }, [datosRecibos, terminoBusqueda]);
 
   // Calcular paginación
   const totalRegistros = datosFiltrados.length;
-  const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
+  const totalPaginas = Math.max(1, Math.ceil(totalRegistros / (registrosPorPagina || 1)));
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
-  const indiceFinal = indiceInicio + registrosPorPagina;
+  const indiceFinal = Math.min(indiceInicio + registrosPorPagina, totalRegistros);
   const datosPaginados = datosFiltrados.slice(indiceInicio, indiceFinal);
 
-  const cambiarPagina = (nuevaPagina) => {
+  const cambiarPagina = useCallback((nuevaPagina) => {
     if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
       setPaginaActual(nuevaPagina);
     }
-  };
+  }, [totalPaginas]);
 
-  const manejarCambioRegistros = (evento) => {
-    setRegistrosPorPagina(parseInt(evento.target.value));
+  const manejarCambioRegistros = useCallback((evento) => {
+    const valor = parseInt(evento.target.value) || 10;
+    setRegistrosPorPagina(valor);
     setPaginaActual(1);
-  };
+  }, []);
 
-  const manejarBusqueda = (evento) => {
+  const manejarBusqueda = useCallback((evento) => {
     setTerminoBusqueda(evento.target.value);
     setPaginaActual(1);
-  };
+  }, []);
 
-  const manejarAccion = async (accion, recibo) => {
+  const limpiarBusqueda = useCallback(() => {
+    setTerminoBusqueda('');
+    setPaginaActual(1);
+  }, []);
+
+  // Exportar a CSV
+  const exportarCSV = useCallback(() => {
+    try {
+      const headers = ['Recibo', 'Cliente', 'Monto', 'Fecha', 'Concepto', 'Método Pago', 'Estado'];
+      const csv = [
+        headers.join(','),
+        ...datosFiltrados.map(recibo => [
+          recibo.numeroRecibo,
+          `"${recibo.cliente}"`,
+          typeof recibo.monto === 'number' ? recibo.monto : recibo.monto?.replace(/[$,]/g, ''),
+          recibo.fechaEmision,
+          `"${recibo.concepto}"`,
+          recibo.metodoPago,
+          recibo.estado
+        ].join(','))
+      ].join('\n');
+
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `recibos_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      setError('Error al exportar CSV');
+      setTimeout(() => setError(null), 3000);
+    }
+  }, [datosFiltrados]);
+
+  const manejarAccion = useCallback(async (accion, recibo) => {
     setCargando(true);
-    
+    setError(null);
+
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       switch (accion) {
         case 'eliminar':
-          if (window.confirm(`¿Eliminar recibo ${recibo.numeroRecibo}?\n\nCliente: ${recibo.cliente}\nMonto: ${recibo.monto}`)) {
-            alert('Recibo eliminado exitosamente');
+          const confirmado = await modalEliminarRecibo(recibo, onEliminar);
+          if (confirmado && !onEliminar) {
+            // Si no hay callback personalizado, simula la eliminación
+            console.log('Recibo eliminado:', recibo.id);
           }
           break;
         case 'descargar':
-          alert(`Descargando PDF del recibo: ${recibo.numeroRecibo}`);
+          if (onDescargar) {
+            await onDescargar(recibo);
+          } else {
+            // Usar la función de generación de PDF
+            await generarPDFRecibo(recibo);
+          }
           break;
         case 'imprimir':
-          alert(`Enviando a imprimir recibo: ${recibo.numeroRecibo}`);
+          if (onImprimir) {
+            await onImprimir(recibo);
+          } else {
+            imprimirRecibo(recibo);
+          }
           break;
         default:
           break;
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (err) {
+      setError(`Error al ${accion}: ${err.message}`);
+      setTimeout(() => setError(null), 3000);
     } finally {
       setCargando(false);
     }
-  };
+  }, [onEliminar, onDescargar, onImprimir, formatearMoneda]);
 
-  const obtenerClaseEstado = (estado) => {
-    switch (estado.toLowerCase()) {
+  const obtenerClaseEstado = useCallback((estado) => {
+    switch (estado?.toLowerCase()) {
       case 'emitido':
         return 'recibos-estado-emitido';
-      case 'pendiente':
-        return 'recibos-estado-pendiente';
       case 'cancelado':
         return 'recibos-estado-cancelado';
       default:
-        return 'recibos-estado-pendiente';
+        return 'recibos-estado-emitido';
     }
-  };
+  }, []);
 
-  const generarNumerosPaginacion = () => {
+  const generarNumerosPaginacion = useCallback(() => {
     const numeros = [];
     const maximoVisibles = 5;
-    
+
     if (totalPaginas <= maximoVisibles) {
       for (let i = 1; i <= totalPaginas; i++) {
         numeros.push(i);
@@ -175,9 +340,9 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
         numeros.push(totalPaginas);
       }
     }
-    
+
     return numeros;
-  };
+  }, [totalPaginas, paginaActual]);
 
   return (
     <div className={`recibos-contenedor-principal ${cargando ? 'recibos-cargando' : ''}`}>
@@ -197,25 +362,33 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
           <div className="recibos-tarjeta-estadistica total">
             <BarChart3 className="recibos-icono-estadistica" size={20} />
             <span className="recibos-valor-estadistica">{estadisticas.totalRecibos}</span>
-            <span className="recibos-etiqueta-estadistica">Total</span>
+            <span className="recibos-etiqueta-estadistica">Total Recibos</span>
           </div>
           <div className="recibos-tarjeta-estadistica pagados">
             <CheckCircle className="recibos-icono-estadistica" size={20} />
             <span className="recibos-valor-estadistica">{estadisticas.emitidos}</span>
             <span className="recibos-etiqueta-estadistica">Emitidos</span>
           </div>
-          <div className="recibos-tarjeta-estadistica pendientes">
+          <div className="recibos-tarjeta-estadistica cancelados">
             <Clock className="recibos-icono-estadistica" size={20} />
-            <span className="recibos-valor-estadistica">{estadisticas.pendientes}</span>
-            <span className="recibos-etiqueta-estadistica">Pendientes</span>
+            <span className="recibos-valor-estadistica">{estadisticas.cancelados}</span>
+            <span className="recibos-etiqueta-estadistica">Cancelados</span>
           </div>
-          <div className="recibos-tarjeta-estadistica vencidos">
+          <div className="recibos-tarjeta-estadistica monto-emitido">
             <Receipt className="recibos-icono-estadistica" size={20} />
-            <span className="recibos-valor-estadistica">${estadisticas.montoTotal.toLocaleString()}</span>
-            <span className="recibos-etiqueta-estadistica">Total</span>
+            <span className="recibos-valor-estadistica">{formatearMoneda(estadisticas.montoEmitidos)}</span>
+            <span className="recibos-etiqueta-estadistica">Monto Emitido</span>
           </div>
         </div>
       </div>
+
+      {/* Alerta de Error */}
+      {error && (
+        <div className="recibos-alerta-error" role="alert">
+          <AlertCircle size={20} />
+          <span>{error}</span>
+        </div>
+      )}
 
       {/* Controles */}
       <div className="recibos-controles">
@@ -227,6 +400,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
               value={registrosPorPagina}
               onChange={manejarCambioRegistros}
               className="recibos-selector-registros"
+              aria-label="Registros por página"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
@@ -244,6 +418,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
               value={vistaActual}
               onChange={onCambiarVista}
               className="recibos-selector-filtro"
+              aria-label="Cambiar vista"
             >
               <option value="pagos">Gestión de Pagos</option>
               <option value="abonos">Pagos por Abonos</option>
@@ -257,13 +432,34 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
           <div className="recibos-control-busqueda">
             <input
               type="text"
-              placeholder="Buscar cliente, recibo..."
+              placeholder="Buscar cliente, recibo, concepto..."
               value={terminoBusqueda}
               onChange={manejarBusqueda}
               className="recibos-entrada-buscar"
+              aria-label="Buscar recibos"
             />
             <Search className="recibos-icono-buscar" size={18} />
+            {terminoBusqueda && (
+              <button
+                className="recibos-boton-limpiar"
+                onClick={limpiarBusqueda}
+                aria-label="Limpiar búsqueda"
+                title="Limpiar búsqueda"
+              >
+                <X size={16} />
+              </button>
+            )}
           </div>
+
+          <button
+            className="recibos-boton-exportar"
+            onClick={exportarCSV}
+            aria-label="Exportar a CSV"
+            title="Exportar datos a CSV"
+          >
+            <FileSpreadsheet size={18} />
+            Exportar CSV
+          </button>
         </div>
       </div>
 
@@ -277,7 +473,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
             <h3 className="recibos-mensaje-vacio">No se encontraron recibos</h3>
             <p className="recibos-submensaje-vacio">
               {terminoBusqueda
-                ? 'Intenta ajustar los filtros de búsqueda' 
+                ? 'Intenta ajustar los filtros de búsqueda'
                 : 'No hay recibos registrados en el sistema'}
             </p>
           </div>
@@ -297,13 +493,13 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
             </thead>
             <tbody>
               {datosPaginados.map((recibo, indice) => (
-                <tr key={recibo.id} className="recibos-fila-pago" style={{animationDelay: `${indice * 0.05}s`}}>
+                <tr key={recibo.id} className="recibos-fila-pago" style={{ animationDelay: `${indice * 0.05}s` }}>
                   <td data-label="Recibo" className="recibos-columna-factura">{recibo.numeroRecibo}</td>
                   <td data-label="Cliente" className="recibos-columna-cliente">{recibo.cliente}</td>
-                  <td data-label="Monto" className="recibos-columna-monto">{recibo.monto}</td>
-                  <td data-label="Fecha">{recibo.fechaEmision}</td>
+                  <td data-label="Monto" className="recibos-columna-monto">{formatearMoneda(recibo.monto)}</td>
+                  <td data-label="Fecha">{formatearFecha(recibo.fechaEmision)}</td>
                   <td data-label="Concepto">
-                    <div style={{maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}} title={recibo.concepto}>
+                    <div style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={recibo.concepto}>
                       {recibo.concepto}
                     </div>
                   </td>
@@ -316,26 +512,29 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
                   </td>
                   <td data-label="Acciones" className="recibos-columna-acciones">
                     <div className="recibos-botones-accion">
-                      <button 
-                        className="recibos-boton-accion recibos-descargar" 
-                        onClick={() => manejarAccion('descargar', recibo)} 
+                      <button
+                        className="recibos-boton-accion recibos-descargar"
+                        onClick={() => manejarAccion('descargar', recibo)}
                         title="Descargar PDF"
+                        aria-label={`Descargar recibo ${recibo.numeroRecibo}`}
                         disabled={cargando}
                       >
                         <Download size={14} />
                       </button>
-                      <button 
-                        className="recibos-boton-accion recibos-imprimir" 
-                        onClick={() => manejarAccion('imprimir', recibo)} 
+                      <button
+                        className="recibos-boton-accion recibos-imprimir"
+                        onClick={() => manejarAccion('imprimir', recibo)}
                         title="Imprimir recibo"
+                        aria-label={`Imprimir recibo ${recibo.numeroRecibo}`}
                         disabled={cargando}
                       >
                         <Printer size={14} />
                       </button>
-                      <button 
-                        className="recibos-boton-accion recibos-eliminar" 
-                        onClick={() => manejarAccion('eliminar', recibo)} 
+                      <button
+                        className="recibos-boton-accion recibos-eliminar"
+                        onClick={() => manejarAccion('eliminar', recibo)}
                         title="Eliminar recibo"
+                        aria-label={`Eliminar recibo ${recibo.numeroRecibo}`}
                         disabled={cargando}
                       >
                         <Trash2 size={14} />
@@ -353,9 +552,9 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
       {datosPaginados.length > 0 && (
         <div className="recibos-pie-tabla">
           <div className="recibos-informacion-registros">
-            Mostrando <strong>{indiceInicio + 1}</strong> a <strong>{Math.min(indiceFinal, totalRegistros)}</strong> de <strong>{totalRegistros}</strong> registros
+            Mostrando <strong>{indiceInicio + 1}</strong> a <strong>{indiceFinal}</strong> de <strong>{totalRegistros}</strong> registros
             {terminoBusqueda && (
-              <span style={{color: '#6b7280', marginLeft: '0.5rem'}}>
+              <span style={{ color: '#6b7280', marginLeft: '0.5rem' }}>
                 (filtrado de {datosRecibos.length} registros totales)
               </span>
             )}
@@ -366,6 +565,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
               className="recibos-boton-paginacion"
               onClick={() => cambiarPagina(paginaActual - 1)}
               disabled={paginaActual === 1 || cargando}
+              aria-label="Página anterior"
             >
               <ChevronLeft size={16} />
               Anterior
@@ -374,7 +574,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
             <div className="recibos-numeros-paginacion">
               {generarNumerosPaginacion().map((numero, indice) => (
                 numero === '...' ? (
-                  <span key={`ellipsis-${indice}`} style={{padding: '0.5rem', color: '#9ca3af'}}>
+                  <span key={`ellipsis-${indice}`} style={{ padding: '0.5rem', color: '#9ca3af' }} aria-hidden="true">
                     ...
                   </span>
                 ) : (
@@ -383,6 +583,8 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
                     className={`recibos-numero-pagina ${paginaActual === numero ? 'recibos-activo' : ''}`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
+                    aria-label={`Página ${numero}`}
+                    aria-current={paginaActual === numero ? 'page' : undefined}
                   >
                     {numero}
                   </button>
@@ -394,6 +596,7 @@ const TablaRecibos = ({ vistaActual, onCambiarVista }) => {
               className="recibos-boton-paginacion"
               onClick={() => cambiarPagina(paginaActual + 1)}
               disabled={paginaActual === totalPaginas || cargando}
+              aria-label="Página siguiente"
             >
               Siguiente
               <ChevronRight size={16} />

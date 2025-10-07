@@ -1,216 +1,293 @@
-/* ========================================
-   MODALGENERARRECIBO.CSS - VERSIÓN COMPACTA
-   ======================================== */
+/* ============================================
+   MODAL GENERAR RECIBO - ESTILOS MEJORADOS
+   ============================================ */
+
+/* Variables CSS */
+:root {
+  --recibo-primary: #1e3a8a;
+  --recibo-secondary: #2563eb;
+  --recibo-success: #10b981;
+  --recibo-warning: #f59e0b;
+  --recibo-text-primary: #1f2937;
+  --recibo-text-secondary: #1e2022;
+  --recibo-text-tertiary: #6b7280;
+  --recibo-text-light: #af9c9c;
+  --recibo-bg-white: #ffffff;
+  --recibo-bg-gray: #f9fafb;
+  --recibo-bg-light: #f6f3f3;
+  --recibo-border: #e5e7eb;
+  --recibo-border-light: #f1f5f9;
+}
+
+/* ================================
+   OVERLAY Y CONTENEDOR
+   ================================ */
 
 .modal-recibo-superposicion {
   position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: rgba(0, 0, 0, 0.6) !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.65) !important;
   backdrop-filter: blur(4px) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  z-index: 9999 !important;
+  z-index: 10000 !important;
   padding: 1rem !important;
-  animation: modal-recibo-aparecerFade 0.3s ease-out !important;
+  animation: modalReciboFadeIn 0.2s ease-out !important;
+}
+
+@keyframes modalReciboFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-recibo-contenedor {
-  background: white !important;
+  background: var(--recibo-bg-white) !important;
   border-radius: 12px !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   width: 100% !important;
-  max-width: 550px !important;
-  max-height: 85vh !important;
+  max-width: 900px !important;
+  max-height: 90vh !important;
   display: flex !important;
   flex-direction: column !important;
-  animation: modal-recibo-deslizarArriba 0.3s ease-out !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  animation: modalReciboSlideUp 0.3s ease-out !important;
   overflow: hidden !important;
 }
 
-/* Encabezado del Modal */
+@keyframes modalReciboSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ================================
+   HEADER DEL MODAL
+   ================================ */
+
 .modal-recibo-encabezado {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  padding: 1rem 1.5rem !important;
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  padding: 1.5rem !important;
+  border-bottom: 1px solid var(--recibo-border) !important;
+  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
   color: white !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-.modal-recibo-encabezado::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="cuadricula-modal-recibo" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23cuadricula-modal-recibo)"/></svg>') !important;
-  opacity: 0.5 !important;
+  border-radius: 12px 12px 0 0 !important;
+  gap: 1rem !important;
 }
 
 .modal-recibo-encabezado-contenido {
   display: flex !important;
   align-items: center !important;
-  gap: 0.75rem !important;
-  z-index: 2 !important;
+  gap: 1rem !important;
+  flex: 1 !important;
 }
 
 .modal-recibo-envoltorio-icono {
-  width: 40px !important;
-  height: 40px !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  border-radius: 10px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  flex-shrink: 0 !important;
+  color: white !important;
 }
 
 .modal-recibo-titulo {
-  font-size: 1.125rem !important;
+  font-size: 1.5rem !important;
   font-weight: 700 !important;
   margin: 0 !important;
-  letter-spacing: -0.025em !important;
+  color: white !important;
+  line-height: 1.2 !important;
 }
 
 .modal-recibo-subtitulo {
-  font-size: 0.75rem !important;
-  margin: 0 !important;
-  opacity: 0.9 !important;
+  font-size: 0.875rem !important;
+  margin: 0.25rem 0 0 0 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
   font-weight: 400 !important;
 }
 
 .modal-recibo-boton-cerrar {
-  width: 32px !important;
-  height: 32px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 8px !important;
-  border: none !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  color: white !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
+  color: white !important;
   transition: all 0.2s ease !important;
-  z-index: 2 !important;
   flex-shrink: 0 !important;
 }
 
 .modal-recibo-boton-cerrar:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
   transform: rotate(90deg) !important;
 }
 
-/* Cuerpo del Modal */
+/* ================================
+   CONTENIDO DEL MODAL
+   ================================ */
+
 .modal-recibo-cuerpo {
-  padding: 1.25rem !important;
-  overflow-y: auto !important;
   flex: 1 !important;
-  background: #f9fafb !important;
+  overflow-y: auto !important;
+  padding: 2rem !important;
+  background: var(--recibo-bg-gray) !important;
 }
 
-/* Documento del Recibo */
+.modal-recibo-cuerpo::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.modal-recibo-cuerpo::-webkit-scrollbar-track {
+  background: var(--recibo-border-light) !important;
+}
+
+.modal-recibo-cuerpo::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 4px !important;
+}
+
+.modal-recibo-cuerpo::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+
+/* ================================
+   DOCUMENTO DEL RECIBO
+   ================================ */
+
 .modal-recibo-documento {
-  background: white !important;
-  border-radius: 10px !important;
-  padding: 1.25rem !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-  border: 1px solid #e5e7eb !important;
+  background: var(--recibo-bg-white) !important;
+  padding: 3rem !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
 }
 
-/* Encabezado del Documento */
+/* ================================
+   ENCABEZADO DEL RECIBO
+   ================================ */
+
 .modal-recibo-doc-encabezado {
   display: flex !important;
   justify-content: space-between !important;
   align-items: flex-start !important;
-  margin-bottom: 1rem !important;
-  gap: 0.75rem !important;
+  margin-bottom: 2rem !important;
+  gap: 2rem !important;
 }
 
 .modal-recibo-logo {
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 0.75rem !important;
-}
-
-.modal-recibo-logo svg {
-  color: #6366f1 !important;
-  flex-shrink: 0 !important;
+  flex: 1 !important;
 }
 
 .modal-recibo-empresa-nombre {
-  font-size: 0.9375rem !important;
+  font-size: 1.875rem !important;
   font-weight: 700 !important;
-  color: #111827 !important;
-  margin: 0 0 0.125rem 0 !important;
+  color: var(--recibo-text-primary) !important;
+  margin: 0 0 0.5rem 0 !important;
+  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  line-height: 1.2 !important;
 }
 
 .modal-recibo-empresa-datos {
-  font-size: 0.6875rem !important;
-  color: #6b7280 !important;
-  margin: 0 !important;
-  line-height: 1.3 !important;
+  font-size: 0.875rem !important;
+  color: var(--recibo-text-tertiary) !important;
+  margin: 0.25rem 0 !important;
+  line-height: 1.5 !important;
 }
 
 .modal-recibo-doc-info {
   text-align: right !important;
+  flex-shrink: 0 !important;
 }
 
 .modal-recibo-doc-titulo {
-  font-size: 1rem !important;
-  font-weight: 700 !important;
-  color: #6366f1 !important;
-  margin: 0 0 0.25rem 0 !important;
-}
-
-.modal-recibo-doc-numero {
-  font-size: 0.8125rem !important;
-  font-weight: 600 !important;
-  color: #374151 !important;
-  margin: 0 !important;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
-}
-
-.modal-recibo-doc-fecha {
-  font-size: 0.75rem !important;
-  color: #6b7280 !important;
-  margin: 0.125rem 0 0 0 !important;
-}
-
-/* Separador */
-.modal-recibo-separador {
-  height: 2px !important;
-  background: linear-gradient(to right, #6366f1, transparent) !important;
-  margin: 1rem 0 !important;
-}
-
-/* Secciones del Recibo */
-.modal-recibo-seccion {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
   margin-bottom: 1rem !important;
 }
 
-.modal-recibo-seccion-titulo {
+.modal-recibo-etiqueta {
+  font-size: 0.75rem !important;
+  color: var(--recibo-text-tertiary) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  font-weight: 600 !important;
+}
+
+.modal-recibo-doc-numero {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: var(--recibo-primary) !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+.modal-recibo-doc-fecha {
   display: flex !important;
   align-items: center !important;
-  gap: 0.375rem !important;
+  justify-content: flex-end !important;
+  gap: 0.5rem !important;
   font-size: 0.875rem !important;
+  color: var(--recibo-text-tertiary) !important;
+  margin: 0 !important;
+}
+
+.modal-recibo-doc-fecha svg {
+  color: var(--recibo-primary) !important;
+}
+
+/* ================================
+   DIVISOR
+   ================================ */
+
+.modal-recibo-separador {
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent, var(--recibo-primary), transparent) !important;
+  margin: 2rem 0 !important;
+  border: none !important;
+}
+
+/* ================================
+   SECCIONES DEL RECIBO
+   ================================ */
+
+.modal-recibo-seccion {
+  margin-bottom: 2rem !important;
+}
+
+.modal-recibo-seccion:last-child {
+  margin-bottom: 0 !important;
+}
+
+.modal-recibo-seccion-titulo {
+  font-size: 1rem !important;
   font-weight: 600 !important;
-  color: #374151 !important;
-  margin: 0 0 0.5rem 0 !important;
-  padding-bottom: 0.375rem !important;
-  border-bottom: 1px solid #e5e7eb !important;
+  color: var(--recibo-text-secondary) !important;
+  margin: 0 0 1rem 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  border-bottom: 2px solid var(--recibo-border) !important;
 }
 
 .modal-recibo-seccion-titulo svg {
-  color: #6366f1 !important;
+  color: var(--recibo-primary) !important;
+  flex-shrink: 0 !important;
 }
 
 .modal-recibo-seccion-contenido {
@@ -229,16 +306,20 @@
 .modal-recibo-dato-label {
   font-size: 0.75rem !important;
   font-weight: 600 !important;
-  color: #6b7280 !important;
+  color: var(--recibo-text-tertiary) !important;
   min-width: 100px !important;
   flex-shrink: 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
 }
 
 .modal-recibo-dato-valor {
-  font-size: 0.8125rem !important;
-  color: #111827 !important;
+  font-size: 0.9375rem !important;
+  color: var(--recibo-text-primary) !important;
   text-align: right !important;
   flex: 1 !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
 }
 
 .modal-recibo-codigo {
@@ -249,13 +330,16 @@
   display: inline-block !important;
 }
 
-/* Total */
+/* ================================
+   PAGO DESTACADO
+   ================================ */
+
 .modal-recibo-total-contenedor {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%) !important;
+  border: 2px solid var(--recibo-primary) !important;
   border-radius: 8px !important;
-  padding: 1rem !important;
-  margin: 1rem 0 !important;
-  border: 2px solid #bae6fd !important;
+  padding: 1.5rem !important;
+  margin: 1.5rem 0 !important;
 }
 
 .modal-recibo-total {
@@ -267,124 +351,223 @@
 .modal-recibo-total-label {
   display: flex !important;
   align-items: center !important;
-  gap: 0.375rem !important;
-  font-size: 0.9375rem !important;
+  gap: 0.5rem !important;
+  font-size: 0.875rem !important;
   font-weight: 600 !important;
-  color: #0369a1 !important;
+  color: var(--recibo-text-secondary) !important;
+}
+
+.modal-recibo-total-label svg {
+  color: var(--recibo-primary) !important;
 }
 
 .modal-recibo-total-monto {
-  font-size: 1.5rem !important;
+  font-size: 2rem !important;
   font-weight: 700 !important;
-  color: #0c4a6e !important;
+  color: var(--recibo-primary) !important;
+  line-height: 1 !important;
   font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
 }
 
-/* Pie del Documento */
+/* ================================
+   ESTADO FINALIZADO
+   ================================ */
+
+.modal-recibo-estado-finalizado {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  padding: 1rem !important;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.08) 100%) !important;
+  border: 2px solid var(--recibo-success) !important;
+  border-radius: 8px !important;
+  color: #065f46 !important;
+  font-weight: 600 !important;
+  font-size: 1.125rem !important;
+  margin: 1.5rem 0 !important;
+}
+
+.modal-recibo-estado-finalizado svg {
+  color: var(--recibo-success) !important;
+  flex-shrink: 0 !important;
+}
+
+/* ================================
+   FOOTER DEL RECIBO
+   ================================ */
+
 .modal-recibo-doc-pie {
-  margin-top: 1.25rem !important;
-  padding-top: 1rem !important;
-  border-top: 2px dashed #d1d5db !important;
+  margin-top: 3rem !important;
+  padding-top: 2rem !important;
+  border-top: 2px solid var(--recibo-border) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 1.5rem !important;
 }
 
 .modal-recibo-firma {
-  margin-bottom: 1rem !important;
-  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
 }
 
 .modal-recibo-linea-firma {
   width: 200px !important;
   height: 1px !important;
-  background: #9ca3af !important;
-  margin: 0 auto 0.375rem !important;
+  background: var(--recibo-text-light) !important;
+  margin-bottom: 0.5rem !important;
 }
 
 .modal-recibo-firma-texto {
   font-size: 0.75rem !important;
-  color: #6b7280 !important;
+  color: var(--recibo-text-tertiary) !important;
   margin: 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
 }
 
 .modal-recibo-nota {
-  text-align: center !important;
+  text-align: right !important;
 }
 
 .modal-recibo-nota p {
-  font-size: 0.6875rem !important;
-  color: #9ca3af !important;
-  margin: 0.125rem 0 !important;
-  font-style: italic !important;
+  font-size: 0.75rem !important;
+  color: var(--recibo-text-light) !important;
+  margin: 0.25rem 0 !important;
+  line-height: 1.5 !important;
 }
 
-/* Pie del Modal */
+/* ================================
+   BOTONES DE ACCIÓN
+   ================================ */
+
 .modal-recibo-pie {
   display: flex !important;
   justify-content: flex-end !important;
   gap: 0.75rem !important;
-  padding: 1rem 1.5rem !important;
-  background: #f9fafb !important;
-  border-top: 1px solid #e5e7eb !important;
+  padding: 1.25rem 1.5rem !important;
+  border-top: 1px solid var(--recibo-border) !important;
+  background: var(--recibo-bg-white) !important;
+  border-radius: 0 0 12px 12px !important;
+  flex-wrap: wrap !important;
 }
 
 .modal-recibo-boton-secundario,
 .modal-recibo-boton-primario {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.375rem !important;
   padding: 0.625rem 1.25rem !important;
   border-radius: 8px !important;
+  font-size: 0.9375rem !important;
   font-weight: 600 !important;
-  font-size: 0.8125rem !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
   border: none !important;
+  white-space: nowrap !important;
 }
 
 .modal-recibo-boton-secundario {
-  background: rgb(255, 255, 255) !important;
-  color: #374151 !important;
-  border: 1px solid #d1d5db !important;
+  background: var(--recibo-bg-light) !important;
+  color: var(--recibo-text-secondary) !important;
+  border: 1.5px solid var(--recibo-border) !important;
 }
 
-.modal-recibo-boton-secundario:hover {
-  background: #dc2626 !important;
-  color: #ffffff !important;
-  border-color: #dc2626 !important;
+.modal-recibo-boton-secundario:hover:not(:disabled) {
+  background: var(--recibo-border) !important;
+  border-color: var(--recibo-text-tertiary) !important;
 }
 
 .modal-recibo-boton-primario {
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
   color: white !important;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25) !important;
+  box-shadow: 0 2px 4px rgb(50, 80, 212) !important;
 }
 
-.modal-recibo-boton-primario:hover {
+.modal-recibo-boton-primario:hover:not(:disabled) {
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35) !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
 }
 
-/* Animaciones */
-@keyframes modal-recibo-aparecerFade {
-  from {
-    opacity: 0;
+.modal-recibo-boton-secundario:disabled,
+.modal-recibo-boton-primario:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.modal-recibo-boton-secundario svg,
+.modal-recibo-boton-primario svg {
+  flex-shrink: 0 !important;
+}
+
+/* ================================
+   CLASE NO-PRINT
+   ================================ */
+
+.no-print {
+  display: flex !important;
+}
+
+/* ================================
+   ESTILOS DE IMPRESIÓN
+   ================================ */
+
+@media print {
+  .no-print {
+    display: none !important;
   }
-  to {
-    opacity: 1;
+
+  .modal-recibo-superposicion {
+    background: white !important;
+    position: static !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+  }
+
+  .modal-recibo-contenedor {
+    max-width: none !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .modal-recibo-cuerpo {
+    padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  .modal-recibo-documento {
+    box-shadow: none !important;
+    padding: 1rem !important;
+  }
+
+  .modal-recibo-total-contenedor {
+    border: 1px solid var(--recibo-border) !important;
+    background: white !important;
+  }
+
+  .modal-recibo-estado-finalizado {
+    border: 1px solid var(--recibo-success) !important;
+    background: white !important;
+  }
+
+  .modal-recibo-seccion,
+  .modal-recibo-total-contenedor,
+  .modal-recibo-estado-finalizado {
+    page-break-inside: avoid !important;
   }
 }
 
-@keyframes modal-recibo-deslizarArriba {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
 
-/* Responsive */
 @media (max-width: 768px) {
   .modal-recibo-superposicion {
     padding: 0 !important;
@@ -392,17 +575,27 @@
   }
 
   .modal-recibo-contenedor {
-    max-height: 90vh !important;
-    border-radius: 12px 12px 0 0 !important;
-    animation: modal-recibo-deslizarDesdeAbajo 0.3s ease-out !important;
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 16px 16px 0 0 !important;
   }
 
   .modal-recibo-encabezado {
-    padding: 0.875rem 1.25rem !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding: 1rem !important;
   }
 
   .modal-recibo-titulo {
-    font-size: 1rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  .modal-recibo-subtitulo {
+    font-size: 0.8125rem !important;
+  }
+
+  .modal-recibo-boton-cerrar {
+    width: 36px !important;
+    height: 36px !important;
   }
 
   .modal-recibo-cuerpo {
@@ -410,15 +603,25 @@
   }
 
   .modal-recibo-documento {
-    padding: 1rem !important;
+    padding: 1.5rem !important;
   }
 
   .modal-recibo-doc-encabezado {
     flex-direction: column !important;
+    gap: 1.5rem !important;
   }
 
   .modal-recibo-doc-info {
     text-align: left !important;
+    width: 100% !important;
+  }
+
+  .modal-recibo-doc-fecha {
+    justify-content: flex-start !important;
+  }
+
+  .modal-recibo-empresa-nombre {
+    font-size: 1.5rem !important;
   }
 
   .modal-recibo-dato {
@@ -434,13 +637,29 @@
     text-align: left !important;
   }
 
+  .modal-recibo-total {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
   .modal-recibo-total-monto {
-    font-size: 1.25rem !important;
+    font-size: 1.75rem !important;
+  }
+
+  .modal-recibo-doc-pie {
+    flex-direction: column !important;
+    gap: 2rem !important;
+    align-items: center !important;
+  }
+
+  .modal-recibo-nota {
+    text-align: center !important;
   }
 
   .modal-recibo-pie {
-    padding: 0.875rem 1.25rem !important;
-    flex-direction: column-reverse !important;
+    flex-direction: column !important;
+    padding: 1rem !important;
   }
 
   .modal-recibo-boton-secundario,
@@ -450,32 +669,69 @@
   }
 }
 
-@keyframes modal-recibo-deslizarDesdeAbajo {
-  from {
-    opacity: 0;
-    transform: translateY(100%);
+@media (max-width: 480px) {
+  .modal-recibo-encabezado {
+    padding: 0.875rem !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .modal-recibo-titulo {
+    font-size: 1.125rem !important;
+  }
+
+  .modal-recibo-documento {
+    padding: 1rem !important;
+  }
+
+  .modal-recibo-empresa-nombre {
+    font-size: 1.25rem !important;
+  }
+
+  .modal-recibo-doc-numero {
+    font-size: 1.25rem !important;
+  }
+
+  .modal-recibo-total-monto {
+    font-size: 1.5rem !important;
+  }
+
+  .modal-recibo-seccion-titulo {
+    font-size: 0.9375rem !important;
   }
 }
 
-/* Scrollbar personalizado */
-.modal-recibo-cuerpo::-webkit-scrollbar {
-  width: 6px !important;
+/* ================================
+   ACCESIBILIDAD
+   ================================ */
+
+.modal-recibo-boton-secundario:focus-visible,
+.modal-recibo-boton-primario:focus-visible {
+  outline: 2px solid var(--recibo-primary) !important;
+  outline-offset: 2px !important;
 }
 
-.modal-recibo-cuerpo::-webkit-scrollbar-track {
-  background: #f1f5f9 !important;
-  border-radius: 3px !important;
+.modal-recibo-boton-cerrar:focus-visible {
+  outline: 2px solid white !important;
+  outline-offset: 2px !important;
 }
 
-.modal-recibo-cuerpo::-webkit-scrollbar-thumb {
-  background: #cbd5e1 !important;
-  border-radius: 3px !important;
+@media (prefers-contrast: high) {
+  .modal-recibo-contenedor {
+    border: 2px solid var(--recibo-text-primary) !important;
+  }
+  
+  .modal-recibo-documento {
+    border: 1px solid var(--recibo-border) !important;
+  }
 }
 
-.modal-recibo-cuerpo::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8 !important;
+@media (prefers-reduced-motion: reduce) {
+  .modal-recibo-superposicion,
+  .modal-recibo-contenedor,
+  .modal-recibo-boton-secundario,
+  .modal-recibo-boton-primario,
+  .modal-recibo-boton-cerrar {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

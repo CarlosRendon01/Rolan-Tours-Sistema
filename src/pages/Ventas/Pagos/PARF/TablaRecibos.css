@@ -119,26 +119,26 @@
   box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4) !important;
 }
 
-.recibos-tarjeta-estadistica.pendientes {
+.recibos-tarjeta-estadistica.cancelados {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.3)) !important;
   border: 1px solid rgba(245, 158, 11, 0.4) !important;
 }
 
-.recibos-tarjeta-estadistica.pendientes:hover {
+.recibos-tarjeta-estadistica.cancelados:hover {
   background: linear-gradient(135deg, #f59e0b, #d97706) !important;
   transform: translateY(-3px) !important;
   box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4) !important;
 }
 
-.recibos-tarjeta-estadistica.vencidos {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.3)) !important;
-  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+.recibos-tarjeta-estadistica.monto-emitido {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.3)) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
 }
 
-.recibos-tarjeta-estadistica.vencidos:hover {
-  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+.recibos-tarjeta-estadistica.monto-emitido:hover {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
   transform: translateY(-3px) !important;
-  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4) !important;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4) !important;
 }
 
 .recibos-icono-estadistica {
@@ -166,6 +166,20 @@
   letter-spacing: 0.05em !important;
   position: relative !important;
   z-index: 2 !important;
+}
+
+/* ========== ALERTA DE ERROR ========== */
+.recibos-alerta-error {
+  background: #fee2e2 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 8px !important;
+  padding: 1rem !important;
+  margin: 1rem 2rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  color: #991b1b !important;
+  animation: rec-slideDown 0.3s ease-out !important;
 }
 
 /* ========== CONTROLES ========== */
@@ -252,7 +266,7 @@
 }
 
 .recibos-entrada-buscar {
-  padding: 0.75rem 1rem 0.75rem 2.75rem !important;
+  padding: 0.75rem 2.75rem 0.75rem 2.75rem !important;
   border: 1px solid #d1d5db !important;
   border-radius: 8px !important;
   font-size: 0.875rem !important;
@@ -280,6 +294,50 @@
   transform: translateY(-50%) !important;
   color: #6b7280 !important;
   pointer-events: none !important;
+}
+
+.recibos-boton-limpiar {
+  position: absolute !important;
+  right: 0.5rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: none !important;
+  border: none !important;
+  color: #6b7280 !important;
+  cursor: pointer !important;
+  padding: 0.25rem !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.recibos-boton-limpiar:hover {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+}
+
+/* ========== BOTÓN EXPORTAR ========== */
+.recibos-boton-exportar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  background: #10b981 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.recibos-boton-exportar:hover {
+  background: #059669 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25) !important;
 }
 
 /* ========== TABLA ========== */
@@ -452,8 +510,8 @@
 }
 
 .recibos-boton-accion.recibos-descargar:hover:not(:disabled) {
-  background: #dbeafe !important;
-  color: rgb(26, 62, 224) !important;
+  background: #ffffff !important;
+  color: #2064ca !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
 }
@@ -465,8 +523,7 @@
 }
 
 .recibos-boton-accion.recibos-imprimir:hover:not(:disabled) {
-  background: #f3e8ff !important;
-  color: rgb(68, 29, 139) !important;
+  background: #7c3aed !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 12px rgba(147, 51, 234, 0.25) !important;
 }
@@ -478,8 +535,7 @@
 }
 
 .recibos-boton-accion.recibos-eliminar:hover:not(:disabled) {
-  background: #fee2e2 !important;
-  color: rgb(243, 10, 10) !important;
+  background: #b91c1c !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25) !important;
 }
@@ -628,6 +684,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -635,8 +692,25 @@
 }
 
 @keyframes rec-spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes rec-slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ========== RESPONSIVE DESIGN ========== */
@@ -644,11 +718,11 @@
   .recibos-encabezado {
     padding: 1.5rem !important;
   }
-  
+
   .recibos-estadisticas-header {
     gap: 1rem !important;
   }
-  
+
   .recibos-tarjeta-estadistica {
     padding: 0.75rem 1rem !important;
     min-width: 100px !important;
@@ -666,23 +740,23 @@
     padding: 1.5rem 1rem !important;
     text-align: center !important;
   }
-  
+
   .recibos-titulo {
     font-size: 1.5rem !important;
   }
-  
+
   .recibos-estadisticas-header {
     justify-content: center !important;
     flex-wrap: wrap !important;
   }
-  
+
   .recibos-controles {
     flex-direction: column !important;
     align-items: stretch !important;
     gap: 1rem !important;
     padding: 1rem !important;
   }
-  
+
   .recibos-seccion-izquierda,
   .recibos-seccion-derecha {
     justify-content: space-between !important;
@@ -690,26 +764,31 @@
     flex-wrap: wrap !important;
     gap: 1rem !important;
   }
-  
+
   .recibos-entrada-buscar {
     width: 100% !important;
     max-width: none !important;
   }
-  
+
   .recibos-entrada-buscar:focus {
     width: 100% !important;
   }
-  
+
+  .recibos-boton-exportar {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
   .recibos-tabla thead {
     display: none !important;
   }
-  
+
   .recibos-tabla tbody,
   .recibos-tabla tr,
   .recibos-tabla td {
     display: block !important;
   }
-  
+
   .recibos-tabla tr {
     border: 1px solid #e2e8f0 !important;
     border-radius: 12px !important;
@@ -718,7 +797,7 @@
     background: white !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   }
-  
+
   .recibos-tabla td {
     padding: 0.75rem 0 !important;
     border: none !important;
@@ -728,11 +807,11 @@
     align-items: center !important;
     border-bottom: 1px solid #f1f5f9 !important;
   }
-  
+
   .recibos-tabla td:last-child {
     border-bottom: none !important;
   }
-  
+
   .recibos-tabla td:before {
     content: attr(data-label) !important;
     font-weight: 600 !important;
@@ -743,19 +822,19 @@
     width: 120px !important;
     flex-shrink: 0 !important;
   }
-  
+
   .recibos-botones-accion {
     justify-content: flex-end !important;
     margin-top: 0.5rem !important;
   }
-  
+
   .recibos-pie-tabla {
     flex-direction: column !important;
     gap: 1rem !important;
     padding: 1rem !important;
     text-align: center !important;
   }
-  
+
   .recibos-controles-paginacion {
     flex-wrap: wrap !important;
     justify-content: center !important;
@@ -766,21 +845,21 @@
   .recibos-encabezado {
     padding: 1rem !important;
   }
-  
+
   .recibos-icono-principal {
     width: 40px !important;
     height: 40px !important;
   }
-  
+
   .recibos-titulo {
     font-size: 1.25rem !important;
   }
-  
+
   .recibos-tarjeta-estadistica {
     padding: 0.5rem 0.75rem !important;
     min-width: 80px !important;
   }
-  
+
   .recibos-valor-estadistica {
     font-size: 1.125rem !important;
   }
@@ -789,17 +868,17 @@
     width: 16px !important;
     height: 16px !important;
   }
-  
+
   .recibos-tabla td:before {
     width: 100px !important;
     font-size: 0.6875rem !important;
   }
-  
+
   .recibos-botones-accion {
     gap: 0.25rem !important;
     justify-content: flex-start !important;
   }
-  
+
   .recibos-boton-accion {
     width: 28px !important;
     height: 28px !important;

@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { X, Printer, Download, FileText, Calendar, User, Building2, CheckCircle, AlertCircle, Hash, Package, CreditCard } from 'lucide-react';
+import { X, Printer, Download, FileText, Calendar, User, Building2, CheckCircle, AlertCircle, Hash, Package, CreditCard, Coins } from 'lucide-react';
 import './ModalFacturaAbono.css';
+import { generarPDFFactura, imprimirFactura } from '../ModalesFactura/generarPDFFactura';
 
-const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa = {} }) => {
+const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa = {}, onFacturar }) => {
+  const [abonoSeleccionado, setAbonoSeleccionado] = useState(null);
   const [imprimiendo, setImprimiendo] = useState(false);
   const [generandoFactura, setGenerandoFactura] = useState(false);
   const [error, setError] = useState(null);
@@ -26,78 +28,33 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
   };
 
   // ===============================================
-  // VALIDACIONES
+  // SEPARAR ABONOS FACTURADOS Y SIN FACTURAR
   // ===============================================
-  const validarRFC = (rfc) => {
-    if (!rfc) return false;
-    const rfcPattern = /^[A-ZÑ&]{3,4}\d{6}[A-V1-9][A-Z1-9][0-9A]$/;
-    return rfcPattern.test(rfc.toUpperCase().trim());
-  };
+  const abonosSinFacturar = pagoSeleccionado.historialAbonos?.filter(
+    abono => !abono.facturaGenerada
+  ) || [];
 
-  const validarEmail = (email) => {
-    if (!email) return false;
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const validarDatosFiscales = () => {
-    const errores = [];
-    
-    if (!pagoSeleccionado.cliente?.email || !validarEmail(pagoSeleccionado.cliente.email)) {
-      errores.push('Email del cliente inválido');
-    }
-    
-    if (!pagoSeleccionado.cliente?.rfc || !validarRFC(pagoSeleccionado.cliente.rfc)) {
-      errores.push('RFC del cliente inválido o faltante');
-    }
-    
-    if (!pagoSeleccionado.servicio) {
-      errores.push('Información del servicio incompleta');
-    }
-    
-    if (!pagoSeleccionado.planPago?.montoTotal || pagoSeleccionado.planPago.montoTotal <= 0) {
-      errores.push('Monto total inválido');
-    }
-    
-    return errores;
-  };
-
-  const yaEstaFacturado = () => {
-    return pagoSeleccionado.facturaGenerada === true || pagoSeleccionado.uuidFactura;
-  };
-
-  const puedeGenerarFactura = () => {
-    return (
-      (pagoSeleccionado.estado === 'FINALIZADO' || 
-       pagoSeleccionado.estado === 'COMPLETADO') && 
-      !yaEstaFacturado() &&
-      (pagoSeleccionado.planPago?.saldoPendiente === 0 || 
-       pagoSeleccionado.planPago?.saldoPendiente === null)
-    );
-  };
+  const abonosFacturados = pagoSeleccionado.historialAbonos?.filter(
+    abono => abono.facturaGenerada
+  ) || [];
 
   // ===============================================
-  // CÁLCULOS FISCALES
+  // CÁLCULOS FISCALES PARA EL ABONO SELECCIONADO
   // ===============================================
-  const calcularImpuestos = () => {
-    const subtotal = pagoSeleccionado.planPago?.montoTotal || 0;
-    const tasaIVA = pagoSeleccionado.tasaIVA || 0.16; // 16% por defecto
+  const calcularImpuestos = (monto) => {
+    const subtotal = monto;
+    const tasaIVA = 0.16;
     const iva = subtotal * tasaIVA;
     const total = subtotal + iva;
     
     return { subtotal, iva, tasaIVA, total };
   };
 
-  const { subtotal, iva, tasaIVA, total } = calcularImpuestos();
+  const impuestosAbono = abonoSeleccionado ? calcularImpuestos(abonoSeleccionado.monto) : null;
 
   // ===============================================
-  // DATOS DE LA FACTURA
+  // DATOS DE LA EMPRESA
   // ===============================================
-  const fechaActual = new Date().toLocaleDateString('es-MX');
-  const numeroFactura = `FAC-${String(pagoSeleccionado.id || '0000').padStart(4, '0')}`;
-  const folioFiscal = pagoSeleccionado.uuidFactura || 
-    `${Math.random().toString(36).substring(2, 10).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-
-  // Datos de empresa (con fallbacks)
   const empresa = {
     nombre: datosEmpresa.nombre || 'Oaxaca Tours S.A. de C.V.',
     rfc: datosEmpresa.rfc || 'OAX123456ABC',
@@ -113,136 +70,71 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
   // ===============================================
   // MANEJADORES DE EVENTOS
   // ===============================================
-  const manejarImprimir = () => {
-    if (!yaEstaFacturado()) {
-      setError('Debe generar la factura antes de imprimirla.');
-      return;
-    }
-
-    setImprimiendo(true);
-    setTimeout(() => {
-      window.print();
-      setImprimiendo(false);
-    }, 100);
-  };
-
-  const manejarDescargar = async () => {
-    if (!yaEstaFacturado()) {
-      setError('Debe generar la factura antes de descargarla.');
-      return;
-    }
-
-    setError(null);
-    setImprimiendo(true);
-
-    try {
-      const response = await fetch(`/api/facturacion/descargar/${pagoSeleccionado.id}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/pdf' }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.mensaje || 'Error al descargar la factura');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Factura-${numeroFactura}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-
-    } catch (error) {
-      console.error('Error al descargar:', error);
-      setError(error.message || 'Error al descargar la factura. Intente nuevamente.');
-    } finally {
-      setImprimiendo(false);
-    }
-  };
-
+  
   const manejarGenerarFactura = async () => {
+    if (!abonoSeleccionado) {
+      setError('Por favor selecciona un abono para facturar');
+      return;
+    }
+
     setError(null);
-
-    // Validación 1: Ya facturado
-    if (yaEstaFacturado()) {
-      setError('Este pago ya tiene una factura generada. No se pueden generar facturas duplicadas.');
-      return;
-    }
-
-    // Validación 2: Datos fiscales
-    const erroresValidacion = validarDatosFiscales();
-    if (erroresValidacion.length > 0) {
-      setError(`Datos incompletos o inválidos:\n• ${erroresValidacion.join('\n• ')}`);
-      return;
-    }
-
-    // Validación 3: Estado del pago
-    if (!puedeGenerarFactura()) {
-      setError(`Solo se pueden facturar pagos completados. Saldo pendiente: ${formatearMoneda(pagoSeleccionado.planPago?.saldoPendiente || 0)}`);
-      return;
-    }
-
     setGenerandoFactura(true);
     
     try {
-      const response = await fetch('/api/facturacion/generar', {
+      // Simular llamada API (reemplazar con tu lógica real)
+      const response = await fetch('/api/facturacion/generar-abono', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           pagoId: pagoSeleccionado.id,
-          numeroFactura,
-          tipo: 'ABONO',
+          numeroAbono: abonoSeleccionado.numeroAbono,
+          tipo: 'ABONO_INDIVIDUAL',
           datosFacturacion: {
             cliente: pagoSeleccionado.cliente.nombre,
             rfcCliente: pagoSeleccionado.cliente.rfc,
             email: pagoSeleccionado.cliente.email,
             usoCFDI: pagoSeleccionado.usoCFDI || 'G03',
-            formaPago: pagoSeleccionado.formaPago || 'PPD',
-            metodoPago: pagoSeleccionado.metodoPago || 'Mixto',
+            formaPago: 'PPD',
+            metodoPago: abonoSeleccionado.metodoPago,
             moneda: 'MXN',
-            subtotal,
-            iva,
-            tasaIVA,
-            total,
-            concepto: pagoSeleccionado.servicio.tipo,
+            subtotal: impuestosAbono.subtotal,
+            iva: impuestosAbono.iva,
+            tasaIVA: impuestosAbono.tasaIVA,
+            total: impuestosAbono.total,
+            concepto: `Abono #${abonoSeleccionado.numeroAbono} - ${pagoSeleccionado.servicio.tipo}`,
             descripcion: pagoSeleccionado.servicio.descripcion,
             numeroContrato: pagoSeleccionado.numeroContrato,
-            historialAbonos: pagoSeleccionado.historialAbonos
+            fechaAbono: abonoSeleccionado.fecha,
+            referenciaAbono: abonoSeleccionado.referencia
           }
         })
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        
-        // Manejo específico de errores
-        if (response.status === 422) {
-          throw new Error('Datos fiscales inválidos. Verifica RFC y Régimen Fiscal.');
-        } else if (response.status === 503) {
-          throw new Error('Servicio del SAT no disponible. Intenta más tarde.');
-        } else if (response.status === 409) {
-          throw new Error('Ya existe una factura para este pago.');
-        } else {
-          throw new Error(errorData.mensaje || 'Error al generar la factura');
-        }
+        throw new Error(errorData.mensaje || 'Error al generar la factura');
       }
 
       const result = await response.json();
 
-      // Actualizar estado del pago
-      if (pagoSeleccionado.facturaGenerada !== undefined) {
-        pagoSeleccionado.facturaGenerada = true;
-      }
-      if (result.uuid) {
-        pagoSeleccionado.uuidFactura = result.uuid;
+      // Preparar datos de la factura
+      const numeroFactura = `FAC-${String(pagoSeleccionado.id).padStart(4, '0')}-${abonoSeleccionado.numeroAbono}`;
+      const uuid = result.uuid || `${Math.random().toString(36).substring(2, 10).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+      const fechaFacturacion = new Date().toISOString().split('T')[0];
+
+      // Callback para actualizar el abono con la factura generada
+      if (onFacturar) {
+        onFacturar(pagoSeleccionado.id, abonoSeleccionado.numeroAbono, {
+          numeroFactura,
+          uuid,
+          fechaFacturacion
+        });
       }
       
-      alert(`✅ Factura generada y timbrada exitosamente ante el SAT\n\nFolio Fiscal (UUID): ${result.uuid || folioFiscal}\nFactura: ${numeroFactura}`);
+      alert(`✅ Factura generada y timbrada exitosamente ante el SAT\n\nFolio: ${numeroFactura}\nUUID: ${uuid}\nAbono: #${abonoSeleccionado.numeroAbono}`);
       
+      // Limpiar selección y cerrar después de 1.5s
+      setAbonoSeleccionado(null);
       setTimeout(() => onCerrar(), 1500);
       
     } catch (error) {
@@ -253,9 +145,96 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
     }
   };
 
+  const manejarDescargarFactura = async (abono) => {
+    setError(null);
+    setImprimiendo(true);
+
+    try {
+      const impuestosDescarga = calcularImpuestos(abono.monto);
+      
+      // Preparar datos de la factura para el PDF
+      const datosFactura = {
+        id: pagoSeleccionado.id,
+        numeroFactura: abono.numeroFactura,
+        uuidFactura: abono.uuid,
+        uuid: abono.uuid,
+        cliente: pagoSeleccionado.cliente,
+        servicio: {
+          ...pagoSeleccionado.servicio,
+          tipo: `Abono #${abono.numeroAbono} - ${pagoSeleccionado.servicio.tipo}`,
+          descripcion: `${pagoSeleccionado.servicio.descripcion} | Fecha de abono: ${formatearFecha(abono.fecha)}`
+        },
+        usoCFDI: pagoSeleccionado.usoCFDI,
+        metodoPago: abono.metodoPago,
+        numeroContrato: pagoSeleccionado.numeroContrato,
+        historialAbonos: [abono], // Solo el abono específico
+        subtotal: impuestosDescarga.subtotal,
+        tasaIVA: impuestosDescarga.tasaIVA,
+        planPago: {
+          montoTotal: impuestosDescarga.subtotal
+        },
+        selloCFDI: pagoSeleccionado.selloCFDI,
+        selloSAT: pagoSeleccionado.selloSAT,
+        cadenaOriginal: pagoSeleccionado.cadenaOriginal
+      };
+
+      // Generar el PDF usando la función importada
+      await generarPDFFactura(datosFactura, empresa);
+      
+      console.log('PDF generado exitosamente para factura:', abono.numeroFactura);
+
+    } catch (error) {
+      console.error('Error al descargar:', error);
+      setError(error.message || 'Error al descargar la factura. Intente nuevamente.');
+    } finally {
+      setImprimiendo(false);
+    }
+  };
+
+  const manejarImprimirFactura = (abono) => {
+    setImprimiendo(true);
+    setError(null);
+
+    try {
+      const impuestosImpresion = calcularImpuestos(abono.monto);
+      
+      const datosFactura = {
+        id: pagoSeleccionado.id,
+        numeroFactura: abono.numeroFactura,
+        uuidFactura: abono.uuid,
+        uuid: abono.uuid,
+        cliente: pagoSeleccionado.cliente,
+        servicio: {
+          ...pagoSeleccionado.servicio,
+          tipo: `Abono #${abono.numeroAbono} - ${pagoSeleccionado.servicio.tipo}`
+        },
+        usoCFDI: pagoSeleccionado.usoCFDI,
+        metodoPago: abono.metodoPago,
+        numeroContrato: pagoSeleccionado.numeroContrato,
+        historialAbonos: [abono],
+        subtotal: impuestosImpresion.subtotal,
+        tasaIVA: impuestosImpresion.tasaIVA,
+        planPago: {
+          montoTotal: impuestosImpresion.subtotal
+        }
+      };
+
+      imprimirFactura(datosFactura, empresa);
+      
+    } catch (error) {
+      console.error('Error al imprimir:', error);
+      setError(error.message || 'Error al imprimir la factura. Intente nuevamente.');
+    } finally {
+      setTimeout(() => {
+        setImprimiendo(false);
+      }, 500);
+    }
+  };
+
   const manejarCerrar = () => {
     if (!generandoFactura) {
       setError(null);
+      setAbonoSeleccionado(null);
       onCerrar();
     }
   };
@@ -269,17 +248,16 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
         
         {/* HEADER */}
         <div className="modal-factura-header no-print">
-          <div className="modal-factura-header-contenido">
-            <div className="modal-factura-icono-principal">
-              <CreditCard size={24} />
+          <div className="modal-factura-titulo-seccion">
+            <div className="modal-factura-icono-titulo">
+              <FileText size={24} />
             </div>
             <div>
               <h2 className="modal-factura-titulo">
-                Factura Fiscal
-                {yaEstaFacturado() && <span className="modal-factura-badge-facturado">• Ya facturado</span>}
+                Facturación por Abono Individual
               </h2>
               <p className="modal-factura-subtitulo">
-                Comprobante Fiscal Digital por Internet (CFDI) - {numeroFactura}
+                Generar factura CFDI para cada abono realizado
               </p>
             </div>
           </div>
@@ -295,118 +273,28 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
 
         {/* ALERTAS */}
         {error && (
-          <div className="modal-factura-alerta-error no-print">
-            <AlertCircle size={20} />
-            <p className="modal-factura-alerta-texto">{error}</p>
-          </div>
-        )}
-
-        {yaEstaFacturado() && (
-          <div className="modal-factura-alerta-success no-print">
-            <CheckCircle size={20} />
-            <div>
-              <p className="modal-factura-alerta-titulo">Factura generada exitosamente</p>
-              {pagoSeleccionado.uuidFactura && (
-                <p className="modal-factura-alerta-texto-small">
-                  UUID: {pagoSeleccionado.uuidFactura}
-                </p>
-              )}
-              <p className="modal-factura-alerta-texto-small">
-                Esta factura fue timbrada ante el SAT. Puede descargarla o imprimirla.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {!puedeGenerarFactura() && !yaEstaFacturado() && (
-          <div className="modal-factura-alerta-warning no-print">
+          <div className="modal-factura-alerta" style={{background: '#fee2e2', borderBottom: '1px solid #fecaca', color: '#991b1b'}}>
             <AlertCircle size={20} />
             <div>
-              <p className="modal-factura-alerta-titulo">Pago pendiente de completar</p>
-              <p className="modal-factura-alerta-texto-small">
-                Para generar la factura, el pago debe estar completado. 
-                Saldo pendiente: {formatearMoneda(pagoSeleccionado.planPago?.saldoPendiente || 0)}
-              </p>
+              <p className="modal-factura-alerta-titulo">Error</p>
+              <p className="modal-factura-alerta-texto" style={{whiteSpace: 'pre-line'}}>{error}</p>
             </div>
           </div>
         )}
 
         {/* CONTENIDO */}
         <div className="modal-factura-contenido" ref={facturaRef}>
-          <div className="factura-documento">
-            
-            {/* Encabezado */}
-            <div className="factura-encabezado">
-              <div className="factura-emisor">
-                <h1 className="factura-empresa-nombre">{empresa.nombre}</h1>
-                <div className="factura-empresa-detalles">
-                  <p><strong>RFC:</strong> {empresa.rfc}</p>
-                  <p><strong>Régimen Fiscal:</strong> {empresa.regimen}</p>
-                  <p>{empresa.direccion}</p>
-                  <p>C.P. {empresa.codigoPostal}, {empresa.ciudad}</p>
-                  <p>Tel: {empresa.telefono}</p>
-                </div>
-              </div>
-              <div className="factura-info-documento">
-                <div className="factura-tipo">
-                  <span className="factura-tipo-badge">FACTURA</span>
-                  <span className="factura-tipo-cfdi">CFDI 4.0</span>
-                </div>
-                <div className="factura-numero">
-                  <span className="factura-etiqueta">FOLIO:</span>
-                  <span className="factura-valor-destacado">{numeroFactura}</span>
-                </div>
-                <div className="factura-fecha-grupo">
-                  <div className="factura-fecha-item">
-                    <Calendar size={14} />
-                    <div>
-                      <span className="factura-fecha-label">Fecha Emisión:</span>
-                      <span className="factura-fecha-valor">{fechaActual}</span>
-                    </div>
-                  </div>
-                  <div className="factura-fecha-item">
-                    <Calendar size={14} />
-                    <div>
-                      <span className="factura-fecha-label">Fecha Certificación:</span>
-                      <span className="factura-fecha-valor">{fechaActual}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="factura-divisor"></div>
-
-            {/* Información Fiscal */}
-            <div className="factura-info-fiscal">
-              <div className="factura-folio-fiscal">
-                <Hash size={16} />
-                <div>
-                  <span className="factura-folio-label">Folio Fiscal (UUID):</span>
-                  <span className="factura-folio-valor">{folioFiscal}</span>
-                </div>
-              </div>
-              <div className="factura-certificados">
-                <div className="factura-certificado-item">
-                  <span className="factura-cert-label">No. Certificado SAT:</span>
-                  <span className="factura-cert-valor">{empresa.certificadoSAT}</span>
-                </div>
-                <div className="factura-certificado-item">
-                  <span className="factura-cert-label">No. Certificado Emisor:</span>
-                  <span className="factura-cert-valor">{empresa.certificadoEmisor}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Receptor */}
+          
+          {/* Información del Cliente y Servicio */}
+          <div className="factura-documento" style={{ marginBottom: '1.5rem' }}>
             <div className="factura-seccion">
               <h3 className="factura-seccion-titulo">
                 <User size={18} />
-                Receptor
+                Información del Cliente
               </h3>
               <div className="factura-grid">
                 <div className="factura-campo">
-                  <span className="factura-campo-etiqueta">Nombre / Razón Social:</span>
+                  <span className="factura-campo-etiqueta">Cliente:</span>
                   <span className="factura-campo-valor">{pagoSeleccionado.cliente?.nombre || 'N/A'}</span>
                 </div>
                 <div className="factura-campo">
@@ -414,230 +302,317 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
                   <span className="factura-campo-valor">{pagoSeleccionado.cliente?.rfc || 'XAXX010101000'}</span>
                 </div>
                 <div className="factura-campo">
-                  <span className="factura-campo-etiqueta">Email:</span>
-                  <span className="factura-campo-valor">{pagoSeleccionado.cliente?.email || 'N/A'}</span>
+                  <span className="factura-campo-etiqueta">Servicio:</span>
+                  <span className="factura-campo-valor">{pagoSeleccionado.servicio?.tipo || 'N/A'}</span>
                 </div>
                 <div className="factura-campo">
-                  <span className="factura-campo-etiqueta">Uso CFDI:</span>
-                  <span className="factura-campo-valor">{pagoSeleccionado.usoCFDI || 'G03'} - Gastos en general</span>
-                </div>
-                <div className="factura-campo">
-                  <span className="factura-campo-etiqueta">Régimen Fiscal:</span>
-                  <span className="factura-campo-valor">{pagoSeleccionado.cliente?.regimen || '605 - Sueldos y Salarios'}</span>
-                </div>
-                <div className="factura-campo">
-                  <span className="factura-campo-etiqueta">Domicilio Fiscal:</span>
-                  <span className="factura-campo-valor">C.P. {pagoSeleccionado.cliente?.codigoPostal || '68000'}</span>
+                  <span className="factura-campo-etiqueta">Contrato:</span>
+                  <span className="factura-campo-valor">{pagoSeleccionado.numeroContrato}</span>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Conceptos */}
+          {/* Abonos Disponibles para Facturar */}
+          <div className="factura-documento" style={{ marginBottom: '1.5rem' }}>
             <div className="factura-seccion">
               <h3 className="factura-seccion-titulo">
-                <Package size={18} />
-                Conceptos
+                <Coins size={18} />
+                Abonos Disponibles para Facturar ({abonosSinFacturar.length})
               </h3>
-              <div className="factura-tabla-conceptos">
-                <table className="factura-tabla">
-                  <thead>
-                    <tr>
-                      <th>Clave</th>
-                      <th>Cantidad</th>
-                      <th>Unidad</th>
-                      <th>Descripción</th>
-                      <th>Precio Unitario</th>
-                      <th>Importe</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>90111501</td>
-                      <td>1</td>
-                      <td>E48 - Servicio</td>
-                      <td>
-                        <div className="factura-concepto-desc">
-                          <strong>{pagoSeleccionado.servicio?.tipo || 'Servicio Turístico'}</strong>
-                          <span>{pagoSeleccionado.servicio?.descripcion || 'Servicio de tour'}</span>
-                          <span className="factura-concepto-extra">
-                            Fecha del Tour: {formatearFecha(pagoSeleccionado.servicio?.fechaTour || new Date())}
-                          </span>
-                          <span className="factura-concepto-extra">
-                            Contrato: {pagoSeleccionado.numeroContrato || 'N/A'}
-                          </span>
+
+              {abonosSinFacturar.length === 0 ? (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '2rem',
+                  color: '#6b7280',
+                  background: '#f9fafb',
+                  borderRadius: '8px',
+                  border: '1px solid #e5e7eb'
+                }}>
+                  <AlertCircle size={48} style={{ margin: '0 auto 1rem', color: '#d1d5db' }} />
+                  <p style={{ margin: 0, fontWeight: '600', color: '#374151' }}>No hay abonos pendientes de facturar</p>
+                  <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.875rem' }}>
+                    Todos los abonos ya tienen factura generada
+                  </p>
+                </div>
+              ) : (
+                <div className="factura-historial">
+                  {abonosSinFacturar.map((abono) => {
+                    const esSeleccionado = abonoSeleccionado?.numeroAbono === abono.numeroAbono;
+                    const impuestosTemp = calcularImpuestos(abono.monto);
+
+                    return (
+                      <div
+                        key={abono.numeroAbono}
+                        onClick={() => setAbonoSeleccionado(abono)}
+                        style={{
+                          position: 'relative',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        className="factura-historial-item"
+                      >
+                        {esSeleccionado && (
+                          <div style={{
+                            position: 'absolute',
+                            top: '0.75rem',
+                            right: '0.75rem',
+                            background: '#4338ca',
+                            color: 'white',
+                            borderRadius: '50%',
+                            width: '24px',
+                            height: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <CheckCircle size={16} />
+                          </div>
+                        )}
+                        <div style={{
+                          border: esSeleccionado ? '2px solid #4338ca' : '1px solid #e5e7eb',
+                          background: esSeleccionado ? '#f0f4ff' : '#f9fafb',
+                          borderRadius: '8px',
+                          padding: '1rem'
+                        }}>
+                          <div className="factura-historial-numero" style={{
+                            color: esSeleccionado ? '#4338ca' : '#10b981'
+                          }}>
+                            <Coins size={16} />
+                            <span>Abono #{abono.numeroAbono}</span>
+                          </div>
+                          <div className="factura-historial-detalles">
+                            <span>{formatearFecha(abono.fecha)}</span>
+                            <span>{abono.metodoPago || 'Efectivo'}</span>
+                            <span className="factura-historial-monto">{formatearMoneda(abono.monto)}</span>
+                          </div>
+                          <div style={{
+                            marginTop: '0.5rem',
+                            paddingTop: '0.5rem',
+                            borderTop: '1px solid #e5e7eb',
+                            fontSize: '0.75rem',
+                            color: '#6b7280'
+                          }}>
+                            <strong style={{ color: '#374151' }}>Total con IVA:</strong> {formatearMoneda(impuestosTemp.total)}
+                          </div>
                         </div>
-                      </td>
-                      <td className="factura-monto">{formatearMoneda(subtotal)}</td>
-                      <td className="factura-monto">{formatearMoneda(subtotal)}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Preview de Factura */}
+          {abonoSeleccionado && impuestosAbono && (
+            <div className="factura-documento" style={{ 
+              border: '2px solid #4338ca',
+              background: 'linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%)'
+            }}>
+              <div className="factura-seccion">
+                <h3 className="factura-seccion-titulo" style={{ color: '#4338ca' }}>
+                  <FileText size={18} />
+                  Preview de Factura - Abono #{abonoSeleccionado.numeroAbono}
+                </h3>
+
+                <div className="factura-info-fiscal">
+                  <div className="factura-campo">
+                    <span className="factura-campo-etiqueta">Número de Factura:</span>
+                    <span className="factura-campo-valor" style={{ color: '#4338ca', fontWeight: '700' }}>
+                      FAC-{String(pagoSeleccionado.id).padStart(4, '0')}-{abonoSeleccionado.numeroAbono}
+                    </span>
+                  </div>
+
+                  <div className="factura-divisor" style={{ margin: '1rem 0' }}></div>
+
+                  <div className="factura-totales">
+                    <div className="factura-total-linea">
+                      <span>Subtotal:</span>
+                      <span>{formatearMoneda(impuestosAbono.subtotal)}</span>
+                    </div>
+                    <div className="factura-total-linea">
+                      <span>IVA ({(impuestosAbono.tasaIVA * 100).toFixed(0)}%):</span>
+                      <span>{formatearMoneda(impuestosAbono.iva)}</span>
+                    </div>
+                    <div className="factura-total-linea total">
+                      <span>Total:</span>
+                      <span>{formatearMoneda(impuestosAbono.total)}</span>
+                    </div>
+                  </div>
+
+                  <div className="factura-cadena" style={{ marginTop: '1rem' }}>
+                    <h4>Nota Importante</h4>
+                    <p className="factura-cadena-texto" style={{ fontFamily: 'inherit' }}>
+                      Esta factura corresponde únicamente al <strong>Abono #{abonoSeleccionado.numeroAbono}</strong> realizado el {formatearFecha(abonoSeleccionado.fecha)} mediante {abonoSeleccionado.metodoPago}.
+                      {abonoSeleccionado.referencia && ` Referencia: ${abonoSeleccionado.referencia}`}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
+          )}
 
-            {/* Totales */}
-            <div className="factura-totales-seccion">
-              <div className="factura-info-adicional">
-                <div>
-                  <h4>Método de Pago</h4>
-                  <p>PPD - Pago en Parcialidades o Diferido</p>
-                </div>
-                <div>
-                  <h4>Forma de Pago</h4>
-                  <p>{pagoSeleccionado.metodoPago || 'Mixto (Efectivo, Transferencia, Tarjeta)'}</p>
-                </div>
-                <div>
-                  <h4>Moneda</h4>
-                  <p>MXN - Peso Mexicano</p>
-                </div>
-              </div>
-
-              <div className="factura-totales">
-                <div className="factura-total-linea">
-                  <span>Subtotal:</span>
-                  <span>{formatearMoneda(subtotal)}</span>
-                </div>
-                <div className="factura-total-linea">
-                  <span>IVA ({(tasaIVA * 100).toFixed(0)}%):</span>
-                  <span>{formatearMoneda(iva)}</span>
-                </div>
-                <div className="factura-total-linea total">
-                  <span>Total:</span>
-                  <span>{formatearMoneda(total)}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Historial de Pagos */}
-            {pagoSeleccionado.historialAbonos?.length > 0 && (
+          {/* Historial de Facturas Generadas */}
+          {abonosFacturados.length > 0 && (
+            <div className="factura-documento" style={{ marginTop: '1.5rem' }}>
               <div className="factura-seccion">
                 <h3 className="factura-seccion-titulo">
-                  <Building2 size={18} />
-                  Historial de Pagos
+                  <CheckCircle size={18} />
+                  Facturas Generadas ({abonosFacturados.length})
                 </h3>
                 <div className="factura-historial">
-                  {pagoSeleccionado.historialAbonos.map((abono, index) => (
-                    <div key={index} className="factura-historial-item">
-                      <div className="factura-historial-numero">
-                        <CheckCircle size={16} />
-                        <span>Abono {abono.numeroAbono || index + 1}</span>
+                  {abonosFacturados.map((abono) => (
+                    <div
+                      key={abono.numeroAbono}
+                      className="factura-historial-item"
+                      style={{
+                        background: '#d1fae5',
+                        border: '1px solid #a7f3d0'
+                      }}
+                    >
+                      <div>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          marginBottom: '0.5rem'
+                        }}>
+                          <span style={{
+                            fontWeight: '600',
+                            color: '#065f46',
+                            fontSize: '0.875rem'
+                          }}>
+                            {abono.numeroFactura}
+                          </span>
+                          <span style={{
+                            background: '#059669',
+                            color: 'white',
+                            padding: '2px 8px',
+                            borderRadius: '4px',
+                            fontSize: '0.625rem',
+                            fontWeight: '600'
+                          }}>
+                            FACTURADO
+                          </span>
+                        </div>
+                        <div className="factura-historial-detalles">
+                          <span>Abono #{abono.numeroAbono}</span>
+                          <span>{formatearFecha(abono.fechaFacturacion)}</span>
+                          <span className="factura-historial-monto">{formatearMoneda(abono.monto)}</span>
+                        </div>
+                        {abono.uuid && (
+                          <div style={{
+                            fontSize: '0.6875rem',
+                            color: '#047857',
+                            fontFamily: 'monospace',
+                            marginTop: '0.5rem',
+                            wordBreak: 'break-all'
+                          }}>
+                            UUID: {abono.uuid}
+                          </div>
+                        )}
                       </div>
-                      <div className="factura-historial-detalles">
-                        <span>{formatearFecha(abono.fecha)}</span>
-                        <span>{abono.metodoPago || 'Efectivo'}</span>
-                        <span className="factura-historial-monto">{formatearMoneda(abono.monto)}</span>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                        <button
+                          onClick={() => manejarImprimirFactura(abono)}
+                          disabled={imprimiendo}
+                          className="modal-factura-boton secundario"
+                          style={{
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.8125rem'
+                          }}
+                        >
+                          <Printer size={14} />
+                          Imprimir
+                        </button>
+                        <button
+                          onClick={() => manejarDescargarFactura(abono)}
+                          disabled={imprimiendo}
+                          className="modal-factura-boton primario"
+                          style={{
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.8125rem'
+                          }}
+                        >
+                          <Download size={14} />
+                          PDF
+                        </button>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="factura-historial-resumen">
-                  <span>Total de Abonos Realizados:</span>
-                  <span className="factura-historial-total">
-                    {pagoSeleccionado.planPago?.abonosRealizados || pagoSeleccionado.historialAbonos.length} abonos
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {/* Sellos Digitales */}
-            <div className="factura-sello">
-              <h4>Sello Digital del CFDI</h4>
-              <p className="factura-sello-texto">
-                {pagoSeleccionado.selloCFDI || 'hA3kL9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH=='}
-              </p>
-            </div>
-
-            <div className="factura-sello">
-              <h4>Sello Digital del SAT</h4>
-              <p className="factura-sello-texto">
-                {pagoSeleccionado.selloSAT || 'xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5=='}
-              </p>
-            </div>
-
-            {/* Cadena Original */}
-            <div className="factura-cadena">
-              <h4>Cadena Original del Complemento de Certificación Digital del SAT</h4>
-              <p className="factura-cadena-texto">
-                {pagoSeleccionado.cadenaOriginal || `||1.1|${folioFiscal}|${fechaActual}|${empresa.rfc}|${pagoSeleccionado.cliente?.nombre || 'N/A'}|${total}|${empresa.certificadoSAT}||`}
-              </p>
-            </div>
-
-            {/* Código QR */}
-            <div className="factura-qr">
-              <div className="factura-qr-placeholder">
-                <FileText size={48} />
-                <p>Código QR</p>
-                <span>Escanea para verificar</span>
-              </div>
-              <div className="factura-qr-info">
-                <p><strong>Este documento es una representación impresa de un CFDI</strong></p>
-                <p>Puede verificar la autenticidad de este documento en:</p>
-                <p className="factura-qr-link">https://verificacfdi.facturaelectronica.sat.gob.mx/</p>
               </div>
             </div>
-
-            {/* Footer */}
-            <div className="factura-footer">
-              <p>Este documento fue generado electrónicamente y es válido sin firma autógrafa</p>
-              <p>Fecha y hora de certificación: {new Date().toLocaleString('es-MX')}</p>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* BOTONES DE ACCIÓN */}
         <div className="modal-factura-acciones no-print">
           <button 
-            className="modal-factura-boton modal-factura-boton-cancelar" 
+            className="modal-factura-boton secundario" 
             onClick={manejarCerrar}
             disabled={generandoFactura}
           >
             Cerrar
           </button>
           
-          {puedeGenerarFactura() && (
+          {abonoSeleccionado && (
             <button 
-              className="modal-factura-boton modal-factura-boton-generar" 
+              className="modal-factura-boton generar" 
               onClick={manejarGenerarFactura}
               disabled={generandoFactura}
             >
               <CheckCircle size={18} />
-              {generandoFactura ? 'Generando...' : 'Generar y Timbrar'}
+              {generandoFactura ? 'Generando...' : `Generar Factura - Abono #${abonoSeleccionado.numeroAbono}`}
             </button>
-          )}
-
-          {yaEstaFacturado() && (
-            <>
-              <button 
-                className="modal-factura-boton modal-factura-boton-secundario" 
-                onClick={manejarImprimir}
-                disabled={imprimiendo}
-              >
-                <Printer size={18} />
-                Imprimir
-              </button>
-
-              <button 
-                className="modal-factura-boton modal-factura-boton-primario" 
-                onClick={manejarDescargar}
-                disabled={imprimiendo}
-              >
-                <Download size={18} />
-                Descargar PDF
-              </button>
-            </>
           )}
         </div>
 
         {/* LOADING OVERLAY */}
         {(generandoFactura || imprimiendo) && (
-          <div className="modal-factura-loading">
-            <div className="modal-factura-spinner"></div>
-            <p className="modal-factura-loading-texto">
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1rem',
+            zIndex: 9999,
+            borderRadius: '12px'
+          }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              border: '4px solid rgba(255, 255, 255, 0.3)',
+              borderTop: '4px solid white',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+            <p style={{
+              color: 'white',
+              fontSize: '0.9375rem',
+              fontWeight: '600',
+              margin: 0
+            }}>
               {generandoFactura ? 'Generando y timbrando factura ante el SAT...' : 'Procesando...'}
             </p>
           </div>
         )}
       </div>
+
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

@@ -22,9 +22,7 @@ import ModalVerAbono from '../ModalesAbonos/ModalVerAbono';
 import ModalEditarAbono from '../ModalesAbonos/ModalEditarAbono';
 import ModalReciboAbono from '../ModalesAbonos/ModalReciboAbono';
 import ModalFacturaAbono from '../ModalesAbonos/ModalFacturaAbono';
-import { modalEliminarPago } from '../ModalesAbonos/ModalEliminarAbono'; // ← AGREGAR ESTA LÍNEA
-
-
+import { modalEliminarPago } from '../ModalesAbonos/ModalEliminarAbono';
 
 const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
   const [paginaActual, setPaginaActual] = useState(1);
@@ -42,14 +40,18 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
  
   const [pagoSeleccionado, setPagoSeleccionado] = useState(null);
 
-  // Estado para los datos de abonos
+  // Estado para los datos de abonos - ACTUALIZADO CON CAMPOS DE FACTURACIÓN
   const [datosAbonos, setDatosAbonos] = useState([
     {
       id: 1,
       cliente: {
         id: 123,
         nombre: 'Roberto Sánchez Morales',
-        email: 'roberto@example.com'
+        email: 'roberto@example.com',
+        rfc: 'SAMR850615ABC',
+        telefono: '951-123-4567',
+        regimen: '605 - Sueldos y Salarios',
+        codigoPostal: '68000'
       },
       servicio: {
         tipo: 'Tour Arqueológico',
@@ -65,22 +67,55 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         abonosRealizados: 3
       },
       historialAbonos: [
-        { numeroAbono: 1, monto: 6000, fecha: '2025-09-15', metodoPago: 'Transferencia' },
-        { numeroAbono: 2, monto: 6000, fecha: '2025-09-22', metodoPago: 'Efectivo' },
-        { numeroAbono: 3, monto: 6000, fecha: '2025-09-29', metodoPago: 'Tarjeta' }
+        { 
+          numeroAbono: 1, 
+          monto: 6000, 
+          fecha: '2025-09-15', 
+          metodoPago: 'Transferencia',
+          referencia: 'REF-001',
+          // ⭐ NUEVOS CAMPOS PARA FACTURACIÓN
+          facturaGenerada: true,
+          numeroFactura: 'FAC-0001-1',
+          uuid: 'A1B2C3D4-E5F6-1234-5678-ABCDEF123456',
+          fechaFacturacion: '2025-09-15'
+        },
+        { 
+          numeroAbono: 2, 
+          monto: 6000, 
+          fecha: '2025-09-22', 
+          metodoPago: 'Efectivo',
+          referencia: 'REF-002',
+          // ⭐ SIN FACTURA
+          facturaGenerada: false
+        },
+        { 
+          numeroAbono: 3, 
+          monto: 6000, 
+          fecha: '2025-09-29', 
+          metodoPago: 'Tarjeta',
+          referencia: 'REF-003',
+          // ⭐ SIN FACTURA
+          facturaGenerada: false
+        }
       ],
       estado: 'EN_PROCESO',
       proximoVencimiento: '2025-10-25',
       numeroContrato: 'CONT-001',
       facturaGenerada: false,
-      fechaCreacion: '2025-09-15'
+      fechaCreacion: '2025-09-15',
+      usoCFDI: 'G03',
+      metodoPago: 'Mixto'
     },
     {
       id: 2,
       cliente: {
         id: 124,
         nombre: 'Diana Torres Vega',
-        email: 'diana@example.com'
+        email: 'diana@example.com',
+        rfc: 'TOVD900320XYZ',
+        telefono: '951-234-5678',
+        regimen: '612 - Personas Físicas con Actividades Empresariales',
+        codigoPostal: '68050'
       },
       servicio: {
         tipo: 'Tour Gastronómico',
@@ -96,21 +131,41 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         abonosRealizados: 2
       },
       historialAbonos: [
-        { numeroAbono: 1, monto: 4500, fecha: '2025-09-10', metodoPago: 'Tarjeta' },
-        { numeroAbono: 2, monto: 4500, fecha: '2025-09-18', metodoPago: 'Transferencia' }
+        { 
+          numeroAbono: 1, 
+          monto: 4500, 
+          fecha: '2025-09-10', 
+          metodoPago: 'Tarjeta',
+          referencia: 'REF-004',
+          facturaGenerada: false
+        },
+        { 
+          numeroAbono: 2, 
+          monto: 4500, 
+          fecha: '2025-09-18', 
+          metodoPago: 'Transferencia',
+          referencia: 'REF-005',
+          facturaGenerada: false
+        }
       ],
       estado: 'EN_PROCESO',
       proximoVencimiento: '2025-10-18',
       numeroContrato: 'CONT-002',
       facturaGenerada: false,
-      fechaCreacion: '2025-09-10'
+      fechaCreacion: '2025-09-10',
+      usoCFDI: 'G03',
+      metodoPago: 'Mixto'
     },
     {
       id: 3,
       cliente: {
         id: 125,
         nombre: 'Fernando Ramírez Cruz',
-        email: 'fernando@example.com'
+        email: 'fernando@example.com',
+        rfc: 'RACF880525DEF',
+        telefono: '951-345-6789',
+        regimen: '605 - Sueldos y Salarios',
+        codigoPostal: '68020'
       },
       servicio: {
         tipo: 'Tour Ecoturístico',
@@ -126,22 +181,55 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         abonosRealizados: 3
       },
       historialAbonos: [
-        { numeroAbono: 1, monto: 9000, fecha: '2025-09-12', metodoPago: 'Efectivo' },
-        { numeroAbono: 2, monto: 9000, fecha: '2025-09-22', metodoPago: 'Transferencia' },
-        { numeroAbono: 3, monto: 9000, fecha: '2025-09-29', metodoPago: 'Tarjeta' }
+        { 
+          numeroAbono: 1, 
+          monto: 9000, 
+          fecha: '2025-09-12', 
+          metodoPago: 'Efectivo',
+          referencia: 'REF-006',
+          facturaGenerada: true,
+          numeroFactura: 'FAC-0003-1',
+          uuid: 'X9Y8Z7W6-V5U4-3210-ABCD-EFGH12345678',
+          fechaFacturacion: '2025-09-13'
+        },
+        { 
+          numeroAbono: 2, 
+          monto: 9000, 
+          fecha: '2025-09-22', 
+          metodoPago: 'Transferencia',
+          referencia: 'REF-007',
+          facturaGenerada: true,
+          numeroFactura: 'FAC-0003-2',
+          uuid: 'M1N2O3P4-Q5R6-7890-STUV-WXYZ98765432',
+          fechaFacturacion: '2025-09-23'
+        },
+        { 
+          numeroAbono: 3, 
+          monto: 9000, 
+          fecha: '2025-09-29', 
+          metodoPago: 'Tarjeta',
+          referencia: 'REF-008',
+          facturaGenerada: false
+        }
       ],
       estado: 'EN_PROCESO',
       proximoVencimiento: '2025-11-22',
       numeroContrato: 'CONT-003',
       facturaGenerada: false,
-      fechaCreacion: '2025-09-12'
+      fechaCreacion: '2025-09-12',
+      usoCFDI: 'G03',
+      metodoPago: 'Mixto'
     },
     {
       id: 4,
       cliente: {
         id: 126,
         nombre: 'Andrea Jiménez López',
-        email: 'andrea@example.com'
+        email: 'andrea@example.com',
+        rfc: 'JILA920815GHI',
+        telefono: '951-456-7890',
+        regimen: '605 - Sueldos y Salarios',
+        codigoPostal: '68030'
       },
       servicio: {
         tipo: 'Tour Cultural',
@@ -157,17 +245,59 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         abonosRealizados: 4
       },
       historialAbonos: [
-        { numeroAbono: 1, monto: 5000, fecha: '2025-09-05', metodoPago: 'Transferencia' },
-        { numeroAbono: 2, monto: 5000, fecha: '2025-09-15', metodoPago: 'Efectivo' },
-        { numeroAbono: 3, monto: 5000, fecha: '2025-09-20', metodoPago: 'Tarjeta' },
-        { numeroAbono: 4, monto: 5000, fecha: '2025-09-25', metodoPago: 'Transferencia' }
+        { 
+          numeroAbono: 1, 
+          monto: 5000, 
+          fecha: '2025-09-05', 
+          metodoPago: 'Transferencia',
+          referencia: 'REF-009',
+          facturaGenerada: true,
+          numeroFactura: 'FAC-0004-1',
+          uuid: 'AAAA1111-BBBB-2222-CCCC-DDDD33334444',
+          fechaFacturacion: '2025-09-05'
+        },
+        { 
+          numeroAbono: 2, 
+          monto: 5000, 
+          fecha: '2025-09-15', 
+          metodoPago: 'Efectivo',
+          referencia: 'REF-010',
+          facturaGenerada: true,
+          numeroFactura: 'FAC-0004-2',
+          uuid: 'EEEE5555-FFFF-6666-GGGG-HHHH77778888',
+          fechaFacturacion: '2025-09-15'
+        },
+        { 
+          numeroAbono: 3, 
+          monto: 5000, 
+          fecha: '2025-09-20', 
+          metodoPago: 'Tarjeta',
+          referencia: 'REF-011',
+          facturaGenerada: true,
+          numeroFactura: 'FAC-0004-3',
+          uuid: 'IIII9999-JJJJ-0000-KKKK-LLLL11112222',
+          fechaFacturacion: '2025-09-20'
+        },
+        { 
+          numeroAbono: 4, 
+          monto: 5000, 
+          fecha: '2025-09-25', 
+          metodoPago: 'Transferencia',
+          referencia: 'REF-012',
+          facturaGenerada: true,
+          numeroFactura: 'FAC-0004-4',
+          uuid: 'MMMM3333-NNNN-4444-OOOO-PPPP55556666',
+          fechaFacturacion: '2025-09-25'
+        }
       ],
       estado: 'FINALIZADO',
       proximoVencimiento: 'Finalizado',
       numeroContrato: 'CONT-004',
-      facturaGenerada: true,
+      facturaGenerada: false,
       fechaCreacion: '2025-09-05',
-      fechaFinalizacion: '2025-09-25'
+      fechaFinalizacion: '2025-09-25',
+      usoCFDI: 'G03',
+      metodoPago: 'Mixto'
     }
   ]);
 
@@ -253,22 +383,49 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     setModalFacturaAbierto(true);
   };
 
-  
+  // ⭐ NUEVA FUNCIÓN PARA FACTURAR UN ABONO INDIVIDUAL
+  const facturarAbono = (pagoId, numeroAbono, datosFactura) => {
+    setDatosAbonos(prevDatos => {
+      return prevDatos.map(pago => {
+        if (pago.id === pagoId) {
+          return {
+            ...pago,
+            historialAbonos: pago.historialAbonos.map(abono => {
+              if (abono.numeroAbono === numeroAbono) {
+                return {
+                  ...abono,
+                  facturaGenerada: true,
+                  numeroFactura: datosFactura.numeroFactura,
+                  uuid: datosFactura.uuid,
+                  fechaFacturacion: datosFactura.fechaFacturacion
+                };
+              }
+              return abono;
+            })
+          };
+        }
+        return pago;
+      });
+    });
+    console.log('✅ Factura generada para abono #' + numeroAbono);
+  };
+
   // Función para guardar nuevo pago
   const guardarNuevoPago = (datosPago) => {
-    // Generar el nuevo ID
     const nuevoId = datosAbonos.length > 0
       ? Math.max(...datosAbonos.map(p => p.id)) + 1
       : 1;
 
-    // Crear el objeto del nuevo pago
     const nuevoPago = {
       id: nuevoId,
       cliente: {
         id: Date.now(),
         nombre: datosPago.nombreCliente,
         email: datosPago.emailCliente,
-        telefono: datosPago.telefonoCliente
+        telefono: datosPago.telefonoCliente,
+        rfc: datosPago.rfcCliente || 'XAXX010101000',
+        regimen: datosPago.regimenCliente || '605 - Sueldos y Salarios',
+        codigoPostal: datosPago.codigoPostal || '68000'
       },
       servicio: {
         tipo: datosPago.tipoServicio,
@@ -290,13 +447,12 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
       facturaGenerada: false,
       fechaCreacion: new Date().toISOString().split('T')[0],
       frecuenciaPago: datosPago.frecuenciaPago,
-      observaciones: datosPago.observaciones
+      observaciones: datosPago.observaciones,
+      usoCFDI: datosPago.usoCFDI || 'G03',
+      metodoPago: datosPago.metodoPago || 'Mixto'
     };
 
-    // Agregar el nuevo pago al estado
     setDatosAbonos(prevDatos => [...prevDatos, nuevoPago]);
-
-    // Mostrar mensaje de éxito (opcional)
     console.log('✅ Nuevo pago agregado exitosamente:', nuevoPago);
   };
 
@@ -305,25 +461,22 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     setDatosAbonos(prevDatos => {
       return prevDatos.map(pago => {
         if (pago.id === datosAbono.pagoId) {
-          // Calcular nuevos valores
           const nuevoMontoPagado = pago.planPago.montoPagado + datosAbono.montoAbono;
           const nuevoSaldoPendiente = pago.planPago.montoTotal - nuevoMontoPagado;
           const nuevosAbonosRealizados = pago.planPago.abonosRealizados + 1;
-
-          // Determinar si el pago se completa
           const pagoCompletado = nuevoSaldoPendiente === 0;
 
-          // Crear el nuevo abono para el historial
           const nuevoAbono = {
             numeroAbono: datosAbono.numeroAbono,
             monto: datosAbono.montoAbono,
             fecha: datosAbono.fechaAbono,
             metodoPago: datosAbono.metodoPago,
             referencia: datosAbono.referencia,
-            observaciones: datosAbono.observaciones
+            observaciones: datosAbono.observaciones,
+            // ⭐ INICIALIZAR CAMPOS DE FACTURACIÓN
+            facturaGenerada: false
           };
 
-          // Calcular próximo vencimiento si no está finalizado
           let proximoVencimiento = pago.proximoVencimiento;
           if (!pagoCompletado && pago.frecuenciaPago) {
             const fechaActual = new Date(datosAbono.fechaAbono);
@@ -333,7 +486,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
             proximoVencimiento = fechaActual.toISOString().split('T')[0];
           }
 
-          // Retornar el pago actualizado
           return {
             ...pago,
             planPago: {
@@ -359,9 +511,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     setDatosAbonos(prevDatos => {
       return prevDatos.map(pago => {
         if (pago.id === datosActualizados.id) {
-          // Calcular el nuevo saldo pendiente basado en los abonos ya realizados
           const nuevoMontoTotal = parseFloat(datosActualizados.montoTotal);
-          const montoPagado = pago.planPago.montoPagado; // Mantener lo que ya se pagó
+          const montoPagado = pago.planPago.montoPagado;
           const nuevoSaldoPendiente = nuevoMontoTotal - montoPagado;
 
           return {
@@ -398,14 +549,12 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     console.log('✅ Pago editado exitosamente');
   };
 
-  // ← AGREGAR ESTA FUNCIÓN AQUÍ
   const eliminarPago = (pagoId) => {
     setDatosAbonos(prevDatos =>
       prevDatos.filter(pago => pago.id !== pagoId)
     );
     console.log('✅ Pago eliminado exitosamente');
   };
-
 
   const manejarAccion = async (accion, pago) => {
     setCargando(true);
@@ -428,7 +577,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         abrirModalFactura(pago);
         break;
       case 'eliminar':
-        // ← REEMPLAZAR ESTA LÍNEA
         await modalEliminarPago(pago, eliminarPago);
         break;
       default:
@@ -733,7 +881,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                         <button
                           className="abonos-boton-accion abonos-factura"
                           onClick={() => manejarAccion('generarFactura', pago)}
-                          title="Generar factura"
+                          title="Gestionar facturas por abono"
                           disabled={cargando}
                         >
                           <FileText size={14} />
@@ -810,14 +958,13 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         </div>
       )}
 
-      {/* Modal Nuevo Pago */}
+      {/* MODALES */}
       <ModalNuevoPago
         abierto={modalNuevoPagoAbierto}
         onCerrar={() => setModalNuevoPagoAbierto(false)}
         onGuardar={guardarNuevoPago}
       />
 
-      {/* Modal Agregar Abono */}
       <ModalAgregarAbono
         abierto={modalAgregarAbonoAbierto}
         onCerrar={() => setModalAgregarAbonoAbierto(false)}
@@ -825,17 +972,11 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         pagoSeleccionado={pagoSeleccionado}
       />
 
-      {/* Indicadores de modales temporales (para desarrollo futuro) */}
-
-
-
-      {/* Modal Ver Abono */}
       <ModalVerAbono
         abierto={modalVerPagoAbierto}
         onCerrar={() => setModalVerPagoAbierto(false)}
         pagoSeleccionado={pagoSeleccionado}
       />
-
 
       <ModalEditarAbono
         abierto={modalEditarPagoAbierto}
@@ -844,23 +985,19 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         pagoSeleccionado={pagoSeleccionado}
       />
 
-
       <ModalReciboAbono
         abierto={modalReciboAbierto}
         onCerrar={() => setModalReciboAbierto(false)}
         pagoSeleccionado={pagoSeleccionado}
       />
 
-
+      {/* ⭐ MODAL DE FACTURACIÓN ACTUALIZADO CON SOPORTE PARA ABONOS INDIVIDUALES */}
       <ModalFacturaAbono
         abierto={modalFacturaAbierto}
         onCerrar={() => setModalFacturaAbierto(false)}
         pagoSeleccionado={pagoSeleccionado}
+        onFacturar={facturarAbono}
       />
-
-
-
-      
     </div>
   );
 };

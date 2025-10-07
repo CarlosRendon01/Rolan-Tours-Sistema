@@ -16,7 +16,7 @@
 
 /* ========== HEADER ========== */
 .facturas-encabezado {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%) !important;
   padding: 2rem;
   display: flex;
   justify-content: space-between;
@@ -473,40 +473,40 @@
 }
 
 .facturas-boton-accion.facturas-ver {
-  background: #e0f2fe;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border: 1px solid #bfdbfe !important;
 }
 
 .facturas-boton-accion.facturas-ver:hover:not(:disabled) {
-  background: #0369a1;
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.25);
+  background: #ffffff !important;
+  color: #2064ca !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
 }
 
 .facturas-boton-accion.facturas-editar {
-  background: #fef3c7;
-  color: #92400e;
+ background: #f59e0b;
+  color: #ffffff;
   border: 1px solid #fde68a;
 }
 
 .facturas-boton-accion.facturas-editar:hover:not(:disabled) {
-  background: #f59e0b;
-  color: white;
+  background: #ffffff;
+  color: rgb(165, 150, 16);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
 }
 
 .facturas-boton-accion.facturas-eliminar {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #dc2626;
+  color: #ffffff;
   border: 1px solid #fecaca;
 }
 
 .facturas-boton-accion.facturas-eliminar:hover:not(:disabled) {
-  background: #dc2626;
-  color: white;
+  background: #ffffff;
+  color: rgb(197, 22, 22);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }
@@ -655,6 +655,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -662,8 +663,13 @@
 }
 
 @keyframes fac-spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 /* ========== RESPONSIVE DESIGN ========== */
@@ -671,11 +677,11 @@
   .facturas-encabezado {
     padding: 1.5rem;
   }
-  
+
   .facturas-estadisticas-header {
     gap: 1rem;
   }
-  
+
   .facturas-tarjeta-estadistica {
     padding: 0.75rem 1rem;
     min-width: 100px;
@@ -693,23 +699,23 @@
     padding: 1.5rem 1rem;
     text-align: center;
   }
-  
+
   .facturas-titulo {
     font-size: 1.5rem;
   }
-  
+
   .facturas-estadisticas-header {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .facturas-controles {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
     padding: 1rem;
   }
-  
+
   .facturas-seccion-izquierda,
   .facturas-seccion-derecha {
     justify-content: space-between;
@@ -717,26 +723,26 @@
     flex-wrap: wrap;
     gap: 1rem;
   }
-  
+
   .facturas-entrada-buscar {
     width: 100%;
     max-width: none;
   }
-  
+
   .facturas-entrada-buscar:focus {
     width: 100%;
   }
-  
+
   .facturas-tabla thead {
     display: none;
   }
-  
+
   .facturas-tabla tbody,
   .facturas-tabla tr,
   .facturas-tabla td {
     display: block;
   }
-  
+
   .facturas-tabla tr {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
@@ -745,7 +751,7 @@
     background: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
-  
+
   .facturas-tabla td {
     padding: 0.75rem 0;
     border: none;
@@ -755,11 +761,11 @@
     align-items: center;
     border-bottom: 1px solid #f1f5f9;
   }
-  
+
   .facturas-tabla td:last-child {
     border-bottom: none;
   }
-  
+
   .facturas-tabla td:before {
     content: attr(data-label);
     font-weight: 600;
@@ -770,19 +776,19 @@
     width: 120px;
     flex-shrink: 0;
   }
-  
+
   .facturas-botones-accion {
     justify-content: flex-end;
     margin-top: 0.5rem;
   }
-  
+
   .facturas-pie-tabla {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
     text-align: center;
   }
-  
+
   .facturas-controles-paginacion {
     flex-wrap: wrap;
     justify-content: center;
@@ -793,21 +799,21 @@
   .facturas-encabezado {
     padding: 1rem;
   }
-  
+
   .facturas-icono-principal {
     width: 40px;
     height: 40px;
   }
-  
+
   .facturas-titulo {
     font-size: 1.25rem;
   }
-  
+
   .facturas-tarjeta-estadistica {
     padding: 0.5rem 0.75rem;
     min-width: 80px;
   }
-  
+
   .facturas-valor-estadistica {
     font-size: 1.125rem;
   }
@@ -816,22 +822,22 @@
     width: 16px;
     height: 16px;
   }
-  
+
   .facturas-boton-agregar {
     padding: 0.625rem 1rem;
     font-size: 0.8125rem;
   }
-  
+
   .facturas-tabla td:before {
     width: 100px;
     font-size: 0.6875rem;
   }
-  
+
   .facturas-botones-accion {
     gap: 0.25rem;
     justify-content: flex-start;
   }
-  
+
   .facturas-boton-accion {
     width: 28px;
     height: 28px;
