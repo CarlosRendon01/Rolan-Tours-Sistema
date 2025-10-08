@@ -12,13 +12,17 @@ import {
   BarChart3,
   CheckCircle,
   AlertCircle,
-  Filter
+  Filter,
+  RotateCcw,
+  XCircle
 } from 'lucide-react';
 import './GestionPagos.css';
 import ModalVerPago from '../Modales/ModalVerPago';
 import ModalGenerarRecibo from '../Modales/ModalGenerarRecibo';
 import ModalGenerarFactura from '../Modales/ModalGenerarFactura';
 import ModalEditarPago from '../Modales/ModalEditarPago';
+import ModalReactivarPago from '../Modales/ModalReactivarPago';
+import ModalEliminarDefinitivo from '../Modales/ModalEliminarDefinitivo';
 import { modalEliminarPago } from '../Modales/modalEliminarPago';
 
 // Reducer para manejo de estado
@@ -27,6 +31,7 @@ const estadoInicial = {
   registrosPorPagina: 10,
   terminoBusqueda: '',
   filtroEstado: 'todos',
+  filtroVisibilidad: 'activos',
   cargando: false
 };
 
@@ -40,6 +45,8 @@ const reductor = (estado, accion) => {
       return { ...estado, terminoBusqueda: accion.valor, paginaActual: 1 };
     case 'ESTABLECER_FILTRO_ESTADO':
       return { ...estado, filtroEstado: accion.valor, paginaActual: 1 };
+    case 'ESTABLECER_FILTRO_VISIBILIDAD':
+      return { ...estado, filtroVisibilidad: accion.valor, paginaActual: 1 };
     case 'ESTABLECER_CARGANDO':
       return { ...estado, cargando: accion.valor };
     default:
@@ -49,13 +56,18 @@ const reductor = (estado, accion) => {
 
 const GestionPagos = ({ vistaActual, onCambiarVista }) => {
   const [estado, despachar] = useReducer(reductor, estadoInicial);
-  const { paginaActual, registrosPorPagina, terminoBusqueda, filtroEstado, cargando } = estado;
+  const { paginaActual, registrosPorPagina, terminoBusqueda, filtroEstado, filtroVisibilidad, cargando } = estado;
+
+  // ROL DE USUARIO - Cambiar entre 'vendedor' y 'administrador' según tu sistema de autenticación
+  const [rolUsuario, setRolUsuario] = useState('vendedor');
 
   // Estados para los modales
   const [modalAbierto, establecerModalAbierto] = useState(false);
   const [modalReciboAbierto, establecerModalReciboAbierto] = useState(false);
   const [modalFacturaAbierto, establecerModalFacturaAbierto] = useState(false);
   const [modalEditarAbierto, establecerModalEditarAbierto] = useState(false);
+  const [modalReactivarAbierto, establecerModalReactivarAbierto] = useState(false);
+  const [modalEliminarDefinitivoAbierto, establecerModalEliminarDefinitivoAbierto] = useState(false);
   const [pagoSeleccionado, establecerPagoSeleccionado] = useState(null);
 
   // Estado para los datos de pagos
@@ -69,7 +81,8 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       numeroFactura: 'FAC-001',
       estado: 'Pagado',
       concepto: 'Servicios profesionales de consultoría',
-      fechaVencimiento: '2025-09-15'
+      fechaVencimiento: '2025-09-15',
+      activo: true
     },
     {
       id: 2,
@@ -80,7 +93,8 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       numeroFactura: 'FAC-002',
       estado: 'Pagado',
       concepto: 'Consultoría empresarial',
-      fechaVencimiento: '2025-09-14'
+      fechaVencimiento: '2025-09-14',
+      activo: false
     },
     {
       id: 3,
@@ -91,7 +105,8 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       numeroFactura: 'FAC-003',
       estado: 'Pagado',
       concepto: 'Desarrollo web completo',
-      fechaVencimiento: '2025-09-13'
+      fechaVencimiento: '2025-09-13',
+      activo: true
     },
     {
       id: 4,
@@ -102,7 +117,8 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       numeroFactura: 'FAC-004',
       estado: 'Vencido',
       concepto: 'Sistema integral de gestión',
-      fechaVencimiento: '2025-08-20'
+      fechaVencimiento: '2025-08-20',
+      activo: true
     },
     {
       id: 5,
@@ -113,7 +129,8 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       numeroFactura: 'FAC-005',
       estado: 'Pagado',
       concepto: 'Capacitación empresarial',
-      fechaVencimiento: '2025-09-12'
+      fechaVencimiento: '2025-09-12',
+      activo: false
     },
     {
       id: 6,
@@ -124,19 +141,34 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       numeroFactura: 'FAC-006',
       estado: 'Vencido',
       concepto: 'Auditoría financiera',
-      fechaVencimiento: '2025-08-10'
+      fechaVencimiento: '2025-08-10',
+      activo: true
     }
   ]);
 
   const estadisticas = useMemo(() => {
-    const total = datosPagos.length;
-    const pagados = datosPagos.filter(pago => pago.estado === 'Pagado').length;
-    const vencidos = datosPagos.filter(pago => pago.estado === 'Vencido').length;
+    const pagosVisibles = rolUsuario === 'vendedor' 
+      ? datosPagos.filter(p => p.activo)
+      : datosPagos.filter(p => {
+          if (filtroVisibilidad === 'activos') return p.activo;
+          if (filtroVisibilidad === 'eliminados') return !p.activo;
+          return true;
+        });
+    
+    const total = pagosVisibles.length;
+    const pagados = pagosVisibles.filter(pago => pago.estado === 'Pagado').length;
+    const vencidos = pagosVisibles.filter(pago => pago.estado === 'Vencido').length;
     return { total, pagados, vencidos };
-  }, [datosPagos]);
+  }, [datosPagos, rolUsuario, filtroVisibilidad]);
 
   const datosFiltrados = useMemo(() => {
     return datosPagos.filter(pago => {
+      if (rolUsuario === 'vendedor' && !pago.activo) return false;
+      if (rolUsuario === 'administrador') {
+        if (filtroVisibilidad === 'activos' && !pago.activo) return false;
+        if (filtroVisibilidad === 'eliminados' && pago.activo) return false;
+      }
+
       const cumpleBusqueda = 
         pago.cliente.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
         pago.id.toString().includes(terminoBusqueda) ||
@@ -148,7 +180,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
 
       return cumpleBusqueda && cumpleFiltroEstado;
     });
-  }, [terminoBusqueda, filtroEstado, datosPagos]);
+  }, [terminoBusqueda, filtroEstado, filtroVisibilidad, datosPagos, rolUsuario]);
 
   const totalRegistros = datosFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
@@ -174,12 +206,12 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
     despachar({ tipo: 'ESTABLECER_FILTRO_ESTADO', valor: evento.target.value });
   };
 
-  const manejarAccion = async (accion, pago) => {
-    despachar({ tipo: 'ESTABLECER_CARGANDO', valor: true });
-    
+  const manejarFiltroVisibilidad = (evento) => {
+    despachar({ tipo: 'ESTABLECER_FILTRO_VISIBILIDAD', valor: evento.target.value });
+  };
+
+  const manejarAccion = (accion, pago) => {
     try {
-      await new Promise(resolver => setTimeout(resolver, 500));
-      
       switch (accion) {
         case 'ver':
           establecerPagoSeleccionado(pago);
@@ -190,16 +222,25 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
           establecerModalEditarAbierto(true);
           break;
         case 'eliminar':
-          const eliminado = await modalEliminarPago(pago, async () => {
+          // Soft delete usando modalEliminarPago existente
+          modalEliminarPago(pago, async () => {
             establecerDatosPagos(prevPagos => 
-              prevPagos.filter(p => p.id !== pago.id)
+              prevPagos.map(p => 
+                p.id === pago.id ? { ...p, activo: false } : p
+              )
             );
-            console.log('Pago eliminado:', pago);
+            console.log('Pago eliminado visualmente:', pago);
           });
-          
-          if (!eliminado) {
-            console.log('Eliminación cancelada');
-          }
+          break;
+        case 'regenerar':
+          // Abrir modal de reactivación
+          establecerPagoSeleccionado(pago);
+          establecerModalReactivarAbierto(true);
+          break;
+        case 'eliminarDefinitivo':
+          // Abrir modal de eliminación definitiva
+          establecerPagoSeleccionado(pago);
+          establecerModalEliminarDefinitivoAbierto(true);
           break;
         case 'generarRecibo':
           establecerPagoSeleccionado(pago);
@@ -215,8 +256,6 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
     } catch (error) {
       console.error('Error al procesar la acción:', error);
       alert('Ocurrió un error al procesar la acción. Por favor, intente nuevamente.');
-    } finally {
-      despachar({ tipo: 'ESTABLECER_CARGANDO', valor: false });
     }
   };
 
@@ -229,6 +268,22 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
     establecerDatosPagos(prevPagos =>
       prevPagos.map(p => p.id === pagoActualizado.id ? pagoActualizado : p)
     );
+  };
+
+  const manejarReactivarPago = async (pago) => {
+    establecerDatosPagos(prevPagos => 
+      prevPagos.map(p => 
+        p.id === pago.id ? { ...p, activo: true } : p
+      )
+    );
+    console.log('Pago reactivado:', pago);
+  };
+
+  const manejarEliminarDefinitivo = async (pago) => {
+    establecerDatosPagos(prevPagos => 
+      prevPagos.filter(p => p.id !== pago.id)
+    );
+    console.log('Pago eliminado definitivamente:', pago);
   };
 
   const obtenerClaseEstado = (estado) => {
@@ -279,6 +334,50 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
 
   return (
     <>
+      {/* Selector de Rol - Solo para demo, eliminar en producción */}
+      <div style={{
+        margin: '1rem',
+        padding: '1rem',
+        background: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem'
+      }}>
+        <span style={{fontWeight: '600', color: '#374151'}}>Modo de Vista (Demo):</span>
+        <button
+          onClick={() => setRolUsuario('vendedor')}
+          style={{
+            padding: '0.5rem 1rem',
+            borderRadius: '8px',
+            border: 'none',
+            fontWeight: '600',
+            cursor: 'pointer',
+            background: rolUsuario === 'vendedor' ? '#3b82f6' : '#f3f4f6',
+            color: rolUsuario === 'vendedor' ? 'white' : '#6b7280',
+            transition: 'all 0.2s'
+          }}
+        >
+          👤 Vendedor
+        </button>
+        <button
+          onClick={() => setRolUsuario('administrador')}
+          style={{
+            padding: '0.5rem 1rem',
+            borderRadius: '8px',
+            border: 'none',
+            fontWeight: '600',
+            cursor: 'pointer',
+            background: rolUsuario === 'administrador' ? '#9333ea' : '#f3f4f6',
+            color: rolUsuario === 'administrador' ? 'white' : '#6b7280',
+            transition: 'all 0.2s'
+          }}
+        >
+          🛡️ Administrador
+        </button>
+      </div>
+
       <div className={`pagos-contenedor-principal ${cargando ? 'pagos-cargando' : ''}`}>
         <div className="pagos-encabezado">
           <div className="pagos-seccion-logo">
@@ -344,11 +443,26 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                 <option value="facturas">Gestión de Facturas</option>
               </select>
             </div>
+
+            {rolUsuario === 'administrador' && (
+              <div className="pagos-filtro-estado">
+                <Eye size={16} />
+                <label htmlFor="filtro-visibilidad">Estado:</label>
+                <select
+                  id="filtro-visibilidad"
+                  value={filtroVisibilidad}
+                  onChange={manejarFiltroVisibilidad}
+                  className="pagos-selector-filtro"
+                >
+                  <option value="activos">Activos</option>
+                  <option value="eliminados">Eliminados</option>
+                  <option value="todos">Todos</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="pagos-seccion-derecha">
-           
-
             <div className="pagos-control-busqueda">
               <input
                 type="text"
@@ -386,12 +500,20 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                   <th>Método Pago</th>
                   <th>Factura</th>
                   <th>Estado</th>
+                  {rolUsuario === 'administrador' && <th>Visible</th>}
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {datosPaginados.map((pago, indice) => (
-                  <tr key={pago.id} className="pagos-fila-pago" style={{animationDelay: `${indice * 0.05}s`}}>
+                  <tr 
+                    key={pago.id} 
+                    className="pagos-fila-pago" 
+                    style={{
+                      animationDelay: `${indice * 0.05}s`,
+                      background: !pago.activo ? '#fee2e2' : 'white'
+                    }}
+                  >
                     <td className="pagos-columna-id">#{pago.id.toString().padStart(3, '0')}</td>
                     <td className="pagos-columna-cliente">{pago.cliente}</td>
                     <td className="pagos-columna-monto">{pago.monto}</td>
@@ -416,6 +538,23 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                         {pago.estado}
                       </span>
                     </td>
+                    {rolUsuario === 'administrador' && (
+                      <td>
+                        <span style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '6px',
+                          fontSize: '0.75rem',
+                          fontWeight: '600',
+                          background: pago.activo ? '#d1fae5' : '#e5e7eb',
+                          color: pago.activo ? '#065f46' : '#374151'
+                        }}>
+                          {pago.activo ? '✓ Sí' : '✗ No'}
+                        </span>
+                      </td>
+                    )}
                     <td className="pagos-columna-acciones">
                       <div className="pagos-botones-accion">
                         <button 
@@ -427,7 +566,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           <Eye size={14} />
                         </button>
                         
-                        {pago.estado === 'Pagado' && (
+                        {pago.estado === 'Pagado' && pago.activo && (
                           <>
                             <button 
                               className="pagos-boton-accion pagos-recibo" 
@@ -448,7 +587,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           </>
                         )}
                         
-                        {pago.estado === 'Vencido' && (
+                        {pago.estado === 'Vencido' && pago.activo && (
                           <button 
                             className="pagos-boton-accion pagos-editar" 
                             onClick={() => manejarAccion('editar', pago)} 
@@ -459,14 +598,44 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           </button>
                         )}
                         
-                        <button 
-                          className="pagos-boton-accion pagos-eliminar" 
-                          onClick={() => manejarAccion('eliminar', pago)} 
-                          title="Eliminar"
-                          disabled={cargando}
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        {rolUsuario === 'vendedor' && pago.activo && (
+                          <button 
+                            className="pagos-boton-accion pagos-eliminar" 
+                            onClick={() => manejarAccion('eliminar', pago)} 
+                            title="Eliminar de mi vista"
+                            disabled={cargando}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                        
+                        {rolUsuario === 'administrador' && (
+                          <>
+                            {!pago.activo && (
+                              <button 
+                                className="pagos-boton-accion" 
+                                onClick={() => manejarAccion('regenerar', pago)} 
+                                title="Reactivar pago"
+                                disabled={cargando}
+                                style={{
+                                  background: '#10b981',
+                                  color: 'white',
+                                  border: '1px solid #a7f3d0'
+                                }}
+                              >
+                                <RotateCcw size={14} />
+                              </button>
+                            )}
+                            <button 
+                              className="pagos-boton-accion pagos-eliminar" 
+                              onClick={() => manejarAccion('eliminarDefinitivo', pago)} 
+                              title={pago.activo ? "Eliminar definitivamente" : "Eliminar de raíz"}
+                              disabled={cargando}
+                            >
+                              <XCircle size={14} />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -552,6 +721,20 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
         alCerrar={() => establecerModalEditarAbierto(false)}
         pago={pagoSeleccionado}
         alGuardar={manejarGuardarEdicion}
+      />
+
+      <ModalReactivarPago
+        estaAbierto={modalReactivarAbierto}
+        alCerrar={() => establecerModalReactivarAbierto(false)}
+        pago={pagoSeleccionado}
+        alReactivar={manejarReactivarPago}
+      />
+
+      <ModalEliminarDefinitivo
+        estaAbierto={modalEliminarDefinitivoAbierto}
+        alCerrar={() => establecerModalEliminarDefinitivoAbierto(false)}
+        pago={pagoSeleccionado}
+        alEliminar={manejarEliminarDefinitivo}
       />
     </>
   );

@@ -12,6 +12,7 @@ import {
   FileX
 } from 'lucide-react';
 import './ModalGenerarFactura.css';
+import { generarPDFFacturaTimbrada, imprimirFacturaTimbrada } from '../ModalesFactura/generarPDFFacturaTimbrada';
 
 const ModalGenerarFactura = ({ estaAbierto, alCerrar, pago, onFacturaGenerada }) => {
   const [generando, establecerGenerando] = useState(false);
@@ -233,35 +234,69 @@ const ModalGenerarFactura = ({ estaAbierto, alCerrar, pago, onFacturaGenerada })
     establecerGenerando(true);
 
     try {
-      const response = await fetch(
-        `/api/facturacion/descargar/${pago.id}?formato=${formato}`,
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+      // Si es PDF, generar localmente con el módulo de generación
+      if (formato === 'pdf') {
+        // Preparar datos de la factura para el PDF
+        const datosFactura = {
+          numeroFactura: pago.numeroFactura,
+          serie: pago.serie || 'A',
+          folio: pago.folio || pago.numeroFactura.split('-')[1] || '001',
+          uuid: pago.uuidFactura || 'A1B2C3D4-E5F6-G7H8-I9J0-K1L2M3N4O5P6',
+          fechaEmision: pago.fechaPago,
+          fechaVencimiento: pago.fechaVencimiento || pago.fechaPago,
+          fechaFacturacion: pago.fechaFacturacion,
+          cliente: pago.cliente,
+          rfc: pago.rfcCliente,
+          razonSocial: pago.razonSocialCliente || pago.cliente,
+          usoCfdi: pago.usoCFDI || 'G03 - Gastos en general',
+          metodoPago: pago.metodoPago || 'PUE - Pago en una sola exhibición',
+          formaPago: pago.formaPago || '03 - Transferencia electrónica',
+          monto: pago.monto,
+          moneda: pago.moneda || 'MXN',
+          concepto: pago.concepto || 'Servicio Turístico',
+          estado: pago.estatus,
+          emailEnviado: pago.emailEnviado || false,
+          fechaEnvio: pago.fechaEnvio || null
+        };
+
+        await generarPDFFacturaTimbrada(datosFactura);
+        establecerMensajeExito('✅ Factura descargada exitosamente en formato PDF');
+        
+      } else {
+        // Para XML, hacer petición al servidor
+        const response = await fetch(
+          `/api/facturacion/descargar/${pago.id}?formato=${formato}`,
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+            }
           }
+        );
+
+        if (!response.ok) {
+          throw new Error('Error al descargar la factura XML');
         }
-      );
 
-      if (!response.ok) {
-        throw new Error('Error al descargar la factura');
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Factura-${pago.numeroFactura}.${formato.toLowerCase()}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        establecerMensajeExito(`✅ Factura descargada exitosamente en formato ${formato.toUpperCase()}`);
       }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Factura-${pago.numeroFactura}.${formato.toLowerCase()}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-
-      establecerMensajeExito(`Factura descargada exitosamente en formato ${formato.toUpperCase()}`);
       
     } catch (error) {
       console.error('Error al descargar factura:', error);
-      establecerError('Error al descargar la factura. Intente nuevamente.');
+      establecerError(
+        error.message || 
+        'Error al descargar la factura. Intente nuevamente.'
+      );
     } finally {
       establecerGenerando(false);
     }
@@ -348,21 +383,38 @@ const ModalGenerarFactura = ({ estaAbierto, alCerrar, pago, onFacturaGenerada })
     }
 
     try {
-      const url = `/factura/preview/${pago.numeroFactura}`;
-      const ventanaImpresion = window.open(url, '_blank', 'width=800,height=900');
+      // Preparar datos de la factura para imprimir
+      const datosFactura = {
+        numeroFactura: pago.numeroFactura,
+        serie: pago.serie || 'A',
+        folio: pago.folio || pago.numeroFactura.split('-')[1] || '001',
+        uuid: pago.uuidFactura || 'A1B2C3D4-E5F6-G7H8-I9J0-K1L2M3N4O5P6',
+        fechaEmision: pago.fechaPago,
+        fechaVencimiento: pago.fechaVencimiento || pago.fechaPago,
+        fechaFacturacion: pago.fechaFacturacion,
+        cliente: pago.cliente,
+        rfc: pago.rfcCliente,
+        razonSocial: pago.razonSocialCliente || pago.cliente,
+        usoCfdi: pago.usoCFDI || 'G03 - Gastos en general',
+        metodoPago: pago.metodoPago || 'PUE - Pago en una sola exhibición',
+        formaPago: pago.formaPago || '03 - Transferencia electrónica',
+        monto: pago.monto,
+        moneda: pago.moneda || 'MXN',
+        concepto: pago.concepto || 'Servicio Turístico',
+        estado: pago.estatus,
+        emailEnviado: pago.emailEnviado || false,
+        fechaEnvio: pago.fechaEnvio || null
+      };
+
+      imprimirFacturaTimbrada(datosFactura);
+      establecerMensajeExito('✅ Abriendo vista previa de impresión...');
       
-      if (ventanaImpresion) {
-        ventanaImpresion.focus();
-        establecerMensajeExito('Abriendo vista previa de impresión...');
-      } else {
-        establecerError(
-          'No se pudo abrir la ventana de impresión.\n\n' +
-          'Por favor, permita ventanas emergentes en su navegador para esta función.'
-        );
-      }
     } catch (error) {
       console.error('Error al abrir ventana de impresión:', error);
-      establecerError('Error al abrir la vista previa. Intente descargar el PDF en su lugar.');
+      establecerError(
+        error.message || 
+        'Error al abrir la vista previa. Intente descargar el PDF en su lugar.'
+      );
     }
   };
 
@@ -527,72 +579,116 @@ const ModalGenerarFactura = ({ estaAbierto, alCerrar, pago, onFacturaGenerada })
             </div>
           </div>
 
-          {/* Opciones de generación */}
-          <div className="modal-factura-opciones">
-            <h3 className="modal-factura-opciones-titulo">
-              {yaEstaFacturado() ? 'Opciones disponibles' : 'Generar factura en formato'}
-            </h3>
-            
-            <div className="modal-factura-botones-grid">
+          {/* Vista previa de la factura timbrada */}
+          {yaEstaFacturado() && (
+            <div className="modal-factura-vista-previa">
+              <h3 className="modal-factura-opciones-titulo">
+                📄 Factura Electrónica Timbrada
+              </h3>
+              
+              {/* Información principal de la factura */}
+              <div className="modal-factura-uuid-container">
+                <div className="modal-factura-uuid-grid">
+                  <div>
+                    <p className="modal-factura-uuid-label">
+                      FOLIO FISCAL (UUID)
+                    </p>
+                    <p className="modal-factura-uuid-valor">
+                      {pago.uuidFactura || 'A1B2C3D4-E5F6-G7H8-I9J0-K1L2M3N4O5P6'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="modal-factura-uuid-label">
+                      FECHA DE TIMBRADO
+                    </p>
+                    <p className="modal-factura-fecha-timbrado">
+                      {pago.fechaFacturacion ? new Date(pago.fechaFacturacion).toLocaleString('es-MX', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) : pago.fechaPago}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Botón destacado de descarga */}
               <button
-                className="modal-factura-boton-opcion"
-                onClick={() => yaEstaFacturado() 
-                  ? manejarDescargarFactura('pdf') 
-                  : manejarGenerarFactura('pdf')
-                }
+                onClick={() => manejarDescargarFactura('pdf')}
                 disabled={generando}
-                title={yaEstaFacturado() 
-                  ? 'Descargar factura en formato PDF' 
-                  : 'Generar y descargar factura en PDF'
-                }
+                className="modal-factura-boton-descarga-principal"
               >
                 <Download size={24} />
-                <span>{yaEstaFacturado() ? 'Descargar PDF' : 'Generar PDF'}</span>
+                <span>Descargar Factura en PDF</span>
               </button>
 
-              <button
-                className="modal-factura-boton-opcion"
-                onClick={() => yaEstaFacturado() 
-                  ? manejarDescargarFactura('xml') 
-                  : manejarGenerarFactura('xml')
-                }
-                disabled={generando}
-                title={yaEstaFacturado() 
-                  ? 'Descargar factura en formato XML' 
-                  : 'Generar y descargar factura en XML'
-                }
-              >
-                <FileText size={24} />
-                <span>{yaEstaFacturado() ? 'Descargar XML' : 'Generar XML'}</span>
-              </button>
+              {/* Opciones adicionales */}
+              <div className="modal-factura-opciones-secundarias">
+                <button
+                  className="modal-factura-boton-opcion-secundario"
+                  onClick={() => manejarDescargarFactura('xml')}
+                  disabled={generando}
+                  title="Descargar factura en formato XML"
+                >
+                  <FileText size={20} />
+                  <span>XML</span>
+                </button>
 
-              <button
-                className="modal-factura-boton-opcion"
-                onClick={manejarImprimir}
-                disabled={generando || !yaEstaFacturado()}
-                title={yaEstaFacturado() 
-                  ? 'Imprimir o ver vista previa' 
-                  : 'Debe generar la factura primero'
-                }
-              >
-                <Printer size={24} />
-                <span>Imprimir</span>
-              </button>
+                <button
+                  className="modal-factura-boton-opcion-secundario"
+                  onClick={manejarImprimir}
+                  disabled={generando}
+                  title="Imprimir o ver vista previa"
+                >
+                  <Printer size={20} />
+                  <span>Imprimir</span>
+                </button>
 
-              <button
-                className="modal-factura-boton-opcion"
-                onClick={manejarEnviarEmail}
-                disabled={generando || !yaEstaFacturado()}
-                title={yaEstaFacturado() 
-                  ? `Enviar por email a ${pago.emailCliente || 'cliente'}` 
-                  : 'Debe generar la factura primero'
-                }
-              >
-                <Mail size={24} />
-                <span>Enviar por Email</span>
-              </button>
+                <button
+                  className="modal-factura-boton-opcion-secundario"
+                  onClick={manejarEnviarEmail}
+                  disabled={generando}
+                  title={`Enviar por email a ${pago.emailCliente || 'cliente'}`}
+                >
+                  <Mail size={20} />
+                  <span>Email</span>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Opciones de generación (solo si NO está facturado) */}
+          {!yaEstaFacturado() && (
+            <div className="modal-factura-opciones">
+              <h3 className="modal-factura-opciones-titulo">
+                Generar factura en formato
+              </h3>
+              
+              <div className="modal-factura-botones-grid">
+                <button
+                  className="modal-factura-boton-opcion"
+                  onClick={() => manejarGenerarFactura('pdf')}
+                  disabled={generando}
+                  title="Generar y descargar factura en PDF"
+                >
+                  <Download size={24} />
+                  <span>Generar PDF</span>
+                </button>
+
+                <button
+                  className="modal-factura-boton-opcion"
+                  onClick={() => manejarGenerarFactura('xml')}
+                  disabled={generando}
+                  title="Generar y descargar factura en XML"
+                >
+                  <FileText size={24} />
+                  <span>Generar XML</span>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Nota informativa */}
           <div className="modal-factura-nota">

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   Search,
   ChevronLeft,
@@ -6,33 +6,52 @@ import {
   FileText,
   Download,
   Send,
-  X,
   BarChart3,
   CheckCircle,
   DollarSign,
   Filter,
   XCircle,
-  Plus,
-  Trash2
+  Trash2,
+  RefreshCw,
+  Shield,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import './TablaFacturas.css';
 import { generarPDFFacturaTimbrada, imprimirFacturaTimbrada } from '../ModalesFactura/generarPDFFacturaTimbrada';
 import { modalEliminarFactura } from '../ModalesFactura/ModalEliminarFactura';
+import ModalRegenerarFactura from '../ModalesFactura/ModalRegenerarFactura';
+import ModalEliminarDefinitivoFactura from '../ModalesFactura/ModalEliminarDefinitivoFactura';
+
 // Constantes para estados de factura
 const ESTADOS_FACTURA = {
   TIMBRADA: 'Timbrada',
   CANCELADA: 'Cancelada'
 };
 
-const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
+const TablaFacturas = ({ 
+  vistaActual, 
+  onCambiarVista,
+  datosIniciales = [],
+  rolUsuario = 'vendedor', // 'vendedor' o 'administrador'
+  onEliminar = null,
+  onRegenerar = null,
+  onEliminarDefinitivo = null
+}) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [cargando, setCargando] = useState(false);
+  const [mostrarEliminados, setMostrarEliminados] = useState(false);
+  
+  // Estados para modales
+  const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
+  const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] = useState(false);
+  const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
 
-  // Datos de ejemplo para facturas (solo timbradas y canceladas)
-  const datosFacturas = [
+  // Datos de ejemplo para facturas
+  const datosFacturasEjemplo = [
     {
       id: 1,
       numeroFactura: 'FACT-2025-001',
@@ -49,7 +68,8 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       metodoPago: '01 - Efectivo',
       formaPago: '01 - Contado',
       emailEnviado: true,
-      fechaEnvio: '15/09/2025'
+      fechaEnvio: '15/09/2025',
+      eliminadoVisualmente: false
     },
     {
       id: 2,
@@ -67,7 +87,8 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       metodoPago: '04 - Tarjeta de crédito',
       formaPago: '01 - Contado',
       emailEnviado: true,
-      fechaEnvio: '14/09/2025'
+      fechaEnvio: '14/09/2025',
+      eliminadoVisualmente: false
     },
     {
       id: 3,
@@ -85,7 +106,10 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       metodoPago: '03 - Transferencia electrónica',
       formaPago: '01 - Contado',
       emailEnviado: false,
-      fechaEnvio: null
+      fechaEnvio: null,
+      eliminadoVisualmente: true,
+      fechaEliminacion: '14/09/2025',
+      eliminadoPor: 'Juan Pérez'
     },
     {
       id: 4,
@@ -103,7 +127,8 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       metodoPago: '03 - Transferencia electrónica',
       formaPago: '99 - Por definir',
       emailEnviado: true,
-      fechaEnvio: '12/09/2025'
+      fechaEnvio: '12/09/2025',
+      eliminadoVisualmente: false
     },
     {
       id: 5,
@@ -121,7 +146,8 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       metodoPago: '03 - Transferencia electrónica',
       formaPago: '01 - Contado',
       emailEnviado: true,
-      fechaEnvio: '11/09/2025'
+      fechaEnvio: '11/09/2025',
+      eliminadoVisualmente: false
     },
     {
       id: 6,
@@ -141,7 +167,8 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       emailEnviado: true,
       fechaEnvio: '10/09/2025',
       fechaCancelacion: '11/09/2025',
-      motivoCancelacion: 'Error en datos del cliente'
+      motivoCancelacion: 'Error en datos del cliente',
+      eliminadoVisualmente: false
     },
     {
       id: 7,
@@ -159,7 +186,10 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       metodoPago: '03 - Transferencia electrónica',
       formaPago: '01 - Contado',
       emailEnviado: true,
-      fechaEnvio: '08/09/2025'
+      fechaEnvio: '08/09/2025',
+      eliminadoVisualmente: true,
+      fechaEliminacion: '09/09/2025',
+      eliminadoPor: 'María López'
     },
     {
       id: 8,
@@ -179,149 +209,170 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       emailEnviado: true,
       fechaEnvio: '07/09/2025',
       fechaCancelacion: '09/09/2025',
-      motivoCancelacion: 'Cancelación a petición del cliente'
+      motivoCancelacion: 'Cancelación a petición del cliente',
+      eliminadoVisualmente: false
     }
   ];
 
+  const datosFacturas = datosIniciales.length > 0 ? datosIniciales : datosFacturasEjemplo;
+
+  // Filtrar datos según rol y vista
+  const datosSegunRol = useMemo(() => {
+    if (rolUsuario === 'administrador') {
+      if (mostrarEliminados) {
+        return datosFacturas.filter(f => f.eliminadoVisualmente === true);
+      }
+      return datosFacturas;
+    } else {
+      return datosFacturas.filter(f => !f.eliminadoVisualmente);
+    }
+  }, [datosFacturas, rolUsuario, mostrarEliminados]);
+
   // Cálculo de estadísticas
   const estadisticas = useMemo(() => {
-    const totalFacturas = datosFacturas.length;
-    const timbradas = datosFacturas.filter(f => f.estado === ESTADOS_FACTURA.TIMBRADA).length;
-    const canceladas = datosFacturas.filter(f => f.estado === ESTADOS_FACTURA.CANCELADA).length;
+    const datos = rolUsuario === 'administrador' ? datosFacturas : datosSegunRol;
+    const totalFacturas = datos.length;
+    const timbradas = datos.filter(f => f.estado === ESTADOS_FACTURA.TIMBRADA && !f.eliminadoVisualmente).length;
+    const canceladas = datos.filter(f => f.estado === ESTADOS_FACTURA.CANCELADA && !f.eliminadoVisualmente).length;
+    const eliminadas = datos.filter(f => f.eliminadoVisualmente === true).length;
 
-    // Calcular monto total facturado (solo timbradas activas)
-    const montoTotal = datosFacturas
-      .filter(f => f.estado === ESTADOS_FACTURA.TIMBRADA)
+    const montoTotal = datos
+      .filter(f => f.estado === ESTADOS_FACTURA.TIMBRADA && !f.eliminadoVisualmente)
       .reduce((total, factura) => total + factura.monto, 0);
 
-    return { totalFacturas, timbradas, canceladas, montoTotal };
-  }, []);
+    return { totalFacturas, timbradas, canceladas, eliminadas, montoTotal };
+  }, [datosFacturas, datosSegunRol, rolUsuario]);
 
   // Filtrar datos según búsqueda y estado
   const datosFiltrados = useMemo(() => {
-    return datosFacturas.filter(factura => {
-      const cumpleBusqueda =
-        factura.cliente.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-        factura.id.toString().includes(terminoBusqueda) ||
-        factura.numeroFactura.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-        factura.rfc.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-        factura.uuid.toLowerCase().includes(terminoBusqueda.toLowerCase());
+    let datos = [...datosSegunRol];
 
-      const cumpleFiltroEstado =
-        filtroEstado === 'todos' ||
-        factura.estado.toLowerCase() === filtroEstado.toLowerCase();
+    if (terminoBusqueda) {
+      datos = datos.filter(factura => {
+        const searchTerm = terminoBusqueda.toLowerCase();
+        return (
+          factura.cliente.toLowerCase().includes(searchTerm) ||
+          factura.id.toString().includes(searchTerm) ||
+          factura.numeroFactura.toLowerCase().includes(searchTerm) ||
+          factura.rfc.toLowerCase().includes(searchTerm) ||
+          factura.uuid.toLowerCase().includes(searchTerm)
+        );
+      });
+    }
 
-      return cumpleBusqueda && cumpleFiltroEstado;
-    });
-  }, [terminoBusqueda, filtroEstado]);
+    if (filtroEstado !== 'todos') {
+      datos = datos.filter(factura => 
+        factura.estado.toLowerCase() === filtroEstado.toLowerCase()
+      );
+    }
+
+    return datos;
+  }, [datosSegunRol, terminoBusqueda, filtroEstado]);
 
   // Calcular paginación
   const totalRegistros = datosFiltrados.length;
-  const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
+  const totalPaginas = Math.max(1, Math.ceil(totalRegistros / registrosPorPagina));
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
-  const indiceFinal = indiceInicio + registrosPorPagina;
+  const indiceFinal = Math.min(indiceInicio + registrosPorPagina, totalRegistros);
   const datosPaginados = datosFiltrados.slice(indiceInicio, indiceFinal);
 
-  const cambiarPagina = (nuevaPagina) => {
+  const cambiarPagina = useCallback((nuevaPagina) => {
     if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
       setPaginaActual(nuevaPagina);
     }
-  };
+  }, [totalPaginas]);
 
-  const manejarCambioRegistros = (evento) => {
+  const manejarCambioRegistros = useCallback((evento) => {
     setRegistrosPorPagina(parseInt(evento.target.value));
     setPaginaActual(1);
-  };
+  }, []);
 
-  const manejarBusqueda = (evento) => {
+  const manejarBusqueda = useCallback((evento) => {
     setTerminoBusqueda(evento.target.value);
     setPaginaActual(1);
-  };
+  }, []);
 
-  const manejarCambioFiltro = (evento) => {
+  const manejarCambioFiltro = useCallback((evento) => {
     setFiltroEstado(evento.target.value);
     setPaginaActual(1);
+  }, []);
+
+  // Manejadores de modales
+  const abrirModalRegenerar = (factura) => {
+    setFacturaSeleccionada(factura);
+    setModalRegenerarAbierto(true);
   };
 
-  const manejarAccion = async (accion, factura) => {
+  const abrirModalEliminarDefinitivo = (factura) => {
+    setFacturaSeleccionada(factura);
+    setModalEliminarDefinitivoAbierto(true);
+  };
+
+  const manejarRegenerar = async (factura, motivo) => {
+    if (onRegenerar) {
+      await onRegenerar(factura, motivo);
+    } else {
+      console.log('Factura regenerada:', factura.id, 'Motivo:', motivo);
+    }
+  };
+
+  const manejarEliminarDefinitivo = async (factura, motivo) => {
+    if (onEliminarDefinitivo) {
+      await onEliminarDefinitivo(factura, motivo);
+    } else {
+      console.log('Factura eliminada definitivamente:', factura.id, 'Motivo:', motivo);
+    }
+  };
+
+  const manejarAccion = useCallback(async (accion, factura) => {
     setCargando(true);
 
-    switch (accion) {
-      case 'descargar':
-        try {
-          console.log('Descargando factura PDF:', factura);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-          // Generar y descargar el PDF
+      switch (accion) {
+        case 'descargar':
           await generarPDFFacturaTimbrada(factura);
+          break;
 
-        } catch (error) {
-          console.error('Error al descargar PDF:', error);
-          alert(`❌ Error al generar el PDF\n\n` +
-            `${error.message || 'No se pudo generar el archivo PDF.'}\n\n` +
-            `Por favor, intenta nuevamente.`);
-        }
-        break;
+        case 'enviar':
+          const emailCliente = prompt(`Enviar factura ${factura.numeroFactura} por correo\n\nIngresa el correo del cliente:`);
+          if (emailCliente && emailCliente.includes('@')) {
+            alert(`✉️ Factura enviada correctamente a:\n${emailCliente}\n\n` +
+              `Factura: ${factura.numeroFactura}\n` +
+              `Cliente: ${factura.cliente}`);
+          } else if (emailCliente) {
+            alert('❌ Correo inválido. Por favor ingresa un correo válido.');
+          }
+          break;
 
-      case 'enviar':
-        // Simular delay de API
-        await new Promise(resolve => setTimeout(resolve, 500));
+        case 'eliminar':
+          setCargando(false);
+          const confirmado = await modalEliminarFactura(factura, onEliminar);
+          if (confirmado && !onEliminar) {
+            console.log('Factura eliminada:', factura.id);
+          }
+          return;
 
-        console.log('Enviar factura:', factura);
-        const emailCliente = prompt(`Enviar factura ${factura.numeroFactura} por correo\n\nIngresa el correo del cliente:`);
-        if (emailCliente && emailCliente.includes('@')) {
-          alert(`✉️ Factura enviada correctamente a:\n${emailCliente}\n\n` +
-            `Factura: ${factura.numeroFactura}\n` +
-            `Cliente: ${factura.cliente}`);
-        } else if (emailCliente) {
-          alert('❌ Correo inválido. Por favor ingresa un correo válido.');
-        }
-        break;
-
-      case 'eliminar':
-        setCargando(false); // Desactivar el estado de carga antes del modal
-
-        // Usar el modal de eliminación personalizado
-        const confirmado = await modalEliminarFactura(factura, async (facturaId) => {
-          // Aquí iría la llamada al API para eliminar la factura
-          console.log('Eliminando factura con ID:', facturaId);
-
-          // Simular llamada API
-          await new Promise(resolve => setTimeout(resolve, 500));
-
-          // Aquí actualizarías el estado para remover la factura de la lista
-          // Por ejemplo: eliminarFacturaDeLista(facturaId);
-        });
-
-        if (confirmado) {
-          console.log('Factura eliminada exitosamente:', factura.numeroFactura);
-          // Aquí puedes agregar lógica adicional después de eliminar
-          // Por ejemplo: recargar datos, actualizar estadísticas, etc.
-        }
-
-        return; // Salir sin ejecutar setCargando(false) al final
-      case 'imprimir':
-        try {
-          console.log('Imprimiendo factura:', factura);
-
-          // Imprimir la factura
+        case 'imprimir':
           imprimirFacturaTimbrada(factura);
+          break;
 
-        } catch (error) {
-          console.error('Error al imprimir:', error);
-          alert(`❌ Error al imprimir\n\n` +
-            `${error.message || 'No se pudo abrir la ventana de impresión.'}\n\n` +
-            `Verifica que permites ventanas emergentes.`);
-        }
-        break;
-
-      default:
-        break;
+        default:
+          break;
+      }
+    } catch (err) {
+      console.error(`Error al ${accion}:`, err);
+      alert(`Error al ${accion}: ${err.message}`);
+    } finally {
+      setCargando(false);
     }
+  }, [onEliminar]);
 
-    setCargando(false);
-  };
-
-  const obtenerClaseEstado = (estado) => {
+  const obtenerClaseEstado = useCallback((estado, eliminado) => {
+    if (eliminado) {
+      return 'facturas-estado-eliminado';
+    }
     switch (estado) {
       case ESTADOS_FACTURA.TIMBRADA:
         return 'facturas-estado-pagado';
@@ -330,9 +381,9 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       default:
         return 'facturas-estado-pagado';
     }
-  };
+  }, []);
 
-  const generarNumerosPaginacion = () => {
+  const generarNumerosPaginacion = useCallback(() => {
     const numeros = [];
     const maximoVisibles = 5;
 
@@ -365,7 +416,7 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
     }
 
     return numeros;
-  };
+  }, [paginaActual, totalPaginas]);
 
   return (
     <div className={`facturas-contenedor-principal ${cargando ? 'facturas-cargando' : ''}`}>
@@ -376,8 +427,20 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
             <FileText size={24} />
           </div>
           <div>
-            <h1 className="facturas-titulo">Registro de Facturas</h1>
-            <p className="facturas-subtitulo">Consulta de facturas emitidas y timbradas</p>
+            <h1 className="facturas-titulo">
+              Registro de Facturas
+              {rolUsuario === 'administrador' && (
+                <span className="facturas-badge-rol-admin">
+                  <Shield size={16} />
+                  Admin
+                </span>
+              )}
+            </h1>
+            <p className="facturas-subtitulo">
+              {mostrarEliminados 
+                ? 'Facturas eliminadas - Solo visible para administradores' 
+                : 'Consulta de facturas emitidas y timbradas'}
+            </p>
           </div>
         </div>
 
@@ -397,6 +460,13 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
             <span className="facturas-valor-estadistica">{estadisticas.canceladas}</span>
             <span className="facturas-etiqueta-estadistica">Canceladas</span>
           </div>
+          {rolUsuario === 'administrador' && (
+            <div className="facturas-tarjeta-estadistica eliminados">
+              <Trash2 className="facturas-icono-estadistica" size={20} />
+              <span className="facturas-valor-estadistica">{estadisticas.eliminadas}</span>
+              <span className="facturas-etiqueta-estadistica">Eliminadas</span>
+            </div>
+          )}
           <div className="facturas-tarjeta-estadistica pendientes">
             <DollarSign className="facturas-icono-estadistica" size={20} />
             <span className="facturas-valor-estadistica">${estadisticas.montoTotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
@@ -455,6 +525,17 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
               <option value="facturas">Registro de Facturas</option>
             </select>
           </div>
+
+          {rolUsuario === 'administrador' && (
+            <button
+              className={`facturas-boton-toggle-eliminados ${mostrarEliminados ? 'activo' : ''}`}
+              onClick={() => setMostrarEliminados(!mostrarEliminados)}
+              title={mostrarEliminados ? 'Ocultar eliminadas' : 'Ver eliminadas'}
+            >
+              {mostrarEliminados ? <Eye size={16} /> : <EyeOff size={16} />}
+              {mostrarEliminados ? 'Ver Activas' : 'Ver Eliminadas'}
+            </button>
+          )}
         </div>
 
         <div className="facturas-seccion-derecha">
@@ -483,6 +564,8 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
             <p className="facturas-submensaje-vacio">
               {terminoBusqueda || filtroEstado !== 'todos'
                 ? 'Intenta ajustar los filtros de búsqueda'
+                : mostrarEliminados
+                ? 'No hay facturas eliminadas en el sistema'
                 : 'No hay facturas registradas en el sistema'}
             </p>
           </div>
@@ -502,16 +585,30 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
             </thead>
             <tbody>
               {datosPaginados.map((factura, indice) => (
-                <tr key={factura.id} className="facturas-fila-pago" style={{ animationDelay: `${indice * 0.05}s` }}>
+                <tr 
+                  key={factura.id} 
+                  className={`facturas-fila-pago ${factura.eliminadoVisualmente ? 'facturas-fila-eliminada' : ''}`}
+                  style={{ animationDelay: `${indice * 0.05}s` }}
+                >
                   <td data-label="Factura" className="facturas-columna-factura">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <span style={{ fontWeight: '600', color: '#111827' }}>{factura.numeroFactura}</span>
+                      <span style={{ fontWeight: '600', color: factura.eliminadoVisualmente ? '#94a3b8' : '#111827' }}>
+                        {factura.numeroFactura}
+                      </span>
                       <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
                         Serie {factura.serie} - Folio {factura.folio}
                       </span>
+                      {factura.eliminadoVisualmente && (
+                        <span className="facturas-badge-eliminado-mini">
+                          <Trash2 size={10} />
+                          Eliminada
+                        </span>
+                      )}
                     </div>
                   </td>
-                  <td data-label="Cliente" className="facturas-columna-cliente">{factura.cliente}</td>
+                  <td data-label="Cliente" className="facturas-columna-cliente" style={{ color: factura.eliminadoVisualmente ? '#94a3b8' : '#111827' }}>
+                    {factura.cliente}
+                  </td>
                   <td data-label="RFC" className="facturas-columna-factura">{factura.rfc}</td>
                   <td data-label="Monto" className="facturas-columna-monto">
                     ${factura.monto.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
@@ -522,6 +619,11 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
                       {factura.estado === ESTADOS_FACTURA.CANCELADA && factura.fechaCancelacion && (
                         <span style={{ fontSize: '0.75rem', color: '#dc2626' }}>
                           Cancelada: {factura.fechaCancelacion}
+                        </span>
+                      )}
+                      {factura.eliminadoVisualmente && factura.fechaEliminacion && (
+                        <span style={{ fontSize: '0.75rem', color: '#f59e0b' }}>
+                          Eliminada: {factura.fechaEliminacion}
                         </span>
                       )}
                     </div>
@@ -540,63 +642,86 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
                     </div>
                   </td>
                   <td data-label="Estado">
-                    <span className={`facturas-badge-estado ${obtenerClaseEstado(factura.estado)}`}>
+                    <span className={`facturas-badge-estado ${obtenerClaseEstado(factura.estado, factura.eliminadoVisualmente)}`}>
                       <span className="facturas-indicador-estado"></span>
-                      {factura.estado}
+                      {factura.eliminadoVisualmente ? 'Eliminada' : factura.estado}
                     </span>
                   </td>
                   <td data-label="Acciones" className="facturas-columna-acciones">
                     <div className="facturas-botones-accion">
-                      <button
-                        className="facturas-boton-accion facturas-ver"
-                        onClick={() => manejarAccion('descargar', factura)}
-                        title="Descargar PDF"
-                        disabled={cargando}
-                      >
-                        <Download size={14} />
-                      </button>
-
-                      {factura.estado === ESTADOS_FACTURA.TIMBRADA && (
+                      {!factura.eliminadoVisualmente ? (
                         <>
                           <button
-                            className="facturas-boton-accion facturas-editar"
-                            onClick={() => manejarAccion('enviar', factura)}
-                            title="Enviar por correo"
+                            className="facturas-boton-accion facturas-ver"
+                            onClick={() => manejarAccion('descargar', factura)}
+                            title="Descargar PDF"
                             disabled={cargando}
                           >
-                            <Send size={14} />
+                            <Download size={14} />
+                          </button>
+
+                          {factura.estado === ESTADOS_FACTURA.TIMBRADA && (
+                            <>
+                              <button
+                                className="facturas-boton-accion facturas-editar"
+                                onClick={() => manejarAccion('enviar', factura)}
+                                title="Enviar por correo"
+                                disabled={cargando}
+                              >
+                                <Send size={14} />
+                              </button>
+                              <button
+                                className="facturas-boton-accion facturas-eliminar"
+                                onClick={() => manejarAccion('eliminar', factura)}
+                                title="Eliminar factura"
+                                disabled={cargando}
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </>
+                          )}
+
+                          {factura.estado === ESTADOS_FACTURA.CANCELADA && (
+                            <>
+                              <button
+                                className="facturas-boton-accion facturas-editar"
+                                onClick={() => manejarAccion('enviar', factura)}
+                                title="Reenviar documentos"
+                                disabled={cargando}
+                              >
+                                <Send size={14} />
+                              </button>
+                              <button
+                                className="facturas-boton-accion facturas-eliminar"
+                                onClick={() => manejarAccion('eliminar', factura)}
+                                title="Eliminar registro"
+                                disabled={cargando}
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </>
+                          )}
+                        </>
+                      ) : rolUsuario === 'administrador' ? (
+                        <>
+                          <button
+                            className="facturas-boton-accion facturas-regenerar"
+                            onClick={() => abrirModalRegenerar(factura)}
+                            title="Regenerar factura"
+                            disabled={cargando}
+                          >
+                            <RefreshCw size={14} />
                           </button>
                           <button
-                            className="facturas-boton-accion facturas-eliminar"
-                            onClick={() => manejarAccion('eliminar', factura)}
-                            title="Eliminar factura"
+                            className="facturas-boton-accion facturas-eliminar-definitivo"
+                            onClick={() => abrirModalEliminarDefinitivo(factura)}
+                            title="Eliminar definitivamente"
                             disabled={cargando}
                           >
                             <Trash2 size={14} />
                           </button>
                         </>
-                      )}
-
-                      {factura.estado === ESTADOS_FACTURA.CANCELADA && (
-                        <>
-                          <button
-                            className="facturas-boton-accion facturas-editar"
-                            onClick={() => manejarAccion('enviar', factura)}
-                            title="Reenviar documentos"
-                            disabled={cargando}
-                          >
-                            <Send size={14} />
-                          </button>
-                          <button
-                            className="facturas-boton-accion facturas-eliminar"
-                            onClick={() => manejarAccion('eliminar', factura)}
-                            title="Eliminar registro"
-                            disabled={cargando}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </>
-                      )}
+                      ) : null}
                     </div>
                   </td>
                 </tr>
@@ -610,7 +735,7 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
       {datosPaginados.length > 0 && (
         <div className="facturas-pie-tabla">
           <div className="facturas-informacion-registros">
-            Mostrando <strong>{indiceInicio + 1}</strong> a <strong>{Math.min(indiceFinal, totalRegistros)}</strong> de <strong>{totalRegistros}</strong> registros
+            Mostrando <strong>{indiceInicio + 1}</strong> a <strong>{indiceFinal}</strong> de <strong>{totalRegistros}</strong> registros
             {(terminoBusqueda || filtroEstado !== 'todos') && (
               <span style={{ color: '#6b7280', marginLeft: '0.5rem' }}>
                 (filtrado de {datosFacturas.length} registros totales)
@@ -657,6 +782,31 @@ const TablaFacturas = ({ vistaActual, onCambiarVista }) => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Modales */}
+      {modalRegenerarAbierto && facturaSeleccionada && (
+        <ModalRegenerarFactura
+          factura={facturaSeleccionada}
+          onConfirmar={manejarRegenerar}
+          onCerrar={() => {
+            setModalRegenerarAbierto(false);
+            setFacturaSeleccionada(null);
+          }}
+          isOpen={modalRegenerarAbierto}
+        />
+      )}
+
+      {modalEliminarDefinitivoAbierto && facturaSeleccionada && (
+        <ModalEliminarDefinitivoFactura
+          factura={facturaSeleccionada}
+          onConfirmar={manejarEliminarDefinitivo}
+          onCerrar={() => {
+            setModalEliminarDefinitivoAbierto(false);
+            setFacturaSeleccionada(null);
+          }}
+          isOpen={modalEliminarDefinitivoAbierto}
+        />
       )}
     </div>
   );
