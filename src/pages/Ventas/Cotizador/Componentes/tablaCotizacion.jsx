@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
+  Eye,
   Search,
   Edit,
   ChevronLeft,
@@ -9,11 +10,16 @@ import {
   BarChart3,
 } from "lucide-react";
 import PropTypes from "prop-types";
+import ModalVerCotizacion from "../Modales/ModalVerCotizacion";
+import ModalEliminarCotizacion from "../Modales/ModalEliminarCotizacion";
 import "./tablaCotizacion.css";
-//instalar "Prop-types"  comando: npm install prop-types
+
 const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
   const [paginaActual, setPaginaActual] = useState(1);
+  const [cotizacionAEliminar, setCotizacionAEliminar] = useState(null);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
+  const [modalVerAbierto, setModalVerAbierto] = useState(false);
+  const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
   useEffect(() => {
@@ -43,7 +49,8 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     return cotizaciones.filter(
       (cotizacion) =>
         cotizacion.folio?.toLowerCase().includes(termino) ||
-        cotizacion.destino?.toLowerCase().includes(termino) ||
+        cotizacion.destinoServicio?.toLowerCase().includes(termino) ||
+        cotizacion.origenServicio?.toLowerCase().includes(termino) ||
         formatearFecha(cotizacion.fechaSalida).includes(termino) ||
         formatearFecha(cotizacion.fechaRegreso).includes(termino)
     );
@@ -77,6 +84,26 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     [datosePaginacion.totalPaginas]
   );
 
+  const manejarEliminarCotizacion = useCallback(
+    async (cotizacion) => {
+      if (!cotizacion) {
+        setCotizacionAEliminar(null);
+        return;
+      }
+
+      try {
+        if (typeof onEliminar === "function") {
+          await onEliminar(cotizacion.id);
+        }
+        setCotizacionAEliminar(null);
+      } catch (error) {
+        console.error("Error al eliminar cotización:", error);
+        throw error;
+      }
+    },
+    [onEliminar]
+  );
+
   const manejarCambioRegistros = useCallback((evento) => {
     const valor = parseInt(evento.target.value, 10);
     if (!isNaN(valor) && valor > 0) {
@@ -90,6 +117,16 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     setPaginaActual(1);
   }, []);
 
+  const manejarAccionVer = useCallback((cotizacion) => {
+    setCotizacionSeleccionada(cotizacion);
+    setModalVerAbierto(true);
+  }, []);
+
+  const cerrarModal = useCallback(() => {
+    setModalVerAbierto(false);
+    setCotizacionSeleccionada(null);
+  }, []);
+
   const manejarAccionEditar = useCallback(
     (cotizacion) => {
       if (typeof onEditar === "function") {
@@ -99,19 +136,9 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     [onEditar]
   );
 
-  const manejarAccionEliminar = useCallback(
-    (cotizacionId) => {
-      if (typeof onEliminar === "function") {
-        const confirmar = window.confirm(
-          "¿Estás seguro de eliminar esta cotización?\n\nEsta acción no se puede deshacer."
-        );
-        if (confirmar) {
-          onEliminar(cotizacionId);
-        }
-      }
-    },
-    [onEliminar]
-  );
+  const manejarAccionEliminar = useCallback((cotizacion) => {
+    setCotizacionAEliminar(cotizacion);
+  }, []);
 
   const numerosPaginas = useMemo(() => {
     const { totalPaginas } = datosePaginacion;
@@ -209,7 +236,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
         </div>
       </nav>
 
-      {/* Contenido principal */}
       {cotizaciones.length > 0 ? (
         <section aria-label="Tabla de cotizaciones">
           <div className="cotizaciones-contenedor-tabla">
@@ -231,6 +257,9 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                   </th>
                   <th scope="col" abbr="Fecha Regreso">
                     FECHA REGRESO
+                  </th>
+                  <th scope="col" abbr="Origen">
+                    ORIGEN
                   </th>
                   <th scope="col" abbr="Destino">
                     DESTINO
@@ -269,6 +298,11 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                           {formatearFecha(cotizacion.fechaRegreso)}
                         </time>
                       </td>
+                      <td data-label="Origen">
+                        <span className="cotizaciones-destino">
+                          {cotizacion.origenServicio || "Sin origen"}
+                        </span>
+                      </td>
                       <td data-label="Destino">
                         <span className="cotizaciones-destino">
                           {cotizacion.destinoServicio || "Sin destino"}
@@ -280,6 +314,18 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                           role="group"
                           aria-label="Acciones de cotización"
                         >
+                          <button
+                            type="button"
+                            className="cotizaciones-boton-accion cotizaciones-ver"
+                            onClick={() => manejarAccionVer(cotizacion)}
+                            aria-label={`Ver cotización ${
+                              cotizacion.folio || cotizacion.id
+                            }`}
+                            title="Ver cotización"
+                          >
+                            <Eye size={16} aria-hidden="true" />
+                            <span className="sr-only">Ver</span>
+                          </button>
                           <button
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-editar"
@@ -295,7 +341,7 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                           <button
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-eliminar"
-                            onClick={() => manejarAccionEliminar(cotizacion.id)}
+                            onClick={() => manejarAccionEliminar(cotizacion)}
                             aria-label={`Eliminar cotización ${
                               cotizacion.folio || cotizacion.id
                             }`}
@@ -440,11 +486,23 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
           </footer>
         </section>
       )}
+
+      <ModalVerCotizacion
+        estaAbierto={modalVerAbierto}
+        cotizacion={cotizacionSeleccionada}
+        alCerrar={cerrarModal}
+      />
+
+      {cotizacionAEliminar && (
+        <ModalEliminarCotizacion
+          cotizacion={cotizacionAEliminar}
+          alConfirmar={manejarEliminarCotizacion}
+        />
+      )}
     </main>
   );
 };
 
-// PropTypes para validación de tipos
 TablaCotizacion.propTypes = {
   cotizaciones: PropTypes.arrayOf(
     PropTypes.shape({
@@ -452,7 +510,8 @@ TablaCotizacion.propTypes = {
       folio: PropTypes.string,
       fechaSalida: PropTypes.string,
       fechaRegreso: PropTypes.string,
-      destino: PropTypes.string,
+      origenServicio: PropTypes.string,
+      destinoServicio: PropTypes.string,
     })
   ),
   onEditar: PropTypes.func,

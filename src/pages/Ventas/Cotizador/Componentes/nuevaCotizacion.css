@@ -123,7 +123,6 @@
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
   padding: 25px;
   margin: 0;
-  position: relative;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -158,6 +157,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  scale: 0.9;
   gap: 0;
 }
 
@@ -174,6 +174,7 @@
   position: relative;
   z-index: 2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 .paso.activo {
@@ -198,18 +199,6 @@
   height: 2px;
   background-color: rgba(255, 255, 255, 0.3);
   margin: 0 10px;
-  position: relative;
-}
-
-.linea-paso::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 0;
-  background-color: white;
-  transition: width 0.3s ease;
 }
 
 .paso-contenido {
@@ -301,10 +290,6 @@
   cursor: pointer;
 }
 
-.formulario-cotizacion select option {
-  padding: 10px;
-}
-
 .fila {
   display: flex;
   gap: 12px;
@@ -331,10 +316,9 @@
 
 .icono-error {
   font-size: 12px;
-  color: #dc2626;
+  color: white;
   font-weight: bold;
   background-color: #dc2626;
-  color: white;
   border-radius: 50%;
   width: 14px;
   height: 14px;
@@ -363,32 +347,6 @@
   color: #dc2626;
 }
 
-.checkboxes-fila {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 18px;
-  align-items: center;
-}
-
-.checkbox-label {
-  display: flex !important;
-  align-items: center;
-  gap: 8px;
-  font-weight: 500;
-  font-size: 13px;
-  color: #475569;
-  cursor: pointer;
-  margin-bottom: 0 !important;
-}
-
-.checkbox-label input[type="checkbox"] {
-  width: auto !important;
-  height: 18px;
-  margin-top: 0 !important;
-  cursor: pointer;
-  accent-color: #1e40af;
-}
-
 .botones-navegacion {
   display: flex;
   justify-content: space-between;
@@ -413,7 +371,6 @@
   font-size: 14px;
   transition: background-color 0.2s ease, transform 0.1s ease;
   min-width: 90px;
-  position: relative;
 }
 
 .btn-siguiente,
@@ -453,33 +410,6 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-}
-
-.formulario-cotizacion input:invalid:not(:placeholder-shown) {
-  border-color: #dc2626;
-}
-
-.formulario-cotizacion input:valid:not(:placeholder-shown) {
-  border-color: #10b981;
-}
-
-.btn-disabled {
-  background-color: #e5e7eb !important;
-  color: #9ca3af !important;
-  cursor: not-allowed !important;
-  box-shadow: none !important;
-  border-color: #e5e7eb !important;
-}
-
-.btn-disabled:hover {
-  background-color: #e5e7eb !important;
-  color: #9ca3af !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-.btn-disabled::before {
-  display: none !important;
 }
 
 .required {
@@ -522,6 +452,16 @@
   background: #94a3b8;
 }
 
+.formulario-cotizacion input[name="precio"] {
+  font-weight: 600;
+  color: #059669;
+}
+
+.formulario-cotizacion input[name="precio"]:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
 @media screen and (max-width: 480px) {
   .modal-contenido {
     width: 95%;
@@ -532,12 +472,6 @@
   .fila {
     flex-direction: column;
     gap: 0;
-  }
-
-  .checkboxes-fila {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
   }
 
   .header-formulario {
@@ -563,10 +497,6 @@
     min-width: auto;
   }
 
-  .indicador-pasos {
-    transform: scale(0.9);
-  }
-
   .mensaje-error {
     font-size: 10px;
     padding: 3px 6px;
@@ -588,14 +518,4 @@
   .modal-contenido {
     width: 90%;
   }
-}
-
-.formulario-cotizacion input[name="precio"] {
-  font-weight: 600;
-  color: #059669;
-}
-
-.formulario-cotizacion input[name="precio"]:focus {
-  border-color: #059669;
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
 }

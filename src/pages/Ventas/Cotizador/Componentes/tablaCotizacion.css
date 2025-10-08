@@ -201,7 +201,8 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
-  min-width: 800px;
+  min-width: 900px;
+  table-layout: fixed;
 }
 
 .cotizaciones-fila-encabezado {
@@ -223,22 +224,33 @@
 }
 
 .cotizaciones-fila-encabezado th:nth-child(1) {
-  width: 120px;
+  width: 110px;
+  min-width: 110px;
 }
 .cotizaciones-fila-encabezado th:nth-child(2) {
-  width: 150px;
+  width: 140px;
+  min-width: 140px;
 }
 
 .cotizaciones-fila-encabezado th:nth-child(3) {
-  width: 150px;
+  width: 140px;
+  min-width: 140px;
 }
 
 .cotizaciones-fila-encabezado th:nth-child(4) {
-  width: 300px;
+  width: auto;
+  min-width: 200px;
 }
 
 .cotizaciones-fila-encabezado th:nth-child(5) {
-  width: 150px;
+  width: auto;
+  min-width: 200px;
+}
+
+.cotizaciones-fila-encabezado th:nth-child(6) {
+  width: 140px;
+  min-width: 140px;
+  text-align: center;
 }
 
 .cotizaciones-fila-cotizacion {
@@ -264,6 +276,9 @@
   padding: 1rem 0.75rem;
   vertical-align: middle;
   font-size: 0.85rem;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cotizaciones-fila-cotizacion td:nth-child(1) {
@@ -284,6 +299,19 @@
 .cotizaciones-fila-cotizacion td:nth-child(4) {
   color: #dc3545;
   font-weight: 500;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.cotizaciones-fila-cotizacion td:nth-child(5) {
+  color: #495057;
+  font-weight: 500;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.cotizaciones-fila-cotizacion td:nth-child(6) {
+  text-align: center;
 }
 
 .cotizaciones-columna-acciones {
@@ -620,24 +648,35 @@
   animation-delay: 0.3s;
 }
 
+/* color botón ver */
+.cotizaciones-boton-accion.cotizaciones-ver {
+  background: #f9ca24;
+  color: white;
+}
+
+.cotizaciones-boton-accion.cotizaciones-ver:hover {
+  background: #f9ca24;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
 @media (max-width: 992px) {
   .cotizaciones-encabezado {
-    padding: 1rem 1.5rem;
+    padding: 1.5rem;
   }
 
   .cotizaciones-titulo {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
 
   .cotizaciones-contenedor-estadisticas {
-    gap: 0.5rem;
+    gap: 1rem;
   }
 
   .cotizaciones-icono-estadistica-circular,
   .cotizaciones-icono-estadistica-cuadrado {
     width: 50px;
     height: 50px;
-    font-size: 1.2rem;
   }
 
   .cotizaciones-controles {
@@ -652,12 +691,8 @@
     padding: 1rem 1.5rem;
   }
 
-  .cotizaciones-controles-derecha {
-    flex-wrap: wrap;
-  }
-
   .cotizaciones-entrada-buscar {
-    width: 150px;
+    width: 180px;
   }
 }
 
@@ -729,11 +764,12 @@
   }
 
   .cotizaciones-fila-cotizacion td {
-    display: block;
-    padding: 0.75rem;
+    display: flex;
+    padding: 0.875rem;
     border-bottom: 1px solid #f8f9fa;
     position: relative;
-    padding-left: 40%;
+    align-items: flex-start;
+    min-height: 50px;
   }
 
   .cotizaciones-fila-cotizacion td:last-child {
@@ -753,30 +789,49 @@
   }
 
   .cotizaciones-fila-cotizacion td:nth-child(4):before {
-    content: "DESTINO:";
+    content: "ORIGEN:";
   }
 
   .cotizaciones-fila-cotizacion td:nth-child(5):before {
+    content: "DESTINO:";
+  }
+
+  .cotizaciones-fila-cotizacion td:nth-child(6):before {
     content: "ACCIONES:";
   }
 
   .cotizaciones-fila-cotizacion td:before {
-    position: absolute;
-    left: 0.75rem;
-    top: 0.75rem;
     font-weight: 600;
     color: #495057;
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 0.5px;
-    width: calc(40% - 1.5rem);
+    width: 140px;
+    min-width: 140px;
+    flex-shrink: 0;
+    padding-right: 0.5rem;
+  }
+
+  .cotizaciones-fila-cotizacion td > * {
+    flex: 1;
+    word-break: break-word;
   }
 
   .cotizaciones-fila-cotizacion td:nth-child(1) {
-    background: transparent;
-    color: inherit;
+    background: linear-gradient(45deg, #e3f2fd, #f3e5f5);
+    color: #1976d2;
     border-radius: 0;
     box-shadow: none;
+    font-weight: 600;
+  }
+
+  .cotizaciones-fila-cotizacion td:nth-child(4),
+  .cotizaciones-fila-cotizacion td:nth-child(5) {
+    color: inherit;
+  }
+
+  .cotizaciones-fila-cotizacion td:nth-child(6) {
+    justify-content: flex-start;
   }
 
   .cotizaciones-columna-acciones {
@@ -785,7 +840,8 @@
 
   .cotizaciones-botones-accion {
     justify-content: flex-start;
-    margin-top: 0.5rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .cotizaciones-pie-tabla {
@@ -826,18 +882,21 @@
     display: none;
   }
 
-  .cotizaciones-fila-cotizacion td {
-    padding-left: 35%;
-  }
-
   .cotizaciones-fila-cotizacion td:before {
-    width: calc(35% - 1.5rem);
+    width: 110px;
+    min-width: 110px;
     font-size: 0.7rem;
   }
 
   .cotizaciones-numeros-paginacion
     .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
     display: none;
+  }
+
+  .cotizaciones-boton-accion {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0.5rem;
   }
 }
 

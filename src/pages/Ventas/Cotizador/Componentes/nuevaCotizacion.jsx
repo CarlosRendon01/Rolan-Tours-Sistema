@@ -51,14 +51,11 @@ const NuevaCotizacion = ({
 
   const [datosCliente, setDatosCliente] = useState({
     nombre: "",
-    apellidoPaterno: "",
-    apellidoMaterno: "",
     email: "",
     telefono: "",
     canalContacto: "",
   });
 
-  // Referencias para los inputs de autocompletado de Google Maps
   const puntoIntermedioRef = useRef(null);
   const destinoServicioRef = useRef(null);
   const autocompleteIntermedio = useRef(null);
@@ -73,7 +70,32 @@ const NuevaCotizacion = ({
     return `CLI-${año}${mes}${dia}-${timestamp}`;
   }, []);
 
-  const validarNombre = useCallback(() => {}, []);
+  const formatearTelefono = useCallback((valor) => {
+    const numeros = valor.replace(/\D/g, "");
+
+    const numeroLimitado = numeros.slice(0, 10);
+
+    let formatado = "";
+    if (numeroLimitado.length > 0) {
+      formatado = numeroLimitado.slice(0, 3);
+    }
+    if (numeroLimitado.length >= 4) {
+      formatado += "-" + numeroLimitado.slice(3, 6);
+    }
+    if (numeroLimitado.length >= 7) {
+      formatado += "-" + numeroLimitado.slice(6, 8);
+    }
+    if (numeroLimitado.length >= 9) {
+      formatado += "-" + numeroLimitado.slice(8, 10);
+    }
+
+    return formatado;
+  }, []);
+
+  const validarTelefono = (telefono) => {
+    const numeros = telefono.replace(/\D/g, "");
+    return numeros.length === 10;
+  };
 
   const generarFolioAutomatico = useCallback(() => {
     const fecha = new Date();
@@ -84,7 +106,6 @@ const NuevaCotizacion = ({
     return `${año}${mes}${dia}${timestamp}`;
   }, []);
 
-  // Inicializar Google Maps Autocomplete
   useEffect(() => {
     if (!mostrarModal || pasoActual !== 3) return;
 
@@ -95,7 +116,7 @@ const NuevaCotizacion = ({
       }
 
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDRBiAAnsJI_Ccb88ZYA3KZx4FCVxf8ZIk&libraries=places&language=es`;
+      script.src = ``;
       script.async = true;
       script.defer = true;
       script.onload = initAutocomplete;
@@ -105,7 +126,6 @@ const NuevaCotizacion = ({
     const initAutocomplete = () => {
       if (!puntoIntermedioRef.current || !destinoServicioRef.current) return;
 
-      // Autocomplete para Punto Intermedio
       if (!autocompleteIntermedio.current) {
         autocompleteIntermedio.current =
           new window.google.maps.places.Autocomplete(
@@ -128,7 +148,6 @@ const NuevaCotizacion = ({
         });
       }
 
-      // Autocomplete para Destino Servicio
       if (!autocompleteDestino.current) {
         autocompleteDestino.current =
           new window.google.maps.places.Autocomplete(
@@ -161,16 +180,6 @@ const NuevaCotizacion = ({
         1: [{ campo: "nombreResponsable", nombre: "Nombre Responsable" }],
         2: [
           { campo: "nombre", nombre: "Nombre", esCliente: true },
-          {
-            campo: "apellidoPaterno",
-            nombre: "Apellido Paterno",
-            esCliente: true,
-          },
-          {
-            campo: "apellidoMaterno",
-            nombre: "Apellido Materno",
-            esCliente: true,
-          },
           { campo: "email", nombre: "Email", esCliente: true },
           { campo: "telefono", nombre: "Teléfono", esCliente: true },
           {
@@ -208,6 +217,35 @@ const NuevaCotizacion = ({
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(valor)) {
             errores[campo] = "Email inválido";
+          }
+        }
+
+        if (campo === "telefono" && valor && valor.trim() !== "") {
+          if (!validarTelefono(valor)) {
+            errores[campo] = "El teléfono debe tener 10 dígitos";
+          }
+        }
+
+        if (campo === "fechaSalida" && valor && valor.trim() !== "") {
+          const fechaActual = new Date();
+          fechaActual.setHours(0, 0, 0, 0);
+
+          const fechaSeleccionada = new Date(valor + "T00:00:00");
+
+          if (fechaSeleccionada < fechaActual) {
+            errores[campo] = "La fecha de salida debe ser mayor o igual a hoy";
+          }
+        }
+
+        if (campo === "fechaRegreso" && valor && formData.fechaSalida) {
+          const fechaSalida = new Date(formData.fechaSalida + "T00:00:00");
+          const fechaRegreso = new Date(valor + "T00:00:00");
+
+          const MILISEGUNDOS_EN_UN_DIA = 3 * 24 * 60 * 60 * 1000;
+
+          if (fechaRegreso - fechaSalida < MILISEGUNDOS_EN_UN_DIA) {
+            errores[campo] =
+              "La fecha de regreso debe ser al menos 3 días después de la fecha de salida";
           }
         }
       });
@@ -273,8 +311,6 @@ const NuevaCotizacion = ({
     });
     setDatosCliente({
       nombre: "",
-      apellidoPaterno: "",
-      apellidoMaterno: "",
       email: "",
       telefono: "",
       canalContacto: "",
@@ -324,8 +360,6 @@ const NuevaCotizacion = ({
       if (cotizacionEditar.cliente) {
         setDatosCliente({
           nombre: cotizacionEditar.cliente.nombre || "",
-          apellidoPaterno: cotizacionEditar.cliente.apellidoPaterno || "",
-          apellidoMaterno: cotizacionEditar.cliente.apellidoMaterno || "",
           email: cotizacionEditar.cliente.email || "",
           telefono: cotizacionEditar.cliente.telefono || "",
           canalContacto: cotizacionEditar.cliente.canalContacto || "",
@@ -384,8 +418,6 @@ const NuevaCotizacion = ({
     });
     setDatosCliente({
       nombre: "",
-      apellidoPaterno: "",
-      apellidoMaterno: "",
       email: "",
       telefono: "",
       canalContacto: "",
@@ -473,13 +505,18 @@ const NuevaCotizacion = ({
   const handleClienteInputChange = (e) => {
     const { name, value } = e.target;
 
-    if (erroresCampos[name] && value.trim() !== "") {
+    let valorFinal = value;
+    if (name === "telefono") {
+      valorFinal = formatearTelefono(value);
+    }
+
+    if (erroresCampos[name] && valorFinal.trim() !== "") {
       limpiarErrorCampo(name);
     }
 
     setDatosCliente((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: valorFinal,
     }));
   };
 
@@ -715,7 +752,7 @@ const NuevaCotizacion = ({
                         name="id"
                         value={formData.id}
                         onChange={handleInputChange}
-                        readOnly={modoEdicion}
+                        readOnly
                       />
                     </label>
                     <label>
@@ -817,35 +854,6 @@ const NuevaCotizacion = ({
                     <MensajeError nombreCampo="nombre" />
                   </label>
 
-                  <div className="fila">
-                    <label>
-                      Apellido Paterno: <span className="required">*</span>
-                      <input
-                        type="text"
-                        name="apellidoPaterno"
-                        value={datosCliente.apellidoPaterno}
-                        onChange={handleClienteInputChange}
-                        className={
-                          erroresCampos.apellidoPaterno ? "campo-error" : ""
-                        }
-                      />
-                      <MensajeError nombreCampo="apellidoPaterno" />
-                    </label>
-                    <label>
-                      Apellido Materno: <span className="required">*</span>
-                      <input
-                        type="text"
-                        name="apellidoMaterno"
-                        value={datosCliente.apellidoMaterno}
-                        onChange={handleClienteInputChange}
-                        className={
-                          erroresCampos.apellidoMaterno ? "campo-error" : ""
-                        }
-                      />
-                      <MensajeError nombreCampo="apellidoMaterno" />
-                    </label>
-                  </div>
-
                   <label>
                     Email: <span className="required">*</span>
                     <input
@@ -867,6 +875,8 @@ const NuevaCotizacion = ({
                         value={datosCliente.telefono}
                         onChange={handleClienteInputChange}
                         className={erroresCampos.telefono ? "campo-error" : ""}
+                        placeholder="951-574-11-11"
+                        maxLength="13"
                       />
                       <MensajeError nombreCampo="telefono" />
                     </label>
@@ -1129,7 +1139,7 @@ const NuevaCotizacion = ({
 
                   <div className="fila">
                     <label>
-                      Total Kilómetros: (Opcional)
+                      Total Kilómetros:
                       <input
                         type="number"
                         name="totalKilometros"
@@ -1137,10 +1147,11 @@ const NuevaCotizacion = ({
                         onChange={handleInputChange}
                         step="0.1"
                         min="0"
+                        readOnly
                       />
                     </label>
                     <label>
-                      Costo Casetas: (Opcional)
+                      Costo Casetas:
                       <input
                         type="number"
                         name="costoCasetas"
@@ -1148,6 +1159,7 @@ const NuevaCotizacion = ({
                         onChange={handleInputChange}
                         step="0.01"
                         min="0"
+                        readOnly
                       />
                     </label>
                   </div>
@@ -1178,7 +1190,7 @@ const NuevaCotizacion = ({
                   </div>
 
                   <label>
-                    Precio: (Opcional)
+                    Precio:
                     <input
                       type="number"
                       name="precio"
@@ -1187,6 +1199,7 @@ const NuevaCotizacion = ({
                       step="0.01"
                       min="0"
                       placeholder="0.00"
+                      readOnly
                     />
                   </label>
 
@@ -1242,7 +1255,6 @@ const NuevaCotizacion = ({
                         onChange={handleExtraChange}
                       >
                         <option value="">Seleccionar...</option>
-                        {/* Opciones se agregarán después */}
                       </select>
                     </label>
 
@@ -1254,7 +1266,6 @@ const NuevaCotizacion = ({
                         onChange={handleExtraChange}
                       >
                         <option value="">Seleccionar...</option>
-                        {/* Opciones se agregarán después */}
                       </select>
                     </label>
 
@@ -1266,7 +1277,6 @@ const NuevaCotizacion = ({
                         onChange={handleExtraChange}
                       >
                         <option value="">Seleccionar...</option>
-                        {/* Opciones se agregarán después */}
                       </select>
                     </label>
 
@@ -1278,7 +1288,6 @@ const NuevaCotizacion = ({
                         onChange={handleExtraChange}
                       >
                         <option value="">Seleccionar...</option>
-                        {/* Opciones se agregarán después */}
                       </select>
                     </label>
                   </div>

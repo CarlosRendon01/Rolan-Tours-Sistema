@@ -7,7 +7,6 @@ import "./cotizaciones.css";
 
 const Cotizacion = () => {
   const [cotizaciones, setCotizaciones] = useState([]);
-
   const [cotizacionEditar, setCotizacionEditar] = useState(null);
 
   const handleGuardarCotizacion = useCallback(
@@ -38,17 +37,8 @@ const Cotizacion = () => {
   }, []);
 
   const handleEliminarCotizacion = useCallback((id) => {
-    const cotizacionAEliminar = cotizaciones.find((cot) => cot.id === id);
-    const folio = cotizacionAEliminar?.folio || id;
-
-    if (
-      window.confirm(
-        `¿Estás seguro de que deseas eliminar la cotización ${folio}?`
-      )
-    ) {
-      setCotizaciones((prev) => prev.filter((cot) => cot.id !== id));
-      console.log("Cotización eliminada con ID:", id);
-    }
+    setCotizaciones((prev) => prev.filter((cot) => cot.id !== id));
+    console.log("Cotización eliminada con ID:", id);
   }, []);
 
   return (
