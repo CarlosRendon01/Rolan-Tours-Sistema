@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./nuevaCotizacion.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const NuevaCotizacion = ({
   onGuardarCotizacion,
@@ -9,7 +9,6 @@ const NuevaCotizacion = ({
   cotizacionEditar,
   onCancelarEdicion,
 }) => {
-  const [activo, setActivo] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [pasoActual, setPasoActual] = useState(1);
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -72,7 +71,6 @@ const NuevaCotizacion = ({
 
   const formatearTelefono = useCallback((valor) => {
     const numeros = valor.replace(/\D/g, "");
-
     const numeroLimitado = numeros.slice(0, 10);
 
     let formatado = "";
@@ -372,10 +370,6 @@ const NuevaCotizacion = ({
     }
   }, [cotizacionEditar, limpiarTodosErrores]);
 
-  const toggleBoton = () => {
-    setActivo(!activo);
-  };
-
   const abrirModal = useCallback(() => {
     setMostrarModal(true);
     setPasoActual(1);
@@ -650,28 +644,16 @@ const NuevaCotizacion = ({
   });
 
   return (
-    <div className="nCotización-container">
-      <div className="botones-wrapper">
-        <button
-          title="Agregar cotización"
-          className={`agregar-cotizacion ${activo ? "activo" : ""}`}
-          onClick={toggleBoton}
-        >
-          <FontAwesomeIcon
-            icon={activo ? faTimes : faPlus}
-            fixedWidth
-            className={`icono-verde ${activo ? "girar" : ""}`}
-          />
-        </button>
-        {activo && (
-          <button
-            className="boton-agregar animar-aparicion"
-            onClick={abrirModal}
-          >
-            Agregar cotización
-          </button>
-        )}
-      </div>
+    <>
+      <button
+        className="cotizacion-boton-agregar"
+        onClick={abrirModal}
+        title="Nueva Cotización"
+      >
+        <FontAwesomeIcon icon={faPlus} />
+        <span>Nueva Cotización</span>
+      </button>
+
       {mostrarModal && (
         <div className="modal-overlay" onClick={cerrarModal}>
           <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>
@@ -1352,7 +1334,7 @@ const NuevaCotizacion = ({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

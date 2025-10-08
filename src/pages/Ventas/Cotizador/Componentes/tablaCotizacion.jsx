@@ -14,7 +14,12 @@ import ModalVerCotizacion from "../Modales/ModalVerCotizacion";
 import ModalEliminarCotizacion from "../Modales/ModalEliminarCotizacion";
 import "./tablaCotizacion.css";
 
-const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
+const TablaCotizacion = ({
+  cotizaciones = [],
+  onEditar,
+  onEliminar,
+  botonNuevaCotizacion,
+}) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [cotizacionAEliminar, setCotizacionAEliminar] = useState(null);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
@@ -164,19 +169,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
         >
           <div className="cotizaciones-estadistica">
             <div
-              className="cotizaciones-icono-estadistica-circular"
-              aria-hidden="true"
-            >
-              <FileText size={20} />
-            </div>
-            <div className="cotizaciones-info-estadistica">
-              <span className="cotizaciones-label-estadistica">
-                COTIZACIONES
-              </span>
-            </div>
-          </div>
-          <div className="cotizaciones-estadistica">
-            <div
               className="cotizaciones-icono-estadistica-cuadrado"
               aria-hidden="true"
             >
@@ -210,8 +202,13 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
         </div>
 
         <div className="cotizaciones-controles-derecha">
+          {botonNuevaCotizacion && (
+            <div className="cotizaciones-boton-nueva-wrapper">
+              {botonNuevaCotizacion}
+            </div>
+          )}
           <div className="cotizaciones-control-busqueda" role="search">
-            <label htmlFor="input-buscar">Buscar:</label>
+            <label htmlFor="input-buscar"></label>
             <div className="cotizaciones-entrada-busqueda">
               <input
                 type="search"

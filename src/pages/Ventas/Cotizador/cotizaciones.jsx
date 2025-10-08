@@ -43,24 +43,19 @@ const Cotizacion = () => {
 
   return (
     <div className="cotizacion-container">
-      <div className="cotizacion-header">
-        <h1>Cotizaciones</h1>
-      </div>
-
       <div className="cotizacion-layout">
-        <div className="nueva-cotizacion-section">
-          <NuevaCotizacion
-            onGuardarCotizacion={handleGuardarCotizacion}
-            cotizacionEditar={cotizacionEditar}
-            onCancelarEdicion={handleCancelarEdicion}
-          />
-        </div>
-
         <div className="tabla-cotizacion-section">
           <TablaCotizacion
             cotizaciones={cotizaciones}
             onEditar={handleEditarCotizacion}
             onEliminar={handleEliminarCotizacion}
+            botonNuevaCotizacion={
+              <NuevaCotizacion
+                onGuardarCotizacion={handleGuardarCotizacion}
+                cotizacionEditar={cotizacionEditar}
+                onCancelarEdicion={handleCancelarEdicion}
+              />
+            }
           />
         </div>
       </div>

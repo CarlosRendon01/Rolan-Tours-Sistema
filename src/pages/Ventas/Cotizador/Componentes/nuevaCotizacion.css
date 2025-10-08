@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   margin-left: 0;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   position: relative;
   z-index: 15;
 }
@@ -11,6 +11,48 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.cotizacion-boton-agregar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  white-space: nowrap;
+}
+
+.cotizacion-boton-agregar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+.cotizacion-boton-agregar:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.cotizacion-boton-agregar svg {
+  transition: transform 0.3s ease;
+  width: 18px;
+  height: 18px;
+}
+
+.cotizacion-boton-agregar:hover svg {
+  transform: rotate(180deg);
+}
+
+.cotizacion-boton-agregar:active svg {
+  transform: rotate(360deg);
 }
 
 .agregar-cotizacion {
@@ -462,6 +504,79 @@
   box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
 }
 
+.extras-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.extras-seleccionados {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.extras-seleccionados h4 {
+  margin: 0 0 12px 0;
+  color: #1e40af;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.extras-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.extra-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.extra-tipo {
+  font-weight: 600;
+  color: #475569;
+  text-transform: capitalize;
+}
+
+.extra-valor {
+  color: #1e40af;
+  font-weight: 500;
+}
+
+.extras-vacio {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+  font-style: italic;
+  padding: 10px;
+}
+
+.total-container {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.total-container label {
+  margin-bottom: 0;
+}
+
+.total-container input {
+  font-size: 18px;
+  font-weight: 700;
+  color: #059669;
+  text-align: right;
+}
+
 @media screen and (max-width: 480px) {
   .modal-contenido {
     width: 95%;
@@ -507,6 +622,10 @@
     width: 12px;
     height: 12px;
     font-size: 10px;
+  }
+
+  .extras-grid {
+    grid-template-columns: 1fr;
   }
 }
 
