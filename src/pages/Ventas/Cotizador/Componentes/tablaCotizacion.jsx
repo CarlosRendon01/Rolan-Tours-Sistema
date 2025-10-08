@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
+  Eye,
   Search,
   Edit,
   ChevronLeft,
@@ -9,19 +10,22 @@ import {
   BarChart3,
 } from "lucide-react";
 import PropTypes from "prop-types";
+import ModalVerCotizacion from "../Modales/ModalVerCotizacion";
+import ModalEliminarCotizacion from "../Modales/ModalEliminarCotizacion";
 import "./tablaCotizacion.css";
-//instalar "Prop-types"  comando: npm install prop-types
+
 const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
   const [paginaActual, setPaginaActual] = useState(1);
+  const [cotizacionAEliminar, setCotizacionAEliminar] = useState(null);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
+  const [modalVerAbierto, setModalVerAbierto] = useState(false);
+  const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
-  // Resetear página cuando cambien las cotizaciones
   useEffect(() => {
     setPaginaActual(1);
   }, [cotizaciones]);
 
-  // Función para formatear fecha memoizada
   const formatearFecha = useCallback((fecha) => {
     if (!fecha) return "-";
     try {
@@ -38,7 +42,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     }
   }, []);
 
-  // Filtrar cotizaciones según búsqueda - memoizado
   const cotizacionesFiltradas = useMemo(() => {
     if (!terminoBusqueda.trim()) return cotizaciones;
 
@@ -46,13 +49,13 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     return cotizaciones.filter(
       (cotizacion) =>
         cotizacion.folio?.toLowerCase().includes(termino) ||
-        cotizacion.destino?.toLowerCase().includes(termino) ||
+        cotizacion.destinoServicio?.toLowerCase().includes(termino) ||
+        cotizacion.origenServicio?.toLowerCase().includes(termino) ||
         formatearFecha(cotizacion.fechaSalida).includes(termino) ||
         formatearFecha(cotizacion.fechaRegreso).includes(termino)
     );
   }, [cotizaciones, terminoBusqueda, formatearFecha]);
 
-  // Calcular paginación - memoizado
   const datosePaginacion = useMemo(() => {
     const totalRegistros = cotizacionesFiltradas.length;
     const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina) || 1;
@@ -72,7 +75,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     };
   }, [cotizacionesFiltradas, paginaActual, registrosPorPagina]);
 
-  // Handlers optimizados
   const cambiarPagina = useCallback(
     (nuevaPagina) => {
       if (nuevaPagina >= 1 && nuevaPagina <= datosePaginacion.totalPaginas) {
@@ -80,6 +82,26 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
       }
     },
     [datosePaginacion.totalPaginas]
+  );
+
+  const manejarEliminarCotizacion = useCallback(
+    async (cotizacion) => {
+      if (!cotizacion) {
+        setCotizacionAEliminar(null);
+        return;
+      }
+
+      try {
+        if (typeof onEliminar === "function") {
+          await onEliminar(cotizacion.id);
+        }
+        setCotizacionAEliminar(null);
+      } catch (error) {
+        console.error("Error al eliminar cotización:", error);
+        throw error;
+      }
+    },
+    [onEliminar]
   );
 
   const manejarCambioRegistros = useCallback((evento) => {
@@ -95,6 +117,16 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     setPaginaActual(1);
   }, []);
 
+  const manejarAccionVer = useCallback((cotizacion) => {
+    setCotizacionSeleccionada(cotizacion);
+    setModalVerAbierto(true);
+  }, []);
+
+  const cerrarModal = useCallback(() => {
+    setModalVerAbierto(false);
+    setCotizacionSeleccionada(null);
+  }, []);
+
   const manejarAccionEditar = useCallback(
     (cotizacion) => {
       if (typeof onEditar === "function") {
@@ -104,21 +136,10 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
     [onEditar]
   );
 
-  const manejarAccionEliminar = useCallback(
-    (cotizacionId) => {
-      if (typeof onEliminar === "function") {
-        const confirmar = window.confirm(
-          "¿Estás seguro de eliminar esta cotización?\n\nEsta acción no se puede deshacer."
-        );
-        if (confirmar) {
-          onEliminar(cotizacionId);
-        }
-      }
-    },
-    [onEliminar]
-  );
+  const manejarAccionEliminar = useCallback((cotizacion) => {
+    setCotizacionAEliminar(cotizacion);
+  }, []);
 
-  // Generar números de páginas
   const numerosPaginas = useMemo(() => {
     const { totalPaginas } = datosePaginacion;
     return Array.from({ length: totalPaginas }, (_, i) => i + 1);
@@ -126,7 +147,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
 
   return (
     <main className="cotizaciones-contenedor-principal" role="main">
-      {/* Header con información semántica */}
       <header className="cotizaciones-encabezado">
         <div className="cotizaciones-seccion-logo">
           <div className="cotizaciones-lineas-decorativas" aria-hidden="true">
@@ -138,7 +158,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
           <h1 className="cotizaciones-titulo">Gestión de Cotizaciones</h1>
         </div>
 
-        {/* Estadísticas como región informativa */}
         <section
           className="cotizaciones-contenedor-estadisticas"
           aria-label="Estadísticas de cotizaciones"
@@ -172,7 +191,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
         </section>
       </header>
 
-      {/* Controles como región de navegación */}
       <nav className="cotizaciones-controles" aria-label="Controles de tabla">
         <div className="cotizaciones-control-registros">
           <label htmlFor="select-registros">Mostrar</label>
@@ -218,10 +236,8 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
         </div>
       </nav>
 
-      {/* Contenido principal */}
       {cotizaciones.length > 0 ? (
         <section aria-label="Tabla de cotizaciones">
-          {/* Tabla con estructura semántica correcta */}
           <div className="cotizaciones-contenedor-tabla">
             <table
               className="cotizaciones-tabla"
@@ -241,6 +257,9 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                   </th>
                   <th scope="col" abbr="Fecha Regreso">
                     FECHA REGRESO
+                  </th>
+                  <th scope="col" abbr="Origen">
+                    ORIGEN
                   </th>
                   <th scope="col" abbr="Destino">
                     DESTINO
@@ -279,9 +298,14 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                           {formatearFecha(cotizacion.fechaRegreso)}
                         </time>
                       </td>
+                      <td data-label="Origen">
+                        <span className="cotizaciones-destino">
+                          {cotizacion.origenServicio || "Sin origen"}
+                        </span>
+                      </td>
                       <td data-label="Destino">
                         <span className="cotizaciones-destino">
-                          {cotizacion.destino || "Sin destino"}
+                          {cotizacion.destinoServicio || "Sin destino"}
                         </span>
                       </td>
                       <td data-label="Acciones">
@@ -290,6 +314,18 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                           role="group"
                           aria-label="Acciones de cotización"
                         >
+                          <button
+                            type="button"
+                            className="cotizaciones-boton-accion cotizaciones-ver"
+                            onClick={() => manejarAccionVer(cotizacion)}
+                            aria-label={`Ver cotización ${
+                              cotizacion.folio || cotizacion.id
+                            }`}
+                            title="Ver cotización"
+                          >
+                            <Eye size={16} aria-hidden="true" />
+                            <span className="sr-only">Ver</span>
+                          </button>
                           <button
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-editar"
@@ -305,7 +341,7 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
                           <button
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-eliminar"
-                            onClick={() => manejarAccionEliminar(cotizacion.id)}
+                            onClick={() => manejarAccionEliminar(cotizacion)}
                             aria-label={`Eliminar cotización ${
                               cotizacion.folio || cotizacion.id
                             }`}
@@ -323,7 +359,6 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
             </table>
           </div>
 
-          {/* Footer con información de paginación */}
           <footer className="cotizaciones-pie-tabla" role="contentinfo">
             <div
               className="cotizaciones-informacion-registros"
@@ -451,11 +486,23 @@ const TablaCotizacion = ({ cotizaciones = [], onEditar, onEliminar }) => {
           </footer>
         </section>
       )}
+
+      <ModalVerCotizacion
+        estaAbierto={modalVerAbierto}
+        cotizacion={cotizacionSeleccionada}
+        alCerrar={cerrarModal}
+      />
+
+      {cotizacionAEliminar && (
+        <ModalEliminarCotizacion
+          cotizacion={cotizacionAEliminar}
+          alConfirmar={manejarEliminarCotizacion}
+        />
+      )}
     </main>
   );
 };
 
-// PropTypes para validación de tipos
 TablaCotizacion.propTypes = {
   cotizaciones: PropTypes.arrayOf(
     PropTypes.shape({
@@ -463,7 +510,8 @@ TablaCotizacion.propTypes = {
       folio: PropTypes.string,
       fechaSalida: PropTypes.string,
       fechaRegreso: PropTypes.string,
-      destino: PropTypes.string,
+      origenServicio: PropTypes.string,
+      destinoServicio: PropTypes.string,
     })
   ),
   onEditar: PropTypes.func,

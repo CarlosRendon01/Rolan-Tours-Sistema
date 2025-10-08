@@ -1,10 +1,8 @@
-/* Contenedor principal de la página de cotizaciones */
 .cotizacion-container {
   min-height: 100vh;
   background-color: #ffffff;
 }
 
-/* Header de la sección */
 .cotizacion-header {
   margin-bottom: 5px;
   text-align: center;
@@ -18,16 +16,13 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Layout principal */
 .cotizacion-layout {
   max-width: 1400px;
   display: flex;
   flex-direction: column;
   gap: 0;
-  /* Eliminar gap para mejor alineación */
 }
 
-/* Sección del botón nueva cotización */
 .nueva-cotizacion-section {
   display: flex;
   justify-content: flex-start;
@@ -36,7 +31,6 @@
   table-layout: fixed;
 }
 
-/* Sección de la tabla */
 .tabla-cotizacion-section {
   flex: 1;
 }
