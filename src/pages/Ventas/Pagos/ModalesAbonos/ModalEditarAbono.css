@@ -1,0 +1,835 @@
+/* ================================
+   MODAL EDITAR ABONO - DISEÑO RENOVADO
+   ================================ */
+
+/* Variables CSS para fácil personalización */
+:root {
+  --primary-color: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  --secondary-color: #8b5cf6;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ================================
+   OVERLAY Y CONTENEDOR
+   ================================ */
+
+.modal-editar-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(15, 23, 42, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9999 !important;
+  padding: 1.5rem !important;
+  animation: overlayFadeIn var(--transition-base) ease-out !important;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+.modal-editar-contenedor {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  width: 100% !important;
+  max-width: 1000px !important;
+  max-height: 90vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  animation: modalSlideUp var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(40px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ================================
+   HEADER MODERNO Y EXTENDIDO
+   ================================ */
+
+.modal-editar-header {
+  position: relative !important;
+  padding: 2.5rem 2rem !important;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+  overflow: hidden !important;
+  min-height: 180px !important;
+}
+
+/* Efecto de brillo sutil */
+.modal-editar-header::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  right: -20% !important;
+  width: 300px !important;
+  height: 300px !important;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%) !important;
+  pointer-events: none !important;
+}
+
+.modal-editar-header-contenido {
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 1.25rem !important;
+}
+
+.modal-editar-icono-header {
+  flex-shrink: 0 !important;
+  width: 56px !important;
+  height: 56px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: var(--radius-md) !important;
+  color: white !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.modal-editar-textos-header {
+  flex: 1 !important;
+}
+
+.modal-editar-titulo {
+  margin: 0 !important;
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  color: white !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.2 !important;
+}
+
+.modal-editar-subtitulo {
+  margin: 0.625rem 0 0 0 !important;
+  font-size: 0.9375rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+
+/* Metadata badges en el header */
+.modal-editar-metadata {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.75rem !important;
+  margin-top: 1rem !important;
+}
+
+.modal-editar-metadata-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-size: 0.8125rem !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  padding: 0.375rem 0.75rem !important;
+  border-radius: 6px !important;
+  backdrop-filter: blur(10px) !important;
+  font-weight: 500 !important;
+}
+
+.modal-editar-boton-cerrar {
+  position: absolute !important;
+  top: 1.5rem !important;
+  right: 1.5rem !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: var(--radius-sm) !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: all var(--transition-base) !important;
+  backdrop-filter: blur(10px) !important;
+  z-index: 2 !important;
+}
+
+.modal-editar-boton-cerrar:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: rotate(90deg) !important;
+}
+
+.modal-editar-boton-cerrar:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* ================================
+   ÁREA DE CONTENIDO
+   ================================ */
+
+.modal-editar-contenido {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 2rem 1.5rem !important;
+  background: var(--bg-secondary) !important;
+}
+
+/* Scrollbar elegante */
+.modal-editar-contenido::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.modal-editar-contenido::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.modal-editar-contenido::-webkit-scrollbar-thumb {
+  background: var(--border-color) !important;
+  border-radius: 3px !important;
+}
+
+.modal-editar-contenido::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary) !important;
+}
+
+/* ================================
+   TARJETAS DE SECCIÓN
+   ================================ */
+
+.modal-editar-seccion {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  border: 1px solid var(--border-light) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.modal-editar-seccion:last-of-type {
+  margin-bottom: 0 !important;
+}
+
+.modal-editar-seccion:hover {
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--border-color) !important;
+}
+
+.modal-editar-seccion-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 2px solid var(--border-light) !important;
+}
+
+.modal-editar-seccion-icono {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%) !important;
+  border-radius: var(--radius-sm) !important;
+  color: white !important;
+  flex-shrink: 0 !important;
+}
+
+.modal-editar-seccion-titulo {
+  margin: 0 !important;
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.025em !important;
+}
+
+/* ================================
+   GRID RESPONSIVE
+   ================================ */
+
+.modal-editar-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 1.25rem !important;
+}
+
+.modal-editar-campo-completo {
+  grid-column: 1 / -1 !important;
+}
+
+/* ================================
+   CAMPOS DE FORMULARIO
+   ================================ */
+
+.modal-editar-campo {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+}
+
+.modal-editar-label {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: var(--text-secondary) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.375rem !important;
+  letter-spacing: 0.01em !important;
+}
+
+.modal-editar-label-requerido {
+  color: var(--danger-color) !important;
+  font-weight: 700 !important;
+}
+
+.modal-editar-input-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  background: var(--bg-primary) !important;
+  border: 1.5px solid var(--border-color) !important;
+  border-radius: var(--radius-sm) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.modal-editar-input-wrapper:hover {
+  border-color: var(--primary-light) !important;
+  background: var(--bg-secondary) !important;
+}
+
+.modal-editar-input-wrapper:focus-within {
+  border-color: var(--primary-color) !important;
+  background: var(--bg-primary) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+}
+
+.modal-editar-input-icono {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding-left: 1rem !important;
+  padding-right: 0.5rem !important;
+  color: var(--text-tertiary) !important;
+  pointer-events: none !important;
+  transition: color var(--transition-base) !important;
+  flex-shrink: 0 !important;
+}
+
+.modal-editar-input-wrapper:focus-within .modal-editar-input-icono {
+  color: var(--primary-color) !important;
+}
+
+/* Inputs dentro del wrapper - sin border propio */
+.modal-editar-input-wrapper .modal-editar-input {
+  flex: 1 !important;
+  padding: 0.75rem 1rem 0.75rem 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.modal-editar-input-wrapper .modal-editar-input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Inputs SIN wrapper (sin icono) mantienen estilo original */
+.modal-editar-input,
+.modal-editar-textarea,
+.modal-editar-select {
+  width: 100% !important;
+  padding: 0.75rem 1rem !important;
+  border: 1.5px solid var(--border-color) !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 0.9375rem !important;
+  font-weight: 400 !important;
+  color: var(--text-primary) !important;
+  background: var(--bg-primary) !important;
+  transition: all var(--transition-base) !important;
+  box-sizing: border-box !important;
+  font-family: inherit !important;
+}
+
+/* NUEVA CLASE: Inputs sin icono a la izquierda */
+.modal-editar-input-sin-icono {
+  padding-left: 1rem !important;
+}
+
+/* NUEVA CLASE: Select sin icono a la izquierda */
+.modal-editar-select-sin-icono {
+  padding-left: 1rem !important;
+}
+
+.modal-editar-input::placeholder,
+.modal-editar-textarea::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+.modal-editar-input:hover:not(:disabled):not(:focus),
+.modal-editar-textarea:hover:not(:disabled):not(:focus),
+.modal-editar-select:hover:not(:disabled):not(:focus) {
+  border-color: var(--primary-light) !important;
+  background: var(--bg-secondary) !important;
+}
+
+.modal-editar-input:focus,
+.modal-editar-textarea:focus,
+.modal-editar-select:focus {
+  outline: none !important;
+  border-color: var(--primary-color) !important;
+  background: var(--bg-primary) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+}
+
+.modal-editar-input-wrapper:focus-within .modal-editar-input-icono {
+  color: var(--primary-color) !important;
+}
+
+.modal-editar-input:disabled,
+.modal-editar-textarea:disabled,
+.modal-editar-select:disabled {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-tertiary) !important;
+  cursor: not-allowed !important;
+  opacity: 0.7 !important;
+}
+
+/* Select especial */
+.modal-editar-select {
+  padding-right: 2.5rem !important;
+  cursor: pointer !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px !important;
+}
+
+/* Textarea */
+.modal-editar-textarea {
+  padding: 0.875rem 1rem !important;
+  resize: vertical !important;
+  min-height: 100px !important;
+  line-height: 1.6 !important;
+  font-family: inherit !important;
+}
+
+/* Estados de validación */
+.modal-editar-input-error {
+  border-color: var(--danger-color) !important;
+  background: rgba(239, 68, 68, 0.02) !important;
+}
+
+.modal-editar-input-error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.modal-editar-input-success {
+  border-color: var(--success-color) !important;
+}
+
+.modal-editar-input-success:focus {
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+.modal-editar-mensaje-error {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.375rem !important;
+  font-size: 0.8125rem !important;
+  color: var(--danger-color) !important;
+  font-weight: 500 !important;
+  margin-top: -0.25rem !important;
+}
+
+.modal-editar-mensaje-error svg {
+  flex-shrink: 0 !important;
+}
+
+/* ================================
+   FOOTER CON ACCIONES
+   ================================ */
+
+.modal-editar-footer {
+  padding: 1.5rem !important;
+  background: var(--bg-primary) !important;
+  border-top: 1px solid var(--border-light) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+.modal-editar-footer-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-size: 0.8125rem !important;
+  color: var(--text-tertiary) !important;
+}
+
+.modal-editar-footer-info svg {
+  color: var(--primary-color) !important;
+}
+
+.modal-editar-acciones {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+/* ================================
+   BOTONES MODERNOS
+   ================================ */
+
+.modal-editar-boton {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1.5rem !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all var(--transition-base) !important;
+  white-space: nowrap !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.modal-editar-boton::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: translate(-50%, -50%) !important;
+  transition: width 0.6s, height 0.6s !important;
+}
+
+.modal-editar-boton:hover::before {
+  width: 300px !important;
+  height: 300px !important;
+}
+
+.modal-editar-boton:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.modal-editar-boton-cancelar {
+  background: var(--bg-primary) !important;
+  color: var(--text-secondary) !important;
+  border: 1.5px solid var(--border-color) !important;
+}
+
+.modal-editar-boton-cancelar:hover:not(:disabled) {
+  background: var(--bg-secondary) !important;
+  border-color: var(--text-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.modal-editar-boton-guardar {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+  color: white !important;
+  box-shadow: 
+    0 4px 6px -1px rgba(99, 102, 241, 0.3),
+    0 2px 4px -1px rgba(99, 102, 241, 0.2) !important;
+  position: relative !important;
+}
+
+.modal-editar-boton-guardar:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 10px 15px -3px rgba(99, 102, 241, 0.4),
+    0 4px 6px -2px rgba(99, 102, 241, 0.3) !important;
+}
+
+.modal-editar-boton-guardar:active:not(:disabled) {
+  transform: translateY(0) !important;
+}
+
+/* ================================
+   SPINNER DE CARGA
+   ================================ */
+
+.modal-editar-spinner {
+  width: 18px !important;
+  height: 18px !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 50% !important;
+  border-top-color: white !important;
+  animation: spinRotate 0.6s linear infinite !important;
+}
+
+@keyframes spinRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================================
+   ANIMACIONES DE ENTRADA
+   ================================ */
+
+.modal-editar-campo {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards !important;
+}
+
+.modal-editar-campo:nth-child(1) { animation-delay: 0.05s !important; }
+.modal-editar-campo:nth-child(2) { animation-delay: 0.1s !important; }
+.modal-editar-campo:nth-child(3) { animation-delay: 0.15s !important; }
+.modal-editar-campo:nth-child(4) { animation-delay: 0.2s !important; }
+.modal-editar-campo:nth-child(5) { animation-delay: 0.25s !important; }
+.modal-editar-campo:nth-child(6) { animation-delay: 0.3s !important; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 768px) {
+  .modal-editar-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .modal-editar-contenedor {
+    max-width: 100% !important;
+    max-height: 95vh !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+    animation: modalSlideUpMobile var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  @keyframes modalSlideUpMobile {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .modal-editar-header {
+    padding: 1.75rem 1.5rem !important;
+    min-height: 160px !important;
+  }
+
+  .modal-editar-titulo {
+    font-size: 1.5rem !important;
+  }
+
+  .modal-editar-subtitulo {
+    font-size: 0.875rem !important;
+  }
+
+  .modal-editar-metadata {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    align-items: flex-start !important;
+  }
+
+  .modal-editar-contenido {
+    padding: 1.5rem 1rem !important;
+  }
+
+  .modal-editar-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .modal-editar-seccion {
+    padding: 1.25rem !important;
+  }
+
+  .modal-editar-footer {
+    padding: 1.25rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .modal-editar-footer-info {
+    order: 2 !important;
+    justify-content: center !important;
+  }
+
+  .modal-editar-acciones {
+    order: 1 !important;
+    flex-direction: column-reverse !important;
+    width: 100% !important;
+  }
+
+  .modal-editar-boton {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-editar-header {
+    padding: 1.25rem !important;
+    min-height: 140px !important;
+  }
+
+  .modal-editar-icono-header {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .modal-editar-titulo {
+    font-size: 1.25rem !important;
+  }
+
+  .modal-editar-subtitulo {
+    font-size: 0.8125rem !important;
+  }
+
+  .modal-editar-metadata-item {
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  .modal-editar-boton-cerrar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .modal-editar-seccion-titulo {
+    font-size: 1rem !important;
+  }
+
+  .modal-editar-input,
+  .modal-editar-textarea,
+  .modal-editar-select {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* ================================
+   ACCESIBILIDAD
+   ================================ */
+
+.modal-editar-boton:focus-visible {
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 2px !important;
+}
+
+.modal-editar-input:focus-visible,
+.modal-editar-textarea:focus-visible,
+.modal-editar-select:focus-visible {
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 2px !important;
+}
+
+.modal-editar-boton-cerrar:focus-visible {
+  outline: 2px solid white !important;
+  outline-offset: 2px !important;
+}
+
+/* Modo de alto contraste */
+@media (prefers-contrast: high) {
+  .modal-editar-contenedor {
+    border: 2px solid var(--text-primary) !important;
+  }
+  
+  .modal-editar-input,
+  .modal-editar-textarea,
+  .modal-editar-select {
+    border-width: 2px !important;
+  }
+}
+
+/* Reducir movimiento para usuarios que lo prefieren */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ================================
+   UTILIDADES
+   ================================ */
+
+.modal-editar-oculto {
+  display: none !important;
+}
+
+.modal-editar-deshabilitado {
+  opacity: 0.6 !important;
+  pointer-events: none !important;
+}
+
+/* ================================
+   OPTIMIZACIÓN DE RENDIMIENTO
+   ================================ */
+
+.modal-editar-overlay,
+.modal-editar-contenedor,
+.modal-editar-boton {
+  will-change: transform, opacity !important;
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* ================================
+   FIN DE ESTILOS
+   ================================ */
