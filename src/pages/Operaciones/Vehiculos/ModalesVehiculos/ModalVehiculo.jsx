@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { X, Save, Car, FileText, Image } from 'lucide-react';
+import Swal from 'sweetalert2';
 import './ModalVehiculo.css';
 
 const ModalVehiculo = ({ onGuardar, onCerrar }) => {
@@ -132,12 +133,14 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
+    console.log('🔍 Iniciando validación...');
+
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
+      console.log('❌ Errores de validación:', nuevosErrores);
 
-      // Determinar qué sección tiene errores
       const camposBasicos = ['nombre', 'rendimiento', 'precio_combustible', 'desgaste', 'costo_renta', 'costo_chofer_dia'];
       const camposAdicionales = ['marca', 'modelo', 'año', 'numero_placa', 'numero_pasajeros', 'vehiculos_disponibles'];
 
@@ -150,7 +153,6 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         setSeccionActiva('adicionales');
       }
 
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.querySelector(`[name="${primerCampoConError}"]`);
@@ -163,19 +165,17 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
       return;
     }
 
+    console.log('✅ Validación exitosa, guardando vehículo...');
     setGuardando(true);
 
     try {
       const vehiculoData = {
-        // Campos básicos
         nombre: formData.nombre,
         rendimiento: parseFloat(formData.rendimiento),
         precio_combustible: parseFloat(formData.precio_combustible),
         desgaste: parseFloat(formData.desgaste),
         costo_renta: parseFloat(formData.costo_renta),
         costo_chofer_dia: parseFloat(formData.costo_chofer_dia),
-
-        // Campos adicionales
         numero_serie: formData.numero_serie,
         nip: formData.nip,
         numero_tag: formData.numero_tag,
@@ -188,8 +188,6 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         numero_pasajeros: parseInt(formData.numero_pasajeros),
         comentarios: formData.comentarios,
         vehiculos_disponibles: parseInt(formData.vehiculos_disponibles),
-
-        // Documentos
         documentos: {
           foto_vehiculo: formData.foto_vehiculo,
           foto_poliza_seguro: formData.foto_poliza_seguro,
@@ -199,24 +197,93 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         }
       };
 
+      console.log('📦 Datos a guardar:', vehiculoData);
+
+      // Guardar el nombre del vehículo antes de cerrar
+      const nombreVehiculo = formData.nombre;
+
+      // Llamar a la función onGuardar del padre
       await onGuardar(vehiculoData);
+
+      console.log('✅ Vehículo guardado, cerrando modal primero...');
+
+      // ✅ PRIMERO: Cerrar el modal
+      onCerrar();
+
+      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
+      console.log('✅ Mostrando alerta...');
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Vehículo Agregado!',
+        html: `
+        <div style="font-size: 1.1rem; margin-top: 15px;">
+          <strong style="color: #2563eb; font-size: 1.3rem;">${nombreVehiculo}</strong>
+          <p style="margin-top: 10px; color: #64748b;">ha sido registrado correctamente</p>
+        </div>
+      `,
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#2563eb',
+        timer: 3000, // ✅ (era 3000 antes)
+        timerProgressBar: true, // Muestra barra de progreso
+        showConfirmButton: true, // Permite cerrar antes con el botón
+        allowOutsideClick: true, // Permite cerrar haciendo clic fuera
+        allowEscapeKey: true, // Permite cerrar con ESC
+        width: '500px',
+        padding: '2rem',
+        backdrop: `rgba(0,0,0,0.6)`,
+        customClass: {
+          popup: 'swal-popup-custom',
+          title: 'swal-title-custom',
+          htmlContainer: 'swal-html-custom',
+          confirmButton: 'swal-confirm-custom'
+        }
+      });
+
+      console.log('✅ Alerta cerrada');
+
+    } catch (error) {
+      console.error('❌ Error al guardar:', error);
+
+      // Si hay error, también cerrar el modal primero
+      onCerrar();
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error al Guardar',
+        html: `
+        <div style="font-size: 1rem; margin-top: 10px; color: #64748b;">
+          <p>Hubo un problema al guardar el vehículo.</p>
+          <p style="margin-top: 8px;">Por favor, inténtalo de nuevo.</p>
+        </div>
+      `,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#ef4444',
+        timer: 4000,
+        timerProgressBar: true,
+        showConfirmButton: true
+      });
     } finally {
       setGuardando(false);
     }
-  }, [formData, validarFormulario, onGuardar]);
+  }, [formData, validarFormulario, onGuardar, onCerrar]);
 
   const MensajeError = ({ nombreCampo }) => {
     const error = errores[nombreCampo];
     if (!error) return null;
 
-    return <span className="error-mensaje">{error}</span>;
+    return <span className="modal-agregar-error-mensaje">{error}</span>;
   };
 
   const renderSeccionBasicos = () => (
-    <div className="form-grid">
-      <div className="form-group">
+    <div className="modal-agregar-form-grid">
+      <div className="modal-agregar-form-group">
         <label htmlFor="nombre">
-          Nombre del Vehículo <span className="required">*</span>
+          Nombre del Vehículo <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="text"
@@ -224,15 +291,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="nombre"
           value={formData.nombre}
           onChange={handleChange}
-          className={errores.nombre ? 'input-error' : ''}
+          className={errores.nombre ? 'modal-agregar-input-error' : ''}
           placeholder="Ej: Sprinter Mercedes-Benz"
         />
         <MensajeError nombreCampo="nombre" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="rendimiento">
-          Rendimiento (km/L) <span className="required">*</span>
+          Rendimiento (km/L) <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
@@ -241,15 +308,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="rendimiento"
           value={formData.rendimiento}
           onChange={handleChange}
-          className={errores.rendimiento ? 'input-error' : ''}
+          className={errores.rendimiento ? 'modal-agregar-input-error' : ''}
           placeholder="12.50"
         />
         <MensajeError nombreCampo="rendimiento" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="precio_combustible">
-          Precio Combustible (MXN) <span className="required">*</span>
+          Precio Combustible (MXN) <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
@@ -258,15 +325,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="precio_combustible"
           value={formData.precio_combustible}
           onChange={handleChange}
-          className={errores.precio_combustible ? 'input-error' : ''}
+          className={errores.precio_combustible ? 'modal-agregar-input-error' : ''}
           placeholder="24.50"
         />
         <MensajeError nombreCampo="precio_combustible" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="desgaste">
-          Desgaste <span className="required">*</span>
+          Desgaste <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
@@ -275,15 +342,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="desgaste"
           value={formData.desgaste}
           onChange={handleChange}
-          className={errores.desgaste ? 'input-error' : ''}
+          className={errores.desgaste ? 'modal-agregar-input-error' : ''}
           placeholder="0.15"
         />
         <MensajeError nombreCampo="desgaste" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="costo_renta">
-          Costo Renta (MXN) <span className="required">*</span>
+          Costo Renta (MXN) <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
@@ -292,15 +359,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="costo_renta"
           value={formData.costo_renta}
           onChange={handleChange}
-          className={errores.costo_renta ? 'input-error' : ''}
+          className={errores.costo_renta ? 'modal-agregar-input-error' : ''}
           placeholder="2500.00"
         />
         <MensajeError nombreCampo="costo_renta" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="costo_chofer_dia">
-          Costo Chofer/Día (MXN) <span className="required">*</span>
+          Costo Chofer/Día (MXN) <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
@@ -309,7 +376,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="costo_chofer_dia"
           value={formData.costo_chofer_dia}
           onChange={handleChange}
-          className={errores.costo_chofer_dia ? 'input-error' : ''}
+          className={errores.costo_chofer_dia ? 'modal-agregar-input-error' : ''}
           placeholder="800.00"
         />
         <MensajeError nombreCampo="costo_chofer_dia" />
@@ -318,10 +385,10 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
   );
 
   const renderSeccionAdicionales = () => (
-    <div className="form-grid">
-      <div className="form-group">
+    <div className="modal-agregar-form-grid">
+      <div className="modal-agregar-form-group">
         <label htmlFor="marca">
-          Marca <span className="required">*</span>
+          Marca <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="text"
@@ -329,15 +396,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="marca"
           value={formData.marca}
           onChange={handleChange}
-          className={errores.marca ? 'input-error' : ''}
+          className={errores.marca ? 'modal-agregar-input-error' : ''}
           placeholder="Ej: Mercedes-Benz"
         />
         <MensajeError nombreCampo="marca" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="modelo">
-          Modelo <span className="required">*</span>
+          Modelo <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="text"
@@ -345,15 +412,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="modelo"
           value={formData.modelo}
           onChange={handleChange}
-          className={errores.modelo ? 'input-error' : ''}
+          className={errores.modelo ? 'modal-agregar-input-error' : ''}
           placeholder="Ej: Sprinter 2024"
         />
         <MensajeError nombreCampo="modelo" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="año">
-          Año <span className="required">*</span>
+          Año <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
@@ -361,13 +428,13 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="año"
           value={formData.año}
           onChange={handleChange}
-          className={errores.año ? 'input-error' : ''}
+          className={errores.año ? 'modal-agregar-input-error' : ''}
           placeholder="2024"
         />
         <MensajeError nombreCampo="año" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="color">Color</label>
         <input
           type="text"
@@ -379,9 +446,9 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="numero_placa">
-          N° Placa <span className="required">*</span>
+          N° Placa <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="text"
@@ -389,15 +456,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="numero_placa"
           value={formData.numero_placa}
           onChange={handleChange}
-          className={errores.numero_placa ? 'input-error' : ''}
+          className={errores.numero_placa ? 'modal-agregar-input-error' : ''}
           placeholder="ABC-123-XY"
         />
         <MensajeError nombreCampo="numero_placa" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="numero_pasajeros">
-          N° Pasajeros <span className="required">*</span>
+          N° Pasajeros <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
@@ -405,13 +472,13 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="numero_pasajeros"
           value={formData.numero_pasajeros}
           onChange={handleChange}
-          className={errores.numero_pasajeros ? 'input-error' : ''}
+          className={errores.numero_pasajeros ? 'modal-agregar-input-error' : ''}
           placeholder="15"
         />
         <MensajeError nombreCampo="numero_pasajeros" />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="numero_serie">Número de Serie</label>
         <input
           type="text"
@@ -423,7 +490,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="nip">NIP</label>
         <input
           type="text"
@@ -435,7 +502,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="numero_tag">N° de Tag</label>
         <input
           type="text"
@@ -447,7 +514,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="numero_combustible">N° de Combustible</label>
         <input
           type="text"
@@ -459,9 +526,9 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         />
       </div>
 
-      <div className="form-group">
+      <div className="modal-agregar-form-group">
         <label htmlFor="vehiculos_disponibles">
-          Vehículos Disponibles <span className="required">*</span>
+          Vehículos Disponibles <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
@@ -469,13 +536,13 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           name="vehiculos_disponibles"
           value={formData.vehiculos_disponibles}
           onChange={handleChange}
-          className={errores.vehiculos_disponibles ? 'input-error' : ''}
+          className={errores.vehiculos_disponibles ? 'modal-agregar-input-error' : ''}
           placeholder="3"
         />
         <MensajeError nombreCampo="vehiculos_disponibles" />
       </div>
 
-      <div className="form-group form-group-full">
+      <div className="modal-agregar-form-group modal-agregar-form-group-full">
         <label htmlFor="comentarios">Comentarios</label>
         <textarea
           id="comentarios"
@@ -490,8 +557,8 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
   );
 
   const renderSeccionDocumentos = () => (
-    <div className="form-grid-documentos">
-      <div className="form-group-file">
+    <div className="modal-agregar-form-grid-documentos">
+      <div className="modal-agregar-form-group-file">
         <label htmlFor="foto_vehiculo">
           <Image size={20} />
           Foto de Vehículo
@@ -504,11 +571,11 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           accept="image/*"
         />
         {formData.foto_vehiculo && (
-          <span className="file-name">{formData.foto_vehiculo.name}</span>
+          <span className="modal-agregar-file-name">{formData.foto_vehiculo.name}</span>
         )}
       </div>
 
-      <div className="form-group-file">
+      <div className="modal-agregar-form-group-file">
         <label htmlFor="foto_poliza_seguro">
           <FileText size={20} />
           Póliza de Seguro
@@ -521,11 +588,11 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           accept="image/*,application/pdf"
         />
         {formData.foto_poliza_seguro && (
-          <span className="file-name">{formData.foto_poliza_seguro.name}</span>
+          <span className="modal-agregar-file-name">{formData.foto_poliza_seguro.name}</span>
         )}
       </div>
 
-      <div className="form-group-file">
+      <div className="modal-agregar-form-group-file">
         <label htmlFor="foto_factura">
           <FileText size={20} />
           Factura
@@ -538,11 +605,11 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           accept="image/*,application/pdf"
         />
         {formData.foto_factura && (
-          <span className="file-name">{formData.foto_factura.name}</span>
+          <span className="modal-agregar-file-name">{formData.foto_factura.name}</span>
         )}
       </div>
 
-      <div className="form-group-file">
+      <div className="modal-agregar-form-group-file">
         <label htmlFor="foto_verificaciones">
           <FileText size={20} />
           Verificaciones
@@ -555,11 +622,11 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           accept="image/*,application/pdf"
         />
         {formData.foto_verificaciones && (
-          <span className="file-name">{formData.foto_verificaciones.name}</span>
+          <span className="modal-agregar-file-name">{formData.foto_verificaciones.name}</span>
         )}
       </div>
 
-      <div className="form-group-file">
+      <div className="modal-agregar-form-group-file">
         <label htmlFor="foto_folio_antt">
           <FileText size={20} />
           Folio ANTT
@@ -572,27 +639,27 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           accept="image/*,application/pdf"
         />
         {formData.foto_folio_antt && (
-          <span className="file-name">{formData.foto_folio_antt.name}</span>
+          <span className="modal-agregar-file-name">{formData.foto_folio_antt.name}</span>
         )}
       </div>
     </div>
   );
 
   return (
-    <div className="modal-overlay" onClick={onCerrar}>
-      <div className="modal-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-agregar-overlay" onClick={onCerrar}>
+      <div className="modal-agregar-contenido modal-agregar-xl" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="modal-header">
+        <div className="modal-agregar-header">
           <h2>Agregar Nuevo Vehículo</h2>
-          <button className="btn-cerrar-modal" onClick={onCerrar} type="button">
+          <button className="modal-agregar-btn-cerrar" onClick={onCerrar} type="button">
             <X size={24} />
           </button>
         </div>
 
         {/* Tabs de Navegación */}
-        <div className="modal-tabs">
+        <div className="modal-agregar-tabs">
           <button
-            className={`tab-button ${seccionActiva === 'basicos' ? 'active' : ''}`}
+            className={`modal-agregar-tab-button ${seccionActiva === 'basicos' ? 'active' : ''}`}
             onClick={() => setSeccionActiva('basicos')}
             type="button"
           >
@@ -600,7 +667,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
             Datos Básicos
           </button>
           <button
-            className={`tab-button ${seccionActiva === 'adicionales' ? 'active' : ''}`}
+            className={`modal-agregar-tab-button ${seccionActiva === 'adicionales' ? 'active' : ''}`}
             onClick={() => setSeccionActiva('adicionales')}
             type="button"
           >
@@ -608,7 +675,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
             Información Adicional
           </button>
           <button
-            className={`tab-button ${seccionActiva === 'documentos' ? 'active' : ''}`}
+            className={`modal-agregar-tab-button ${seccionActiva === 'documentos' ? 'active' : ''}`}
             onClick={() => setSeccionActiva('documentos')}
             type="button"
           >
@@ -618,23 +685,23 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         </div>
 
         {/* Formulario (scrolleable) */}
-        <form onSubmit={handleSubmit} className="modal-form">
+        <form onSubmit={handleSubmit} className="modal-agregar-form">
           {seccionActiva === 'basicos' && renderSeccionBasicos()}
           {seccionActiva === 'adicionales' && renderSeccionAdicionales()}
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
         {/* Footer (FUERA del form, fijo en el bottom) */}
-        <div className="modal-footer">
-          <div className="botones-izquierda">
-            <button type="button" className="btn-cancelar" onClick={onCerrar}>
+        <div className="modal-agregar-footer">
+          <div className="modal-agregar-botones-izquierda">
+            <button type="button" className="modal-agregar-btn-cancelar" onClick={onCerrar}>
               Cancelar
             </button>
           </div>
-          <div className="botones-derecha">
-            <button 
-              type="button" 
-              className={`btn-guardar ${guardando ? 'loading' : ''}`} 
+          <div className="modal-agregar-botones-derecha">
+            <button
+              type="button"
+              className={`modal-agregar-btn-guardar ${guardando ? 'loading' : ''}`}
               disabled={guardando}
               onClick={handleSubmit}
             >

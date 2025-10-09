@@ -1,51 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Truck, BarChart3, Plus } from 'lucide-react';
 import './TablaVehiculos.css';
 
 const TablaVehiculos = ({ 
+  vehiculos,        // ✅ Recibe vehiculos desde el padre
+  setVehiculos,     // ✅ Por si necesitas actualizar (opcional)
   onVer, 
   onEditar, 
   onEliminar,
   onAgregar 
 }) => {
-  const [vehiculos, setVehiculos] = useState([]);
+  // Solo estados locales para UI (paginación, búsqueda)
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
-
-  // Cargar datos de ejemplo
-  useEffect(() => {
-    const vehiculosEjemplo = [
-      {
-        id: 1,
-        nombre: 'Sprinter Mercedes-Benz',
-        rendimiento: 12.50,
-        precio_combustible: 24.50,
-        desgaste: 0.15,
-        costo_renta: 2500.00,
-        costo_chofer_dia: 800.00
-      },
-      {
-        id: 2,
-        nombre: 'Hiace Toyota',
-        rendimiento: 10.80,
-        precio_combustible: 24.50,
-        desgaste: 0.12,
-        costo_renta: 2000.00,
-        costo_chofer_dia: 750.00
-      },
-      {
-        id: 3,
-        nombre: 'Urvan Nissan',
-        rendimiento: 9.50,
-        precio_combustible: 24.50,
-        desgaste: 0.10,
-        costo_renta: 1800.00,
-        costo_chofer_dia: 700.00
-      }
-    ];
-    setVehiculos(vehiculosEjemplo);
-  }, []);
 
   // Filtrar vehículos por búsqueda
   const vehiculosFiltrados = vehiculos.filter(vehiculo => {
