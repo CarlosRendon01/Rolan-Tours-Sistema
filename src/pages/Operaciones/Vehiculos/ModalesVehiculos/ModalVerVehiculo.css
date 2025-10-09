@@ -1,0 +1,145 @@
+.modal-ver {
+  max-width: 700px;
+}
+
+.header-contenido {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.icono-header {
+  color: #3b82f6;
+}
+
+.subtitulo-modal {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.modal-body {
+  padding: 2rem 1.5rem;
+}
+
+.detalles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.detalle-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.detalle-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.detalle-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: white;
+  border-radius: 0.5rem;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.detalle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.detalle-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detalle-valor {
+  font-size: 1.1rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.detalle-valor.destacado {
+  color: #3b82f6;
+  font-size: 1.15rem;
+}
+
+.detalle-total {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #93c5fd;
+}
+
+.detalle-total .detalle-icono {
+  background: #3b82f6;
+  color: white;
+}
+
+.detalle-valor.total {
+  color: #1e40af;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.btn-cerrar {
+  padding: 0.75rem 2rem;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cerrar:hover {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .detalles-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .detalle-item {
+    padding: 1rem;
+  }
+
+  .detalle-icono {
+    width: 40px;
+    height: 40px;
+  }
+
+  .detalle-valor {
+    font-size: 1rem;
+  }
+
+  .detalle-valor.destacado {
+    font-size: 1.05rem;
+  }
+
+  .detalle-valor.total {
+    font-size: 1.25rem;
+  }
+}

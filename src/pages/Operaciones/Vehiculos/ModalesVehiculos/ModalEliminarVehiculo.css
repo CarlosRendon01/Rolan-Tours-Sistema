@@ -1,0 +1,130 @@
+.modal-eliminar {
+  max-width: 500px;
+}
+
+.modal-header-eliminar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1.5rem 1rem 1.5rem;
+  position: relative;
+}
+
+.icono-alerta {
+  color: #ef4444;
+  animation: pulsoAlerta 2s ease-in-out infinite;
+}
+
+@keyframes pulsoAlerta {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.modal-header-eliminar .btn-cerrar-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.modal-body-eliminar {
+  padding: 1rem 2rem 2rem 2rem;
+  text-align: center;
+}
+
+.modal-body-eliminar h2 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+
+.modal-body-eliminar p {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+}
+
+.modal-body-eliminar strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.advertencia {
+  color: #ef4444 !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+}
+
+.modal-footer-eliminar {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.btn-cancelar-eliminar {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: #64748b;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar-eliminar:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.btn-confirmar-eliminar {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+.btn-confirmar-eliminar:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-body-eliminar {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+  }
+
+  .modal-body-eliminar h2 {
+    font-size: 1.25rem;
+  }
+
+  .modal-footer-eliminar {
+    flex-direction: column-reverse;
+  }
+
+  .btn-cancelar-eliminar,
+  .btn-confirmar-eliminar {
+    width: 100%;
+  }
+}
