@@ -1,0 +1,12 @@
+.operadores-principal {
+  width: 100%;
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 0;
+  margin: 0;
+}
+
+/* Estilos globales del contenedor */
+.operadores-principal * {
+  box-sizing: border-box;
+}

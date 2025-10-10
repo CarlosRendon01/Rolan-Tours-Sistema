@@ -6,7 +6,7 @@ import PrincipalCotizacion from "./pages/Ventas/Cotizador/PrincipalCotizacion.js
 import PrincipalPago from "./pages/Ventas/Pagos/PrincipalPago.jsx";
 import PrincipalLogin from "./pages/Login/PrincipalLogin.jsx";
 import VehiculosPrincipal from "./pages/Operaciones/Vehiculos/VehiculosPrincipal.jsx";
-
+import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrincipal.jsx"
 // Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
   return (
@@ -50,7 +50,7 @@ function App() {
           {/* Rutas de Operaciones */}
           <Route path="/orden-servicio" element={<PaginaTemporal titulo="Órdenes de Servicio" />} />
           <Route path="/reservas" element={<PaginaTemporal titulo="Reservas" />} />
-          <Route path="/operadores" element={<PaginaTemporal titulo="Operadores" />} />
+          <Route path="/operadores" element={<OperadoresPrincipal/>} />
           <Route path="/vehiculos" element={<VehiculosPrincipal />} />
           <Route path="/guias" element={<PaginaTemporal titulo="Guías" />} />
           <Route path="/proveedores" element={<PaginaTemporal titulo="Proveedores" />} />
