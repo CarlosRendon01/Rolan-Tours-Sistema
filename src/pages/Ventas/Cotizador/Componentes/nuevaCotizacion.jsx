@@ -270,6 +270,7 @@ const NuevaCotizacion = ({
     limpiarTodosErrores();
     if (onCancelarEdicion) {
       onCancelarEdicion();
+      document.body.style.overflow = "";
     }
     setFormData({
       folio: generarFolioAutomatico(),
@@ -313,6 +314,7 @@ const NuevaCotizacion = ({
 
   useEffect(() => {
     if (cotizacionEditar) {
+      document.body.style.overflow = "hidden";
       setModoEdicion(true);
       setFormData({
         folio: cotizacionEditar.folio || "",
