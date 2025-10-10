@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./nuevaCotizacion.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const NuevaCotizacion = ({
   onGuardarCotizacion,
@@ -9,7 +9,6 @@ const NuevaCotizacion = ({
   cotizacionEditar,
   onCancelarEdicion,
 }) => {
-  const [activo, setActivo] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [pasoActual, setPasoActual] = useState(1);
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -28,7 +27,6 @@ const NuevaCotizacion = ({
     id: "",
     numeroLead: "",
     nombreResponsable: "",
-    estadoCotizacion: "inactivo",
     servicioTransporte: "",
     tipoServicio: "",
     pax: "",
@@ -39,7 +37,6 @@ const NuevaCotizacion = ({
     campana: "",
     fechaCreacion: new Date().toISOString().split("T")[0],
     tipoClienteFrec: "solo_una_vez",
-    precio: "",
     descripcion: "",
     transporte: "",
     restaurante: "",
@@ -72,7 +69,6 @@ const NuevaCotizacion = ({
 
   const formatearTelefono = useCallback((valor) => {
     const numeros = valor.replace(/\D/g, "");
-
     const numeroLimitado = numeros.slice(0, 10);
 
     let formatado = "";
@@ -289,7 +285,6 @@ const NuevaCotizacion = ({
       id: "",
       numeroLead: "",
       nombreResponsable: "",
-      estadoCotizacion: "inactivo",
       servicioTransporte: "",
       tipoServicio: "",
       pax: "",
@@ -300,7 +295,6 @@ const NuevaCotizacion = ({
       campana: "",
       fechaCreacion: new Date().toISOString().split("T")[0],
       tipoClienteFrec: "solo_una_vez",
-      precio: "",
       descripcion: "",
       transporte: "",
       restaurante: "",
@@ -334,7 +328,6 @@ const NuevaCotizacion = ({
         id: cotizacionEditar.id || "",
         numeroLead: cotizacionEditar.numeroLead || "",
         nombreResponsable: cotizacionEditar.nombreResponsable || "",
-        estadoCotizacion: cotizacionEditar.estadoCotizacion || "inactivo",
         servicioTransporte: cotizacionEditar.servicioTransporte || "",
         tipoServicio: cotizacionEditar.tipoServicio || "",
         pax: cotizacionEditar.pax || "",
@@ -347,7 +340,6 @@ const NuevaCotizacion = ({
           cotizacionEditar.fechaCreacion ||
           new Date().toISOString().split("T")[0],
         tipoClienteFrec: cotizacionEditar.tipoClienteFrec || "solo_una_vez",
-        precio: cotizacionEditar.precio || "",
         descripcion: cotizacionEditar.descripcion || "",
         transporte: cotizacionEditar.transporte || "",
         restaurante: cotizacionEditar.restaurante || "",
@@ -372,10 +364,6 @@ const NuevaCotizacion = ({
     }
   }, [cotizacionEditar, limpiarTodosErrores]);
 
-  const toggleBoton = () => {
-    setActivo(!activo);
-  };
-
   const abrirModal = useCallback(() => {
     setMostrarModal(true);
     setPasoActual(1);
@@ -396,7 +384,6 @@ const NuevaCotizacion = ({
       id: "",
       numeroLead: "",
       nombreResponsable: "",
-      estadoCotizacion: "inactivo",
       servicioTransporte: "",
       tipoServicio: "",
       pax: "",
@@ -407,7 +394,6 @@ const NuevaCotizacion = ({
       campana: "",
       fechaCreacion: new Date().toISOString().split("T")[0],
       tipoClienteFrec: "solo_una_vez",
-      precio: "",
       descripcion: "",
       transporte: "",
       restaurante: "",
@@ -490,10 +476,6 @@ const NuevaCotizacion = ({
 
     if (erroresCampos[name] && newValue.trim() !== "") {
       limpiarErrorCampo(name);
-    }
-
-    if (name === "estadoCotizacion") {
-      newValue = value === "activo";
     }
 
     setFormData((prev) => ({
@@ -650,100 +632,74 @@ const NuevaCotizacion = ({
   });
 
   return (
-    <div className="nCotización-container">
-      <div className="botones-wrapper">
-        <button
-          title="Agregar cotización"
-          className={`agregar-cotizacion ${activo ? "activo" : ""}`}
-          onClick={toggleBoton}
-        >
-          <FontAwesomeIcon
-            icon={activo ? faTimes : faPlus}
-            fixedWidth
-            className={`icono-verde ${activo ? "girar" : ""}`}
-          />
-        </button>
-        {activo && (
-          <button
-            className="boton-agregar animar-aparicion"
-            onClick={abrirModal}
-          >
-            Agregar cotización
-          </button>
-        )}
-      </div>
+    <>
+      <button
+        className="cotizacion-boton-agregar"
+        onClick={abrirModal}
+        title="Nueva Cotización"
+      >
+        <FontAwesomeIcon icon={faPlus} />
+        <span>Nueva Cotización</span>
+      </button>
+
       {mostrarModal && (
         <div className="modal-overlay" onClick={cerrarModal}>
           <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>
             <div className="header-formulario">
               <h2>{modoEdicion ? "Editar Cotización" : "Nueva Cotización"}</h2>
-              <div className="indicador-pasos">
-                <span
-                  className={`paso ${
-                    pasoActual === 1
-                      ? "activo"
-                      : pasoActual > 1
-                      ? "completado"
-                      : ""
-                  }`}
-                >
-                  1
-                </span>
-                <div className="linea-paso"></div>
-                <span
-                  className={`paso ${
-                    pasoActual === 2
-                      ? "activo"
-                      : pasoActual > 2
-                      ? "completado"
-                      : ""
-                  }`}
-                >
-                  2
-                </span>
-                <div className="linea-paso"></div>
-                <span
-                  className={`paso ${
-                    pasoActual === 3
-                      ? "activo"
-                      : pasoActual > 3
-                      ? "completado"
-                      : ""
-                  }`}
-                >
-                  3
-                </span>
-                <div className="linea-paso"></div>
-                <span
-                  className={`paso ${
-                    pasoActual === 4
-                      ? "activo"
-                      : pasoActual > 4
-                      ? "completado"
-                      : ""
-                  }`}
-                >
-                  4
-                </span>
-                <div className="linea-paso"></div>
-                <span
-                  className={`paso ${
-                    pasoActual === 5
-                      ? "activo"
-                      : pasoActual > 5
-                      ? "completado"
-                      : ""
-                  }`}
-                >
-                  5
-                </span>
-              </div>
+            </div>
+
+            <div className="cotizacion-tabs">
+              <button
+                type="button"
+                className={`cotizacion-tab-button ${
+                  pasoActual === 1 ? "active" : ""
+                }`}
+                onClick={() => setPasoActual(1)}
+              >
+                Información General
+              </button>
+              <button
+                type="button"
+                className={`cotizacion-tab-button ${
+                  pasoActual === 2 ? "active" : ""
+                }`}
+                onClick={() => setPasoActual(2)}
+              >
+                Datos del Cliente
+              </button>
+              <button
+                type="button"
+                className={`cotizacion-tab-button ${
+                  pasoActual === 3 ? "active" : ""
+                }`}
+                onClick={() => setPasoActual(3)}
+              >
+                Datos del Servicio
+              </button>
+              <button
+                type="button"
+                className={`cotizacion-tab-button ${
+                  pasoActual === 4 ? "active" : ""
+                }`}
+                onClick={() => setPasoActual(4)}
+              >
+                Detalles del Viaje
+              </button>
+              <button
+                type="button"
+                className={`cotizacion-tab-button ${
+                  pasoActual === 5 ? "active" : ""
+                }`}
+                onClick={() => setPasoActual(5)}
+              >
+                Extras y Total
+              </button>
             </div>
 
             <form className="formulario-cotizacion" onSubmit={handleSubmit}>
               {pasoActual === 1 && (
                 <div className="paso-contenido">
-                  <h3>Información General</h3>
                   <div className="fila">
                     <label>
                       ID:
@@ -770,12 +726,13 @@ const NuevaCotizacion = ({
 
                   <div className="fila">
                     <label>
-                      N° de Lead: (Opcional)
+                      N° de Lead:
                       <input
                         type="text"
                         name="numeroLead"
                         value={formData.numeroLead}
                         onChange={handleInputChange}
+                        readOnly
                       />
                     </label>
                     <label>
@@ -804,19 +761,6 @@ const NuevaCotizacion = ({
                         readOnly
                       />
                     </label>
-                    <label>
-                      Estado Cotización:
-                      <select
-                        name="estadoCotizacion"
-                        value={
-                          formData.estadoCotizacion ? "activo" : "inactivo"
-                        }
-                        onChange={handleInputChange}
-                      >
-                        <option value="inactivo">Inactivo</option>
-                        <option value="activo">Activo</option>
-                      </select>
-                    </label>
                   </div>
 
                   <div className="botones-navegacion">
@@ -840,13 +784,12 @@ const NuevaCotizacion = ({
 
               {pasoActual === 2 && (
                 <div className="paso-contenido">
-                  <h3>Datos del Cliente</h3>
-
                   <label>
                     Nombre: <span className="required">*</span>
                     <input
                       type="text"
                       name="nombre"
+                      autoComplete="name"
                       value={datosCliente.nombre}
                       onChange={handleClienteInputChange}
                       className={erroresCampos.nombre ? "campo-error" : ""}
@@ -859,6 +802,7 @@ const NuevaCotizacion = ({
                     <input
                       type="email"
                       name="email"
+                      autoComplete="email"
                       value={datosCliente.email}
                       onChange={handleClienteInputChange}
                       className={erroresCampos.email ? "campo-error" : ""}
@@ -872,6 +816,7 @@ const NuevaCotizacion = ({
                       <input
                         type="text"
                         name="telefono"
+                        autoComplete="tel"
                         value={datosCliente.telefono}
                         onChange={handleClienteInputChange}
                         className={erroresCampos.telefono ? "campo-error" : ""}
@@ -885,6 +830,7 @@ const NuevaCotizacion = ({
                       <input
                         type="text"
                         name="canalContacto"
+                        autoComplete="off"
                         value={datosCliente.canalContacto}
                         onChange={handleClienteInputChange}
                         className={
@@ -926,8 +872,6 @@ const NuevaCotizacion = ({
 
               {pasoActual === 3 && (
                 <div className="paso-contenido">
-                  <h3>Datos del Servicio</h3>
-
                   <div className="fila">
                     <label>
                       N° pasajeros: <span className="required">*</span>
@@ -1065,8 +1009,6 @@ const NuevaCotizacion = ({
 
               {pasoActual === 4 && (
                 <div className="paso-contenido">
-                  <h3>Detalles del Viaje</h3>
-
                   <div className="fila">
                     <label>
                       Fecha Salida: <span className="required">*</span>
@@ -1190,20 +1132,6 @@ const NuevaCotizacion = ({
                   </div>
 
                   <label>
-                    Precio:
-                    <input
-                      type="number"
-                      name="precio"
-                      value={formData.precio}
-                      onChange={handleInputChange}
-                      step="0.01"
-                      min="0"
-                      placeholder="0.00"
-                      readOnly
-                    />
-                  </label>
-
-                  <label>
                     Descripción: (Opcional)
                     <textarea
                       name="descripcion"
@@ -1244,8 +1172,6 @@ const NuevaCotizacion = ({
 
               {pasoActual === 5 && (
                 <div className="paso-contenido">
-                  <h3>Extras y Total</h3>
-
                   <div className="extras-grid">
                     <label>
                       Transporte:
@@ -1352,7 +1278,7 @@ const NuevaCotizacion = ({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

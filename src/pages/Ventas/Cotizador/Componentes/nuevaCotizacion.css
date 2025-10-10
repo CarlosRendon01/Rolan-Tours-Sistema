@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   margin-left: 0;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   position: relative;
   z-index: 15;
 }
@@ -13,32 +13,46 @@
   gap: 10px;
 }
 
-.agregar-cotizacion {
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: inline-flex;
+.cotizacion-boton-agregar {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  position: relative;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  white-space: nowrap;
 }
 
-.icono-verde {
-  color: #dc2626;
-  transition: transform 0.4s ease;
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-  transform-origin: center center;
+.cotizacion-boton-agregar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+  background: linear-gradient(135deg, #059669, #047857);
 }
 
-.girar {
-  transform: rotate(45deg);
-  color: #dc2626;
+.cotizacion-boton-agregar:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.cotizacion-boton-agregar svg {
+  transition: transform 0.3s ease;
+  width: 18px;
+  height: 18px;
+}
+
+.cotizacion-boton-agregar:hover svg {
+  transform: rotate(180deg);
+}
+
+.cotizacion-boton-agregar:active svg {
+  transform: rotate(360deg);
 }
 
 .boton-agregar {
@@ -144,7 +158,7 @@
 }
 
 .header-formulario h2 {
-  margin: 0 0 20px 0;
+  margin: 0;
   text-align: center;
   color: white;
   font-size: 22px;
@@ -152,53 +166,58 @@
   letter-spacing: -0.5px;
 }
 
-.indicador-pasos {
+.cotizacion-tabs {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  scale: 0.9;
+  flex-wrap: wrap;
+  background: linear-gradient(to bottom, #fafbfc 0%, #f8fafc 100%);
+  border-bottom: 2px solid #e5e7eb;
+  position: sticky;
+  top: 60px;
+  z-index: 9;
   gap: 0;
+  padding: 8px 8px 0 8px;
 }
 
-.paso {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+.cotizacion-tab-button {
+  flex: 1 1 auto;
+  min-width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 15px;
+  padding: 0.65rem 0.5rem;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.7rem;
+  cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  z-index: 2;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 1.1;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+  margin: 0 2px;
+}
+.cotizacion-tab-button:hover:not(.active) {
+  background: rgba(59, 130, 246, 0.05);
+  color: #475569;
 }
 
-.paso.activo {
-  background-color: white;
+.cotizacion-tab-button.active {
   color: #2563eb;
-  transform: scale(1.1);
+  background: white;
 }
 
-.paso.completado {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #2563eb;
-}
-
-.paso:not(.activo):not(.completado) {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-}
-
-.linea-paso {
-  width: 60px;
-  height: 2px;
-  background-color: rgba(255, 255, 255, 0.3);
-  margin: 0 10px;
+.cotizacion-tab-button.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+  border-radius: 3px 3px 0 0;
 }
 
 .paso-contenido {
@@ -215,27 +234,6 @@
     opacity: 1;
     transform: translateX(0);
   }
-}
-
-.paso-contenido h3 {
-  margin: 0 0 25px 0;
-  color: #1e40af;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: left;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #e5e7eb;
-  position: relative;
-}
-
-.paso-contenido h3::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 40px;
-  height: 2px;
-  background-color: #1e40af;
 }
 
 .formulario-cotizacion {
@@ -462,6 +460,79 @@
   box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
 }
 
+.extras-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.extras-seleccionados {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.extras-seleccionados h4 {
+  margin: 0 0 12px 0;
+  color: #1e40af;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.extras-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.extra-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.extra-tipo {
+  font-weight: 600;
+  color: #475569;
+  text-transform: capitalize;
+}
+
+.extra-valor {
+  color: #1e40af;
+  font-weight: 500;
+}
+
+.extras-vacio {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+  font-style: italic;
+  padding: 10px;
+}
+
+.total-container {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.total-container label {
+  margin-bottom: 0;
+}
+
+.total-container input {
+  font-size: 18px;
+  font-weight: 700;
+  color: #059669;
+  text-align: right;
+}
+
 @media screen and (max-width: 480px) {
   .modal-contenido {
     width: 95%;
@@ -476,6 +547,17 @@
 
   .header-formulario {
     padding: 20px;
+  }
+
+  .cotizacion-tabs {
+    top: 61px;
+  }
+
+  .cotizacion-tab-button {
+    flex-direction: column;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.7rem;
+    gap: 0.25rem;
   }
 
   .paso-contenido {
@@ -508,6 +590,10 @@
     height: 12px;
     font-size: 10px;
   }
+
+  .extras-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -517,5 +603,14 @@
 
   .modal-contenido {
     width: 90%;
+  }
+
+  .cotizacion-tabs {
+    top: 61px;
+  }
+
+  .cotizacion-tab-button {
+    padding: 0.875rem 1rem;
+    font-size: 0.85rem;
   }
 }
