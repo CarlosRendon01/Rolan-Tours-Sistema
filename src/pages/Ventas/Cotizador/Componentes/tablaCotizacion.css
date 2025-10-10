@@ -742,7 +742,7 @@
   }
 
   .cotizaciones-boton-nueva-wrapper .cotizacion-boton-agregar {
-    width: 100%;
+    width: 65%;
     justify-content: center;
   }
 
@@ -900,6 +900,10 @@
   .cotizaciones-icono-estadistica-cuadrado {
     width: 16px;
     height: 16px;
+  }
+  .cotizaciones-boton-nueva-wrapper .cotizacion-boton-agregar {
+    width: 62%;
+    justify-content: center;
   }
 
   .cotizaciones-control-busqueda label {

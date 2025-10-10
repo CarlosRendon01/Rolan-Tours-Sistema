@@ -12,6 +12,7 @@ import {
 import PropTypes from "prop-types";
 import ModalVerCotizacion from "../Modales/ModalVerCotizacion";
 import ModalEliminarCotizacion from "../Modales/ModalEliminarCotizacion";
+
 import "./tablaCotizacion.css";
 
 const TablaCotizacion = ({
@@ -46,6 +47,15 @@ const TablaCotizacion = ({
       return "-";
     }
   }, []);
+
+  const manejarAccionEditar = useCallback(
+    (cotizacion) => {
+      if (typeof onEditar === "function") {
+        onEditar(cotizacion);
+      }
+    },
+    [onEditar]
+  );
 
   const cotizacionesFiltradas = useMemo(() => {
     if (!terminoBusqueda.trim()) return cotizaciones;
@@ -131,15 +141,6 @@ const TablaCotizacion = ({
     setModalVerAbierto(false);
     setCotizacionSeleccionada(null);
   }, []);
-
-  const manejarAccionEditar = useCallback(
-    (cotizacion) => {
-      if (typeof onEditar === "function") {
-        onEditar(cotizacion);
-      }
-    },
-    [onEditar]
-  );
 
   const manejarAccionEliminar = useCallback((cotizacion) => {
     setCotizacionAEliminar(cotizacion);

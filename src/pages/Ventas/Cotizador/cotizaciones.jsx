@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import NuevaCotizacion from "./Componentes/nuevaCotizacion";
 import TablaCotizacion from "./Componentes/tablaCotizacion";
 import "./Componentes/nuevaCotizacion.css";
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
 import "./cotizaciones.css";
 
 const Cotizacion = () => {
