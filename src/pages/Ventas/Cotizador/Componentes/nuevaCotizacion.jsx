@@ -269,8 +269,8 @@ const NuevaCotizacion = ({
     setModoEdicion(false);
     limpiarTodosErrores();
     if (onCancelarEdicion) {
-      onCancelarEdicion();
       document.body.style.overflow = "";
+      onCancelarEdicion();
     }
     setFormData({
       folio: generarFolioAutomatico(),
