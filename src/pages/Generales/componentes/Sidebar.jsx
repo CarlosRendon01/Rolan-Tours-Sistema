@@ -57,7 +57,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   // Actualizar elemento activo basado en la ruta actual
   useEffect(() => {
     const rutaActual = location.pathname;
-    switch(rutaActual) {
+    switch (rutaActual) {
       case '/':
         setElementoActivo('Principal');
         break;
@@ -82,14 +82,14 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   useEffect(() => {
     // Guardar en localStorage
     localStorage.setItem('modoOscuro', modoOscuro.toString());
-    
+
     // Aplicar clase al body para afectar toda la aplicación
     if (modoOscuro) {
       document.body.classList.add('modo-oscuro');
     } else {
       document.body.classList.remove('modo-oscuro');
     }
-    
+
     // Cleanup al desmontar el componente
     return () => {
       document.body.classList.remove('modo-oscuro');
@@ -240,7 +240,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
   // Función para manejar navegación
   const manejarNavegacion = (elementoId) => {
-    switch(elementoId) {
+    switch (elementoId) {
       case 'Principal':
         navigate('/');
         break;
@@ -252,6 +252,9 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         break;
       case 'Pagos':
         navigate('/pagos');
+        break;
+      case 'OrdenServicio':
+        navigate('/ordenServicio');
         break;
       // Agregar más rutas según sea necesario
       default:
@@ -271,7 +274,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
           onClick={() => {
             setElementoActivo(subElemento.id);
             manejarNavegacion(subElemento.id);
-            
+
             // Solo cerrar tooltip si es un tooltip flotante, no si es móvil
             if (esTooltip) {
               setTooltipAbierto(null);
@@ -323,10 +326,10 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
   return (
     <div className="contenedor-sidebar" onClick={cerrarTooltip}>
-       {/* Superposición para móviles */}
-       {estaAbierto && responsive.esMovil && (
-         <div className="superposicion-sidebar" onClick={() => setEstaAbierto(false)} />
-       )}
+      {/* Superposición para móviles */}
+      {estaAbierto && responsive.esMovil && (
+        <div className="superposicion-sidebar" onClick={() => setEstaAbierto(false)} />
+      )}
 
       {/* Superposición específica para tooltips en móvil */}
       {tooltipAbierto && responsive.esMovil && (
@@ -335,14 +338,14 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
       {/* Área de activación del hover (solo en desktop) */}
       {!responsive.esMovil && !responsive.esTablet && (
-        <div 
+        <div
           className="area-activacion-hover"
           onMouseEnter={manejarMouseEnter}
         />
       )}
 
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`sidebar ${responsive.esMovil || responsive.esTablet ? (estaAbierto ? 'abierto' : '') : ''} ${modoOscuro ? 'modo-oscuro' : ''} ${hoverExpandido ? 'hover-expandido' : ''}`}
         onMouseEnter={manejarMouseEnter}
         onMouseLeave={manejarMouseLeave}
@@ -414,13 +417,13 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
                       <ComponenteIcono className="icono-navegacion" />
                     </div>
 
-                     {/* Texto */}
-                     <span className={`texto-navegacion ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
-                       {elemento.etiqueta}
-                     </span>
+                    {/* Texto */}
+                    <span className={`texto-navegacion ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
+                      {elemento.etiqueta}
+                    </span>
 
-                     {/* Flecha del submenú */}
-                     {elemento.tieneSubmenu && (
+                    {/* Flecha del submenú */}
+                    {elemento.tieneSubmenu && (
                       <div className="flecha-submenu">
                         {(elemento.id === 'Ventas' && ventasAbierto) ||
                           (elemento.id === 'Documentos' && documentosAbierto) ||
@@ -435,11 +438,11 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
                     )}
                   </button>
 
-                   {/* Tooltip flotante para sidebar colapsado - Solo en móvil cuando está cerrado */}
-                   {(responsive.esMovil || responsive.esTablet) && !estaAbierto && renderTooltipSubmenu(elemento)}
+                  {/* Tooltip flotante para sidebar colapsado - Solo en móvil cuando está cerrado */}
+                  {(responsive.esMovil || responsive.esTablet) && !estaAbierto && renderTooltipSubmenu(elemento)}
 
-                   {/* Submenú expandido */}
-                   {elemento.tieneSubmenu && (((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && (
+                  {/* Submenú expandido */}
+                  {elemento.tieneSubmenu && (((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && (
                     ((elemento.id === 'Ventas' && ventasAbierto) ||
                       (elemento.id === 'Documentos' && documentosAbierto) ||
                       (elemento.id === 'Operaciones' && operacionesAbierto) ||
@@ -455,44 +458,44 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
             })}
           </ul>
 
-           {/* Botón de Ver Perfil - PRIMERO (solo en móvil) */}
-           {responsive.esMovil && (
-             <div className="seccion-ver-perfil">
-               <button className="btn-ver-perfil" aria-label="Ver perfil">
-                 <User className="icono-ver-perfil" />
-                 <span className={`texto-ver-perfil ${estaAbierto ? 'visible' : 'oculto'}`}>
-                   Ver Perfil
-                 </span>
-               </button>
-             </div>
-           )}
+          {/* Botón de Ver Perfil - PRIMERO (solo en móvil) */}
+          {responsive.esMovil && (
+            <div className="seccion-ver-perfil">
+              <button className="btn-ver-perfil" aria-label="Ver perfil">
+                <User className="icono-ver-perfil" />
+                <span className={`texto-ver-perfil ${estaAbierto ? 'visible' : 'oculto'}`}>
+                  Ver Perfil
+                </span>
+              </button>
+            </div>
+          )}
 
-           {/* Botón de Cerrar Sesión - SEGUNDO */}
-           <div className="seccion-cerrar-sesion">
-             <button className="btn-cerrar-sesion" aria-label="Cerrar sesión">
-               <LogOut className="icono-cerrar-sesion" />
-               <span className={`texto-cerrar-sesion ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
-                 Cerrar Sesión
-               </span>
-             </button>
-           </div>
+          {/* Botón de Cerrar Sesión - SEGUNDO */}
+          <div className="seccion-cerrar-sesion">
+            <button className="btn-cerrar-sesion" aria-label="Cerrar sesión">
+              <LogOut className="icono-cerrar-sesion" />
+              <span className={`texto-cerrar-sesion ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
+                Cerrar Sesión
+              </span>
+            </button>
+          </div>
 
-           {/* Sección de Modo Oscuro - SEGUNDO */}
-           <div className="seccion-modo-oscuro">
-             <button
-               className="btn-modo-oscuro"
-               onClick={alternarModoOscuro}
-               aria-label={modoOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-             >
-               {modoOscuro ? (
-                 <Sun className="icono-modo-oscuro" />
-               ) : (
-                 <Moon className="icono-modo-oscuro" />
-               )}
-               <span className={`texto-modo-oscuro ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
-                 {modoOscuro ? 'Modo Claro' : 'Modo Oscuro'}
-               </span>
-               {(((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && <div className="toggle-modo-oscuro"></div>}
+          {/* Sección de Modo Oscuro - SEGUNDO */}
+          <div className="seccion-modo-oscuro">
+            <button
+              className="btn-modo-oscuro"
+              onClick={alternarModoOscuro}
+              aria-label={modoOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            >
+              {modoOscuro ? (
+                <Sun className="icono-modo-oscuro" />
+              ) : (
+                <Moon className="icono-modo-oscuro" />
+              )}
+              <span className={`texto-modo-oscuro ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
+                {modoOscuro ? 'Modo Claro' : 'Modo Oscuro'}
+              </span>
+              {(((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && <div className="toggle-modo-oscuro"></div>}
             </button>
           </div>
 

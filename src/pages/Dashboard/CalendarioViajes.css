@@ -147,8 +147,13 @@
   transition: all 0.3s ease-in-out;
 }
 
-.calendario-tipo-tour { background: #3b82f6; }
-.calendario-tipo-traslado { background: #10b981; }
+.calendario-tipo-tour {
+  background: #3b82f6;
+}
+
+.calendario-tipo-traslado {
+  background: #10b981;
+}
 
 .calendario-total-viajes {
   font-size: 14px;
@@ -281,9 +286,17 @@
   transition: font-size 0.3s ease-in-out;
 }
 
-.calendario-evento-tour { background: #3b82f6; }
-.calendario-evento-traslado { background: #10b981; }
-.calendario-evento-default { background: #6b7280; }
+.calendario-evento-tour {
+  background: #3b82f6;
+}
+
+.calendario-evento-traslado {
+  background: #10b981;
+}
+
+.calendario-evento-default {
+  background: #6b7280;
+}
 
 .calendario-eventos-mas {
   font-size: 9px;
@@ -340,9 +353,17 @@
   transition: font-size 0.3s ease-in-out;
 }
 
-.calendario-estadistica-tours .calendario-etiqueta-estadistica { color: #1d4ed8; }
-.calendario-estadistica-traslados .calendario-etiqueta-estadistica { color: #059669; }
-.calendario-estadistica-clientes .calendario-etiqueta-estadistica { color: #7c3aed; }
+.calendario-estadistica-tours .calendario-etiqueta-estadistica {
+  color: #1d4ed8;
+}
+
+.calendario-estadistica-traslados .calendario-etiqueta-estadistica {
+  color: #059669;
+}
+
+.calendario-estadistica-clientes .calendario-etiqueta-estadistica {
+  color: #7c3aed;
+}
 
 .calendario-valor-estadistica {
   font-size: 32px;
@@ -351,9 +372,17 @@
   transition: font-size 0.3s ease-in-out;
 }
 
-.calendario-estadistica-tours .calendario-valor-estadistica { color: #1e40af; }
-.calendario-estadistica-traslados .calendario-valor-estadistica { color: #047857; }
-.calendario-estadistica-clientes .calendario-valor-estadistica { color: #6d28d9; }
+.calendario-estadistica-tours .calendario-valor-estadistica {
+  color: #1e40af;
+}
+
+.calendario-estadistica-traslados .calendario-valor-estadistica {
+  color: #047857;
+}
+
+.calendario-estadistica-clientes .calendario-valor-estadistica {
+  color: #6d28d9;
+}
 
 /* ===== MODAL ===== */
 .calendario-superposicion-modal {
@@ -385,9 +414,17 @@
   border-radius: 16px 16px 0 0;
 }
 
-.calendario-encabezado-modal.calendario-evento-tour { background: #3b82f6; }
-.calendario-encabezado-modal.calendario-evento-traslado { background: #10b981; }
-.calendario-encabezado-modal.calendario-evento-default { background: #6b7280; }
+.calendario-encabezado-modal.calendario-evento-tour {
+  background: #3b82f6;
+}
+
+.calendario-encabezado-modal.calendario-evento-traslado {
+  background: #10b981;
+}
+
+.calendario-encabezado-modal.calendario-evento-default {
+  background: #6b7280;
+}
 
 .calendario-seccion-titulo-modal {
   display: flex;
@@ -552,6 +589,7 @@
     opacity: 0;
     transform: translateY(20px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -563,6 +601,7 @@
     opacity: 0;
     transform: translateX(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -570,10 +609,13 @@
 }
 
 @keyframes calendario-pulso {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.05);
     opacity: 0.8;
@@ -620,8 +662,13 @@
 }
 
 @keyframes calendario-girar {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -631,98 +678,98 @@
   .calendario-encabezado {
     padding: 20px 24px;
   }
-  
+
   .calendario-contenido-encabezado {
     gap: 20px;
   }
-  
+
   .calendario-info-titulo h2.calendario-titulo-principal {
     font-size: 20px;
   }
-  
+
   .calendario-info-titulo p.calendario-subtitulo {
     font-size: 13px;
   }
-  
+
   .calendario-navegacion-mes {
     gap: 16px;
   }
-  
+
   .calendario-mes-actual {
     font-size: 18px;
     min-width: 180px;
   }
-  
+
   .calendario-leyenda-tipos {
     padding: 16px 24px;
   }
-  
+
   .calendario-elementos-leyenda {
     gap: 20px;
   }
-  
+
   .calendario-etiqueta-leyenda {
     font-size: 13px;
   }
-  
+
   .calendario-elemento-tipo {
     font-size: 13px;
   }
-  
+
   .calendario-total-viajes {
     font-size: 13px;
   }
-  
+
   .calendario-elemento-dia-semana {
     padding: 10px;
     font-size: 13px;
   }
-  
+
   .calendario-dia {
     height: 100px;
     padding: 6px;
   }
-  
+
   .calendario-dia-vacio {
     height: 100px;
   }
-  
+
   .calendario-numero-dia {
     font-size: 13px;
     margin-bottom: 4px;
   }
-  
+
   .calendario-contenedor-eventos {
     height: calc(100% - 20px);
   }
-  
+
   .calendario-elemento-evento {
     padding: 3px 5px;
     font-size: 9px;
   }
-  
+
   .calendario-hora-evento {
     font-size: 8px;
   }
-  
+
   .calendario-eventos-mas {
     font-size: 8px;
   }
-  
+
   .calendario-estadisticas-rapidas {
     gap: 16px;
     padding: 20px 24px;
   }
-  
+
   .calendario-tarjeta-estadistica {
     padding: 16px;
   }
-  
+
   .calendario-etiqueta-estadistica {
     font-size: 12px;
     margin-bottom: 6px;
   }
-  
+
   .calendario-valor-estadistica {
     font-size: 28px;
   }
@@ -733,107 +780,107 @@
   .calendario-encabezado {
     padding: 16px 20px;
   }
-  
+
   .calendario-contenido-encabezado {
     flex-direction: column;
     gap: 16px;
     text-align: center;
   }
-  
+
   .calendario-navegacion-mes {
     order: 1;
   }
-  
+
   .calendario-seccion-titulo {
     order: 2;
     justify-content: center;
   }
-  
+
   .calendario-info-titulo h2.calendario-titulo-principal {
     font-size: 18px;
   }
-  
+
   .calendario-info-titulo p.calendario-subtitulo {
     font-size: 12px;
   }
-  
+
   .calendario-mes-actual {
     font-size: 16px;
     min-width: 160px;
   }
-  
+
   .calendario-leyenda-tipos {
     flex-direction: column;
     gap: 12px;
     text-align: center;
     padding: 16px 20px;
   }
-  
+
   .calendario-elementos-leyenda {
     flex-wrap: wrap;
     justify-content: center;
     gap: 16px;
   }
-  
+
   .calendario-dia {
     height: 80px;
     padding: 4px;
   }
-  
+
   .calendario-dia-vacio {
     height: 80px;
   }
-  
+
   .calendario-numero-dia {
     font-size: 12px;
     margin-bottom: 3px;
   }
-  
+
   .calendario-contenedor-eventos {
     height: calc(100% - 16px);
   }
-  
+
   .calendario-elemento-evento {
     font-size: 8px;
     padding: 2px 4px;
   }
-  
+
   .calendario-hora-evento {
     font-size: 7px;
   }
-  
+
   .calendario-eventos-mas {
     font-size: 7px;
   }
-  
+
   .calendario-estadisticas-rapidas {
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 16px 20px;
   }
-  
+
   .calendario-tarjeta-estadistica {
     padding: 14px;
   }
-  
+
   .calendario-etiqueta-estadistica {
     font-size: 11px;
     margin-bottom: 5px;
   }
-  
+
   .calendario-valor-estadistica {
     font-size: 24px;
   }
-  
+
   .calendario-contenido-modal {
     max-width: 90%;
     margin: 10px;
   }
-  
+
   .calendario-encabezado-modal {
     padding: 20px 24px;
   }
-  
+
   .calendario-cuerpo-modal {
     padding: 20px 24px;
   }
@@ -844,111 +891,111 @@
   .calendario-encabezado {
     padding: 12px 16px;
   }
-  
+
   .calendario-contenido-encabezado {
     gap: 12px;
   }
-  
+
   .calendario-icono-principal {
     padding: 8px;
   }
-  
+
   .calendario-info-titulo h2.calendario-titulo-principal {
     font-size: 16px;
   }
-  
+
   .calendario-info-titulo p.calendario-subtitulo {
     font-size: 11px;
   }
-  
+
   .calendario-navegacion-mes {
     gap: 12px;
   }
-  
+
   .calendario-btn-navegacion {
     width: 36px;
     height: 36px;
     padding: 8px;
   }
-  
+
   .calendario-mes-actual {
     font-size: 14px;
     min-width: 140px;
   }
-  
+
   .calendario-leyenda-tipos {
     padding: 12px 16px;
   }
-  
+
   .calendario-etiqueta-leyenda {
     font-size: 11px;
   }
-  
+
   .calendario-elemento-tipo {
     font-size: 11px;
     gap: 6px;
   }
-  
+
   .calendario-color-tipo {
     width: 10px;
     height: 10px;
   }
-  
+
   .calendario-total-viajes {
     font-size: 11px;
   }
-  
+
   .calendario-elemento-dia-semana {
     padding: 8px 4px;
     font-size: 11px;
   }
-  
+
   .calendario-dia {
     height: 70px;
     padding: 3px;
   }
-  
+
   .calendario-dia-vacio {
     height: 70px;
   }
-  
+
   .calendario-numero-dia {
     font-size: 11px;
     margin-bottom: 2px;
   }
-  
+
   .calendario-contenedor-eventos {
     height: calc(100% - 14px);
     gap: 1px;
   }
-  
+
   .calendario-elemento-evento {
     font-size: 7px;
     padding: 1px 3px;
   }
-  
+
   .calendario-hora-evento {
     font-size: 6px;
   }
-  
+
   .calendario-eventos-mas {
     font-size: 6px;
   }
-  
+
   .calendario-estadisticas-rapidas {
     gap: 10px;
     padding: 12px 16px;
   }
-  
+
   .calendario-tarjeta-estadistica {
     padding: 12px;
   }
-  
+
   .calendario-etiqueta-estadistica {
     font-size: 10px;
     margin-bottom: 4px;
   }
-  
+
   .calendario-valor-estadistica {
     font-size: 20px;
   }
@@ -959,174 +1006,174 @@
   .calendario-contenedor-principal {
     border-radius: 16px;
   }
-  
+
   .calendario-encabezado {
     padding: 10px 12px;
     border-radius: 16px 16px 0 0;
   }
-  
+
   .calendario-contenido-encabezado {
     gap: 10px;
   }
-  
+
   .calendario-icono-principal {
     padding: 6px;
   }
-  
+
   .calendario-info-titulo h2.calendario-titulo-principal {
     font-size: 14px;
   }
-  
+
   .calendario-info-titulo p.calendario-subtitulo {
     font-size: 10px;
   }
-  
+
   .calendario-navegacion-mes {
     gap: 8px;
   }
-  
+
   .calendario-btn-navegacion {
     width: 32px;
     height: 32px;
     padding: 6px;
   }
-  
+
   .calendario-mes-actual {
     font-size: 12px;
     min-width: 120px;
   }
-  
+
   .calendario-leyenda-tipos {
     padding: 10px 12px;
   }
-  
+
   .calendario-elementos-leyenda {
     gap: 12px;
   }
-  
+
   .calendario-etiqueta-leyenda {
     font-size: 10px;
   }
-  
+
   .calendario-elemento-tipo {
     font-size: 10px;
     gap: 4px;
   }
-  
+
   .calendario-color-tipo {
     width: 8px;
     height: 8px;
   }
-  
+
   .calendario-total-viajes {
     font-size: 10px;
   }
-  
+
   .calendario-elemento-dia-semana {
     padding: 6px 2px;
     font-size: 10px;
   }
-  
+
   .calendario-dia {
     height: 60px;
     padding: 2px;
   }
-  
+
   .calendario-dia-vacio {
     height: 60px;
   }
-  
+
   .calendario-numero-dia {
     font-size: 10px;
     margin-bottom: 1px;
   }
-  
+
   .calendario-contenedor-eventos {
     height: calc(100% - 12px);
   }
-  
+
   .calendario-elemento-evento {
     font-size: 6px;
     padding: 1px 2px;
   }
-  
+
   .calendario-titulo-evento {
     margin-bottom: 0;
   }
-  
+
   .calendario-hora-evento {
     font-size: 5px;
   }
-  
+
   .calendario-eventos-mas {
     font-size: 5px;
   }
-  
+
   .calendario-estadisticas-rapidas {
     gap: 8px;
     padding: 10px 12px;
   }
-  
+
   .calendario-tarjeta-estadistica {
     padding: 10px;
   }
-  
+
   .calendario-etiqueta-estadistica {
     font-size: 9px;
     margin-bottom: 3px;
   }
-  
+
   .calendario-valor-estadistica {
     font-size: 18px;
   }
-  
+
   .calendario-contenido-modal {
     max-width: 95%;
     margin: 5px;
     border-radius: 12px;
   }
-  
+
   .calendario-encabezado-modal {
     padding: 16px 20px;
     border-radius: 12px 12px 0 0;
   }
-  
+
   .calendario-titulo-modal {
     font-size: 16px;
   }
-  
+
   .calendario-subtitulo-modal {
     font-size: 12px;
   }
-  
+
   .calendario-cuerpo-modal {
     padding: 16px 20px;
   }
-  
+
   .calendario-elemento-detalle {
     gap: 8px;
     margin-bottom: 12px;
   }
-  
+
   .calendario-etiqueta-detalle {
     min-width: 60px;
     font-size: 12px;
   }
-  
+
   .calendario-valor-detalle {
     font-size: 12px;
   }
-  
+
   .calendario-info-vehiculo {
     padding: 12px;
     margin: 16px 0;
   }
-  
+
   .calendario-acciones-modal {
     gap: 8px;
     margin-top: 16px;
   }
-  
+
   .calendario-btn-ver-mas,
   .calendario-btn-editar {
     padding: 10px 12px;
@@ -1140,51 +1187,51 @@
   .calendario-encabezado {
     padding: 8px 10px;
   }
-  
+
   .calendario-info-titulo h2.calendario-titulo-principal {
     font-size: 12px;
   }
-  
+
   .calendario-mes-actual {
     font-size: 11px;
     min-width: 100px;
   }
-  
+
   .calendario-leyenda-tipos {
     padding: 8px 10px;
   }
-  
+
   .calendario-dia {
     height: 50px;
     padding: 1px;
   }
-  
+
   .calendario-dia-vacio {
     height: 50px;
   }
-  
+
   .calendario-numero-dia {
     font-size: 9px;
   }
-  
+
   .calendario-elemento-evento {
     font-size: 5px;
     padding: 1px;
   }
-  
+
   .calendario-estadisticas-rapidas {
     gap: 6px;
     padding: 8px 10px;
   }
-  
+
   .calendario-tarjeta-estadistica {
     padding: 8px;
   }
-  
+
   .calendario-etiqueta-estadistica {
     font-size: 8px;
   }
-  
+
   .calendario-valor-estadistica {
     font-size: 16px;
   }
@@ -1192,6 +1239,7 @@
 
 /* ===== MEJORAS DE ACCESIBILIDAD ===== */
 @media (prefers-reduced-motion: reduce) {
+
   .calendario-contenedor-principal *,
   .calendario-contenedor-principal *::before,
   .calendario-contenedor-principal *::after {
@@ -1216,106 +1264,106 @@
     background: #ffffff;
     border: 1px solid #ffffff;
   }
-  
+
   .calendario-encabezado {
     background: linear-gradient(135deg, #d92828 0%, #d92828 100%);
   }
-  
+
   .calendario-leyenda-tipos {
     background: #ffffff;
     border-color: #334155;
   }
-  
+
   .calendario-etiqueta-leyenda,
   .calendario-elemento-tipo,
   .calendario-total-viajes {
     color: #363738;
   }
-  
+
   .calendario-numero-total {
     color: #373738;
   }
-  
+
   .calendario-dias-semana {
     background: #ececf0;
   }
-  
+
   .calendario-elemento-dia-semana {
     color: #2f3031;
     border-color: #c5c8cc;
   }
-  
+
   .calendario-dia {
     background: #ffffff;
     border-color: #1a79d8;
     color: #e2e8f0;
   }
-  
+
   .calendario-dia:hover {
     background: #9ebff1;
   }
-  
+
   .calendario-dia-hoy {
     background: #eff2fa;
     border-color: #0060fc;
   }
-  
+
   .calendario-numero-dia {
     color: #2d2e30;
   }
-  
+
   .calendario-dia-vacio {
     background: #ffffff;
     border-color: #699adf;
   }
-  
+
   .calendario-estadisticas-rapidas {
     background: #ffffff;
   }
-  
+
   .calendario-estadistica-tours {
     background: #7696f0;
     border-color: #eff0f1;
   }
-  
+
   .calendario-estadistica-traslados {
     background: #59f0c7;
     border-color: #10b981;
   }
-  
+
   .calendario-estadistica-clientes {
     background: #581c87;
     border-color: #cec0f0;
   }
-  
+
   .calendario-contenido-modal {
     background: #1d1c1c;
     border: 1px solid #334155;
   }
-  
+
   .calendario-cuerpo-modal {
     color: #e2e8f0;
   }
-  
+
   .calendario-etiqueta-detalle,
   .calendario-valor-detalle {
     color: #000000;
   }
-  
+
   .calendario-info-vehiculo {
     background: #0f172a;
     border-color: #4f46e5;
   }
-  
+
   .calendario-detalle-vehiculo {
     color: #e2e8f0;
   }
-  
+
   .calendario-btn-editar {
     background: #374151;
     color: #e2e8f0;
   }
-  
+
   .calendario-btn-editar:hover {
     background: #4b5563;
   }
@@ -1328,11 +1376,11 @@
     border: 1px solid #000;
     background: white;
   }
-  
+
   .calendario-encabezado {
     background: #000000 !important;
   }
-  
+
   .calendario-superposicion-modal {
     display: none;
   }
