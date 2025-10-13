@@ -8,7 +8,9 @@ const NuevaCotizacion = ({
   onGuardarCliente,
   cotizacionEditar,
   onCancelarEdicion,
+
 }) => {
+  document.body.style.overflow = "hidden";
   const [mostrarModal, setMostrarModal] = useState(false);
   const [pasoActual, setPasoActual] = useState(1);
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -27,14 +29,12 @@ const NuevaCotizacion = ({
     id: "",
     numeroLead: "",
     nombreResponsable: "",
-    servicioTransporte: "",
     tipoServicio: "",
     pax: "",
-    origenServicio: "Oaxaca",
+    origenServicio: "Oaxaca de Juarez, Oaxaca",
     puntoIntermedio: "",
     destinoServicio: "",
     vehiculoRequerido: "",
-    campana: "",
     fechaCreacion: new Date().toISOString().split("T")[0],
     tipoClienteFrec: "solo_una_vez",
     descripcion: "",
@@ -50,7 +50,6 @@ const NuevaCotizacion = ({
     nombre: "",
     email: "",
     telefono: "",
-    canalContacto: "",
   });
 
   const puntoIntermedioRef = useRef(null);
@@ -178,11 +177,7 @@ const NuevaCotizacion = ({
           { campo: "nombre", nombre: "Nombre", esCliente: true },
           { campo: "email", nombre: "Email", esCliente: true },
           { campo: "telefono", nombre: "Teléfono", esCliente: true },
-          {
-            campo: "canalContacto",
-            nombre: "Canal de Contacto",
-            esCliente: true,
-          },
+
         ],
         3: [
           { campo: "pax", nombre: "N° pasajeros" },
@@ -265,6 +260,7 @@ const NuevaCotizacion = ({
 
   const cerrarModal = useCallback(() => {
     setMostrarModal(false);
+
     setPasoActual(1);
     setModoEdicion(false);
     limpiarTodosErrores();
@@ -286,14 +282,12 @@ const NuevaCotizacion = ({
       id: "",
       numeroLead: "",
       nombreResponsable: "",
-      servicioTransporte: "",
       tipoServicio: "",
       pax: "",
-      origenServicio: "Oaxaca",
+      origenServicio: "Oaxaca de Juarez, Oaxaca",
       puntoIntermedio: "",
       destinoServicio: "",
       vehiculoRequerido: "",
-      campana: "",
       fechaCreacion: new Date().toISOString().split("T")[0],
       tipoClienteFrec: "solo_una_vez",
       descripcion: "",
@@ -308,7 +302,6 @@ const NuevaCotizacion = ({
       nombre: "",
       email: "",
       telefono: "",
-      canalContacto: "",
     });
   }, [onCancelarEdicion, generarFolioAutomatico, limpiarTodosErrores]);
 
@@ -330,14 +323,12 @@ const NuevaCotizacion = ({
         id: cotizacionEditar.id || "",
         numeroLead: cotizacionEditar.numeroLead || "",
         nombreResponsable: cotizacionEditar.nombreResponsable || "",
-        servicioTransporte: cotizacionEditar.servicioTransporte || "",
         tipoServicio: cotizacionEditar.tipoServicio || "",
         pax: cotizacionEditar.pax || "",
-        origenServicio: cotizacionEditar.origenServicio || "Oaxaca",
+        origenServicio: cotizacionEditar.origenServicio || "Oaxaca de Juarez, Oaxaca",
         puntoIntermedio: cotizacionEditar.puntoIntermedio || "",
         destinoServicio: cotizacionEditar.destinoServicio || "",
         vehiculoRequerido: cotizacionEditar.vehiculoRequerido || "",
-        campana: cotizacionEditar.campana || "",
         fechaCreacion:
           cotizacionEditar.fechaCreacion ||
           new Date().toISOString().split("T")[0],
@@ -356,7 +347,6 @@ const NuevaCotizacion = ({
           nombre: cotizacionEditar.cliente.nombre || "",
           email: cotizacionEditar.cliente.email || "",
           telefono: cotizacionEditar.cliente.telefono || "",
-          canalContacto: cotizacionEditar.cliente.canalContacto || "",
         });
       }
 
@@ -367,12 +357,14 @@ const NuevaCotizacion = ({
   }, [cotizacionEditar, limpiarTodosErrores]);
 
   const abrirModal = useCallback(() => {
+
     setMostrarModal(true);
     setPasoActual(1);
     setModoEdicion(false);
     limpiarTodosErrores();
 
     setFormData({
+
       folio: generarFolioAutomatico(),
       fechaSalida: "",
       fechaRegreso: "",
@@ -386,14 +378,12 @@ const NuevaCotizacion = ({
       id: "",
       numeroLead: "",
       nombreResponsable: "",
-      servicioTransporte: "",
       tipoServicio: "",
       pax: "",
-      origenServicio: "Oaxaca",
+      origenServicio: "Oaxaca de Juarez, Oaxaca",
       puntoIntermedio: "",
       destinoServicio: "",
       vehiculoRequerido: "",
-      campana: "",
       fechaCreacion: new Date().toISOString().split("T")[0],
       tipoClienteFrec: "solo_una_vez",
       descripcion: "",
@@ -408,7 +398,6 @@ const NuevaCotizacion = ({
       nombre: "",
       email: "",
       telefono: "",
-      canalContacto: "",
     });
   }, [generarFolioAutomatico, limpiarTodosErrores]);
 
@@ -654,45 +643,40 @@ const NuevaCotizacion = ({
             <div className="cotizacion-tabs">
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 1 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 1 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(1)}
               >
                 Información General
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 2 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 2 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(2)}
               >
                 Datos del Cliente
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 3 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 3 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(3)}
               >
                 Datos del Servicio
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 4 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 4 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(4)}
               >
                 Detalles del Viaje
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 5 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 5 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(5)}
               >
                 Extras y Total
@@ -827,21 +811,7 @@ const NuevaCotizacion = ({
                       />
                       <MensajeError nombreCampo="telefono" />
                     </label>
-                    <label>
-                      Canal de Contacto: <span className="required">*</span>
-                      <input
-                        type="text"
-                        name="canalContacto"
-                        autoComplete="off"
-                        value={datosCliente.canalContacto}
-                        onChange={handleClienteInputChange}
-                        className={
-                          erroresCampos.canalContacto ? "campo-error" : ""
-                        }
-                        placeholder="Ej: WhatsApp, Teléfono, Email"
-                      />
-                      <MensajeError nombreCampo="canalContacto" />
-                    </label>
+
                   </div>
 
                   <div className="botones-navegacion">
@@ -888,30 +858,6 @@ const NuevaCotizacion = ({
                       <MensajeError nombreCampo="pax" />
                     </label>
                     <label>
-                      Servicio Transporte:
-                      <select
-                        name="servicioTransporte"
-                        value={formData.servicioTransporte}
-                        onChange={handleInputChange}
-                      >
-                        <option value="">Seleccionar...</option>
-                        <option value="camioneta">Camioneta</option>
-                        <option value="coche">Coche</option>
-                      </select>
-                    </label>
-                  </div>
-
-                  <div className="fila">
-                    <label>
-                      Tipo Servicio: (Opcional)
-                      <input
-                        type="text"
-                        name="tipoServicio"
-                        value={formData.tipoServicio}
-                        onChange={handleInputChange}
-                      />
-                    </label>
-                    <label>
                       Vehículo Requerido:
                       <select
                         name="vehiculoRequerido"
@@ -924,6 +870,20 @@ const NuevaCotizacion = ({
                         <option value="taxi">Taxi</option>
                       </select>
                     </label>
+
+                  </div>
+
+                  <div className="fila">
+                    <label>
+                      Tipo Servicio: (Opcional)
+                      <input
+                        type="text"
+                        name="tipoServicio"
+                        value={formData.tipoServicio}
+                        onChange={handleInputChange}
+                      />
+                    </label>
+
                   </div>
 
                   <label>
@@ -971,15 +931,7 @@ const NuevaCotizacion = ({
                     <MensajeError nombreCampo="destinoServicio" />
                   </label>
 
-                  <label>
-                    Campaña: (Opcional)
-                    <input
-                      type="text"
-                      name="campana"
-                      value={formData.campana}
-                      onChange={handleInputChange}
-                    />
-                  </label>
+
 
                   <div className="botones-navegacion">
                     <button
