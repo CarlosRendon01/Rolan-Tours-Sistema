@@ -16,8 +16,8 @@
     "axios": "^1.12.2",
     "lucide-react": "^0.542.0",
     "prop-types": "^15.8.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.2",
     "sweetalert2": "^11.23.0"
