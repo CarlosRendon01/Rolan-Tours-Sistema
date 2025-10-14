@@ -3,6 +3,9 @@ import TablaOperadores from './Componentes/TablaOperadores';
 import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
 import './OperadoresPrincipal.css';
 import ModalAgregarOperador from './ModalesOperadores/ModalAgregarOperador';
+import ModalVerOperador from './ModalesOperadores/ModalVerOperador';
+import ModalEditarOperador from './ModalesOperadores/ModalEditarOperador';
+import { modalEliminarOperador } from './ModalesOperadores/ModalEliminarOperador';
 
 const OperadoresPrincipal = () => {
     // Estado para almacenar los operadores
@@ -119,10 +122,11 @@ const OperadoresPrincipal = () => {
         console.log('Editar operador:', operador);
     };
 
-    const manejarEliminar = (operador) => {
-        setOperadorSeleccionado(operador);
-        setModalEliminarAbierto(true);
-        console.log('Eliminar operador:', operador);
+    const manejarEliminar = async (operador) => {
+        const confirmado = await modalEliminarOperador(operador, eliminarOperador);
+        if (confirmado) {
+            console.log('Operador eliminado:', operador);
+        }
     };
 
     const manejarAgregar = () => {
@@ -175,87 +179,25 @@ const OperadoresPrincipal = () => {
                     onAgregar={manejarAgregar}
                 />
 
+
                 {/* Modal VER */}
                 {modalVerAbierto && operadorSeleccionado && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'rgba(0,0,0,0.5)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 1000
-                    }}>
-                        <div style={{
-                            background: 'white',
-                            padding: '2rem',
-                            borderRadius: '8px',
-                            maxWidth: '500px'
-                        }}>
-                            <h2>Ver Operador (Modal en desarrollo)</h2>
-                            <p>Operador: {operadorSeleccionado.nombre}</p>
-                            <button onClick={cerrarModales}>Cerrar</button>
-                        </div>
-                    </div>
+                    <ModalVerOperador
+                        operador={operadorSeleccionado}
+                        onCerrar={cerrarModales}
+                    />
                 )}
 
                 {/* Modal EDITAR */}
                 {modalEditarAbierto && operadorSeleccionado && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'rgba(0,0,0,0.5)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 1000
-                    }}>
-                        <div style={{
-                            background: 'white',
-                            padding: '2rem',
-                            borderRadius: '8px',
-                            maxWidth: '500px'
-                        }}>
-                            <h2>Editar Operador (Modal en desarrollo)</h2>
-                            <p>Editando: {operadorSeleccionado.nombre}</p>
-                            <button onClick={cerrarModales}>Cerrar</button>
-                        </div>
-                    </div>
+                    <ModalEditarOperador
+                        operador={operadorSeleccionado}
+                        onGuardar={actualizarOperador}
+                        onCerrar={cerrarModales}
+                    />
                 )}
 
-                {/* Modal ELIMINAR */}
-                {modalEliminarAbierto && operadorSeleccionado && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'rgba(0,0,0,0.5)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 1000
-                    }}>
-                        <div style={{
-                            background: 'white',
-                            padding: '2rem',
-                            borderRadius: '8px',
-                            maxWidth: '500px'
-                        }}>
-                            <h2>Eliminar Operador (Modal en desarrollo)</h2>
-                            <p>¿Eliminar a {operadorSeleccionado.nombre}?</p>
-                            <button onClick={() => eliminarOperador(operadorSeleccionado.id)}>Eliminar</button>
-                            <button onClick={cerrarModales}>Cancelar</button>
-                        </div>
-                    </div>
-                )}
+
 
                 {/* Modal AGREGAR */}
                 {modalAgregarAbierto && (
