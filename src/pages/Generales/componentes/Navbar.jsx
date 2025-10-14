@@ -12,13 +12,13 @@ import ModalNotificaciones from "./ModalNotificaciones";
 import ModalPerfil from "./ModalPerfil";
 import "./Navbar.css";
 
-const Navbar = React.memo(({ 
-  sidebarAbierto, 
+const Navbar = React.memo(({
+  sidebarAbierto,
   setSidebarAbierto,
-  responsive, 
-  onLogout, 
-  onEditProfile, 
-  userInfo 
+  responsive,
+  onLogout,
+  onEditProfile,
+  userInfo
 }) => {
   // Estados principales
   const [desplegableAbierto, setDesplegableAbierto] = useState(false);
@@ -104,8 +104,8 @@ const Navbar = React.memo(({
   }, []);
 
   const marcarComoLeida = useCallback((id) => {
-    setNotificaciones(prev => 
-      prev.map(notif => 
+    setNotificaciones(prev =>
+      prev.map(notif =>
         notif.id === id ? { ...notif, leida: true } : notif
       )
     );
@@ -116,7 +116,7 @@ const Navbar = React.memo(({
   }, []);
 
   const marcarTodasComoLeidas = useCallback(() => {
-    setNotificaciones(prev => 
+    setNotificaciones(prev =>
       prev.map(notif => ({ ...notif, leida: true }))
     );
   }, []);
@@ -327,90 +327,90 @@ const Navbar = React.memo(({
             {/* Perfil de Usuario - Oculto en móvil */}
             {!responsiveData.esMovil && (
               <div className="perfil-usuario" ref={refDesplegable}>
-              {imagenCargada ? (
-                <img
-                  ref={refAvatarImg}
-                  src={usuario.avatar}
-                  alt={`Avatar de ${usuario.nombre}`}
-                  className="avatar-usuario"
-                  onError={manejarErrorImagen}
-                  onLoad={manejarCargaImagen}
-                  loading="lazy"
-                />
-              ) : (
-                <div
-                  className="avatar-fallback"
-                  aria-label={`Avatar de ${usuario.nombre}`}
-                  style={{
-                    width: responsiveData.esMovil && responsiveData.ancho <= 480 ? '32px' : '40px',
-                    height: responsiveData.esMovil && responsiveData.ancho <= 480 ? '32px' : '40px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    fontSize: responsiveData.esMovil && responsiveData.ancho <= 480 ? '12px' : '14px',
-                    border: '3px solid #ffffff',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
-                  }}
-                >
-                  {usuario.iniciales}
-                </div>
-              )}
-
-              {/* Información del usuario - ocultar en móvil pequeño */}
-              {(!responsiveData.esMovil || responsiveData.ancho > 480) && (
-                <div>
-                  <p className="nombre-usuario">{usuario.nombre}</p>
-                  <span className="rol-usuario">{usuario.rol}</span>
-                </div>
-              )}
-
-              <button
-                className="alternar-desplegable"
-                onClick={alternarDesplegable}
-                aria-label="Abrir menú de usuario"
-                aria-expanded={desplegableAbierto}
-                aria-haspopup="true"
-              >
-                <ChevronDown
-                  size={14}
-                  className={`icono-desplegable ${desplegableAbierto ? "abierto" : ""}`}
-                />
-              </button>
-
-              {/* Menú Desplegable */}
-              {desplegableAbierto && (
-                <div
-                  className="menu-desplegable"
-                  role="menu"
-                  aria-label="Menú de usuario"
-                >
-                  <button
-                    onClick={abrirModalPerfil}
-                    className="elemento-desplegable"
-                    role="menuitem"
-                    aria-label="Ver perfil de usuario"
+                {imagenCargada ? (
+                  <img
+                    ref={refAvatarImg}
+                    src={usuario.avatar}
+                    alt={`Avatar de ${usuario.nombre}`}
+                    className="avatar-usuario"
+                    onError={manejarErrorImagen}
+                    onLoad={manejarCargaImagen}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className="avatar-fallback"
+                    aria-label={`Avatar de ${usuario.nombre}`}
+                    style={{
+                      width: responsiveData.esMovil && responsiveData.ancho <= 480 ? '32px' : '40px',
+                      height: responsiveData.esMovil && responsiveData.ancho <= 480 ? '32px' : '40px',
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                      fontSize: responsiveData.esMovil && responsiveData.ancho <= 480 ? '12px' : '14px',
+                      border: '3px solid #ffffff',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
+                    }}
                   >
-                    <User size={16} />
-                    <span>Ver Perfil</span>
-                  </button>
+                    {usuario.iniciales}
+                  </div>
+                )}
 
-                  <div className="divisor" role="separator"></div>
+                {/* Información del usuario - ocultar en móvil pequeño */}
+                {(!responsiveData.esMovil || responsiveData.ancho > 480) && (
+                  <div>
+                    <p className="nombre-usuario">{usuario.nombre}</p>
+                    <span className="rol-usuario">{usuario.rol}</span>
+                  </div>
+                )}
 
-                  <button
-                    onClick={manejarCerrarSesion}
-                    className="elemento-desplegable cerrar-sesion"
-                    role="menuitem"
-                    aria-label="Cerrar sesión"
+                <button
+                  className="alternar-desplegable"
+                  onClick={alternarDesplegable}
+                  aria-label="Abrir menú de usuario"
+                  aria-expanded={desplegableAbierto}
+                  aria-haspopup="true"
+                >
+                  <ChevronDown
+                    size={14}
+                    className={`icono-desplegable ${desplegableAbierto ? "abierto" : ""}`}
+                  />
+                </button>
+
+                {/* Menú Desplegable */}
+                {desplegableAbierto && (
+                  <div
+                    className="menu-desplegable"
+                    role="menu"
+                    aria-label="Menú de usuario"
                   >
-                    <LogOut size={16} />
-                    <span>Cerrar Sesión</span>
-                  </button>
-                </div>
-              )}
+                    <button
+                      onClick={abrirModalPerfil}
+                      className="elemento-desplegable"
+                      role="menuitem"
+                      aria-label="Ver perfil de usuario"
+                    >
+                      <User size={16} />
+                      <span>Ver Perfil</span>
+                    </button>
+
+                    <div className="divisor" role="separator"></div>
+
+                    <button
+                      onClick={manejarCerrarSesion}
+                      className="elemento-desplegable cerrar-sesion"
+                      role="menuitem"
+                      aria-label="Cerrar sesión"
+                    >
+                      <LogOut size={16} />
+                      <span>Cerrar Sesión</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

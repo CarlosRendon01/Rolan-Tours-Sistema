@@ -271,18 +271,17 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       tieneSubmenu: true,
       submenu: [
         { id: 'Contratos', icono: FileSignature, etiqueta: 'Contratos' },
-        { id: 'Facturas', icono: FileBarChart, etiqueta: 'Facturas' },
-        { id: 'Recibos', icono: Receipt, etiqueta: 'Recibos' }
+        { id: 'OrdenServicio', icono: ClipboardList, etiqueta: 'Órdenes de Servicio' },
+        { id: 'Reservas', icono: Calendar, etiqueta: 'Reservas' }
       ]
     },
+
     {
       id: 'Operaciones',
       icono: Settings,
       etiqueta: 'Operaciones',
       tieneSubmenu: true,
       submenu: [
-        { id: 'OrdenServicio', icono: ClipboardList, etiqueta: 'Órdenes de Servicio' },
-        { id: 'Reservas', icono: Calendar, etiqueta: 'Reservas' },
         { id: 'Operadores', icono: UserCheck, etiqueta: 'Operadores' },
         { id: 'Vehiculos', icono: Car, etiqueta: 'Vehículos' },
         { id: 'Guias', icono: Map, etiqueta: 'Guías' },
@@ -290,6 +289,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         { id: 'Coordinadores', icono: UserCog, etiqueta: 'Coordinadores' }
       ]
     },
+
     {
       id: 'Servicios',
       icono: Truck,

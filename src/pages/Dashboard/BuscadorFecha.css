@@ -659,57 +659,59 @@
     background: #ffffff;
   }
 
- /* Tarjeta con borde giratorio */
-.tarjeta-buscador {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  border-radius: 16px;
-  border-color: rgba(15, 15, 15, 0.3);
-  padding: 32px;
-  background: #d6cccc;
-  z-index: 0; /* Importante: que permita ver el ::before */
-  overflow: hidden;
-}
-
-/* Capa animada del borde */
-.tarjeta-buscador::before {
-  content: "";
-  position: absolute;
-  inset: -4px; /* sobresale un poco para simular borde */
-  border-radius: 20px;
-  background: conic-gradient(
-    blue,
-    blue,
-    blue,
-    blue,
-    red,
-    red,
-    red,
-    red
-  );
-  animation: girarBorde 3s linear infinite;
-  z-index: -2;
-}
-
-/* Capa interna que tapa el centro */
-.tarjeta-buscador::after {
-  content: "";
-  position: absolute;
-  inset: 2px; /* aquí decides qué tan grueso se ve el borde */
-  border-radius: 14px;
-  background: #ffffff;
-  z-index: -1;
-}
-
-@keyframes girarBorde {
-  0% {
-    transform: rotate(0deg);
+  /* Tarjeta con borde giratorio */
+  .tarjeta-buscador {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 16px;
+    border-color: rgba(15, 15, 15, 0.3);
+    padding: 32px;
+    background: #d6cccc;
+    z-index: 0;
+    /* Importante: que permita ver el ::before */
+    overflow: hidden;
   }
-  100% {
-    transform: rotate(180deg);
+
+  /* Capa animada del borde */
+  .tarjeta-buscador::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    /* sobresale un poco para simular borde */
+    border-radius: 20px;
+    background: conic-gradient(blue,
+        blue,
+        blue,
+        blue,
+        red,
+        red,
+        red,
+        red);
+    animation: girarBorde 3s linear infinite;
+    z-index: -2;
   }
-}
+
+  /* Capa interna que tapa el centro */
+  .tarjeta-buscador::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    /* aquí decides qué tan grueso se ve el borde */
+    border-radius: 14px;
+    background: #ffffff;
+    z-index: -1;
+  }
+
+  @keyframes girarBorde {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(180deg);
+    }
+  }
 
 
   .etiqueta-campo {
@@ -745,35 +747,41 @@
     border-color: #006aff;
   }
 
- .estado-listo {
-  background: rgba(209, 233, 202, 0.35); /* Fondo verde claro */
-  color: #43a047; /* Verde brillante */
-  border: 1px solid #4caf50; /* Verde vibrante */
-  border-radius: 6px;
-  padding: 10px 8px;
+  .estado-listo {
+    background: rgba(209, 233, 202, 0.35);
+    /* Fondo verde claro */
+    color: #43a047;
+    /* Verde brillante */
+    border: 1px solid #4caf50;
+    /* Verde vibrante */
+    border-radius: 6px;
+    padding: 10px 8px;
 
-  /* Brillo en el texto */
-  font-weight: 600;
-  text-shadow: 0 0 6px rgba(67, 160, 71, 0.6);
-
-  
-}
-
-
+    /* Brillo en el texto */
+    font-weight: 600;
+    text-shadow: 0 0 6px rgba(67, 160, 71, 0.6);
 
 
- .estado-pendiente {
-  background: rgba(245, 158, 11, 0.2); /* Fondo ámbar suave */
-  color: #fbbf24; /* Naranja dorado brillante */
-  border: 1px solid #f59e0b; /* Borde más intenso */
-  border-radius: 6px;
-  padding: 10px 8px;
+  }
 
-  /* Brillo en el texto */
-  font-weight: 600;
-  text-shadow: 0 0 6px rgba(251, 191, 36, 0.7);
 
-}
+
+
+  .estado-pendiente {
+    background: rgba(245, 158, 11, 0.2);
+    /* Fondo ámbar suave */
+    color: #fbbf24;
+    /* Naranja dorado brillante */
+    border: 1px solid #f59e0b;
+    /* Borde más intenso */
+    border-radius: 6px;
+    padding: 10px 8px;
+
+    /* Brillo en el texto */
+    font-weight: 600;
+    text-shadow: 0 0 6px rgba(251, 191, 36, 0.7);
+
+  }
 
   .estado-error {
     background: rgba(220, 38, 38, 0.2);
