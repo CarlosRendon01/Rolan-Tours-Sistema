@@ -46,12 +46,11 @@ function App() {
           
           {/* Rutas de Documentos */}
           <Route path="/contratos" element={<PaginaTemporal titulo="Contratos" />} />
-          <Route path="/facturas" element={<PaginaTemporal titulo="Facturas" />} />
-          <Route path="/recibos" element={<PaginaTemporal titulo="Recibos" />} />
-          
-          {/* Rutas de Operaciones */}
           <Route path="/orden-servicio" element={<PaginaTemporal titulo="Órdenes de Servicio" />} />
           <Route path="/reservas" element={<PaginaTemporal titulo="Reservas" />} />
+          
+          {/* Rutas de Operaciones */}
+          
           <Route path="/operadores" element={<OperadoresPrincipal/>} />
           <Route path="/vehiculos" element={<VehiculosPrincipal />} />
           <Route path="/guias" element={<GuiasPrincipal/>} />
