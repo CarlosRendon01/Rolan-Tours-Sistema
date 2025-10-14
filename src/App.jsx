@@ -5,7 +5,6 @@ import PrincipalCliente from "./pages/Ventas/Clientes/PrincipalCliente.jsx";
 import PrincipalCotizacion from "./pages/Ventas/Cotizador/PrincipalCotizacion.jsx";
 import PrincipalPago from "./pages/Ventas/Pagos/PrincipalPago.jsx";
 import PrincipalLogin from "./pages/Login/PrincipalLogin.jsx";
-import PrincipalOrdenServicio from "./pages/Operaciones/OrdenServicio/PrincipalOrdenServicio.jsx";
 
 function App() {
   const [estaAutenticado, setEstaAutenticado] = useState(false);
@@ -26,7 +25,6 @@ function App() {
           <Route path="/clientes" element={<PrincipalCliente />} />
           <Route path="/cotizaciones" element={<PrincipalCotizacion />} />
           <Route path="/pagos" element={<PrincipalPago />} />
-          <Route path="/ordenServicio" element={<PrincipalOrdenServicio />} />
         </Routes>
       )}
     </Router>

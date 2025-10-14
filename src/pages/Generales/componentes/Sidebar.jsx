@@ -253,9 +253,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       case 'Pagos':
         navigate('/pagos');
         break;
-      case 'OrdenServicio':
-        navigate('/ordenServicio');
-        break;
       // Agregar más rutas según sea necesario
       default:
         console.log(`Navegación para ${elementoId} no implementada aún`);
