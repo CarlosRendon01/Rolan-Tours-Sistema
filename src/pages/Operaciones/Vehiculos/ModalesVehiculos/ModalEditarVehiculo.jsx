@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, Save, Car, FileText, Image } from 'lucide-react';
 import './ModalEditarVehiculo.css';
+import Swal from 'sweetalert2';
 
 const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
@@ -224,11 +225,78 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         }
       };
 
+      // Guardar el nombre del vehículo antes de cerrar
+      const nombreVehiculo = formData.nombre;
+
+      // Llamar a la función onGuardar del padre
       await onGuardar(vehiculoData);
+
+      console.log('✅ Vehículo actualizado, cerrando modal primero...');
+
+      // ✅ PRIMERO: Cerrar el modal
+      onCerrar();
+
+      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
+      console.log('✅ Mostrando alerta...');
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Vehículo Actualizado!',
+        html: `
+          <div style="font-size: 1.1rem; margin-top: 15px;">
+            <strong style="color: #2563eb; font-size: 1.3rem;">${nombreVehiculo}</strong>
+            <p style="margin-top: 10px; color: #64748b;">ha sido actualizado correctamente</p>
+          </div>
+        `,
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#2563eb',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        allowOutsideClick: true,
+        allowEscapeKey: true,
+        width: '500px',
+        padding: '2rem',
+        backdrop: `rgba(0,0,0,0.6)`,
+        customClass: {
+          popup: 'swal-popup-custom',
+          title: 'swal-title-custom',
+          htmlContainer: 'swal-html-custom',
+          confirmButton: 'swal-confirm-custom'
+        }
+      });
+
+      console.log('✅ Alerta cerrada');
+
+    } catch (error) {
+      console.error('❌ Error al actualizar:', error);
+
+      // Si hay error, también cerrar el modal primero
+      onCerrar();
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error al Actualizar',
+        html: `
+          <div style="font-size: 1rem; margin-top: 10px; color: #64748b;">
+            <p>Hubo un problema al actualizar el vehículo.</p>
+            <p style="margin-top: 8px;">Por favor, inténtalo de nuevo.</p>
+          </div>
+        `,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#ef4444',
+        timer: 4000,
+        timerProgressBar: true,
+        showConfirmButton: true
+      });
     } finally {
       setGuardando(false);
     }
-  }, [formData, validarFormulario, onGuardar, vehiculo]);
+  }, [formData, validarFormulario, onGuardar, vehiculo, onCerrar]);
 
   const MensajeError = ({ nombreCampo }) => {
     const error = errores[nombreCampo];
