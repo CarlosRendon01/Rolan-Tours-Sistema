@@ -1,45 +1,43 @@
 import { useState, useCallback } from 'react';
-import { X, Save, User, FileText, Image } from 'lucide-react';
+import { X, Save, User, Briefcase, Image } from 'lucide-react';
 import Swal from 'sweetalert2';
 import './ModalAgregarGuia.css';
 
 const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Campos básicos
+    // 🧾 Datos Personales
     nombre: '',
     apellido_paterno: '',
     apellido_materno: '',
+    fecha_nacimiento: '',
     telefono: '',
     email: '',
-    costo_dia: '',
-
-    // Campos adicionales
-    fecha_nacimiento: '',
-    rfc: '',
-    curp: '',
-    nss: '',
-    domicilio: '',
     ciudad: '',
     estado: '',
-    codigo_postal: '',
-    tipo_sangre: '',
+    nss: '',
+    institucion_seguro: '',
     contacto_emergencia: '',
     telefono_emergencia: '',
+    
+    // 💼 Información Profesional
+    costo_dia: '',
     idiomas: '',
     experiencia_anos: '',
     especialidades: '',
-    comentarios: '',
-
-    // Documentos
+    certificacion_oficial: '',
+    zona_servicio: '',
+    estado_operativo: 'activo',
+    
+    // 📄 Documentos
     foto_guia: null,
     foto_ine: null,
+    foto_certificaciones: null,
     foto_licencia: null,
-    foto_comprobante_domicilio: null,
-    foto_certificaciones: null
+    foto_comprobante_domicilio: null
   });
 
   const [errores, setErrores] = useState({});
-  const [seccionActiva, setSeccionActiva] = useState('basicos');
+  const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
 
   const limpiarErrorCampo = useCallback((nombreCampo) => {
@@ -79,17 +77,17 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones campos básicos (obligatorios)
+    // 🧾 Datos Personales (obligatorios)
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
 
     if (!formData.apellido_paterno.trim()) {
-      nuevosErrores.apellido_paterno = 'El apellido paterno es requerido';
+      nuevosErrores.apellido_paterno = 'Apellido requerido';
     }
 
     if (!formData.apellido_materno.trim()) {
-      nuevosErrores.apellido_materno = 'El apellido materno es requerido';
+      nuevosErrores.apellido_materno = 'Apellido requerido';
     }
 
     // Validar teléfono (10 dígitos)
@@ -104,11 +102,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       nuevosErrores.email = 'Email inválido';
     }
 
-    if (!formData.costo_dia || parseFloat(formData.costo_dia) <= 0) {
-      nuevosErrores.costo_dia = 'El costo debe ser mayor a 0';
-    }
-
-    // Validaciones campos adicionales (obligatorios)
     if (!formData.fecha_nacimiento) {
       nuevosErrores.fecha_nacimiento = 'La fecha es requerida';
     } else {
@@ -125,10 +118,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       }
     }
 
-    if (!formData.domicilio.trim()) {
-      nuevosErrores.domicilio = 'El domicilio es requerido';
-    }
-
     if (!formData.ciudad.trim()) {
       nuevosErrores.ciudad = 'La ciudad es requerida';
     }
@@ -137,10 +126,8 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       nuevosErrores.estado = 'El estado es requerido';
     }
 
-    // Validar código postal (5 dígitos)
-    const cpRegex = /^\d{5}$/;
-    if (!formData.codigo_postal || !cpRegex.test(formData.codigo_postal)) {
-      nuevosErrores.codigo_postal = 'Debe tener 5 dígitos';
+    if (!formData.institucion_seguro) {
+      nuevosErrores.institucion_seguro = 'Seleccione una institución';
     }
 
     if (!formData.contacto_emergencia.trim()) {
@@ -149,6 +136,11 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
 
     if (!formData.telefono_emergencia || !telefonoRegex.test(formData.telefono_emergencia)) {
       nuevosErrores.telefono_emergencia = 'Debe tener 10 dígitos';
+    }
+
+    // 💼 Información Profesional (obligatorios)
+    if (!formData.costo_dia || parseFloat(formData.costo_dia) <= 0) {
+      nuevosErrores.costo_dia = 'El costo debe ser mayor a 0';
     }
 
     return nuevosErrores;
@@ -165,16 +157,16 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       setErrores(nuevosErrores);
       console.log('❌ Errores de validación:', nuevosErrores);
 
-      const camposBasicos = ['nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email', 'costo_dia'];
-      const camposAdicionales = ['fecha_nacimiento', 'domicilio', 'ciudad', 'estado', 'codigo_postal', 'contacto_emergencia', 'telefono_emergencia'];
+      const camposPersonales = ['nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email', 'fecha_nacimiento', 'ciudad', 'estado', 'institucion_seguro', 'contacto_emergencia', 'telefono_emergencia'];
+      const camposProfesionales = ['costo_dia', 'idiomas', 'experiencia_anos', 'certificacion_oficial', 'zona_servicio'];
 
-      const erroresEnBasicos = Object.keys(nuevosErrores).some(key => camposBasicos.includes(key));
-      const erroresEnAdicionales = Object.keys(nuevosErrores).some(key => camposAdicionales.includes(key));
+      const erroresEnPersonales = Object.keys(nuevosErrores).some(key => camposPersonales.includes(key));
+      const erroresEnProfesionales = Object.keys(nuevosErrores).some(key => camposProfesionales.includes(key));
 
-      if (erroresEnBasicos) {
-        setSeccionActiva('basicos');
-      } else if (erroresEnAdicionales) {
-        setSeccionActiva('adicionales');
+      if (erroresEnPersonales) {
+        setSeccionActiva('personales');
+      } else if (erroresEnProfesionales) {
+        setSeccionActiva('profesionales');
       }
 
       setTimeout(() => {
@@ -197,50 +189,43 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
         nombre: formData.nombre,
         apellido_paterno: formData.apellido_paterno,
         apellido_materno: formData.apellido_materno,
+        fecha_nacimiento: formData.fecha_nacimiento,
         telefono: formData.telefono,
         email: formData.email,
-        costo_dia: parseFloat(formData.costo_dia),
-        fecha_nacimiento: formData.fecha_nacimiento,
-        rfc: formData.rfc,
-        curp: formData.curp,
-        nss: formData.nss,
-        domicilio: formData.domicilio,
         ciudad: formData.ciudad,
         estado: formData.estado,
-        codigo_postal: formData.codigo_postal,
-        tipo_sangre: formData.tipo_sangre,
+        nss: formData.nss,
+        institucion_seguro: formData.institucion_seguro,
         contacto_emergencia: formData.contacto_emergencia,
         telefono_emergencia: formData.telefono_emergencia,
+        costo_dia: parseFloat(formData.costo_dia),
         idiomas: formData.idiomas,
         experiencia_anos: formData.experiencia_anos ? parseInt(formData.experiencia_anos) : null,
         especialidades: formData.especialidades,
-        comentarios: formData.comentarios,
+        certificacion_oficial: formData.certificacion_oficial,
+        zona_servicio: formData.zona_servicio,
+        estado_operativo: formData.estado_operativo,
         documentos: {
           foto_guia: formData.foto_guia,
           foto_ine: formData.foto_ine,
+          foto_certificaciones: formData.foto_certificaciones,
           foto_licencia: formData.foto_licencia,
-          foto_comprobante_domicilio: formData.foto_comprobante_domicilio,
-          foto_certificaciones: formData.foto_certificaciones
+          foto_comprobante_domicilio: formData.foto_comprobante_domicilio
         }
       };
 
       console.log('📦 Datos a guardar:', guiaData);
 
-      // Guardar el nombre completo del guía antes de cerrar
       const nombreCompleto = `${formData.nombre} ${formData.apellido_paterno} ${formData.apellido_materno}`;
 
-      // Llamar a la función onGuardar del padre
       await onGuardar(guiaData);
 
       console.log('✅ Guía guardado, cerrando modal primero...');
 
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
       console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
@@ -274,7 +259,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
     } catch (error) {
       console.error('❌ Error al guardar:', error);
 
-      // Si hay error, también cerrar el modal primero
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -306,7 +290,7 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
     return <span className="modal-guia-error-mensaje">{error}</span>;
   };
 
-  const renderSeccionBasicos = () => (
+  const renderSeccionPersonales = () => (
     <div className="modal-guia-form-grid">
       <div className="modal-guia-form-group">
         <label htmlFor="nombre">
@@ -357,6 +341,21 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       </div>
 
       <div className="modal-guia-form-group">
+        <label htmlFor="fecha_nacimiento">
+          Fecha de Nacimiento <span className="modal-guia-required">*</span>
+        </label>
+        <input
+          type="date"
+          id="fecha_nacimiento"
+          name="fecha_nacimiento"
+          value={formData.fecha_nacimiento}
+          onChange={handleChange}
+          className={errores.fecha_nacimiento ? 'modal-guia-input-error' : ''}
+        />
+        <MensajeError nombreCampo="fecha_nacimiento" />
+      </div>
+
+      <div className="modal-guia-form-group">
         <label htmlFor="telefono">
           Teléfono <span className="modal-guia-required">*</span>
         </label>
@@ -387,97 +386,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
           placeholder="guia@ejemplo.com"
         />
         <MensajeError nombreCampo="email" />
-      </div>
-
-      <div className="modal-guia-form-group">
-        <label htmlFor="costo_dia">
-          Costo por Día (MXN) <span className="modal-guia-required">*</span>
-        </label>
-        <input
-          type="number"
-          step="0.01"
-          id="costo_dia"
-          name="costo_dia"
-          value={formData.costo_dia}
-          onChange={handleChange}
-          className={errores.costo_dia ? 'modal-guia-input-error' : ''}
-          placeholder="800.00"
-        />
-        <MensajeError nombreCampo="costo_dia" />
-      </div>
-    </div>
-  );
-
-  const renderSeccionAdicionales = () => (
-    <div className="modal-guia-form-grid">
-      <div className="modal-guia-form-group">
-        <label htmlFor="fecha_nacimiento">
-          Fecha de Nacimiento <span className="modal-guia-required">*</span>
-        </label>
-        <input
-          type="date"
-          id="fecha_nacimiento"
-          name="fecha_nacimiento"
-          value={formData.fecha_nacimiento}
-          onChange={handleChange}
-          className={errores.fecha_nacimiento ? 'modal-guia-input-error' : ''}
-        />
-        <MensajeError nombreCampo="fecha_nacimiento" />
-      </div>
-
-      <div className="modal-guia-form-group">
-        <label htmlFor="rfc">RFC</label>
-        <input
-          type="text"
-          id="rfc"
-          name="rfc"
-          value={formData.rfc}
-          onChange={handleChange}
-          placeholder="LOPC850101ABC"
-          maxLength="13"
-        />
-      </div>
-
-      <div className="modal-guia-form-group">
-        <label htmlFor="curp">CURP</label>
-        <input
-          type="text"
-          id="curp"
-          name="curp"
-          value={formData.curp}
-          onChange={handleChange}
-          placeholder="LOPC850101HOCSRR01"
-          maxLength="18"
-        />
-      </div>
-
-      <div className="modal-guia-form-group">
-        <label htmlFor="nss">NSS</label>
-        <input
-          type="text"
-          id="nss"
-          name="nss"
-          value={formData.nss}
-          onChange={handleChange}
-          placeholder="12345678901"
-          maxLength="11"
-        />
-      </div>
-
-      <div className="modal-guia-form-group modal-guia-form-group-full">
-        <label htmlFor="domicilio">
-          Domicilio <span className="modal-guia-required">*</span>
-        </label>
-        <input
-          type="text"
-          id="domicilio"
-          name="domicilio"
-          value={formData.domicilio}
-          onChange={handleChange}
-          className={errores.domicilio ? 'modal-guia-input-error' : ''}
-          placeholder="Calle, Número, Colonia"
-        />
-        <MensajeError nombreCampo="domicilio" />
       </div>
 
       <div className="modal-guia-form-group">
@@ -513,40 +421,35 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       </div>
 
       <div className="modal-guia-form-group">
-        <label htmlFor="codigo_postal">
-          Código Postal <span className="modal-guia-required">*</span>
-        </label>
+        <label htmlFor="nss">NSS o No. Seguro Médico</label>
         <input
           type="text"
-          id="codigo_postal"
-          name="codigo_postal"
-          value={formData.codigo_postal}
+          id="nss"
+          name="nss"
+          value={formData.nss}
           onChange={handleChange}
-          className={errores.codigo_postal ? 'modal-guia-input-error' : ''}
-          placeholder="68000"
-          maxLength="5"
+          placeholder="12345678901"
+          maxLength="11"
         />
-        <MensajeError nombreCampo="codigo_postal" />
       </div>
 
       <div className="modal-guia-form-group">
-        <label htmlFor="tipo_sangre">Tipo de Sangre</label>
+        <label htmlFor="institucion_seguro">
+          Institución de Seguro <span className="modal-guia-required">*</span>
+        </label>
         <select
-          id="tipo_sangre"
-          name="tipo_sangre"
-          value={formData.tipo_sangre}
+          id="institucion_seguro"
+          name="institucion_seguro"
+          value={formData.institucion_seguro}
           onChange={handleChange}
+          className={errores.institucion_seguro ? 'modal-guia-input-error' : ''}
         >
           <option value="">Seleccionar</option>
-          <option value="A+">A+</option>
-          <option value="A-">A-</option>
-          <option value="B+">B+</option>
-          <option value="B-">B-</option>
-          <option value="AB+">AB+</option>
-          <option value="AB-">AB-</option>
-          <option value="O+">O+</option>
-          <option value="O-">O-</option>
+          <option value="IMSS">IMSS</option>
+          <option value="Privado">Seguro Privado</option>
+          <option value="Otro">Otro</option>
         </select>
+        <MensajeError nombreCampo="institucion_seguro" />
       </div>
 
       <div className="modal-guia-form-group">
@@ -581,17 +484,26 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
         />
         <MensajeError nombreCampo="telefono_emergencia" />
       </div>
+    </div>
+  );
 
+  const renderSeccionProfesionales = () => (
+    <div className="modal-guia-form-grid">
       <div className="modal-guia-form-group">
-        <label htmlFor="idiomas">Idiomas</label>
+        <label htmlFor="costo_dia">
+          Costo por Día (MXN) <span className="modal-guia-required">*</span>
+        </label>
         <input
-          type="text"
-          id="idiomas"
-          name="idiomas"
-          value={formData.idiomas}
+          type="number"
+          step="0.01"
+          id="costo_dia"
+          name="costo_dia"
+          value={formData.costo_dia}
           onChange={handleChange}
-          placeholder="Español, Inglés, Francés"
+          className={errores.costo_dia ? 'modal-guia-input-error' : ''}
+          placeholder="800.00"
         />
+        <MensajeError nombreCampo="costo_dia" />
       </div>
 
       <div className="modal-guia-form-group">
@@ -607,6 +519,57 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
         />
       </div>
 
+      <div className="modal-guia-form-group">
+        <label htmlFor="certificacion_oficial">Certificación Oficial</label>
+        <input
+          type="text"
+          id="certificacion_oficial"
+          name="certificacion_oficial"
+          value={formData.certificacion_oficial}
+          onChange={handleChange}
+          placeholder="Ej: SECTUR-OAX-2024-001"
+        />
+      </div>
+
+      <div className="modal-guia-form-group">
+        <label htmlFor="estado_operativo">
+          Estado Operativo <span className="modal-guia-required">*</span>
+        </label>
+        <select
+          id="estado_operativo"
+          name="estado_operativo"
+          value={formData.estado_operativo}
+          onChange={handleChange}
+        >
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
+
+      <div className="modal-guia-form-group modal-guia-form-group-full">
+        <label htmlFor="idiomas">Idiomas</label>
+        <input
+          type="text"
+          id="idiomas"
+          name="idiomas"
+          value={formData.idiomas}
+          onChange={handleChange}
+          placeholder="Español, Inglés, Francés"
+        />
+      </div>
+
+      <div className="modal-guia-form-group modal-guia-form-group-full">
+        <label htmlFor="zona_servicio">Zona de Servicio</label>
+        <input
+          type="text"
+          id="zona_servicio"
+          name="zona_servicio"
+          value={formData.zona_servicio}
+          onChange={handleChange}
+          placeholder="Ej: Oaxaca Centro, Monte Albán, Mitla"
+        />
+      </div>
+
       <div className="modal-guia-form-group modal-guia-form-group-full">
         <label htmlFor="especialidades">Especialidades</label>
         <textarea
@@ -615,18 +578,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
           value={formData.especialidades}
           onChange={handleChange}
           placeholder="Turismo cultural, ecoturismo, tours históricos..."
-          rows="2"
-        />
-      </div>
-
-      <div className="modal-guia-form-group modal-guia-form-group-full">
-        <label htmlFor="comentarios">Comentarios</label>
-        <textarea
-          id="comentarios"
-          name="comentarios"
-          value={formData.comentarios}
-          onChange={handleChange}
-          placeholder="Información adicional sobre el guía..."
           rows="3"
         />
       </div>
@@ -654,7 +605,7 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
 
       <div className="modal-guia-form-group-file">
         <label htmlFor="foto_ine">
-          <FileText size={20} />
+          <Image size={20} />
           INE / Identificación
         </label>
         <input
@@ -670,9 +621,26 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       </div>
 
       <div className="modal-guia-form-group-file">
+        <label htmlFor="foto_certificaciones">
+          <Image size={20} />
+          Certificaciones
+        </label>
+        <input
+          type="file"
+          id="foto_certificaciones"
+          name="foto_certificaciones"
+          onChange={handleFileChange}
+          accept="image/*,application/pdf"
+        />
+        {formData.foto_certificaciones && (
+          <span className="modal-guia-file-name">{formData.foto_certificaciones.name}</span>
+        )}
+      </div>
+
+      <div className="modal-guia-form-group-file">
         <label htmlFor="foto_licencia">
-          <FileText size={20} />
-          Licencia de Conducir
+          <Image size={20} />
+          Licencia de Conducir (Opcional)
         </label>
         <input
           type="file"
@@ -688,8 +656,8 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
 
       <div className="modal-guia-form-group-file">
         <label htmlFor="foto_comprobante_domicilio">
-          <FileText size={20} />
-          Comprobante de Domicilio
+          <Image size={20} />
+          Comprobante de Domicilio (Opcional)
         </label>
         <input
           type="file"
@@ -700,23 +668,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
         />
         {formData.foto_comprobante_domicilio && (
           <span className="modal-guia-file-name">{formData.foto_comprobante_domicilio.name}</span>
-        )}
-      </div>
-
-      <div className="modal-guia-form-group-file">
-        <label htmlFor="foto_certificaciones">
-          <FileText size={20} />
-          Certificaciones
-        </label>
-        <input
-          type="file"
-          id="foto_certificaciones"
-          name="foto_certificaciones"
-          onChange={handleFileChange}
-          accept="image/*,application/pdf"
-        />
-        {formData.foto_certificaciones && (
-          <span className="modal-guia-file-name">{formData.foto_certificaciones.name}</span>
         )}
       </div>
     </div>
@@ -736,20 +687,20 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
         {/* Tabs de Navegación */}
         <div className="modal-guia-tabs">
           <button
-            className={`modal-guia-tab-button ${seccionActiva === 'basicos' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('basicos')}
+            className={`modal-guia-tab-button ${seccionActiva === 'personales' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('personales')}
             type="button"
           >
             <User size={18} />
-            Datos Básicos
+            Datos Personales
           </button>
           <button
-            className={`modal-guia-tab-button ${seccionActiva === 'adicionales' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('adicionales')}
+            className={`modal-guia-tab-button ${seccionActiva === 'profesionales' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('profesionales')}
             type="button"
           >
-            <FileText size={18} />
-            Información Adicional
+            <Briefcase size={18} />
+            Info Profesional
           </button>
           <button
             className={`modal-guia-tab-button ${seccionActiva === 'documentos' ? 'active' : ''}`}
@@ -757,14 +708,14 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
             type="button"
           >
             <Image size={18} />
-            Documentos
+            Documentación
           </button>
         </div>
 
         {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="modal-guia-form">
-          {seccionActiva === 'basicos' && renderSeccionBasicos()}
-          {seccionActiva === 'adicionales' && renderSeccionAdicionales()}
+          {seccionActiva === 'personales' && renderSeccionPersonales()}
+          {seccionActiva === 'profesionales' && renderSeccionProfesionales()}
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 

@@ -1,45 +1,43 @@
 import { useState, useEffect, useCallback } from 'react';
-import { X, Save, User, FileText } from 'lucide-react';
+import { X, Save, User, Briefcase, Image } from 'lucide-react';
 import './ModalEditarGuia.css';
 import Swal from 'sweetalert2';
 
 const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Campos básicos
+    // 🧾 Datos Personales
     nombre: '',
-    apellidoPaterno: '',
-    apellidoMaterno: '',
+    apellido_paterno: '',
+    apellido_materno: '',
+    fecha_nacimiento: '',
     telefono: '',
     email: '',
-    costoDia: '',
-
-    // Campos adicionales
-    fechaNacimiento: '',
-    rfc: '',
-    curp: '',
-    nss: '',
-    domicilio: '',
     ciudad: '',
     estado: '',
-    codigoPostal: '',
-    tipoSangre: '',
-    contactoEmergencia: '',
-    telefonoEmergencia: '',
+    nss: '',
+    institucion_seguro: '',
+    contacto_emergencia: '',
+    telefono_emergencia: '',
+    
+    // 💼 Información Profesional
+    costo_dia: '',
     idiomas: '',
-    experienciaAnos: '',
+    experiencia_anos: '',
     especialidades: '',
-    comentarios: '',
-
-    // Documentos
-    foto: null,
-    ine: null,
-    licencia: null,
-    comprobanteDomicilio: null,
-    certificaciones: null
+    certificacion_oficial: '',
+    zona_servicio: '',
+    estado_operativo: 'activo',
+    
+    // 📄 Documentos
+    foto_guia: null,
+    foto_ine: null,
+    foto_certificaciones: null,
+    foto_licencia: null,
+    foto_comprobante_domicilio: null
   });
 
   const [errores, setErrores] = useState({});
-  const [seccionActiva, setSeccionActiva] = useState('basicos');
+  const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
 
   // Cargar datos del guía cuando se abre el modal
@@ -51,37 +49,35 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         : guia.idiomas || '';
 
       setFormData({
-        // Campos básicos
+        // 🧾 Datos Personales
         nombre: guia.nombre || '',
-        apellidoPaterno: guia.apellidoPaterno || '',
-        apellidoMaterno: guia.apellidoMaterno || '',
-        telefono: guia.telefonoPersonal || '',
-        email: guia.correoElectronico || '',
-        costoDia: guia.costoDia || '',
-
-        // Campos adicionales
-        fechaNacimiento: guia.fechaNacimiento || '',
-        rfc: guia.rfc || '',
-        curp: guia.curp || '',
-        nss: guia.nss || '',
-        domicilio: guia.domicilio || '',
+        apellido_paterno: guia.apellido_paterno || '',
+        apellido_materno: guia.apellido_materno || '',
+        fecha_nacimiento: guia.fecha_nacimiento || '',
+        telefono: guia.telefono || '',
+        email: guia.email || '',
         ciudad: guia.ciudad || '',
         estado: guia.estado || '',
-        codigoPostal: guia.codigoPostal || '',
-        tipoSangre: guia.tipoSangre || '',
-        contactoEmergencia: guia.contactoEmergencia || '',
-        telefonoEmergencia: guia.telefonoEmergencia || '',
+        nss: guia.nss || '',
+        institucion_seguro: guia.institucion_seguro || '',
+        contacto_emergencia: guia.contacto_emergencia || '',
+        telefono_emergencia: guia.telefono_emergencia || '',
+        
+        // 💼 Info Profesional
+        costo_dia: guia.costo_dia || '',
         idiomas: idiomasString,
-        experienciaAnos: guia.experienciaAnos || '',
+        experiencia_anos: guia.experiencia_anos || '',
         especialidades: guia.especialidades || '',
-        comentarios: guia.comentarios || '',
+        certificacion_oficial: guia.certificacion_oficial || '',
+        zona_servicio: guia.zona_servicio || '',
+        estado_operativo: guia.estado_operativo || 'activo',
 
-        // Documentos
-        foto: guia.foto || guia.documentos?.foto_guia || null,
-        ine: guia.ine || guia.documentos?.foto_ine || null,
-        licencia: guia.documentos?.foto_licencia || null,
-        comprobanteDomicilio: guia.documentos?.foto_comprobante_domicilio || null,
-        certificaciones: guia.certificado || guia.documentos?.foto_certificaciones || null
+        // 📄 Documentos
+        foto_guia: guia.documentos?.foto_guia || null,
+        foto_ine: guia.documentos?.foto_ine || null,
+        foto_certificaciones: guia.documentos?.foto_certificaciones || null,
+        foto_licencia: guia.documentos?.foto_licencia || null,
+        foto_comprobante_domicilio: guia.documentos?.foto_comprobante_domicilio || null
       });
     }
   }, [guia]);
@@ -123,17 +119,17 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones campos básicos (obligatorios)
+    // 🧾 Datos Personales (obligatorios)
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
 
-    if (!formData.apellidoPaterno.trim()) {
-      nuevosErrores.apellidoPaterno = 'El apellido paterno es requerido';
+    if (!formData.apellido_paterno.trim()) {
+      nuevosErrores.apellido_paterno = 'Apellido requerido';
     }
 
-    if (!formData.apellidoMaterno.trim()) {
-      nuevosErrores.apellidoMaterno = 'El apellido materno es requerido';
+    if (!formData.apellido_materno.trim()) {
+      nuevosErrores.apellido_materno = 'Apellido requerido';
     }
 
     // Validar teléfono (10 dígitos)
@@ -148,16 +144,11 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       nuevosErrores.email = 'Email inválido';
     }
 
-    if (!formData.costoDia || parseFloat(formData.costoDia) <= 0) {
-      nuevosErrores.costoDia = 'El costo debe ser mayor a 0';
-    }
-
-    // Validaciones campos adicionales (obligatorios)
-    if (!formData.fechaNacimiento) {
-      nuevosErrores.fechaNacimiento = 'La fecha es requerida';
+    if (!formData.fecha_nacimiento) {
+      nuevosErrores.fecha_nacimiento = 'La fecha es requerida';
     } else {
       // Validar que sea mayor de 18 años
-      const fechaNac = new Date(formData.fechaNacimiento);
+      const fechaNac = new Date(formData.fecha_nacimiento);
       const hoy = new Date();
       let edad = hoy.getFullYear() - fechaNac.getFullYear();
       const mes = hoy.getMonth() - fechaNac.getMonth();
@@ -165,12 +156,8 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         edad--;
       }
       if (edad < 18) {
-        nuevosErrores.fechaNacimiento = 'Debe ser mayor de 18 años';
+        nuevosErrores.fecha_nacimiento = 'Debe ser mayor de 18 años';
       }
-    }
-
-    if (!formData.domicilio.trim()) {
-      nuevosErrores.domicilio = 'El domicilio es requerido';
     }
 
     if (!formData.ciudad.trim()) {
@@ -181,18 +168,21 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       nuevosErrores.estado = 'El estado es requerido';
     }
 
-    // Validar código postal (5 dígitos)
-    const cpRegex = /^\d{5}$/;
-    if (!formData.codigoPostal || !cpRegex.test(formData.codigoPostal)) {
-      nuevosErrores.codigoPostal = 'Debe tener 5 dígitos';
+    if (!formData.institucion_seguro) {
+      nuevosErrores.institucion_seguro = 'Seleccione una institución';
     }
 
-    if (!formData.contactoEmergencia.trim()) {
-      nuevosErrores.contactoEmergencia = 'Contacto requerido';
+    if (!formData.contacto_emergencia.trim()) {
+      nuevosErrores.contacto_emergencia = 'Contacto requerido';
     }
 
-    if (!formData.telefonoEmergencia || !telefonoRegex.test(formData.telefonoEmergencia)) {
-      nuevosErrores.telefonoEmergencia = 'Debe tener 10 dígitos';
+    if (!formData.telefono_emergencia || !telefonoRegex.test(formData.telefono_emergencia)) {
+      nuevosErrores.telefono_emergencia = 'Debe tener 10 dígitos';
+    }
+
+    // 💼 Información Profesional (obligatorios)
+    if (!formData.costo_dia || parseFloat(formData.costo_dia) <= 0) {
+      nuevosErrores.costo_dia = 'El costo debe ser mayor a 0';
     }
 
     return nuevosErrores;
@@ -201,25 +191,26 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
+    console.log('📋 Iniciando validación...');
+
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
+      console.log('❌ Errores de validación:', nuevosErrores);
 
-      // Determinar qué sección tiene errores
-      const camposBasicos = ['nombre', 'apellidoPaterno', 'apellidoMaterno', 'telefono', 'email', 'costoDia'];
-      const camposAdicionales = ['fechaNacimiento', 'rfc', 'curp', 'nss', 'domicilio', 'ciudad', 'estado', 'codigoPostal', 'tipoSangre', 'contactoEmergencia', 'telefonoEmergencia', 'idiomas', 'experienciaAnos', 'especialidades'];
+      const camposPersonales = ['nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email', 'fecha_nacimiento', 'ciudad', 'estado', 'institucion_seguro', 'contacto_emergencia', 'telefono_emergencia'];
+      const camposProfesionales = ['costo_dia', 'idiomas', 'experiencia_anos', 'certificacion_oficial', 'zona_servicio'];
 
-      const erroresEnBasicos = Object.keys(nuevosErrores).some(key => camposBasicos.includes(key));
-      const erroresEnAdicionales = Object.keys(nuevosErrores).some(key => camposAdicionales.includes(key));
+      const erroresEnPersonales = Object.keys(nuevosErrores).some(key => camposPersonales.includes(key));
+      const erroresEnProfesionales = Object.keys(nuevosErrores).some(key => camposProfesionales.includes(key));
 
-      if (erroresEnBasicos) {
-        setSeccionActiva('basicos');
-      } else if (erroresEnAdicionales) {
-        setSeccionActiva('adicionales');
+      if (erroresEnPersonales) {
+        setSeccionActiva('personales');
+      } else if (erroresEnProfesionales) {
+        setSeccionActiva('profesionales');
       }
 
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.querySelector(`[name="${primerCampoConError}"]`);
@@ -232,92 +223,67 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       return;
     }
 
+    console.log('✅ Validación exitosa, actualizando guía...');
     setGuardando(true);
 
     try {
-      // Convertir idiomas de string a array
-      const idiomasArray = formData.idiomas
-        .split(',')
-        .map(idioma => idioma.trim())
-        .filter(idioma => idioma.length > 0);
-
-      // Calcular edad desde fecha de nacimiento
-      const calcularEdad = (fechaNacimiento) => {
-        const hoy = new Date();
-        const nacimiento = new Date(fechaNacimiento);
-        let edad = hoy.getFullYear() - nacimiento.getFullYear();
-        const mes = hoy.getMonth() - nacimiento.getMonth();
-        if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
-          edad--;
-        }
-        return edad;
-      };
-
       const guiaData = {
         ...guia,
-        // Campos básicos
+        // 🧾 Datos Personales
         nombre: formData.nombre,
-        apellidoPaterno: formData.apellidoPaterno,
-        apellidoMaterno: formData.apellidoMaterno,
-        telefonoPersonal: formData.telefono,
-        correoElectronico: formData.email,
-        costoDia: parseFloat(formData.costoDia),
-
-        // Campos adicionales
-        fechaNacimiento: formData.fechaNacimiento,
-        edad: calcularEdad(formData.fechaNacimiento),
-        rfc: formData.rfc,
-        curp: formData.curp,
-        nss: formData.nss,
-        domicilio: formData.domicilio,
+        apellido_paterno: formData.apellido_paterno,
+        apellido_materno: formData.apellido_materno,
+        fecha_nacimiento: formData.fecha_nacimiento,
+        telefono: formData.telefono,
+        email: formData.email,
         ciudad: formData.ciudad,
         estado: formData.estado,
-        codigoPostal: formData.codigoPostal,
-        tipoSangre: formData.tipoSangre,
-        contactoEmergencia: formData.contactoEmergencia,
-        telefonoEmergencia: formData.telefonoEmergencia,
-        idiomas: idiomasArray,
-        experienciaAnos: formData.experienciaAnos ? parseInt(formData.experienciaAnos) : null,
+        nss: formData.nss,
+        institucion_seguro: formData.institucion_seguro,
+        contacto_emergencia: formData.contacto_emergencia,
+        telefono_emergencia: formData.telefono_emergencia,
+        
+        // 💼 Info Profesional
+        costo_dia: parseFloat(formData.costo_dia),
+        idiomas: formData.idiomas,
+        experiencia_anos: formData.experiencia_anos ? parseInt(formData.experiencia_anos) : null,
         especialidades: formData.especialidades,
-        comentarios: formData.comentarios,
-
-        // Documentos
-        foto: formData.foto,
-        ine: formData.ine,
+        certificacion_oficial: formData.certificacion_oficial,
+        zona_servicio: formData.zona_servicio,
+        estado_operativo: formData.estado_operativo,
+        
+        // 📄 Documentos
         documentos: {
-          foto_guia: formData.foto,
-          foto_ine: formData.ine,
-          foto_licencia: formData.licencia,
-          foto_comprobante_domicilio: formData.comprobanteDomicilio,
-          foto_certificaciones: formData.certificaciones
+          foto_guia: formData.foto_guia,
+          foto_ine: formData.foto_ine,
+          foto_certificaciones: formData.foto_certificaciones,
+          foto_licencia: formData.foto_licencia,
+          foto_comprobante_domicilio: formData.foto_comprobante_domicilio
         }
       };
 
-      // Guardar el nombre completo antes de cerrar
-      const nombreCompleto = `${formData.nombre} ${formData.apellidoPaterno}`;
+      console.log('📦 Datos a actualizar:', guiaData);
 
-      // Llamar a la función onGuardar del padre
+      const nombreCompleto = `${formData.nombre} ${formData.apellido_paterno} ${formData.apellido_materno}`;
+
       await onGuardar(guiaData);
 
       console.log('✅ Guía actualizado, cerrando modal primero...');
 
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
       console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Guía Actualizado!',
         html: `
-      <div style="font-size: 1.1rem; margin-top: 15px;">
-        <strong style="color: #2563eb; font-size: 1.3rem;">${nombreCompleto}</strong>
-        <p style="margin-top: 10px; color: #64748b;">ha sido actualizado correctamente</p>
-      </div>
-    `,
+        <div style="font-size: 1.1rem; margin-top: 15px;">
+          <strong style="color: #2563eb; font-size: 1.3rem;">${nombreCompleto}</strong>
+          <p style="margin-top: 10px; color: #64748b;">ha sido actualizado correctamente</p>
+        </div>
+      `,
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#2563eb',
         timer: 3000,
@@ -341,7 +307,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
 
-      // Si hay error, también cerrar el modal primero
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -350,11 +315,11 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         icon: 'error',
         title: 'Error al Actualizar',
         html: `
-      <div style="font-size: 1rem; margin-top: 10px; color: #64748b;">
-        <p>Hubo un problema al actualizar el guía.</p>
-        <p style="margin-top: 8px;">Por favor, inténtalo de nuevo.</p>
-      </div>
-    `,
+        <div style="font-size: 1rem; margin-top: 10px; color: #64748b;">
+          <p>Hubo un problema al actualizar el guía.</p>
+          <p style="margin-top: 8px;">Por favor, inténtalo de nuevo.</p>
+        </div>
+      `,
         confirmButtonText: 'Entendido',
         confirmButtonColor: '#ef4444',
         timer: 4000,
@@ -369,10 +334,11 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   const MensajeError = ({ nombreCampo }) => {
     const error = errores[nombreCampo];
     if (!error) return null;
+
     return <span className="meg-error-mensaje">{error}</span>;
   };
 
-  const renderSeccionBasicos = () => (
+  const renderSeccionPersonales = () => (
     <div className="meg-form-grid">
       <div className="meg-form-group">
         <label htmlFor="nombre">
@@ -385,41 +351,56 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
           value={formData.nombre}
           onChange={handleChange}
           className={errores.nombre ? 'input-error' : ''}
-          placeholder="Ej: María"
+          placeholder="Ej: Juan"
         />
         <MensajeError nombreCampo="nombre" />
       </div>
 
       <div className="meg-form-group">
-        <label htmlFor="apellidoPaterno">
+        <label htmlFor="apellido_paterno">
           Apellido Paterno <span className="meg-required">*</span>
         </label>
         <input
           type="text"
-          id="apellidoPaterno"
-          name="apellidoPaterno"
-          value={formData.apellidoPaterno}
+          id="apellido_paterno"
+          name="apellido_paterno"
+          value={formData.apellido_paterno}
           onChange={handleChange}
-          className={errores.apellidoPaterno ? 'input-error' : ''}
-          placeholder="Ej: Fernández"
+          className={errores.apellido_paterno ? 'input-error' : ''}
+          placeholder="Ej: López"
         />
-        <MensajeError nombreCampo="apellidoPaterno" />
+        <MensajeError nombreCampo="apellido_paterno" />
       </div>
 
       <div className="meg-form-group">
-        <label htmlFor="apellidoMaterno">
+        <label htmlFor="apellido_materno">
           Apellido Materno <span className="meg-required">*</span>
         </label>
         <input
           type="text"
-          id="apellidoMaterno"
-          name="apellidoMaterno"
-          value={formData.apellidoMaterno}
+          id="apellido_materno"
+          name="apellido_materno"
+          value={formData.apellido_materno}
           onChange={handleChange}
-          className={errores.apellidoMaterno ? 'input-error' : ''}
-          placeholder="Ej: Rodríguez"
+          className={errores.apellido_materno ? 'input-error' : ''}
+          placeholder="Ej: García"
         />
-        <MensajeError nombreCampo="apellidoMaterno" />
+        <MensajeError nombreCampo="apellido_materno" />
+      </div>
+
+      <div className="meg-form-group">
+        <label htmlFor="fecha_nacimiento">
+          Fecha de Nacimiento <span className="meg-required">*</span>
+        </label>
+        <input
+          type="date"
+          id="fecha_nacimiento"
+          name="fecha_nacimiento"
+          value={formData.fecha_nacimiento}
+          onChange={handleChange}
+          className={errores.fecha_nacimiento ? 'input-error' : ''}
+        />
+        <MensajeError nombreCampo="fecha_nacimiento" />
       </div>
 
       <div className="meg-form-group">
@@ -456,97 +437,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       </div>
 
       <div className="meg-form-group">
-        <label htmlFor="costoDia">
-          Costo por Día (MXN) <span className="meg-required">*</span>
-        </label>
-        <input
-          type="number"
-          step="0.01"
-          id="costoDia"
-          name="costoDia"
-          value={formData.costoDia}
-          onChange={handleChange}
-          className={errores.costoDia ? 'input-error' : ''}
-          placeholder="800.00"
-        />
-        <MensajeError nombreCampo="costoDia" />
-      </div>
-    </div>
-  );
-
-  const renderSeccionAdicionales = () => (
-    <div className="meg-form-grid">
-      <div className="meg-form-group">
-        <label htmlFor="fechaNacimiento">
-          Fecha de Nacimiento <span className="meg-required">*</span>
-        </label>
-        <input
-          type="date"
-          id="fechaNacimiento"
-          name="fechaNacimiento"
-          value={formData.fechaNacimiento}
-          onChange={handleChange}
-          className={errores.fechaNacimiento ? 'input-error' : ''}
-        />
-        <MensajeError nombreCampo="fechaNacimiento" />
-      </div>
-
-      <div className="meg-form-group">
-        <label htmlFor="rfc">RFC</label>
-        <input
-          type="text"
-          id="rfc"
-          name="rfc"
-          value={formData.rfc}
-          onChange={handleChange}
-          placeholder="LOPC850101ABC"
-          maxLength="13"
-        />
-      </div>
-
-      <div className="meg-form-group">
-        <label htmlFor="curp">CURP</label>
-        <input
-          type="text"
-          id="curp"
-          name="curp"
-          value={formData.curp}
-          onChange={handleChange}
-          placeholder="LOPC850101HOCSRR01"
-          maxLength="18"
-        />
-      </div>
-
-      <div className="meg-form-group">
-        <label htmlFor="nss">NSS</label>
-        <input
-          type="text"
-          id="nss"
-          name="nss"
-          value={formData.nss}
-          onChange={handleChange}
-          placeholder="12345678901"
-          maxLength="11"
-        />
-      </div>
-
-      <div className="meg-form-group form-group-full">
-        <label htmlFor="domicilio">
-          Domicilio <span className="meg-required">*</span>
-        </label>
-        <input
-          type="text"
-          id="domicilio"
-          name="domicilio"
-          value={formData.domicilio}
-          onChange={handleChange}
-          className={errores.domicilio ? 'input-error' : ''}
-          placeholder="Calle, Número, Colonia"
-        />
-        <MensajeError nombreCampo="domicilio" />
-      </div>
-
-      <div className="meg-form-group">
         <label htmlFor="ciudad">
           Ciudad <span className="meg-required">*</span>
         </label>
@@ -579,76 +469,132 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       </div>
 
       <div className="meg-form-group">
-        <label htmlFor="codigoPostal">
-          Código Postal <span className="meg-required">*</span>
-        </label>
+        <label htmlFor="nss">NSS o No. Seguro Médico</label>
         <input
           type="text"
-          id="codigoPostal"
-          name="codigoPostal"
-          value={formData.codigoPostal}
+          id="nss"
+          name="nss"
+          value={formData.nss}
           onChange={handleChange}
-          className={errores.codigoPostal ? 'input-error' : ''}
-          placeholder="68000"
-          maxLength="5"
+          placeholder="12345678901"
+          maxLength="11"
         />
-        <MensajeError nombreCampo="codigoPostal" />
       </div>
 
       <div className="meg-form-group">
-        <label htmlFor="tipoSangre">Tipo de Sangre</label>
+        <label htmlFor="institucion_seguro">
+          Institución de Seguro <span className="meg-required">*</span>
+        </label>
         <select
-          id="tipoSangre"
-          name="tipoSangre"
-          value={formData.tipoSangre}
+          id="institucion_seguro"
+          name="institucion_seguro"
+          value={formData.institucion_seguro}
           onChange={handleChange}
+          className={errores.institucion_seguro ? 'input-error' : ''}
         >
           <option value="">Seleccionar</option>
-          <option value="A+">A+</option>
-          <option value="A-">A-</option>
-          <option value="B+">B+</option>
-          <option value="B-">B-</option>
-          <option value="AB+">AB+</option>
-          <option value="AB-">AB-</option>
-          <option value="O+">O+</option>
-          <option value="O-">O-</option>
+          <option value="IMSS">IMSS</option>
+          <option value="Privado">Seguro Privado</option>
+          <option value="Otro">Otro</option>
         </select>
+        <MensajeError nombreCampo="institucion_seguro" />
       </div>
 
       <div className="meg-form-group">
-        <label htmlFor="contactoEmergencia">
+        <label htmlFor="contacto_emergencia">
           Contacto de Emergencia <span className="meg-required">*</span>
         </label>
         <input
           type="text"
-          id="contactoEmergencia"
-          name="contactoEmergencia"
-          value={formData.contactoEmergencia}
+          id="contacto_emergencia"
+          name="contacto_emergencia"
+          value={formData.contacto_emergencia}
           onChange={handleChange}
-          className={errores.contactoEmergencia ? 'input-error' : ''}
+          className={errores.contacto_emergencia ? 'input-error' : ''}
           placeholder="Nombre completo"
         />
-        <MensajeError nombreCampo="contactoEmergencia" />
+        <MensajeError nombreCampo="contacto_emergencia" />
       </div>
 
       <div className="meg-form-group">
-        <label htmlFor="telefonoEmergencia">
+        <label htmlFor="telefono_emergencia">
           Teléfono de Emergencia <span className="meg-required">*</span>
         </label>
         <input
           type="tel"
-          id="telefonoEmergencia"
-          name="telefonoEmergencia"
-          value={formData.telefonoEmergencia}
+          id="telefono_emergencia"
+          name="telefono_emergencia"
+          value={formData.telefono_emergencia}
           onChange={handleChange}
-          className={errores.telefonoEmergencia ? 'input-error' : ''}
+          className={errores.telefono_emergencia ? 'input-error' : ''}
           placeholder="9511234567"
           maxLength="10"
         />
-        <MensajeError nombreCampo="telefonoEmergencia" />
+        <MensajeError nombreCampo="telefono_emergencia" />
+      </div>
+    </div>
+  );
+
+  const renderSeccionProfesionales = () => (
+    <div className="meg-form-grid">
+      <div className="meg-form-group">
+        <label htmlFor="costo_dia">
+          Costo por Día (MXN) <span className="meg-required">*</span>
+        </label>
+        <input
+          type="number"
+          step="0.01"
+          id="costo_dia"
+          name="costo_dia"
+          value={formData.costo_dia}
+          onChange={handleChange}
+          className={errores.costo_dia ? 'input-error' : ''}
+          placeholder="800.00"
+        />
+        <MensajeError nombreCampo="costo_dia" />
       </div>
 
       <div className="meg-form-group">
+        <label htmlFor="experiencia_anos">Años de Experiencia</label>
+        <input
+          type="number"
+          id="experiencia_anos"
+          name="experiencia_anos"
+          value={formData.experiencia_anos}
+          onChange={handleChange}
+          placeholder="5"
+          min="0"
+        />
+      </div>
+
+      <div className="meg-form-group">
+        <label htmlFor="certificacion_oficial">Certificación Oficial</label>
+        <input
+          type="text"
+          id="certificacion_oficial"
+          name="certificacion_oficial"
+          value={formData.certificacion_oficial}
+          onChange={handleChange}
+          placeholder="Ej: SECTUR-OAX-2024-001"
+        />
+      </div>
+
+      <div className="meg-form-group">
+        <label htmlFor="estado_operativo">
+          Estado Operativo <span className="meg-required">*</span>
+        </label>
+        <select
+          id="estado_operativo"
+          name="estado_operativo"
+          value={formData.estado_operativo}
+          onChange={handleChange}
+        >
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
+
+      <div className="meg-form-group meg-form-group-full">
         <label htmlFor="idiomas">Idiomas</label>
         <input
           type="text"
@@ -660,20 +606,19 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         />
       </div>
 
-      <div className="meg-form-group">
-        <label htmlFor="experienciaAnos">Años de Experiencia</label>
+      <div className="meg-form-group meg-form-group-full">
+        <label htmlFor="zona_servicio">Zona de Servicio</label>
         <input
-          type="number"
-          id="experienciaAnos"
-          name="experienciaAnos"
-          value={formData.experienciaAnos}
+          type="text"
+          id="zona_servicio"
+          name="zona_servicio"
+          value={formData.zona_servicio}
           onChange={handleChange}
-          placeholder="5"
-          min="0"
+          placeholder="Ej: Oaxaca Centro, Monte Albán, Mitla"
         />
       </div>
 
-      <div className="meg-form-group form-group-full">
+      <div className="meg-form-group meg-form-group-full">
         <label htmlFor="especialidades">Especialidades</label>
         <textarea
           id="especialidades"
@@ -681,18 +626,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
           value={formData.especialidades}
           onChange={handleChange}
           placeholder="Turismo cultural, ecoturismo, tours históricos..."
-          rows="2"
-        />
-      </div>
-
-      <div className="meg-form-group form-group-full">
-        <label htmlFor="comentarios">Comentarios</label>
-        <textarea
-          id="comentarios"
-          name="comentarios"
-          value={formData.comentarios}
-          onChange={handleChange}
-          placeholder="Información adicional sobre el guía..."
           rows="3"
         />
       </div>
@@ -702,106 +635,106 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   const renderSeccionDocumentos = () => (
     <div className="meg-form-grid-documentos">
       <div className="meg-form-group-file">
-        <label htmlFor="foto">
-          <User size={20} />
+        <label htmlFor="foto_guia">
+          <Image size={20} />
           Foto del Guía
         </label>
         <input
           type="file"
-          id="foto"
-          name="foto"
+          id="foto_guia"
+          name="foto_guia"
           onChange={handleFileChange}
           accept="image/*"
         />
-        {formData.foto && (
+        {formData.foto_guia && (
           <span className="meg-file-name">
-            {typeof formData.foto === 'string'
+            {typeof formData.foto_guia === 'string'
               ? 'Archivo existente'
-              : formData.foto.name}
+              : formData.foto_guia.name}
           </span>
         )}
       </div>
 
       <div className="meg-form-group-file">
-        <label htmlFor="ine">
-          <FileText size={20} />
+        <label htmlFor="foto_ine">
+          <Image size={20} />
           INE / Identificación
         </label>
         <input
           type="file"
-          id="ine"
-          name="ine"
+          id="foto_ine"
+          name="foto_ine"
           onChange={handleFileChange}
           accept="image/*,application/pdf"
         />
-        {formData.ine && (
+        {formData.foto_ine && (
           <span className="meg-file-name">
-            {typeof formData.ine === 'string'
+            {typeof formData.foto_ine === 'string'
               ? 'Archivo existente'
-              : formData.ine.name}
+              : formData.foto_ine.name}
           </span>
         )}
       </div>
 
       <div className="meg-form-group-file">
-        <label htmlFor="licencia">
-          <FileText size={20} />
-          Licencia de Conducir
-        </label>
-        <input
-          type="file"
-          id="licencia"
-          name="licencia"
-          onChange={handleFileChange}
-          accept="image/*,application/pdf"
-        />
-        {formData.licencia && (
-          <span className="meg-file-name">
-            {typeof formData.licencia === 'string'
-              ? 'Archivo existente'
-              : formData.licencia.name}
-          </span>
-        )}
-      </div>
-
-      <div className="meg-form-group-file">
-        <label htmlFor="comprobanteDomicilio">
-          <FileText size={20} />
-          Comprobante de Domicilio
-        </label>
-        <input
-          type="file"
-          id="comprobanteDomicilio"
-          name="comprobanteDomicilio"
-          onChange={handleFileChange}
-          accept="image/*,application/pdf"
-        />
-        {formData.comprobanteDomicilio && (
-          <span className="meg-file-name">
-            {typeof formData.comprobanteDomicilio === 'string'
-              ? 'Archivo existente'
-              : formData.comprobanteDomicilio.name}
-          </span>
-        )}
-      </div>
-
-      <div className="meg-form-group-file">
-        <label htmlFor="certificaciones">
-          <FileText size={20} />
+        <label htmlFor="foto_certificaciones">
+          <Image size={20} />
           Certificaciones
         </label>
         <input
           type="file"
-          id="certificaciones"
-          name="certificaciones"
+          id="foto_certificaciones"
+          name="foto_certificaciones"
           onChange={handleFileChange}
           accept="image/*,application/pdf"
         />
-        {formData.certificaciones && (
+        {formData.foto_certificaciones && (
           <span className="meg-file-name">
-            {typeof formData.certificaciones === 'string'
+            {typeof formData.foto_certificaciones === 'string'
               ? 'Archivo existente'
-              : formData.certificaciones.name}
+              : formData.foto_certificaciones.name}
+          </span>
+        )}
+      </div>
+
+      <div className="meg-form-group-file">
+        <label htmlFor="foto_licencia">
+          <Image size={20} />
+          Licencia de Conducir (Opcional)
+        </label>
+        <input
+          type="file"
+          id="foto_licencia"
+          name="foto_licencia"
+          onChange={handleFileChange}
+          accept="image/*,application/pdf"
+        />
+        {formData.foto_licencia && (
+          <span className="meg-file-name">
+            {typeof formData.foto_licencia === 'string'
+              ? 'Archivo existente'
+              : formData.foto_licencia.name}
+          </span>
+        )}
+      </div>
+
+      <div className="meg-form-group-file">
+        <label htmlFor="foto_comprobante_domicilio">
+          <Image size={20} />
+          Comprobante de Domicilio (Opcional)
+        </label>
+        <input
+          type="file"
+          id="foto_comprobante_domicilio"
+          name="foto_comprobante_domicilio"
+          onChange={handleFileChange}
+          accept="image/*,application/pdf"
+        />
+        {formData.foto_comprobante_domicilio && (
+          <span className="meg-file-name">
+            {typeof formData.foto_comprobante_domicilio === 'string'
+              ? 'Archivo existente'
+              : formData.foto_comprobante_domicilio.name}
           </span>
         )}
       </div>
@@ -822,35 +755,35 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         {/* Tabs de Navegación */}
         <div className="meg-tabs">
           <button
-            className={`meg-tab-button ${seccionActiva === 'basicos' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('basicos')}
+            className={`meg-tab-button ${seccionActiva === 'personales' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('personales')}
             type="button"
           >
             <User size={18} />
-            Datos Básicos
+            Datos Personales
           </button>
           <button
-            className={`meg-tab-button ${seccionActiva === 'adicionales' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('adicionales')}
+            className={`meg-tab-button ${seccionActiva === 'profesionales' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('profesionales')}
             type="button"
           >
-            <FileText size={18} />
-            Información Adicional
+            <Briefcase size={18} />
+            Info Profesional
           </button>
           <button
             className={`meg-tab-button ${seccionActiva === 'documentos' ? 'active' : ''}`}
             onClick={() => setSeccionActiva('documentos')}
             type="button"
           >
-            <FileText size={18} />
-            Documentos
+            <Image size={18} />
+            Documentación
           </button>
         </div>
 
         {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="meg-form">
-          {seccionActiva === 'basicos' && renderSeccionBasicos()}
-          {seccionActiva === 'adicionales' && renderSeccionAdicionales()}
+          {seccionActiva === 'personales' && renderSeccionPersonales()}
+          {seccionActiva === 'profesionales' && renderSeccionProfesionales()}
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 

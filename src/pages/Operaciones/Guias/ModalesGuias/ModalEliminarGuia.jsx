@@ -8,19 +8,22 @@ import './ModalEliminarGuia.css';
  * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
  */
 export const modalEliminarGuia = async (guia, onConfirmar) => {
-  // Validar datos del guía
-  if (!guia?.nombre || !guia?.apellidoPaterno) {
+  // ✅ Validar datos del guía - USANDO LOS NOMBRES CORRECTOS DE LOS CAMPOS
+  if (!guia || !guia.nombre || (!guia.apellido_paterno && !guia.apellidoPaterno)) {
     await modalError('Información del guía incompleta');
     return false;
   }
 
-  const nombreCompleto = `${guia.nombre} ${guia.apellidoPaterno} ${guia.apellidoMaterno || ''}`.trim();
+  // ✅ Soportar ambos formatos de nombres (con guion bajo y camelCase)
+  const apellidoPaterno = guia.apellido_paterno || guia.apellidoPaterno || '';
+  const apellidoMaterno = guia.apellido_materno || guia.apellidoMaterno || '';
+  const nombreCompleto = `${guia.nombre} ${apellidoPaterno} ${apellidoMaterno}`.trim();
 
   const resultado = await Swal.fire({
     title: '¿Eliminar este guía?',
     html: `
       <div class="eliminar-guia-contenido">
-        <p class="eliminar-guia-texto">¿Estás seguro de eliminar al guía:</p>
+        <p class="eliminar-guia-texto">¿Estás seguro de eliminar al guía turístico:</p>
         <p class="eliminar-guia-guia">${nombreCompleto}</p>
         
         <div class="eliminar-guia-advertencia">
@@ -55,7 +58,8 @@ export const modalEliminarGuia = async (guia, onConfirmar) => {
 
     try {
       if (onConfirmar) {
-        await onConfirmar(guia);
+        // ✅ Pasar el ID del guía, no el objeto completo
+        await onConfirmar(guia.id);
       }
 
       // Delay mínimo para UX
@@ -68,7 +72,7 @@ export const modalEliminarGuia = async (guia, onConfirmar) => {
         title: '¡Eliminado!',
         html: `
           <div class="eliminar-guia-exito-contenido">
-            <p class="eliminar-guia-exito-texto">El guía ha sido eliminado exitosamente</p>
+            <p class="eliminar-guia-exito-texto">El guía turístico ha sido eliminado exitosamente</p>
             <p class="eliminar-guia-exito-detalle">Guía: ${nombreCompleto}</p>
           </div>
         `,

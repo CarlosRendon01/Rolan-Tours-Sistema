@@ -13,92 +13,147 @@ const GuiasPrincipal = () => {
         {
             id: 1,
             nombre: 'María',
-            apellidoPaterno: 'González',
-            apellidoMaterno: 'Ramírez',
-            edad: 32,
-            genero: 'Femenino',
-            idiomas: ['Español', 'Inglés', 'Francés'],
-            telefonoPersonal: '5551234567',
-            telefonoFamiliar: '5559876543',
-            telefonoEmpresa: '5556547890',
-            correoElectronico: 'maria.gonzalez@email.com',
-            foto: null,
-            ine: null,
-            certificado: null,
-            activo: true,
-            comentarios: 'Guía certificada con 8 años de experiencia'
+            apellido_paterno: 'González',
+            apellido_materno: 'Ramírez',
+            fecha_nacimiento: '1992-03-15',
+            telefono: '9511234567',
+            email: 'maria.gonzalez@email.com',
+            ciudad: 'Oaxaca de Juárez',
+            estado: 'Oaxaca',
+            nss: '12345678901',
+            institucion_seguro: 'IMSS',
+            contacto_emergencia: 'Pedro González',
+            telefono_emergencia: '9519876543',
+            costo_dia: 850.00,
+            idiomas: 'Español, Inglés, Francés',
+            experiencia_anos: 8,
+            especialidades: 'Guía certificada con experiencia en turismo cultural y arqueológico',
+            certificacion_oficial: 'SECTUR-OAX-2016-045',
+            zona_servicio: 'Oaxaca Centro, Monte Albán, Mitla',
+            estado_operativo: 'activo',
+            documentos: {
+                foto_guia: null,
+                foto_ine: null,
+                foto_certificaciones: null,
+                foto_licencia: null,
+                foto_comprobante_domicilio: null
+            }
         },
         {
             id: 2,
             nombre: 'Carlos',
-            apellidoPaterno: 'Hernández',
-            apellidoMaterno: 'López',
-            edad: 28,
-            genero: 'Masculino',
-            idiomas: ['Español', 'Inglés', 'Alemán'],
-            telefonoPersonal: '5552345678',
-            telefonoFamiliar: '5558765432',
-            telefonoEmpresa: '5557654321',
-            correoElectronico: 'carlos.hernandez@email.com',
-            foto: null,
-            ine: null,
-            certificado: null,
-            activo: true,
-            comentarios: 'Especialista en turismo cultural'
+            apellido_paterno: 'Hernández',
+            apellido_materno: 'López',
+            fecha_nacimiento: '1996-07-22',
+            telefono: '9512345678',
+            email: 'carlos.hernandez@email.com',
+            ciudad: 'Oaxaca de Juárez',
+            estado: 'Oaxaca',
+            nss: '23456789012',
+            institucion_seguro: 'Privado',
+            contacto_emergencia: 'Ana López',
+            telefono_emergencia: '9518765432',
+            costo_dia: 750.00,
+            idiomas: 'Español, Inglés, Alemán',
+            experiencia_anos: 5,
+            especialidades: 'Especialista en turismo cultural y gastronomía oaxaqueña',
+            certificacion_oficial: 'SECTUR-OAX-2019-087',
+            zona_servicio: 'Centro Histórico, Valles Centrales',
+            estado_operativo: 'activo',
+            documentos: {
+                foto_guia: null,
+                foto_ine: null,
+                foto_certificaciones: null,
+                foto_licencia: null,
+                foto_comprobante_domicilio: null
+            }
         },
         {
             id: 3,
             nombre: 'Ana',
-            apellidoPaterno: 'Martínez',
-            apellidoMaterno: 'Pérez',
-            edad: 35,
-            genero: 'Femenino',
-            idiomas: ['Español', 'Inglés', 'Italiano', 'Portugués'],
-            telefonoPersonal: '5553456789',
-            telefonoFamiliar: '5557654321',
-            telefonoEmpresa: '5558765432',
-            correoElectronico: 'ana.martinez@email.com',
-            foto: null,
-            ine: null,
-            certificado: null,
-            activo: true,
-            comentarios: 'Guía políglota con experiencia en turismo europeo'
+            apellido_paterno: 'Martínez',
+            apellido_materno: 'Pérez',
+            fecha_nacimiento: '1989-11-08',
+            telefono: '9513456789',
+            email: 'ana.martinez@email.com',
+            ciudad: 'Oaxaca de Juárez',
+            estado: 'Oaxaca',
+            nss: '34567890123',
+            institucion_seguro: 'IMSS',
+            contacto_emergencia: 'Roberto Pérez',
+            telefono_emergencia: '9517654321',
+            costo_dia: 900.00,
+            idiomas: 'Español, Inglés, Italiano, Portugués',
+            experiencia_anos: 10,
+            especialidades: 'Guía políglota con experiencia en turismo europeo y ecoturismo',
+            certificacion_oficial: 'SECTUR-OAX-2014-023',
+            zona_servicio: 'Costa Oaxaqueña, Sierra Norte, Valles',
+            estado_operativo: 'activo',
+            documentos: {
+                foto_guia: null,
+                foto_ine: null,
+                foto_certificaciones: null,
+                foto_licencia: null,
+                foto_comprobante_domicilio: null
+            }
         },
         {
             id: 4,
             nombre: 'Roberto',
-            apellidoPaterno: 'Sánchez',
-            apellidoMaterno: 'García',
-            edad: 41,
-            genero: 'Masculino',
-            idiomas: ['Español', 'Inglés'],
-            telefonoPersonal: '5554567890',
-            telefonoFamiliar: '5556543210',
-            telefonoEmpresa: '5559876543',
-            correoElectronico: 'roberto.sanchez@email.com',
-            foto: null,
-            ine: null,
-            certificado: null,
-            activo: true,
-            comentarios: 'Experto en historia y arqueología mexicana'
+            apellido_paterno: 'Sánchez',
+            apellido_materno: 'García',
+            fecha_nacimiento: '1983-05-12',
+            telefono: '9514567890',
+            email: 'roberto.sanchez@email.com',
+            ciudad: 'Oaxaca de Juárez',
+            estado: 'Oaxaca',
+            nss: '45678901234',
+            institucion_seguro: 'IMSS',
+            contacto_emergencia: 'Laura García',
+            telefono_emergencia: '9516543210',
+            costo_dia: 950.00,
+            idiomas: 'Español, Inglés',
+            experiencia_anos: 15,
+            especialidades: 'Experto en historia y arqueología mexicana, especializado en cultura zapoteca',
+            certificacion_oficial: 'SECTUR-OAX-2009-012',
+            zona_servicio: 'Monte Albán, Mitla, Yagul, Hierve el Agua',
+            estado_operativo: 'activo',
+            documentos: {
+                foto_guia: null,
+                foto_ine: null,
+                foto_certificaciones: null,
+                foto_licencia: null,
+                foto_comprobante_domicilio: null
+            }
         },
         {
             id: 5,
             nombre: 'Laura',
-            apellidoPaterno: 'Torres',
-            apellidoMaterno: 'Ramírez',
-            edad: 26,
-            genero: 'Femenino',
-            idiomas: ['Español', 'Inglés', 'Japonés'],
-            telefonoPersonal: '5555678901',
-            telefonoFamiliar: '5555432109',
-            telefonoEmpresa: '5558901234',
-            correoElectronico: 'laura.torres@email.com',
-            foto: null,
-            ine: null,
-            certificado: null,
-            activo: true,
-            comentarios: 'Especialista en turismo asiático'
+            apellido_paterno: 'Torres',
+            apellido_materno: 'Ramírez',
+            fecha_nacimiento: '1998-09-25',
+            telefono: '9515678901',
+            email: 'laura.torres@email.com',
+            ciudad: 'Oaxaca de Juárez',
+            estado: 'Oaxaca',
+            nss: '56789012345',
+            institucion_seguro: 'Privado',
+            contacto_emergencia: 'Carmen Ramírez',
+            telefono_emergencia: '9515432109',
+            costo_dia: 700.00,
+            idiomas: 'Español, Inglés, Japonés',
+            experiencia_anos: 3,
+            especialidades: 'Especialista en turismo asiático y artesanías tradicionales oaxaqueñas',
+            certificacion_oficial: 'SECTUR-OAX-2021-156',
+            zona_servicio: 'Centro Histórico, Mercados, Teotitlán del Valle',
+            estado_operativo: 'activo',
+            documentos: {
+                foto_guia: null,
+                foto_ine: null,
+                foto_certificaciones: null,
+                foto_licencia: null,
+                foto_comprobante_domicilio: null
+            }
         }
     ]);
 
@@ -145,58 +200,11 @@ const GuiasPrincipal = () => {
 
     // Función para agregar guía
     const agregarGuia = (nuevoGuia) => {
-        console.log('📥 Datos recibidos del modal:', nuevoGuia);
-
-        // Calcular la edad a partir de la fecha de nacimiento
-        const calcularEdad = (fechaNacimiento) => {
-            const hoy = new Date();
-            const nacimiento = new Date(fechaNacimiento);
-            let edad = hoy.getFullYear() - nacimiento.getFullYear();
-            const mes = hoy.getMonth() - nacimiento.getMonth();
-            if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
-                edad--;
-            }
-            return edad;
-        };
-
-        // Convertir idiomas de string a array
-        const idiomasArray = nuevoGuia.idiomas
-            ? nuevoGuia.idiomas.split(',').map(idioma => idioma.trim())
-            : [];
+        console.log('🔥 Datos recibidos del modal:', nuevoGuia);
 
         const guiaConId = {
             id: guias.length > 0 ? Math.max(...guias.map(g => g.id)) + 1 : 1,
-            nombre: nuevoGuia.nombre,
-            apellidoPaterno: nuevoGuia.apellido_paterno,
-            apellidoMaterno: nuevoGuia.apellido_materno,
-            edad: calcularEdad(nuevoGuia.fecha_nacimiento),
-            genero: 'No especificado', // Puedes agregar este campo al modal si lo necesitas
-            idiomas: idiomasArray,
-            telefonoPersonal: nuevoGuia.telefono,
-            telefonoFamiliar: nuevoGuia.telefono_emergencia,
-            telefonoEmpresa: '', // Puedes agregar este campo si lo necesitas
-            correoElectronico: nuevoGuia.email,
-            foto: nuevoGuia.documentos.foto_guia,
-            ine: nuevoGuia.documentos.foto_ine,
-            certificado: nuevoGuia.documentos.foto_certificaciones,
-            activo: true,
-            comentarios: nuevoGuia.comentarios || '',
-            // Campos adicionales del nuevo modal
-            fechaNacimiento: nuevoGuia.fecha_nacimiento,
-            rfc: nuevoGuia.rfc,
-            curp: nuevoGuia.curp,
-            nss: nuevoGuia.nss,
-            domicilio: nuevoGuia.domicilio,
-            ciudad: nuevoGuia.ciudad,
-            estado: nuevoGuia.estado,
-            codigoPostal: nuevoGuia.codigo_postal,
-            tipoSangre: nuevoGuia.tipo_sangre,
-            contactoEmergencia: nuevoGuia.contacto_emergencia,
-            telefonoEmergencia: nuevoGuia.telefono_emergencia,
-            experienciaAnos: nuevoGuia.experiencia_anos,
-            especialidades: nuevoGuia.especialidades,
-            costoDia: nuevoGuia.costo_dia,
-            documentos: nuevoGuia.documentos
+            ...nuevoGuia
         };
 
         console.log('✅ Guía formateado para agregar:', guiaConId);
@@ -238,7 +246,6 @@ const GuiasPrincipal = () => {
                     />
                 )}
 
-
                 {/* Modal EDITAR */}
                 {modalEditarAbierto && guiaSeleccionado && (
                     <ModalEditarGuia
@@ -247,6 +254,7 @@ const GuiasPrincipal = () => {
                         onCerrar={cerrarModales}
                     />
                 )}
+
                 {/* Modal AGREGAR */}
                 {modalAgregarAbierto && (
                     <ModalAgregarGuia
