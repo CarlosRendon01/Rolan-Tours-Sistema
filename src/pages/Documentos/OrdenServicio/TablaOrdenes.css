@@ -1,0 +1,1166 @@
+/* TablaOrdenes.css - Versión Independiente */
+.Ordenes-contenedor-principal {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  margin: 1rem;
+}
+
+/* Header estilo primera imagen */
+.Ordenes-encabezado {
+  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.Ordenes-seccion-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.Ordenes-lineas-decorativas {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.Ordenes-linea {
+  width: 4px;
+  height: 8px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.Ordenes-linea.Ordenes-roja {
+  background: #6b86ff;
+  box-shadow: 0 0 10px rgba(107, 134, 255, 0.5);
+}
+
+.Ordenes-linea.Ordenes-azul {
+  background: #4ecdc4;
+  box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+}
+
+.Ordenes-linea.Ordenes-verde {
+  background: #45b7d1;
+  box-shadow: 0 0 10px rgba(69, 183, 209, 0.5);
+}
+
+.Ordenes-linea.Ordenes-amarilla {
+  background: #f9ca24;
+  box-shadow: 0 0 10px rgba(249, 202, 36, 0.5);
+}
+
+.Ordenes-titulo {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estadísticas estilo primera imagen */
+.Ordenes-contenedor-estadisticas {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.Ordenes-estadistica {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.Ordenes-icono-estadistica-circular {
+  width: 60px;
+  height: 60px;
+  background: #00bcd4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+}
+
+.Ordenes-icono-estadistica-cuadrado {
+  width: 60px;
+  height: 60px;
+  background: #ffeb3b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  box-shadow: 0 4px 15px rgba(255, 235, 59, 0.3);
+}
+
+.Ordenes-info-estadistica {
+  display: flex;
+  flex-direction: column;
+}
+
+.Ordenes-label-estadistica {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Header simple para tabla estilo segunda imagen */
+.Ordenes-header-tabla {
+  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 2rem;
+  border-radius: 8px 8px 0 0;
+}
+
+.Ordenes-icono-tabla {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.Ordenes-titulo-tabla {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+/* Controles para Ordenes */
+.Ordenes-controles {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.Ordenes-control-registros {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.Ordenes-selector-registros {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.95rem;
+  min-width: 70px;
+}
+
+.Ordenes-controles-derecha {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.Ordenes-control-busqueda {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.Ordenes-entrada-busqueda {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.Ordenes-entrada-buscar {
+  padding: 0.625rem 2.5rem 0.625rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  width: 200px;
+  transition: border-color 0.2s;
+}
+
+.Ordenes-entrada-buscar:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+.Ordenes-icono-buscar {
+  position: absolute;
+  right: 0.75rem;
+  color: #6c757d;
+  pointer-events: none;
+}
+
+/* Contenedor de tabla con bordes redondeados */
+.Ordenes-contenedor-tabla {
+  overflow-x: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  margin: 0 2rem;
+  border-top: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* Tabla con border-collapse separate para permitir bordes redondeados */
+.Ordenes-tabla {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.85rem;
+  min-width: 800px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Header de tabla con bordes redondeados prominentes */
+.Ordenes-fila-encabezado {
+  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
+  color: white;
+}
+
+.Ordenes-fila-encabezado th {
+  padding: 1rem 0.75rem;
+  text-align: left;
+  font-weight: 700;
+  color: black;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: white;
+  border-right: 1px solid #dee2e6;
+}
+
+/* Anchos específicos para cada columna de Ordenes */
+.Ordenes-fila-encabezado th:nth-child(1) {
+  width: 80px;
+}
+
+/* ID */
+.Ordenes-fila-encabezado th:nth-child(2) {
+  width: 200px;
+}
+
+/* NOMBRE */
+.Ordenes-fila-encabezado th:nth-child(3) {
+  width: 220px;
+}
+
+/* EMAIL */
+.Ordenes-fila-encabezado th:nth-child(4) {
+  width: 250px;
+}
+
+/* TELÉFONO */
+.Ordenes-fila-encabezado th:nth-child(5) {
+  width: 150px;
+}
+
+/* NÚMERO LEAD */
+.Ordenes-fila-encabezado th:nth-child(6) {
+  width: 150px;
+}
+
+/* CANAL CONTACTO */
+.Ordenes-fila-encabezado th:nth-child(7) {
+  width: 150px;
+}
+
+/* FECHA REGISTRO */
+.Ordenes-fila-encabezado th:nth-child(8) {
+  width: 150px;
+}
+
+/* ACCIONES */
+
+.Ordenes-fila-orden {
+  border-bottom: 1px solid #dee2e6;
+  transition: all 0.2s ease;
+}
+
+.Ordenes-fila-orden:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.Ordenes-fila-orden:nth-child(even) {
+  background-color: #fdfdfd;
+}
+
+.Ordenes-fila-orden:nth-child(even):hover {
+  background-color: #f8f9fa;
+}
+
+.Ordenes-fila-orden td {
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+  font-size: 0.85rem;
+}
+
+/* Columnas específicas para Ordenes */
+.Ordenes-fila-orden td:nth-child(1) {
+  font-weight: 600;
+  color: #495057;
+}
+
+.Ordenes-fila-orden td:nth-child(2) {
+  font-weight: 500;
+  color: #495057;
+}
+
+.Ordenes-fila-orden td:nth-child(3) {
+  color: #dc3545;
+}
+
+.Ordenes-fila-orden td:nth-child(4) {
+  font-weight: 500;
+  color: #495057;
+}
+
+.Ordenes-fila-orden td:nth-child(5) {
+  background: linear-gradient(45deg, #ffeaea, #fff5f5);
+  color: #dc3545;
+  font-weight: 500;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Estilos para mejorar la visualización de datos */
+.Ordenes-columna-id .Ordenes-badge-id {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  color: #1565c0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.Ordenes-info-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.Ordenes-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2e7d32;
+}
+
+.Ordenes-datos-usuario {
+  display: flex;
+  flex-direction: column;
+}
+
+.Ordenes-nombre-principal {
+  font-weight: 600;
+  color: #2c3e50;
+  line-height: 1.2;
+}
+
+.Ordenes-subtexto {
+  font-size: 0.75rem;
+  color: #27ae60;
+  font-weight: 500;
+}
+
+.Ordenes-enlace-email {
+  color: #dc3545;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.Ordenes-enlace-email:hover {
+  color: #b71c1c;
+  text-decoration: underline;
+}
+
+.Ordenes-telefono {
+  font-family: monospace;
+  background: #f8f9fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: #495057;
+}
+
+.Ordenes-badge-lead {
+  background: linear-gradient(45deg, #ffeaea, #fff5f5);
+  color: #dc3545;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  border: 1px solid #f5c6cb;
+}
+
+.Ordenes-badge-canal {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.Ordenes-canal-whatsapp {
+  background: #e8f5e8;
+  color: #25d366;
+  border: 1px solid #c3e6cb;
+}
+
+.Ordenes-canal-facebook {
+  background: #e3f2fd;
+  color: #1877f2;
+  border: 1px solid #b3d4fc;
+}
+
+.Ordenes-canal-instagram {
+  background: #fce4ec;
+  color: #e4405f;
+  border: 1px solid #f8bbd9;
+}
+
+.Ordenes-canal-sitio-web {
+  background: #fff3e0;
+  color: #ff9800;
+  border: 1px solid #ffcc02;
+}
+
+.Ordenes-fecha {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+/* Columna de acciones para Ordenes */
+.Ordenes-columna-acciones {
+  position: relative;
+  width: 150px;
+}
+
+.Ordenes-botones-accion {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.Ordenes-boton-accion {
+  padding: 0.375rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.Ordenes-boton-accion::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+.Ordenes-boton-accion:hover::before {
+  width: 100px;
+  height: 100px;
+}
+
+.Ordenes-boton-accion.Ordenes-ver {
+  background: linear-gradient(45deg, #ffc107, #ffb700);
+  color: white;
+}
+
+.Ordenes-boton-accion.Ordenes-ver:hover {
+  background: linear-gradient(45deg, #ffc107, #ffb700);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+.Ordenes-boton-accion.Ordenes-editar {
+  background: linear-gradient(45deg, #17a2b8, #17a2b8);
+  color: #ffffff;
+}
+
+.Ordenes-boton-accion.Ordenes-editar:hover {
+  background: linear-gradient(45deg, #138496, #1aa179);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+}
+
+.Ordenes-boton-accion.Ordenes-eliminar {
+  background: linear-gradient(45deg, #dc3545, #c82333);
+  color: white;
+}
+
+.Ordenes-boton-accion.Ordenes-eliminar:hover {
+  background: linear-gradient(45deg, #c82333, #b21e2f);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* Footer para Ordenes */
+.Ordenes-pie-tabla {
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #dee2e6;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.Ordenes-informacion-registros {
+  color: #6c757d;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.Ordenes-controles-paginacion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.Ordenes-boton-paginacion {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #dee2e6;
+  background: linear-gradient(135deg, white, #f8f9fa);
+  color: #495057;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.Ordenes-boton-paginacion:hover:not(:disabled) {
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.Ordenes-boton-paginacion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.Ordenes-numeros-paginacion {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 0.5rem;
+}
+
+.Ordenes-numero-pagina {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #dee2e6;
+  background: linear-gradient(135deg, white, #f8f9fa);
+  color: #495057;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  min-width: 40px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.Ordenes-numero-pagina:hover {
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.Ordenes-numero-pagina.Ordenes-activo {
+  background: linear-gradient(135deg, #dc3545, #b71c1c);
+  border-color: #dc3545;
+  color: white;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Animaciones de carga para Ordenes */
+@keyframes Ordenes-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.Ordenes-fila-orden {
+  animation: Ordenes-fadeIn 0.3s ease;
+}
+
+/* Líneas decorativas animadas para Ordenes */
+@keyframes Ordenes-pulse {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(1.2);
+  }
+}
+
+.Ordenes-lineas-decorativas:hover .Ordenes-linea {
+  animation: Ordenes-pulse 0.6s ease-in-out infinite;
+}
+
+.Ordenes-lineas-decorativas:hover .Ordenes-linea:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.Ordenes-lineas-decorativas:hover .Ordenes-linea:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.Ordenes-lineas-decorativas:hover .Ordenes-linea:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.Ordenes-lineas-decorativas:hover .Ordenes-linea:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+/* Media Queries - Responsivo para Ordenes */
+
+/* Tablets */
+@media (max-width: 992px) {
+  .Ordenes-encabezado {
+    padding: 1rem 1.5rem;
+  }
+
+  .Ordenes-titulo {
+    font-size: 1.5rem;
+  }
+
+  .Ordenes-contenedor-estadisticas {
+    gap: 0.5rem;
+  }
+
+  .Ordenes-icono-estadistica-circular,
+  .Ordenes-icono-estadistica-cuadrado {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+
+  .Ordenes-controles {
+    padding: 1rem 1.5rem;
+  }
+
+  .Ordenes-contenedor-tabla {
+    margin: 0 1.5rem;
+  }
+
+  .Ordenes-pie-tabla {
+    padding: 1rem 1.5rem;
+  }
+
+  .Ordenes-controles-derecha {
+    flex-wrap: wrap;
+  }
+
+  .Ordenes-entrada-buscar {
+    width: 150px;
+  }
+}
+
+/* Móviles grandes */
+@media (max-width: 768px) {
+  .Ordenes-contenedor-principal {
+    margin: 0.5rem;
+  }
+
+  .Ordenes-encabezado {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .Ordenes-contenedor-estadisticas {
+    width: 100%;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .Ordenes-controles {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .Ordenes-controles-derecha {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .Ordenes-control-busqueda {
+    justify-content: space-between;
+  }
+
+  .Ordenes-entrada-buscar {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .Ordenes-contenedor-tabla {
+    margin: 0 1rem;
+  }
+
+  /* Tabla responsiva para móviles de Ordenes */
+  .Ordenes-tabla {
+    display: block;
+    overflow: hidden;
+    min-width: auto;
+  }
+
+  .Ordenes-tabla thead {
+    display: none;
+  }
+
+  .Ordenes-tabla tbody {
+    display: block;
+  }
+
+  .Ordenes-fila-orden {
+    display: block;
+    border: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .Ordenes-fila-orden td {
+    display: block;
+    padding: 0.75rem;
+    border-bottom: 1px solid #f8f9fa;
+    position: relative;
+    padding-left: 40%;
+  }
+
+  .Ordenes-fila-orden td:last-child {
+    border-bottom: none;
+  }
+
+  /* Mostrar todos los campos en móvil para Ordenes */
+  .Ordenes-fila-orden td:nth-child(1):before {
+    content: "ID:";
+  }
+
+  .Ordenes-fila-orden td:nth-child(2):before {
+    content: "FECHA SALIDA:";
+  }
+
+  .Ordenes-fila-orden td:nth-child(3):before {
+    content: "FECHA REGRESO:";
+  }
+
+  .Ordenes-fila-orden td:nth-child(4):before {
+    content: "HORA SALIDA:";
+  }
+
+  .Ordenes-fila-orden td:nth-child(5):before {
+    content: "HORA REGRESO:";
+  }
+
+  .Ordenes-fila-orden td:nth-child(6):before {
+    content: "PASAJEROS:";
+  }
+
+  .Ordenes-fila-orden td:nth-child(7):before {
+    content: "ORIGEN SERVICIO:";
+  }
+
+  .Ordenes-fila-orden td:nth-child(8):before {
+    content: "DESTINO SERVICIO:";
+  }
+
+  .Ordenes-fila-orden td:nth-child(9):before {
+    content: "ACCIONES:";
+  }
+
+  .Ordenes-fila-orden td:before {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    width: calc(40% - 1.5rem);
+  }
+
+  /* Resetear estilos específicos de columnas en móvil para Ordenes */
+  .Ordenes-fila-orden td:nth-child(5) {
+    background: transparent;
+    color: inherit;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .Ordenes-columna-acciones {
+    width: auto;
+  }
+
+  .Ordenes-botones-accion {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+
+  .Ordenes-pie-tabla {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .Ordenes-controles-paginacion {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .Ordenes-numeros-paginacion {
+    order: -1;
+    margin: 0 0 0.5rem 0;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .Ordenes-lineas-decorativas {
+    display: none;
+  }
+
+  .Ordenes-titulo {
+    font-size: 1.25rem;
+  }
+
+  .Ordenes-icono-estadistica-circular,
+  .Ordenes-icono-estadistica-cuadrado {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .Ordenes-control-busqueda label {
+    display: none;
+  }
+
+  .Ordenes-fila-orden td {
+    padding-left: 35%;
+  }
+
+  .Ordenes-fila-orden td:before {
+    width: calc(35% - 1.5rem);
+    font-size: 0.7rem;
+  }
+
+  .Ordenes-numeros-paginacion .Ordenes-numero-pagina:not(.Ordenes-activo) {
+    display: none;
+  }
+}
+
+/* Agregar estos estilos al archivo TablaOrdenes.css */
+
+/* Agregar estos estilos al archivo TablaOrdenes.css */
+
+/* Botón Restaurar para administradores */
+.Ordenes-boton-accion.Ordenes-restaurar {
+  background: linear-gradient(45deg, #28a745, #218838);
+  color: white;
+}
+
+.Ordenes-boton-accion.Ordenes-restaurar:hover {
+  background: linear-gradient(45deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+/* Estilo para filas de Ordenes inactivos */
+.Ordenes-fila-orden.Ordenes-inactivo {
+  background-color: #f8d7da !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:hover {
+  background-color: #f5c6cb !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:nth-child(even) {
+  background-color: #f8d7da !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:nth-child(even):hover {
+  background-color: #f5c6cb !important;
+}
+
+/* Ajuste SOLO para la columna de ACCIONES - permitir más ancho cuando hay 4 botones */
+.Ordenes-columna-acciones {
+  min-width: 180px;
+}
+
+/* Ajustar el ancho del encabezado de ACCIONES */
+.Ordenes-fila-encabezado th:last-child {
+  min-width: 180px;
+}
+
+/* Agregar estos estilos al archivo TablaOrdenes.css */
+
+/* Botón Restaurar para administradores */
+.Ordenes-boton-accion.Ordenes-restaurar {
+  background: linear-gradient(45deg, #28a745, #218838);
+  color: white;
+}
+
+.Ordenes-boton-accion.Ordenes-restaurar:hover {
+  background: linear-gradient(45deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+/* Estilo para filas de Ordenes inactivos */
+.Ordenes-fila-orden.Ordenes-inactivo {
+  background-color: #f8d7da !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:hover {
+  background-color: #f5c6cb !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:nth-child(even) {
+  background-color: #f8d7da !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:nth-child(even):hover {
+  background-color: #f5c6cb !important;
+}
+
+/* Ajuste de ancho mínimo de tabla para que se vean todos los botones */
+.Ordenes-tabla {
+  min-width: 500px;
+  /* Aumentado de 800px */
+}
+
+/* Ajuste de anchos de columnas cuando es administrador */
+.Ordenes-fila-encabezado th:nth-child(1) {
+  width: 70px;
+}
+
+/* ID */
+.Ordenes-fila-encabezado th:nth-child(2) {
+  width: 180px;
+}
+
+/* NOMBRE */
+.Ordenes-fila-encabezado th:nth-child(3) {
+  width: 200px;
+}
+
+/* EMAIL */
+.Ordenes-fila-encabezado th:nth-child(4) {
+  width: 130px;
+}
+
+/* TELÉFONO */
+.Ordenes-fila-encabezado th:nth-child(5) {
+  width: 120px;
+}
+
+/* NÚMERO LEAD */
+.Ordenes-fila-encabezado th:nth-child(6) {
+  width: 130px;
+}
+
+/* CANAL CONTACTO */
+
+.Ordenes-fila-encabezado th:nth-child(8) {
+  width: 130px;
+}
+
+/* FECHA REGISTRO */
+.Ordenes-fila-encabezado th:nth-child(9) {
+  width: 180px;
+}
+
+/* ACCIONES (más ancho para 4 botones) */
+
+/* Columna de acciones más ancha */
+.Ordenes-columna-acciones {
+  width: 180px;
+  min-width: 180px;
+}
+
+/* Agregar estos estilos al archivo TablaOrdenes.css */
+
+/* Botón Restaurar para administradores */
+.Ordenes-boton-accion.Ordenes-restaurar {
+  background: linear-gradient(45deg, #28a745, #218838);
+  color: white;
+}
+
+.Ordenes-boton-accion.Ordenes-restaurar:hover {
+  background: linear-gradient(45deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+/* Estilo para filas de Ordenes inactivos */
+.Ordenes-fila-orden.Ordenes-inactivo {
+  background-color: #f8d7da !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:hover {
+  background-color: #f5c6cb !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:nth-child(even) {
+  background-color: #f8d7da !important;
+}
+
+.Ordenes-fila-orden.Ordenes-inactivo:nth-child(even):hover {
+  background-color: #f5c6cb !important;
+}
+
+/* ========================================
+   ESTILOS PERSONALIZADOS PARA SWEETALERT2
+   Agregar al final de TablaOrdenes.css
+   ======================================== */
+
+/* Popup más ancho para SweetAlert2 */
+.swal-wide {
+  width: 600px !important;
+  max-width: 90% !important;
+}
+
+/* Ajustes para el contenido HTML de SweetAlert2 */
+.swal2-html-container {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Mejorar apariencia de los botones de SweetAlert2 */
+.swal2-confirm {
+  font-weight: 600 !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 6px !important;
+  font-size: 0.95rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.swal2-cancel {
+  font-weight: 600 !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 6px !important;
+  font-size: 0.95rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.swal2-confirm:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.swal2-cancel:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Mejorar la barra de progreso del timer */
+.swal2-timer-progress-bar {
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Animación de entrada mejorada */
+.swal2-show {
+  animation: swal2-show 0.3s !important;
+}
+
+/* Estilo para el título */
+.swal2-title {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  padding: 1rem 1.5rem 0.5rem !important;
+}
+
+/* Estilo para el icono */
+.swal2-icon {
+  margin: 1.5rem auto 1rem !important;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .swal-wide {
+    width: 95% !important;
+  }
+
+  .swal2-title {
+    font-size: 1.4rem !important;
+  }
+
+  .swal2-confirm,
+  .swal2-cancel {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+}

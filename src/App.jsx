@@ -8,6 +8,7 @@ import PrincipalLogin from "./pages/Login/PrincipalLogin.jsx";
 import VehiculosPrincipal from "./pages/Operaciones/Vehiculos/VehiculosPrincipal.jsx";
 import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrincipal.jsx"
 import GuiasPrincipal from './pages/Operaciones/Guias/GuiasPrincipal.jsx';
+import PrincipalOrden from './pages/Documentos/OrdenServicio/PrincipalOrden.jsx'
 
 // Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
@@ -43,29 +44,29 @@ function App() {
           <Route path="/clientes" element={<PrincipalCliente />} />
           <Route path="/cotizaciones" element={<PrincipalCotizacion />} />
           <Route path="/pagos" element={<PrincipalPago />} />
-          
+
           {/* Rutas de Documentos */}
           <Route path="/contratos" element={<PaginaTemporal titulo="Contratos" />} />
-          <Route path="/orden-servicio" element={<PaginaTemporal titulo="Órdenes de Servicio" />} />
+          <Route path="/orden-servicio" element={<PrincipalOrden titulo="Órdenes de Servicio" />} />
           <Route path="/reservas" element={<PaginaTemporal titulo="Reservas" />} />
-          
+
           {/* Rutas de Operaciones */}
-          
-          <Route path="/operadores" element={<OperadoresPrincipal/>} />
+
+          <Route path="/operadores" element={<OperadoresPrincipal />} />
           <Route path="/vehiculos" element={<VehiculosPrincipal />} />
-          <Route path="/guias" element={<GuiasPrincipal/>} />
+          <Route path="/guias" element={<GuiasPrincipal />} />
           <Route path="/proveedores" element={<PaginaTemporal titulo="Proveedores" />} />
           <Route path="/coordinadores" element={<PaginaTemporal titulo="Coordinadores" />} />
-          
+
           {/* Rutas de Servicios */}
           <Route path="/transporte" element={<PaginaTemporal titulo="Transporte" />} />
           <Route path="/restaurantes" element={<PaginaTemporal titulo="Restaurantes" />} />
           <Route path="/tours" element={<PaginaTemporal titulo="Tours" />} />
           <Route path="/hospedaje" element={<PaginaTemporal titulo="Hospedaje" />} />
-          
+
           {/* Rutas de Mantenimiento */}
           <Route path="/mantenimiento-vehiculos" element={<PaginaTemporal titulo="Mantenimiento de Vehículos" />} />
-          
+
           {/* Ruta de Administración */}
           <Route path="/administracion" element={<PaginaTemporal titulo="Administración" />} />
         </Routes>
