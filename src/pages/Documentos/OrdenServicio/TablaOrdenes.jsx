@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw } from 'lucide-react';
+import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw, FileText } from 'lucide-react';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import ModalVerOrden from './Modales/ModalVerOrden';
 import ModalEditarOrden from './Modales/ModalEditarOrden';
 import ModalEliminarOrden from './Modales/ModalEliminarOrden';
@@ -158,14 +159,10 @@ const TablaOrdenes = () => {
     }
   ]);
 
-  // Filtrar Ordenes según rol y búsqueda
   const ordenesFiltrados = datosOrdenes.filter(orden => {
-    // FILTRO POR ROL
     if (!esAdministrador && !orden.activo) {
-      // Los usuarios normales NO ven los inactivos
       return false;
     }
-    // Si es admin, ve TODOS (activos e inactivos juntos)
 
     // FILTRO DE BÚSQUEDA
     const busqueda = terminoBusqueda.toLowerCase();
@@ -215,6 +212,9 @@ const TablaOrdenes = () => {
       case 'editar':
         setOrdenSeleccionado(orden);
         setModalEditarAbierto(true);
+        break;
+      case 'pdf':
+        generarYDescargarPDF(orden);
         break;
       case 'eliminar':
         // Si es admin y el orden está inactivo, mostrar modal de eliminar definitivo
@@ -304,6 +304,47 @@ const TablaOrdenes = () => {
       console.log('Orden eliminada DEFINITIVAMENTE:', orden);
     } catch (error) {
       console.error('Error al eliminar definitivamente orden:', error);
+    }
+  };
+
+  // Función para generar el pdf actualizado 
+  const generarYDescargarPDF = async (orden) => {
+    try {
+
+      const plantillaUrl = '/TRANSPORTE_P1.pdf';
+      const plantillaBytes = await fetch(plantillaUrl).then(res => res.arrayBuffer());
+
+      const pdfDoc = await PDFDocument.load(plantillaBytes);
+      const pages = pdfDoc.getPages();
+      const firstPage = pages[0];
+
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+
+      firstPage.drawText(new Date(orden.fechaSalida).toLocaleDateString('es-MX'), {
+        x: 150,
+        y: 700,
+        size: 12,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
+
+
+      const pdfBytes = await pdfDoc.save();
+
+
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Orden_${orden.id}_${orden.fechaSalida}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+
+      console.log('PDF generado y descargado correctamente');
+    } catch (error) {
+      console.error('Error al generar PDF:', error);
+      alert('Error al generar el PDF. Por favor, intente nuevamente.');
     }
   };
 
@@ -464,6 +505,13 @@ const TablaOrdenes = () => {
                       title="Ver orden"
                     >
                       <Eye size={16} />
+                    </button>
+                    <button
+                      className="Ordenes-boton-accion Ordenes-descargar"
+                      onClick={() => manejarAccion('pdf', orden)}
+                      title="Descargar orden"
+                    >
+                      <FileText size={16} />
                     </button>
                     <button
                       className="Ordenes-boton-accion Ordenes-editar"
