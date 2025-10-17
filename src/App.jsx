@@ -8,8 +8,8 @@ import PrincipalLogin from "./pages/Login/PrincipalLogin.jsx";
 import VehiculosPrincipal from "./pages/Operaciones/Vehiculos/VehiculosPrincipal.jsx";
 import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrincipal.jsx"
 import GuiasPrincipal from './pages/Operaciones/Guias/GuiasPrincipal.jsx';
-import PrincipalOrden from './pages/Documentos/OrdenServicio/PrincipalOrden.jsx'
-
+import PrincipalOrden from './pages/Documentos/OrdenServicio/PrincipalOrden.jsx';
+import PrincipalContrato from "./pages/Documentos/Contratos/PrincipalContrato.jsx";
 // Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
   return (
@@ -46,7 +46,7 @@ function App() {
           <Route path="/pagos" element={<PrincipalPago />} />
 
           {/* Rutas de Documentos */}
-          <Route path="/contratos" element={<PaginaTemporal titulo="Contratos" />} />
+          <Route path="/contratos" element={<PrincipalContrato titulo="Contratos" />} />
           <Route path="/orden-servicio" element={<PrincipalOrden titulo="Órdenes de Servicio" />} />
           <Route path="/reservas" element={<PaginaTemporal titulo="Reservas" />} />
 

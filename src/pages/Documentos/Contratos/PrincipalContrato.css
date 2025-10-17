@@ -1,0 +1,14 @@
+.contenedor-principal-contrato {
+  padding: 1rem;
+  max-width: 100%;
+  margin: 0;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contenedor-principal-contrato {
+    padding: 0.5rem;
+  }
+}
