@@ -10,6 +10,7 @@ import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrinci
 import GuiasPrincipal from './pages/Operaciones/Guias/GuiasPrincipal.jsx';
 import PrincipalOrden from './pages/Documentos/OrdenServicio/PrincipalOrden.jsx';
 import PrincipalContrato from "./pages/Documentos/Contratos/PrincipalContrato.jsx";
+import ReservasPrincipal from "./pages/Documentos/Reservas/ReservasPrincipal.jsx"
 // Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
   return (
@@ -48,7 +49,7 @@ function App() {
           {/* Rutas de Documentos */}
           <Route path="/contratos" element={<PrincipalContrato titulo="Contratos" />} />
           <Route path="/orden-servicio" element={<PrincipalOrden titulo="Órdenes de Servicio" />} />
-          <Route path="/reservas" element={<PaginaTemporal titulo="Reservas" />} />
+          <Route path="/reservas" element={<ReservasPrincipal titulo="Reservas" />} />
 
           {/* Rutas de Operaciones */}
 
