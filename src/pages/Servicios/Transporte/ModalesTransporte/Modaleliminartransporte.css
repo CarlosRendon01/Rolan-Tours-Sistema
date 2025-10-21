@@ -1,83 +1,83 @@
 /* ========================================
-   ESTILOS PARA SWEETALERT2 - MODAL ELIMINAR TOURS
-   Prefijo: eliminar-tour- para evitar conflictos
+   ESTILOS PARA SWEETALERT2 - MODAL ELIMINAR TRANSPORTE
+   Prefijo: eliminar-trans- para evitar conflictos
    ======================================== */
 
 /* Popup principal */
-.eliminar-tour-popup {
+.eliminar-trans-popup {
   border-radius: 12px !important;
   padding: 1.5rem !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
   font-family: inherit !important;
 }
 
-.eliminar-tour-popup-cargando {
+.eliminar-trans-popup-cargando {
   border-radius: 16px !important;
   padding: 2rem !important;
 }
 
 /* Títulos */
-.eliminar-tour-titulo {
+.eliminar-trans-titulo {
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   color: #1f2937 !important;
   margin-bottom: 0.25rem !important;
 }
 
-.eliminar-tour-titulo-exito {
+.eliminar-trans-titulo-exito {
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   color: #059669 !important;
   margin-bottom: 0 !important;
 }
 
-.eliminar-tour-titulo-error {
+.eliminar-trans-titulo-error {
   font-size: 1.5rem !important;
   font-weight: 700 !important;
   color: #dc2626 !important;
   margin-bottom: 0.5rem !important;
 }
 
-.eliminar-tour-titulo-cargando {
+.eliminar-trans-titulo-cargando {
   font-size: 1.25rem !important;
   font-weight: 600 !important;
   color: #4b5563 !important;
 }
 
 /* Contenedor HTML */
-.eliminar-tour-html {
+.eliminar-trans-html {
   margin: 0 !important;
   padding: 0.5rem 0 !important;
 }
 
 /* Contenido principal */
-.eliminar-tour-contenido {
+.eliminar-trans-contenido {
   text-align: center;
 }
 
-.eliminar-tour-texto {
+.eliminar-trans-texto {
   font-size: 0.875rem;
   color: #6b7280;
   margin-bottom: 0.5rem;
   line-height: 1.4;
 }
 
-.eliminar-tour-nombre {
+.eliminar-trans-servicio {
   font-size: 1rem;
   color: #1f2937;
   margin: 0.5rem 0;
   font-weight: 600;
 }
 
-.eliminar-tour-codigo {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-top: 0.25rem;
-  font-style: italic;
+.eliminar-trans-codigo {
+  font-size: 0.8125rem;
+  color: #3b82f6;
+  margin: 0.25rem 0 0.5rem 0;
+  font-weight: 500;
 }
 
 /* Advertencia */
-.eliminar-tour-advertencia {
+.eliminar-trans-advertencia {
   display: flex;
   align-items: flex-start;
   gap: 0.625rem;
@@ -90,7 +90,7 @@
   text-align: left;
 }
 
-.eliminar-tour-advertencia-icono {
+.eliminar-trans-advertencia-icono {
   width: 18px;
   height: 18px;
   color: #b45309;
@@ -98,7 +98,7 @@
   margin-top: 2px;
 }
 
-.eliminar-tour-advertencia p {
+.eliminar-trans-advertencia p {
   font-size: 0.8125rem;
   color: #78350f;
   margin: 0;
@@ -107,47 +107,54 @@
 }
 
 /* Contenido de éxito */
-.eliminar-tour-exito-contenido {
+.eliminar-trans-exito-contenido {
   text-align: center;
 }
 
-.eliminar-tour-exito-texto {
+.eliminar-trans-exito-texto {
   font-size: 1rem;
   color: #059669;
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
 
-.eliminar-tour-exito-detalle {
+.eliminar-trans-exito-detalle {
   font-size: 0.875rem;
   color: #6b7280;
   margin-top: 0.5rem;
 }
 
+.eliminar-trans-exito-codigo {
+  font-size: 0.8125rem;
+  color: #3b82f6;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
 /* Iconos */
-.eliminar-tour-icono {
+.eliminar-trans-icono {
   border-color: #f59e0b !important;
   color: #f59e0b !important;
   font-size: 2.5rem !important;
   margin: 0.5rem auto !important;
 }
 
-.eliminar-tour-icono-exito {
+.eliminar-trans-icono-exito {
   border-color: #10b981 !important;
   color: #10b981 !important;
 }
 
-.eliminar-tour-icono-error {
+.eliminar-trans-icono-error {
   border-color: #ef4444 !important;
   color: #ef4444 !important;
 }
 
 /* Botones */
-.eliminar-tour-acciones {
+.eliminar-trans-acciones {
   margin-top: 1rem !important;
 }
 
-.eliminar-tour-boton-confirmar {
+.eliminar-trans-boton-confirmar {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
   color: white !important;
   border: none !important;
@@ -160,12 +167,12 @@
   box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
 }
 
-.eliminar-tour-boton-confirmar:hover {
+.eliminar-trans-boton-confirmar:hover {
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) !important;
 }
 
-.eliminar-tour-boton-cancelar {
+.eliminar-trans-boton-cancelar {
   background: white !important;
   color: #6b7280 !important;
   border: 1.5px solid #e5e7eb !important;
@@ -178,12 +185,12 @@
   margin-right: 0.5rem !important;
 }
 
-.eliminar-tour-boton-cancelar:hover {
+.eliminar-trans-boton-cancelar:hover {
   background: #f9fafb !important;
   border-color: #d1d5db !important;
 }
 
-.eliminar-tour-boton-exito {
+.eliminar-trans-boton-exito {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
   color: white !important;
   border: none !important;
@@ -196,12 +203,12 @@
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) !important;
 }
 
-.eliminar-tour-boton-exito:hover {
+.eliminar-trans-boton-exito:hover {
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4) !important;
 }
 
-.eliminar-tour-boton-error {
+.eliminar-trans-boton-error {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
   color: white !important;
   border: none !important;
@@ -234,33 +241,37 @@
 
 /* Responsive */
 @media (max-width: 640px) {
-  .eliminar-tour-popup {
+  .eliminar-trans-popup {
     padding: 1.25rem !important;
     width: 90% !important;
     max-width: 350px !important;
   }
 
-  .eliminar-tour-titulo,
-  .eliminar-tour-titulo-exito {
+  .eliminar-trans-titulo,
+  .eliminar-trans-titulo-exito {
     font-size: 1.125rem !important;
   }
 
-  .eliminar-tour-nombre {
+  .eliminar-trans-servicio {
     font-size: 0.9375rem !important;
   }
 
-  .eliminar-tour-advertencia {
+  .eliminar-trans-codigo {
+    font-size: 0.75rem !important;
+  }
+
+  .eliminar-trans-advertencia {
     padding: 0.625rem;
     gap: 0.5rem;
   }
 
-  .eliminar-tour-advertencia p {
+  .eliminar-trans-advertencia p {
     font-size: 0.75rem;
   }
 
-  .eliminar-tour-boton-confirmar,
-  .eliminar-tour-boton-cancelar,
-  .eliminar-tour-boton-exito {
+  .eliminar-trans-boton-confirmar,
+  .eliminar-trans-boton-cancelar,
+  .eliminar-trans-boton-exito {
     padding: 0.5rem 1.25rem !important;
     font-size: 0.8125rem !important;
   }

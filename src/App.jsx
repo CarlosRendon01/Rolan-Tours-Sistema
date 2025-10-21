@@ -77,6 +77,44 @@ function App() {
         )}
       </Router>
     </VehiculosProvider>
+    <Router>
+      {!estaAutenticado ? (
+        <PrincipalLogin onLogin={manejarLogin} />
+      ) : (
+        <Routes>
+          {/* Rutas existentes */}
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/clientes" element={<PrincipalCliente />} />
+          <Route path="/cotizaciones" element={<PrincipalCotizacion />} />
+          <Route path="/pagos" element={<PrincipalPago />} />
+          
+          {/* Rutas de Documentos */}
+          <Route path="/contratos" element={<PaginaTemporal titulo="Contratos" />} />
+          <Route path="/orden-servicio" element={<PaginaTemporal titulo="Órdenes de Servicio" />} />
+          <Route path="/reservas" element={<PaginaTemporal titulo="Reservas" />} />
+          
+          {/* Rutas de Operaciones */}
+          
+          <Route path="/operadores" element={<OperadoresPrincipal/>} />
+          <Route path="/vehiculos" element={<VehiculosPrincipal />} />
+          <Route path="/guias" element={<GuiasPrincipal/>} />
+          <Route path="/proveedores" element={<ProveedoresPrincipal/>} />
+          <Route path="/coordinadores" element={<CoordinadoresPrincipal />} />
+          
+          {/* Rutas de Servicios */}
+          <Route path="/transporte" element={<TransportePrincipal/>} />
+          <Route path="/restaurantes" element={<RestaurantePrincipal/>} />
+          <Route path="/tours" element={<ToursPrincipal/>} />
+          <Route path="/hospedaje" element={<HospedajePrincipal/>} />
+          
+          {/* Rutas de Mantenimiento */}
+          <Route path="/mantenimiento-vehiculos" element={<PaginaTemporal titulo="Mantenimiento de Vehículos" />} />
+          
+          {/* Ruta de Administración */}
+          <Route path="/administracion" element={<PaginaTemporal titulo="Administración" />} />
+        </Routes>
+      )}
+    </Router>
   );
 }
 
