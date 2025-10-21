@@ -10,6 +10,10 @@ import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrinci
 import GuiasPrincipal from './pages/Operaciones/Guias/GuiasPrincipal.jsx';
 import ProveedoresPrincipal from './pages/Operaciones/Proveedores/ProveedoresPrincipal.jsx'
 import CoordinadoresPrincipal from './pages/Operaciones/Coordinadores/CoordinadoresPrincipal.jsx'
+import TransportePrincipal from './pages/Servicios/Transporte/TransportePrincipal.jsx'
+import RestaurantePrincipal from './pages/Servicios/Restaurante/RestaurantePrincipal.jsx'
+import HospedajePrincipal from './pages/Servicios/Hospedaje/HospedajePrincipal.jsx'
+import ToursPrincipal from './pages/Servicios/Tours/ToursPrincipal.jsx'
 // Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
   return (
@@ -59,10 +63,10 @@ function App() {
           <Route path="/coordinadores" element={<CoordinadoresPrincipal />} />
           
           {/* Rutas de Servicios */}
-          <Route path="/transporte" element={<PaginaTemporal titulo="Transporte" />} />
-          <Route path="/restaurantes" element={<PaginaTemporal titulo="Restaurantes" />} />
-          <Route path="/tours" element={<PaginaTemporal titulo="Tours" />} />
-          <Route path="/hospedaje" element={<PaginaTemporal titulo="Hospedaje" />} />
+          <Route path="/transporte" element={<TransportePrincipal/>} />
+          <Route path="/restaurantes" element={<RestaurantePrincipal/>} />
+          <Route path="/tours" element={<ToursPrincipal/>} />
+          <Route path="/hospedaje" element={<HospedajePrincipal/>} />
           
           {/* Rutas de Mantenimiento */}
           <Route path="/mantenimiento-vehiculos" element={<PaginaTemporal titulo="Mantenimiento de Vehículos" />} />
