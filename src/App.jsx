@@ -10,10 +10,8 @@ import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrinci
 import GuiasPrincipal from './pages/Operaciones/Guias/GuiasPrincipal.jsx';
 import ProveedoresPrincipal from './pages/Operaciones/Proveedores/ProveedoresPrincipal.jsx'
 import CoordinadoresPrincipal from './pages/Operaciones/Coordinadores/CoordinadoresPrincipal.jsx'
-import TransportePrincipal from './pages/Servicios/Transporte/TransportePrincipal.jsx'
-import RestaurantePrincipal from './pages/Servicios/Restaurante/RestaurantePrincipal.jsx'
-import HospedajePrincipal from './pages/Servicios/Hospedaje/HospedajePrincipal.jsx'
-import ToursPrincipal from './pages/Servicios/Tours/ToursPrincipal.jsx'
+import { VehiculosProvider } from "./pages/Operaciones/Vehiculos/VehiculosContext";
+import MantenimientoPrincipal from './pages/Mantenimiento/MantenimientoPrincipal.jsx'
 // Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
   return (
@@ -38,6 +36,47 @@ function App() {
   };
 
   return (
+    <VehiculosProvider>
+
+      <Router>
+        {!estaAutenticado ? (
+          <PrincipalLogin onLogin={manejarLogin} />
+        ) : (
+          <Routes>
+            {/* Rutas existentes */}
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/clientes" element={<PrincipalCliente />} />
+            <Route path="/cotizaciones" element={<PrincipalCotizacion />} />
+            <Route path="/pagos" element={<PrincipalPago />} />
+
+            {/* Rutas de Documentos */}
+            <Route path="/contratos" element={<PaginaTemporal titulo="Contratos" />} />
+            <Route path="/orden-servicio" element={<PaginaTemporal titulo="Órdenes de Servicio" />} />
+            <Route path="/reservas" element={<PaginaTemporal titulo="Reservas" />} />
+
+            {/* Rutas de Operaciones */}
+
+            <Route path="/operadores" element={<OperadoresPrincipal />} />
+            <Route path="/vehiculos" element={<VehiculosPrincipal />} />
+            <Route path="/guias" element={<GuiasPrincipal />} />
+            <Route path="/proveedores" element={<ProveedoresPrincipal />} />
+            <Route path="/coordinadores" element={<CoordinadoresPrincipal />} />
+
+            {/* Rutas de Servicios */}
+            <Route path="/transporte" element={<PaginaTemporal titulo="Transporte" />} />
+            <Route path="/restaurantes" element={<PaginaTemporal titulo="Restaurantes" />} />
+            <Route path="/tours" element={<PaginaTemporal titulo="Tours" />} />
+            <Route path="/hospedaje" element={<PaginaTemporal titulo="Hospedaje" />} />
+
+            {/* Rutas de Mantenimiento */}
+            <Route path="/mantenimiento-vehiculos" element={<MantenimientoPrincipal/>} />
+
+            {/* Ruta de Administración */}
+            <Route path="/administracion" element={<PaginaTemporal titulo="Administración" />} />
+          </Routes>
+        )}
+      </Router>
+    </VehiculosProvider>
     <Router>
       {!estaAutenticado ? (
         <PrincipalLogin onLogin={manejarLogin} />
