@@ -103,52 +103,45 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
     } else if (!/^[A-Z&Ñ]{3,4}\d{6}[A-Z\d]{3}$/.test(datosFormulario.rfc.toUpperCase())) {
       nuevosErrores.rfc = 'El formato del RFC no es válido';
     }
-
-    if (!datosFormulario.direccion.trim()) {
-      nuevosErrores.direccion = 'La dirección es obligatoria';
-    } else if (datosFormulario.direccion.trim().length < 10) {
-      nuevosErrores.direccion = 'La dirección debe ser más específica';
-    }
-
     return nuevosErrores;
   };
 
-const mostrarNotificacionExito = () => {
-  if (typeof window !== 'undefined' && window.Swal) {
-    window.Swal.fire({
-      title: '¡Excelente!',
-      text: 'La información del cliente se ha actualizado correctamente',
-      icon: 'success',
-      iconHtml: '✓',
-      iconColor: '#27ae60',
-      confirmButtonText: 'Perfecto',
-      confirmButtonColor: '#27ae60',
-      timer: 3000,
-      timerProgressBar: true,
-      showClass: {
-        popup: 'animate__animated animate__fadeInUp animate__faster'
-      },
-      hideClass: {
-        popup: 'animate__animated animate__fadeOutDown animate__faster'
-      },
-      customClass: {
-        popup: 'swal-popup-custom-editar',
-        title: 'swal-title-custom-editar',
-        content: 'swal-content-custom-editar',
-        confirmButton: 'swal-button-custom-editar',
-        icon: 'swal-icon-success-custom'
-      },
-      background: '#ffffff',
-      backdrop: `
+  const mostrarNotificacionExito = () => {
+    if (typeof window !== 'undefined' && window.Swal) {
+      window.Swal.fire({
+        title: '¡Excelente!',
+        text: 'La información del cliente se ha actualizado correctamente',
+        icon: 'success',
+        iconHtml: '✓',
+        iconColor: '#27ae60',
+        confirmButtonText: 'Perfecto',
+        confirmButtonColor: '#27ae60',
+        timer: 3000,
+        timerProgressBar: true,
+        showClass: {
+          popup: 'animate__animated animate__fadeInUp animate__faster'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutDown animate__faster'
+        },
+        customClass: {
+          popup: 'swal-popup-custom-editar',
+          title: 'swal-title-custom-editar',
+          content: 'swal-content-custom-editar',
+          confirmButton: 'swal-button-custom-editar',
+          icon: 'swal-icon-success-custom'
+        },
+        background: '#ffffff',
+        backdrop: `
         rgba(44, 62, 80, 0.8)
         left top
         no-repeat
       `
-    });
-  } else {
-    alert('La información del cliente se ha actualizado correctamente');
-  }
-};
+      });
+    } else {
+      alert('La información del cliente se ha actualizado correctamente');
+    }
+  };
 
   const mostrarNotificacionError = () => {
     if (typeof window !== 'undefined' && window.Swal) {
@@ -170,13 +163,13 @@ const mostrarNotificacionExito = () => {
 
   const manejarEnvio = async (evento) => {
     evento.preventDefault();
-    
+
     const nuevosErrores = validarFormulario();
-    
+
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
       mostrarNotificacionError();
-      
+
       // Hacer scroll al primer campo con error
       const primerCampoConError = Object.keys(nuevosErrores)[0];
       const elemento = document.getElementById(primerCampoConError);
@@ -184,7 +177,7 @@ const mostrarNotificacionExito = () => {
         elemento.focus();
         elemento.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-      
+
       return;
     }
 
@@ -193,7 +186,7 @@ const mostrarNotificacionExito = () => {
     try {
       // Simular delay de guardado (remover en producción)
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Llamar a la función alGuardar con los datos actualizados
       const datosActualizados = {
         ...cliente,
@@ -201,20 +194,20 @@ const mostrarNotificacionExito = () => {
         rfc: datosFormulario.rfc.toUpperCase(), // RFC siempre en mayúsculas
         fecha_actualizacion: new Date().toISOString()
       };
-      
+
       await alGuardar(datosActualizados);
-      
+
       // Mostrar notificación de éxito
       mostrarNotificacionExito();
-      
+
       // Cerrar modal después de un breve delay
       setTimeout(() => {
         manejarCerrar();
       }, 500);
-      
+
     } catch (error) {
       console.error('Error al guardar:', error);
-      
+
       if (typeof window !== 'undefined' && window.Swal) {
         window.Swal.fire({
           title: 'Error',
@@ -239,7 +232,7 @@ const mostrarNotificacionExito = () => {
 
   const manejarCerrar = () => {
     if (guardando) return; // No permitir cerrar mientras se guarda
-    
+
     setErrores({});
     setGuardando(false);
     alCerrar();
@@ -255,8 +248,8 @@ const mostrarNotificacionExito = () => {
             <Edit size={26} />
             Editar Cliente
           </h2>
-          <button 
-            className="boton-cerrar-modal-editar" 
+          <button
+            className="boton-cerrar-modal-editar"
             onClick={manejarCerrar}
             disabled={guardando}
             aria-label="Cerrar modal"
@@ -265,7 +258,7 @@ const mostrarNotificacionExito = () => {
             <X size={24} />
           </button>
         </div>
-        
+
         <form onSubmit={manejarEnvio} className="cuerpo-modal-editar">
           <div className="cuadricula-formulario-editar">
             {/* Nombre Completo */}
@@ -292,7 +285,7 @@ const mostrarNotificacionExito = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Email */}
             <div className="campo-formulario-editar">
               <label htmlFor="email" className="etiqueta-formulario-editar">
@@ -317,7 +310,7 @@ const mostrarNotificacionExito = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Teléfono */}
             <div className="campo-formulario-editar">
               <label htmlFor="telefono" className="etiqueta-formulario-editar">
@@ -342,7 +335,7 @@ const mostrarNotificacionExito = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Número Lead */}
             <div className="campo-formulario-editar">
               <label htmlFor="numero_lead" className="etiqueta-formulario-editar">
@@ -367,7 +360,7 @@ const mostrarNotificacionExito = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Canal de Contacto */}
             <div className="campo-formulario-editar">
               <label htmlFor="canal_contacto" className="etiqueta-formulario-editar">
@@ -400,7 +393,7 @@ const mostrarNotificacionExito = () => {
                 </div>
               )}
             </div>
-            
+
             {/* RFC */}
             <div className="campo-formulario-editar">
               <label htmlFor="rfc" className="etiqueta-formulario-editar">
@@ -426,7 +419,7 @@ const mostrarNotificacionExito = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Dirección */}
             <div className="campo-formulario-editar campo-completo-editar">
               <label htmlFor="direccion" className="etiqueta-formulario-editar">
@@ -452,19 +445,19 @@ const mostrarNotificacionExito = () => {
               )}
             </div>
           </div>
-          
+
           <div className="acciones-modal-editar">
-            <button 
-              type="button" 
-              className="boton-cancelar-editar" 
+            <button
+              type="button"
+              className="boton-cancelar-editar"
               onClick={manejarCerrar}
               disabled={guardando}
             >
               <X size={16} />
               Cancelar
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className={`boton-guardar-editar ${guardando ? 'loading' : ''}`}
               disabled={guardando}
             >
