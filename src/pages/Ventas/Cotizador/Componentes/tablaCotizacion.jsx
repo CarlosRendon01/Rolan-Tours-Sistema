@@ -64,10 +64,10 @@ const TablaCotizacion = ({
     return cotizaciones.filter(
       (cotizacion) =>
         cotizacion.folio?.toLowerCase().includes(termino) ||
-        cotizacion.destinoServicio?.toLowerCase().includes(termino) ||
-        cotizacion.origenServicio?.toLowerCase().includes(termino) ||
-        formatearFecha(cotizacion.fechaSalida).includes(termino) ||
-        formatearFecha(cotizacion.fechaRegreso).includes(termino)
+        cotizacion.destino?.toLowerCase().includes(termino) ||
+        cotizacion.origen?.toLowerCase().includes(termino) ||
+        formatearFecha(cotizacion.fecha_salida).includes(termino) ||
+        formatearFecha(cotizacion.fecha_regreso).includes(termino)
     );
   }, [cotizaciones, terminoBusqueda, formatearFecha]);
 
@@ -283,27 +283,27 @@ const TablaCotizacion = ({
                       <td data-label="Fecha Salida">
                         <time
                           className="cotizaciones-fecha"
-                          dateTime={cotizacion.fechaSalida}
+                          dateTime={cotizacion.fecha_salida}
                         >
-                          {formatearFecha(cotizacion.fechaSalida)}
+                          {formatearFecha(cotizacion.fecha_salida)}
                         </time>
                       </td>
                       <td data-label="Fecha Regreso">
                         <time
                           className="cotizaciones-fecha"
-                          dateTime={cotizacion.fechaRegreso}
+                          dateTime={cotizacion.fecha_regreso}
                         >
-                          {formatearFecha(cotizacion.fechaRegreso)}
+                          {formatearFecha(cotizacion.fecha_regreso)}
                         </time>
                       </td>
                       <td data-label="Origen">
                         <span className="cotizaciones-destino">
-                          {cotizacion.origenServicio || "Sin origen"}
+                          {cotizacion.origen || "Sin origen"}
                         </span>
                       </td>
                       <td data-label="Destino">
                         <span className="cotizaciones-destino">
-                          {cotizacion.destinoServicio || "Sin destino"}
+                          {cotizacion.destino || "Sin destino"}
                         </span>
                       </td>
                       <td data-label="Acciones">
@@ -506,10 +506,10 @@ TablaCotizacion.propTypes = {
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       folio: PropTypes.string,
-      fechaSalida: PropTypes.string,
-      fechaRegreso: PropTypes.string,
-      origenServicio: PropTypes.string,
-      destinoServicio: PropTypes.string,
+      fecha_salida: PropTypes.string,
+      fecha_regreso: PropTypes.string,
+      origen: PropTypes.string,
+      destino: PropTypes.string,
     })
   ),
   onEditar: PropTypes.func,

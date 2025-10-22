@@ -17,20 +17,20 @@ const NuevaCotizacion = ({
   const [erroresCampos, setErroresCampos] = useState({});
   const [formData, setFormData] = useState({
     folio: "",
-    fechaSalida: "",
-    fechaRegreso: "",
+    fecha_salida: "",
+    fecha_regreso: "",
     horaSalida: "",
     horaRegreso: "",
-    dias: "",
-    totalKilometros: "",
-    costoCasetas: "",
-    tipoCaminos: "terraceria",
-    tipoCliente: "",
+    numero_dias: "",
+    total_kilometros: "",
+    costo_casetas: "",
+    tipo_camino: "terraceria",
+    tipo_cliente: "",
     id: "",
-    numeroLead: "",
+    lead_id: "",
     nombreResponsable: "",
-    tipoServicio: "",
-    pax: "",
+    tipo_servicio: "",
+    num_pasajeros: "",
     origenServicio: "Oaxaca de Juarez, Oaxaca",
     puntoIntermedio: "",
     destinoServicio: "",
@@ -180,13 +180,13 @@ const NuevaCotizacion = ({
 
         ],
         3: [
-          { campo: "pax", nombre: "N° pasajeros" },
+          { campo: "num_pasajeros", nombre: "N° pasajeros" },
           { campo: "puntoIntermedio", nombre: "Punto Intermedio" },
           { campo: "destinoServicio", nombre: "Destino Servicio" },
         ],
         4: [
-          { campo: "fechaSalida", nombre: "Fecha Salida" },
-          { campo: "fechaRegreso", nombre: "Fecha Regreso" },
+          { campo: "fecha_salida", nombre: "Fecha Salida" },
+          { campo: "fecha_regreso", nombre: "Fecha Regreso" },
           { campo: "horaSalida", nombre: "Hora Salida" },
           { campo: "horaRegreso", nombre: "Hora Regreso" },
         ],
@@ -217,7 +217,7 @@ const NuevaCotizacion = ({
           }
         }
 
-        if (campo === "fechaSalida" && valor && valor.trim() !== "") {
+        if (campo === "fecha_salida" && valor && valor.trim() !== "") {
           const fechaActual = new Date();
           fechaActual.setHours(0, 0, 0, 0);
 
@@ -228,13 +228,13 @@ const NuevaCotizacion = ({
           }
         }
 
-        if (campo === "fechaRegreso" && valor && formData.fechaSalida) {
-          const fechaSalida = new Date(formData.fechaSalida + "T00:00:00");
-          const fechaRegreso = new Date(valor + "T00:00:00");
+        if (campo === "fecha_regreso" && valor && formData.fecha_salida) {
+          const fecha_salida = new Date(formData.fecha_salida + "T00:00:00");
+          const fecha_regreso = new Date(valor + "T00:00:00");
 
           const MILISEGUNDOS_EN_UN_DIA = 3 * 24 * 60 * 60 * 1000;
 
-          if (fechaRegreso - fechaSalida < MILISEGUNDOS_EN_UN_DIA) {
+          if (fecha_regreso - fecha_salida < MILISEGUNDOS_EN_UN_DIA) {
             errores[campo] =
               "La fecha de regreso debe ser al menos 3 días después de la fecha de salida";
           }
@@ -270,20 +270,20 @@ const NuevaCotizacion = ({
     }
     setFormData({
       folio: generarFolioAutomatico(),
-      fechaSalida: "",
-      fechaRegreso: "",
+      fecha_salida: "",
+      fecha_regreso: "",
       horaSalida: "",
       horaRegreso: "",
-      dias: "",
-      totalKilometros: "",
-      costoCasetas: "",
-      tipoCaminos: "terraceria",
-      tipoCliente: "",
+      numero_dias: "",
+      total_kilometros: "",
+      costo_casetas: "",
+      tipo_camino: "terraceria",
+      tipo_cliente: "",
       id: "",
-      numeroLead: "",
+      lead_id: "",
       nombreResponsable: "",
-      tipoServicio: "",
-      pax: "",
+      tipo_servicio: "",
+      num_pasajeros: "",
       origenServicio: "Oaxaca de Juarez, Oaxaca",
       puntoIntermedio: "",
       destinoServicio: "",
@@ -311,20 +311,20 @@ const NuevaCotizacion = ({
       setModoEdicion(true);
       setFormData({
         folio: cotizacionEditar.folio || "",
-        fechaSalida: cotizacionEditar.fechaSalida || "",
-        fechaRegreso: cotizacionEditar.fechaRegreso || "",
+        fecha_salida: cotizacionEditar.fecha_salida || "",
+        fecha_regreso: cotizacionEditar.fecha_regreso || "",
         horaSalida: cotizacionEditar.horaSalida || "",
         horaRegreso: cotizacionEditar.horaRegreso || "",
-        dias: cotizacionEditar.dias || "",
-        totalKilometros: cotizacionEditar.totalKilometros || "",
-        costoCasetas: cotizacionEditar.costoCasetas || "",
-        tipoCaminos: cotizacionEditar.tipoCaminos || "terraceria",
-        tipoCliente: cotizacionEditar.tipoCliente || "",
+        numero_dias: cotizacionEditar.numero_dias || "",
+        total_kilometros: cotizacionEditar.total_kilometros || "",
+        costo_casetas: cotizacionEditar.costo_casetas || "",
+        tipo_camino: cotizacionEditar.tipo_camino || "terraceria",
+        tipo_cliente: cotizacionEditar.tipo_cliente || "",
         id: cotizacionEditar.id || "",
-        numeroLead: cotizacionEditar.numeroLead || "",
+        lead_id: cotizacionEditar.lead_id || "",
         nombreResponsable: cotizacionEditar.nombreResponsable || "",
-        tipoServicio: cotizacionEditar.tipoServicio || "",
-        pax: cotizacionEditar.pax || "",
+        tipo_servicio: cotizacionEditar.tipo_servicio || "",
+        num_pasajeros: cotizacionEditar.num_pasajeros || "",
         origenServicio: cotizacionEditar.origenServicio || "Oaxaca de Juarez, Oaxaca",
         puntoIntermedio: cotizacionEditar.puntoIntermedio || "",
         destinoServicio: cotizacionEditar.destinoServicio || "",
@@ -366,20 +366,20 @@ const NuevaCotizacion = ({
     setFormData({
 
       folio: generarFolioAutomatico(),
-      fechaSalida: "",
-      fechaRegreso: "",
+      fecha_salida: "",
+      fecha_regreso: "",
       horaSalida: "",
       horaRegreso: "",
-      dias: "",
-      totalKilometros: "",
-      costoCasetas: "",
-      tipoCaminos: "terraceria",
-      tipoCliente: "",
+      numero_dias: "",
+      total_kilometros: "",
+      costo_casetas: "",
+      tipo_camino: "terraceria",
+      tipo_cliente: "",
       id: "",
-      numeroLead: "",
+      lead_id: "",
       nombreResponsable: "",
-      tipoServicio: "",
-      pax: "",
+      tipo_servicio: "",
+      num_pasajeros: "",
       origenServicio: "Oaxaca de Juarez, Oaxaca",
       puntoIntermedio: "",
       destinoServicio: "",
@@ -408,27 +408,27 @@ const NuevaCotizacion = ({
     const inicio = new Date(`${fechaInicio}T${horaInicioSolo}:00:00`);
     const fin = new Date(`${fechaFin}T${horaFinSolo}:00:00`);
     const diferenciaHoras = (fin.getTime() - inicio.getTime()) / (1000 * 3600);
-    const dias = Math.ceil(diferenciaHoras / 24);
+    const numero_dias = Math.ceil(diferenciaHoras / 24);
 
-    return dias > 0 ? dias.toString() : "0";
+    return numero_dias > 0 ? numero_dias.toString() : "0";
   };
 
   useEffect(() => {
-    const dias = calcularDias(
-      formData.fechaSalida,
-      formData.fechaRegreso,
+    const numero_dias = calcularDias(
+      formData.fecha_salida,
+      formData.fecha_regreso,
       formData.horaSalida,
       formData.horaRegreso
     );
-    if (dias !== "" && dias !== formData.dias) {
+    if (numero_dias !== "" && numero_dias !== formData.numero_dias) {
       setFormData((prev) => ({
         ...prev,
-        dias: dias,
+        numero_dias: numero_dias,
       }));
     }
   }, [
-    formData.fechaSalida,
-    formData.fechaRegreso,
+    formData.fecha_salida,
+    formData.fecha_regreso,
     formData.horaSalida,
     formData.horaRegreso,
   ]);
@@ -539,76 +539,78 @@ const NuevaCotizacion = ({
     };
   }, [validarPaso]);
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      const erroresCompletos = validarFormularioCompleto();
-      if (Object.keys(erroresCompletos).length > 0) {
-        setErroresCampos(erroresCompletos);
-        const erroresPaso1 = validarPaso(1);
-        const erroresPaso2 = validarPaso(2);
-        const erroresPaso3 = validarPaso(3);
-        const erroresPaso4 = validarPaso(4);
+  // 🔍 BUSCAR esta función (alrededor de la línea 350-400)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (Object.keys(erroresPaso1).length > 0) {
-          setPasoActual(1);
-        } else if (Object.keys(erroresPaso2).length > 0) {
-          setPasoActual(2);
-        } else if (Object.keys(erroresPaso3).length > 0) {
-          setPasoActual(3);
-        } else if (Object.keys(erroresPaso4).length > 0) {
-          setPasoActual(4);
-        }
+    if (!validarPaso(5)) {
+      return;
+    }
 
-        setTimeout(() => {
-          const primerCampoConError = Object.keys(erroresCompletos)[0];
-          const elemento = document.querySelector(
-            `[name="${primerCampoConError}"]`
-          );
-          if (elemento) {
-            elemento.focus();
-            elemento.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }, 100);
-
-        return;
-      }
-
-      const clienteData = {
-        id: generarIdCliente(),
-        ...datosCliente,
-        fechaRegistro: new Date().toISOString().split("T")[0],
-      };
-
-      if (onGuardarCliente) {
-        onGuardarCliente(clienteData);
-      }
-
-      const cotizacionData = {
-        id: modoEdicion ? cotizacionEditar.id : Date.now(),
+    try {
+      const cotizacionCompleta = {
         ...formData,
-        clienteId: clienteData.id,
+        ...datosCliente,
+        id: modoEdicion ? formData.id : generarIdCliente(),
       };
 
-      if (onGuardarCotizacion) {
-        onGuardarCotizacion(cotizacionData, modoEdicion);
-      }
+      // 🆕 Llamar con await para esperar respuesta del API
+      await onGuardarCotizacion(cotizacionCompleta, modoEdicion);
 
-      cerrarModal();
-    },
-    [
-      validarFormularioCompleto,
-      validarPaso,
-      modoEdicion,
-      cotizacionEditar,
-      formData,
-      datosCliente,
-      onGuardarCotizacion,
-      onGuardarCliente,
-      generarIdCliente,
-      cerrarModal,
-    ]
-  );
+      alert(
+        modoEdicion
+          ? "Cotización actualizada exitosamente"
+          : "Cotización guardada exitosamente"
+      );
+
+      // Resetear el formulario
+      setFormData({
+        folio: "",
+        fecha_salida: "",
+        fecha_regreso: "",
+        horaSalida: "",
+        horaRegreso: "",
+        numero_dias: "",
+        total_kilometros: "",
+        costo_casetas: "",
+        tipo_camino: "terraceria",
+        tipo_cliente: "",
+        id: "",
+        lead_id: "",
+        nombreResponsable: "",
+        tipo_servicio: "",
+        num_pasajeros: "",
+        origenServicio: "Oaxaca de Juarez, Oaxaca",
+        puntoIntermedio: "",
+        destinoServicio: "",
+        vehiculoRequerido: "",
+        fechaCreacion: new Date().toISOString().split("T")[0],
+        tipoClienteFrec: "solo_una_vez",
+        descripcion: "",
+        transporte: "",
+        restaurante: "",
+        tour: "",
+        hospedaje: "",
+        extrasSeleccionados: [],
+        total: "",
+      });
+
+      setDatosCliente({
+        nombre: "",
+        email: "",
+        telefono: "",
+      });
+
+      setMostrarModal(false);
+      setPasoActual(1);
+      setErroresCampos({});
+      setModoEdicion(false);
+
+    } catch (error) {
+      console.error("Error al guardar:", error);
+      // El error ya se maneja en Cotizacion.jsx, no mostrar alert duplicado
+    }
+  };
 
   const MensajeError = React.memo(({ nombreCampo }) => {
     const error = erroresCampos[nombreCampo];
@@ -715,8 +717,8 @@ const NuevaCotizacion = ({
                       N° de Lead:
                       <input
                         type="text"
-                        name="numeroLead"
-                        value={formData.numeroLead}
+                        name="lead_id"
+                        value={formData.lead_id}
                         onChange={handleInputChange}
                         readOnly
                       />
@@ -849,13 +851,13 @@ const NuevaCotizacion = ({
                       N° pasajeros: <span className="required">*</span>
                       <input
                         type="number"
-                        name="pax"
-                        value={formData.pax}
+                        name="num_pasajeros"
+                        value={formData.num_pasajeros}
                         onChange={handleInputChange}
-                        className={erroresCampos.pax ? "campo-error" : ""}
+                        className={erroresCampos.num_pasajeros ? "campo-error" : ""}
                         min="1"
                       />
-                      <MensajeError nombreCampo="pax" />
+                      <MensajeError nombreCampo="num_pasajeros" />
                     </label>
                     <label>
                       Vehículo Requerido:
@@ -878,8 +880,8 @@ const NuevaCotizacion = ({
                       Tipo Servicio: (Opcional)
                       <input
                         type="text"
-                        name="tipoServicio"
-                        value={formData.tipoServicio}
+                        name="tipo_servicio"
+                        value={formData.tipo_servicio}
                         onChange={handleInputChange}
                       />
                     </label>
@@ -968,27 +970,27 @@ const NuevaCotizacion = ({
                       Fecha Salida: <span className="required">*</span>
                       <input
                         type="date"
-                        name="fechaSalida"
-                        value={formData.fechaSalida}
+                        name="fecha_salida"
+                        value={formData.fecha_salida}
                         onChange={handleInputChange}
                         className={
-                          erroresCampos.fechaSalida ? "campo-error" : ""
+                          erroresCampos.fecha_salida ? "campo-error" : ""
                         }
                       />
-                      <MensajeError nombreCampo="fechaSalida" />
+                      <MensajeError nombreCampo="fecha_salida" />
                     </label>
                     <label>
                       Fecha Regreso: <span className="required">*</span>
                       <input
                         type="date"
-                        name="fechaRegreso"
-                        value={formData.fechaRegreso}
+                        name="fecha_regreso"
+                        value={formData.fecha_regreso}
                         onChange={handleInputChange}
                         className={
-                          erroresCampos.fechaRegreso ? "campo-error" : ""
+                          erroresCampos.fecha_regreso ? "campo-error" : ""
                         }
                       />
-                      <MensajeError nombreCampo="fechaRegreso" />
+                      <MensajeError nombreCampo="fecha_regreso" />
                     </label>
                   </div>
                   <div className="fila">
@@ -1025,8 +1027,8 @@ const NuevaCotizacion = ({
                       Días:
                       <input
                         type="number"
-                        name="dias"
-                        value={formData.dias}
+                        name="numero_dias"
+                        value={formData.numero_dias}
                         onChange={handleInputChange}
                         readOnly
                       />
@@ -1038,8 +1040,8 @@ const NuevaCotizacion = ({
                       Total Kilómetros:
                       <input
                         type="number"
-                        name="totalKilometros"
-                        value={formData.totalKilometros}
+                        name="total_kilometros"
+                        value={formData.total_kilometros}
                         onChange={handleInputChange}
                         step="0.1"
                         min="0"
@@ -1050,8 +1052,8 @@ const NuevaCotizacion = ({
                       Costo Casetas:
                       <input
                         type="number"
-                        name="costoCasetas"
-                        value={formData.costoCasetas}
+                        name="costo_casetas"
+                        value={formData.costo_casetas}
                         onChange={handleInputChange}
                         step="0.01"
                         min="0"
@@ -1064,8 +1066,8 @@ const NuevaCotizacion = ({
                     <label>
                       Tipo de Camino:
                       <select
-                        name="tipoCaminos"
-                        value={formData.tipoCaminos}
+                        name="tipo_camino"
+                        value={formData.tipo_camino}
                         onChange={handleInputChange}
                       >
                         <option value="terraceria">Terracería</option>

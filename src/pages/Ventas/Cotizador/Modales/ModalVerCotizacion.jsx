@@ -128,7 +128,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Nombre Cliente
               </div>
               <div className="valor-informacion-ver">
-                {cotizacion.nombre || "No disponible"}
+                {cotizacion.cliente?.nombre || "No disponible"}
               </div>
             </div>
 
@@ -138,7 +138,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Tipo de cliente
               </div>
               <div className="valor-informacion-ver">
-                {cotizacion.tipoClienteFrec || "No disponible"}
+                {cotizacion.tipo_cliente || "No disponible"}
               </div>
             </div>
 
@@ -148,7 +148,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Correo Electrónico
               </div>
               <div className="valor-informacion-ver">
-                {cotizacion.email || "No disponible"}
+                {cotizacion.cliente?.email || "No disponible"}
               </div>
             </div>
 
@@ -158,7 +158,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Teléfono
               </div>
               <div className="valor-informacion-ver">
-                {formatearTelefono(cotizacion.telefono)}
+                {formatearTelefono(cotizacion.cliente?.telefono)}
               </div>
             </div>
 
@@ -168,7 +168,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Fecha de Salida
               </div>
               <div className="valor-informacion-ver">
-                {formatearFecha(cotizacion.fechaSalida)}
+                {formatearFecha(cotizacion.fecha_salida)}
               </div>
             </div>
 
@@ -178,7 +178,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Fecha de Regreso
               </div>
               <div className="valor-informacion-ver">
-                {formatearFecha(cotizacion.fechaRegreso)}
+                {formatearFecha(cotizacion.fecha_regreso)}
               </div>
             </div>
 
@@ -208,7 +208,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Total Kilometros
               </div>
               <div className="valor-informacion-ver">
-                {cotizacion.totalKilometros || "No disponible"}
+                {cotizacion.total_kilometros || "No disponible"}
               </div>
             </div>
             <div className="elemento-informacion-ver">
@@ -217,7 +217,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Vehiculo
               </div>
               <div className="valor-informacion-ver">
-                {cotizacion.vehiculoRequerido || "No disponible"}
+                {cotizacion.vehiculo?.nombre || "No disponible"}
               </div>
             </div>
 
@@ -239,7 +239,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Número de Lead
               </div>
               <div className="valor-informacion-ver">
-                {cotizacion.numeroLead || "No asignado"}
+                {cotizacion.lead_id || "No asignado"}
               </div>
             </div>
 
@@ -249,7 +249,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 Canal de Contacto
               </div>
               <div className="valor-informacion-ver">
-                {cotizacion.canalContacto || "No especificado"}
+                {cotizacion.cliente?.canal_contacto || "No especificado"}
               </div>
             </div>
           </div>
@@ -259,7 +259,7 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
               Extras
             </div>
             <div className="valor-informacion-ver">
-              {cotizacion.extrasSeleccionados || "No disponible"}
+              {cotizacion.extras || "No disponible"}
             </div>
           </div>
 
