@@ -25,137 +25,237 @@ const TablaOrdenes = () => {
   const [ordenAEliminarDefinitivo, setOrdenAEliminarDefinitivo] = useState(null);
   const [ordenSeleccionado, setOrdenSeleccionado] = useState(null);
 
-  // Estado para los datos de Ordenes - AHORA CON CAMPO "activo"
+  // Estado para los datos de Ordenes - ACTUALIZADOS CON NUEVOS CAMPOS
   const [datosOrdenes, setDatosOrdenes] = useState([
     {
       id: 1,
-      fechaSalida: '2025-10-20',
-      fechaRegreso: '2025-10-22',
-      horaSalida: '08:00',
-      horaRegreso: '18:00',
-      pasajeros: '15',
-      origenServicio: 'Oaxaca Centro',
-      puntoIntermedio: 'Tlacolula',
-      destinoServicio: 'Puerto Escondido',
-      fecha_registro: '02/09/2025',
+      // Datos Orden de Servicio
+      folio: 101,
+      fecha_orden_servicio: '2025-10-15',
+      nombre_prestador: 'Antonio Alonso Meza',
+
+      // Datos Conductor
+      nombre_conductor: 'Juan',
+      apellido_paterno_conductor: 'Pérez',
+      apellido_materno_conductor: 'García',
+      telefono_conductor: '9511234567',
+      licencia_conductor: 'LIC123456',
+
+      // Datos Servicio
+      nombre_cliente: 'Hotel Posada Real',
+      telefono_cliente: '9517654321',
+      ciudad_origen: 'Oaxaca Centro',
+      punto_intermedio: 'Tlacolula',
+      destino: 'Puerto Escondido',
+      numero_pasajeros: 15,
+      fecha_inicio_servicio: '2025-10-20',
+      horario_inicio_servicio: '08:00',
+      fecha_final_servicio: '2025-10-22',
+      horario_final_servicio: '18:00',
+      horario_final_real: '18:30',
+      itinerario_detallado: 'Salida desde centro, parada en Tlacolula por 30 min, continuar a Puerto Escondido',
+      direccion_retorno: 'Av. Juárez 123, Centro, Oaxaca',
+
+      // Vehículo
+      marca: 'Toyota',
+      modelo: 'Hiace',
+      placa: 'ABC-123-D',
+      km_inicial: 10000,
+      km_final: 10850,
+      litros_consumidos: 85,
+      rendimiento: '10 km/L',
+
+      // Control Interno
+      importe: 5500,
+      pagado: 'si',
+      forma_pago: 'Transferencia',
+      fecha_pago: '2025-10-19',
+      costo_proveedor: 3500,
+      forma_pago_proveedor: 'transferencia',
+      pagado_proveedor: 'si',
+
+      fecha_registro: '15/10/2025',
       activo: true
     },
     {
       id: 2,
-      fechaSalida: '2025-10-25',
-      fechaRegreso: '2025-10-27',
-      horaSalida: '09:00',
-      horaRegreso: '19:00',
-      pasajeros: '20',
-      origenServicio: 'Oaxaca Aeropuerto',
-      puntoIntermedio: 'Ocotlán',
-      destinoServicio: 'Huatulco',
-      fecha_registro: '02/09/2025',
+      folio: 102,
+      fecha_orden_servicio: '2025-10-18',
+      nombre_prestador: 'Antonio Alonso Meza',
+
+      nombre_conductor: 'María',
+      apellido_paterno_conductor: 'López',
+      apellido_materno_conductor: 'Martínez',
+      telefono_conductor: '9512345678',
+      licencia_conductor: 'LIC234567',
+
+      nombre_cliente: 'Grupo Turístico Norte',
+      telefono_cliente: '9518765432',
+      ciudad_origen: 'Oaxaca Aeropuerto',
+      punto_intermedio: 'Ocotlán',
+      destino: 'Huatulco',
+      numero_pasajeros: 20,
+      fecha_inicio_servicio: '2025-10-25',
+      horario_inicio_servicio: '09:00',
+      fecha_final_servicio: '2025-10-27',
+      horario_final_servicio: '19:00',
+      horario_final_real: '19:15',
+      itinerario_detallado: 'Recoger en aeropuerto, tour por Ocotlán, destino final Huatulco',
+      direccion_retorno: 'Carretera Oaxaca-Xoxocotlán km 5.5',
+
+      marca: 'Mercedes',
+      modelo: 'Sprinter',
+      placa: 'XYZ-456-E',
+      km_inicial: 25000,
+      km_final: 25950,
+      litros_consumidos: 95,
+      rendimiento: '10 km/L',
+
+      importe: 8500,
+      pagado: 'si',
+      forma_pago: 'Efectivo',
+      fecha_pago: '2025-10-24',
+      costo_proveedor: 5500,
+      forma_pago_proveedor: 'efectivo',
+      pagado_proveedor: 'si',
+
+      fecha_registro: '18/10/2025',
       activo: true
     },
     {
       id: 3,
-      fechaSalida: '2025-10-28',
-      fechaRegreso: '2025-10-30',
-      horaSalida: '07:30',
-      horaRegreso: '17:30',
-      pasajeros: '12',
-      origenServicio: 'Oaxaca Centro',
-      puntoIntermedio: '',
-      destinoServicio: 'Hierve el Agua',
-      fecha_registro: '02/09/2025',
+      folio: 103,
+      fecha_orden_servicio: '2025-10-20',
+      nombre_prestador: 'Antonio Alonso Meza',
+
+      nombre_conductor: 'Carlos',
+      apellido_paterno_conductor: 'Hernández',
+      apellido_materno_conductor: 'Ruiz',
+      telefono_conductor: '9513456789',
+      licencia_conductor: 'LIC345678',
+
+      nombre_cliente: 'Familia Ramírez',
+      telefono_cliente: '9519876543',
+      ciudad_origen: 'Oaxaca Centro',
+      punto_intermedio: '',
+      destino: 'Hierve el Agua',
+      numero_pasajeros: 12,
+      fecha_inicio_servicio: '2025-10-28',
+      horario_inicio_servicio: '07:30',
+      fecha_final_servicio: '2025-10-30',
+      horario_final_servicio: '17:30',
+      horario_final_real: '17:45',
+      itinerario_detallado: 'Tour directo a Hierve el Agua, recorrido completo y regreso',
+      direccion_retorno: 'Calle Alcalá 501, Centro',
+
+      marca: 'Ford',
+      modelo: 'Transit',
+      placa: 'DEF-789-F',
+      km_inicial: 15000,
+      km_final: 15400,
+      litros_consumidos: 40,
+      rendimiento: '10 km/L',
+
+      importe: 4200,
+      pagado: 'no',
+      forma_pago: '',
+      fecha_pago: '',
+      costo_proveedor: 2800,
+      forma_pago_proveedor: 'transferencia',
+      pagado_proveedor: 'no',
+
+      fecha_registro: '20/10/2025',
       activo: false
     },
     {
       id: 4,
-      fechaSalida: '2025-11-01',
-      fechaRegreso: '2025-11-03',
-      horaSalida: '10:00',
-      horaRegreso: '20:00',
-      pasajeros: '18',
-      origenServicio: 'Hotel Casa Oaxaca',
-      puntoIntermedio: 'Teotitlán del Valle',
-      destinoServicio: 'Monte Albán',
-      fecha_registro: '02/09/2025',
+      folio: 104,
+      fecha_orden_servicio: '2025-10-22',
+      nombre_prestador: 'Antonio Alonso Meza',
+
+      nombre_conductor: 'Ana',
+      apellido_paterno_conductor: 'Sánchez',
+      apellido_materno_conductor: 'Torres',
+      telefono_conductor: '9514567890',
+      licencia_conductor: 'LIC456789',
+
+      nombre_cliente: 'Hotel Casa Oaxaca',
+      telefono_cliente: '9510987654',
+      ciudad_origen: 'Hotel Casa Oaxaca',
+      punto_intermedio: 'Teotitlán del Valle',
+      destino: 'Monte Albán',
+      numero_pasajeros: 18,
+      fecha_inicio_servicio: '2025-11-01',
+      horario_inicio_servicio: '10:00',
+      fecha_final_servicio: '2025-11-03',
+      horario_final_servicio: '20:00',
+      horario_final_real: '20:10',
+      itinerario_detallado: 'Visita a talleres de Teotitlán, luego Monte Albán, regreso al hotel',
+      direccion_retorno: 'García Vigil 407, Centro',
+
+      marca: 'Chevrolet',
+      modelo: 'Express',
+      placa: 'GHI-012-G',
+      km_inicial: 30000,
+      km_final: 30600,
+      litros_consumidos: 60,
+      rendimiento: '10 km/L',
+
+      importe: 6800,
+      pagado: 'si',
+      forma_pago: 'Transferencia',
+      fecha_pago: '2025-10-31',
+      costo_proveedor: 4200,
+      forma_pago_proveedor: 'transferencia',
+      pagado_proveedor: 'si',
+
+      fecha_registro: '22/10/2025',
       activo: true
     },
     {
       id: 5,
-      fechaSalida: '2025-11-05',
-      fechaRegreso: '2025-11-07',
-      horaSalida: '08:30',
-      horaRegreso: '18:30',
-      pasajeros: '25',
-      origenServicio: 'Oaxaca Terminal ADO',
-      puntoIntermedio: 'Mitla',
-      destinoServicio: 'Zipolite',
-      fecha_registro: '03/09/2025',
+      folio: 105,
+      fecha_orden_servicio: '2025-10-25',
+      nombre_prestador: 'Antonio Alonso Meza',
+
+      nombre_conductor: 'Roberto',
+      apellido_paterno_conductor: 'Mendoza',
+      apellido_materno_conductor: 'Cruz',
+      telefono_conductor: '9515678901',
+      licencia_conductor: 'LIC567890',
+
+      nombre_cliente: 'Agencia Viajes Express',
+      telefono_cliente: '9511098765',
+      ciudad_origen: 'Oaxaca Terminal ADO',
+      punto_intermedio: 'Mitla',
+      destino: 'Zipolite',
+      numero_pasajeros: 25,
+      fecha_inicio_servicio: '2025-11-05',
+      horario_inicio_servicio: '08:30',
+      fecha_final_servicio: '2025-11-07',
+      horario_final_servicio: '18:30',
+      horario_final_real: '18:40',
+      itinerario_detallado: 'Salida terminal, parada Mitla, destino playa Zipolite',
+      direccion_retorno: 'Calzada Héroes de Chapultepec 1036',
+
+      marca: 'Toyota',
+      modelo: 'Coaster',
+      placa: 'JKL-345-H',
+      km_inicial: 20000,
+      km_final: 21200,
+      litros_consumidos: 120,
+      rendimiento: '10 km/L',
+
+      importe: 9500,
+      pagado: 'no',
+      forma_pago: '',
+      fecha_pago: '',
+      costo_proveedor: 6000,
+      forma_pago_proveedor: 'efectivo',
+      pagado_proveedor: 'no',
+
+      fecha_registro: '25/10/2025',
       activo: false
-    },
-    {
-      id: 6,
-      fechaSalida: '2025-11-10',
-      fechaRegreso: '2025-11-12',
-      horaSalida: '06:00',
-      horaRegreso: '16:00',
-      pasajeros: '10',
-      origenServicio: 'Oaxaca Centro',
-      puntoIntermedio: '',
-      destinoServicio: 'San José del Pacífico',
-      fecha_registro: '03/09/2025',
-      activo: true
-    },
-    {
-      id: 7,
-      fechaSalida: '2025-11-15',
-      fechaRegreso: '2025-11-17',
-      horaSalida: '09:30',
-      horaRegreso: '19:30',
-      pasajeros: '22',
-      origenServicio: 'Oaxaca Aeropuerto',
-      puntoIntermedio: 'Zaachila',
-      destinoServicio: 'Mazunte',
-      fecha_registro: '04/09/2025',
-      activo: true
-    },
-    {
-      id: 8,
-      fechaSalida: '2025-11-20',
-      fechaRegreso: '2025-11-22',
-      horaSalida: '07:00',
-      horaRegreso: '17:00',
-      pasajeros: '14',
-      origenServicio: 'Hotel Quinta Real',
-      puntoIntermedio: 'Santa María del Tule',
-      destinoServicio: 'Benito Juárez',
-      fecha_registro: '04/09/2025',
-      activo: true
-    },
-    {
-      id: 9,
-      fechaSalida: '2025-11-25',
-      fechaRegreso: '2025-11-27',
-      horaSalida: '08:00',
-      horaRegreso: '18:00',
-      pasajeros: '16',
-      origenServicio: 'Oaxaca Centro',
-      puntoIntermedio: '',
-      destinoServicio: 'Chacahua',
-      fecha_registro: '05/09/2025',
-      activo: true
-    },
-    {
-      id: 10,
-      fechaSalida: '2025-12-01',
-      fechaRegreso: '2025-12-03',
-      horaSalida: '10:30',
-      horaRegreso: '20:30',
-      pasajeros: '30',
-      origenServicio: 'Oaxaca Terminal',
-      puntoIntermedio: 'Zimatlán',
-      destinoServicio: 'Puerto Ángel',
-      fecha_registro: '05/09/2025',
-      activo: true
     }
   ]);
 
@@ -168,11 +268,12 @@ const TablaOrdenes = () => {
     const busqueda = terminoBusqueda.toLowerCase();
     return (
       orden.id.toString().includes(busqueda) ||
-      (orden.origenServicio && orden.origenServicio.toLowerCase().includes(busqueda)) ||
-      (orden.destinoServicio && orden.destinoServicio.toLowerCase().includes(busqueda)) ||
-      (orden.puntoIntermedio && orden.puntoIntermedio.toLowerCase().includes(busqueda)) ||
-      (orden.pasajeros && orden.pasajeros.toString().includes(busqueda)) ||
-      (orden.fechaSalida && orden.fechaSalida.includes(busqueda))
+      orden.folio.toString().includes(busqueda) ||
+      (orden.nombre_cliente && orden.nombre_cliente.toLowerCase().includes(busqueda)) ||
+      (orden.ciudad_origen && orden.ciudad_origen.toLowerCase().includes(busqueda)) ||
+      (orden.destino && orden.destino.toLowerCase().includes(busqueda)) ||
+      (orden.nombre_conductor && orden.nombre_conductor.toLowerCase().includes(busqueda)) ||
+      (orden.fecha_inicio_servicio && orden.fecha_inicio_servicio.includes(busqueda))
     );
   });
 
@@ -217,11 +318,9 @@ const TablaOrdenes = () => {
         generarYDescargarPDF(orden);
         break;
       case 'eliminar':
-        // Si es admin y el orden está inactivo, mostrar modal de eliminar definitivo
         if (esAdministrador && !orden.activo) {
           setOrdenAEliminarDefinitivo(orden);
         } else {
-          // Si no, mostrar modal de desactivar (ModalEliminarOrden)
           setOrdenAEliminar(orden);
         }
         break;
@@ -245,7 +344,6 @@ const TablaOrdenes = () => {
 
   const manejarGuardarOrden = async (datosActualizados) => {
     try {
-      // Actualizar el orden en el estado
       setDatosOrdenes(datosOrdenes.map(orden =>
         orden.id === datosActualizados.id ? datosActualizados : orden
       ));
@@ -260,13 +358,11 @@ const TablaOrdenes = () => {
 
   const manejarEliminarOrden = async (orden) => {
     if (!orden) {
-      // Cancelar eliminación
       setOrdenAEliminar(null);
       return;
     }
 
     try {
-      // SOFT DELETE: Marcar como inactivo
       setDatosOrdenes(datosOrdenes.map(c =>
         c.id === orden.id ? { ...c, activo: false } : c
       ));
@@ -283,7 +379,6 @@ const TablaOrdenes = () => {
 
   const manejarRestaurar = async (orden) => {
     try {
-      // Restaurar orden (marcarlo como activo)
       setDatosOrdenes(datosOrdenes.map(c =>
         c.id === orden.id ? { ...c, activo: true } : c
       ));
@@ -297,7 +392,6 @@ const TablaOrdenes = () => {
 
   const manejarEliminarDefinitivo = async (orden) => {
     try {
-      // Eliminar definitivamente del sistema
       setDatosOrdenes(datosOrdenes.filter(c => c.id !== orden.id));
 
       setOrdenAEliminarDefinitivo(null);
@@ -307,11 +401,9 @@ const TablaOrdenes = () => {
     }
   };
 
-  // Función para generar el pdf actualizado 
   const generarYDescargarPDF = async (orden) => {
     try {
-
-      const plantillaUrl = '/TRANSPORTE_P1.pdf';
+      const plantillaUrl = '/ORDENSERVICIO.pdf';
       const plantillaBytes = await fetch(plantillaUrl).then(res => res.arrayBuffer());
 
       const pdfDoc = await PDFDocument.load(plantillaBytes);
@@ -319,25 +411,202 @@ const TablaOrdenes = () => {
       const firstPage = pages[0];
 
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-
-      firstPage.drawText(new Date(orden.fechaSalida).toLocaleDateString('es-MX'), {
-        x: 150,
-        y: 700,
-        size: 12,
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      firstPage.drawText(new Date(orden.fecha_inicio_servicio).toLocaleDateString('es-MX'), {
+        x: 70,
+        y: 737,
+        size: 9,
         font: font,
         color: rgb(0, 0, 0),
       });
 
+      firstPage.drawText(orden.nombre_prestador || '', {
+        x: 220,
+        y: 250,
+        size: 9,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      //folio
+      firstPage.drawText(orden.folio.toString(), {
+        x: 530,
+        y: 718.5,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
+
+      firstPage.drawText(orden.telefono_conductor.toString(), {
+        x: 110,
+        y: 668,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+
+      })
+
+      firstPage.drawText(orden.licencia_conductor.toString(), {
+        x: 330,
+        y: 671,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      firstPage.drawText(orden.nombre_cliente, {
+        x: 120,
+        y: 641,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+      firstPage.drawText(orden.telefono_cliente.toString(), {
+        x: 435,
+        y: 639,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+      firstPage.drawText(orden.ciudad_origen, {
+        x: 88,
+        y: 606,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+      firstPage.drawText(orden.destino, {
+        x: 285,
+        y: 606,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+      firstPage.drawText(orden.numero_pasajeros.toString(), {
+        x: 478,
+        y: 606,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      firstPage.drawText(new Date(orden.fecha_inicio_servicio).toLocaleDateString('es-MX'), {
+        x: 160,
+        y: 587,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+
+      firstPage.drawText(orden.horario_inicio_servicio, {
+        x: 330,
+        y: 586,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      firstPage.drawText(new Date(orden.fecha_final_servicio).toLocaleDateString('es-MX'), {
+        x: 160,
+        y: 570,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+
+      firstPage.drawText(orden.punto_intermedio, {
+        x: 150,
+        y: 548,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      firstPage.drawText(orden.itinerario_detallado, {
+        x: 100,
+        y: 528,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      firstPage.drawText(orden.direccion_retorno, {
+        x: 150,
+        y: 433,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      const nombreCompletoConduct = `${orden.nombre_conductor || ''} ${orden.apellido_paterno_conductor || ''} ${orden.apellido_materno_conductor || ''}`.trim();
+
+      firstPage.drawText(nombreCompletoConduct, {
+        x: 130,
+        y: 683,
+        size: 10,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
+
+      //VEHICULO
+
+      firstPage.drawText(orden.marca, {
+        x: 140,
+        y: 392,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+      firstPage.drawText(orden.modelo, {
+        x: 170,
+        y: 392,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+      firstPage.drawText(orden.placa, {
+        x: 213,
+        y: 392,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      firstPage.drawText(orden.km_inicial.toString(), {
+        x: 140,
+        y: 377,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      firstPage.drawText(orden.km_final.toString(), {
+        x: 213,
+        y: 377,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+      firstPage.drawText(orden.litros_consumidos.toString(), {
+        x: 140,
+        y: 350,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      })
+
+
 
       const pdfBytes = await pdfDoc.save();
-
 
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Orden_${orden.id}_${orden.fechaSalida}.pdf`;
+      link.download = `Orden_${orden.folio}_${orden.fecha_inicio_servicio}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
 
@@ -360,7 +629,6 @@ const TablaOrdenes = () => {
             <div className="Ordenes-linea Ordenes-amarilla"></div>
           </div>
           <h1 className="Ordenes-titulo">Gestión de Órdenes</h1>
-          {/* Badge de rol */}
           <span style={{
             padding: '0.25rem 0.75rem',
             borderRadius: '12px',
@@ -374,7 +642,6 @@ const TablaOrdenes = () => {
           </span>
         </div>
 
-        {/* Estadísticas */}
         <div className="Ordenes-contenedor-estadisticas">
           <div className="Ordenes-estadistica">
             <div className="Ordenes-icono-estadistica-circular">
@@ -457,12 +724,13 @@ const TablaOrdenes = () => {
           <thead>
             <tr className="Ordenes-fila-encabezado">
               <th>ID</th>
-              <th>FECHA SALIDA</th>
-              <th>FECHA REGRESO</th>
-              <th>HORA SALIDA</th>
-              <th>HORA REGRESO</th>
+              <th>FOLIO</th>
+              <th>FECHA ORDEN</th>
+              <th>CLIENTE</th>
               <th>ORIGEN</th>
               <th>DESTINO</th>
+              <th>FECHA INICIO</th>
+              <th>CONDUCTOR</th>
               <th>ACCIONES</th>
             </tr>
           </thead>
@@ -479,23 +747,28 @@ const TablaOrdenes = () => {
                 <td data-label="ID" className="Ordenes-columna-id">
                   <span className="Ordenes-badge-id">#{orden.id.toString().padStart(3, '0')}</span>
                 </td>
-                <td data-label="Fecha Salida" className="Ordenes-columna-fecha">
-                  <span className="Ordenes-fecha">{new Date(orden.fechaSalida).toLocaleDateString('es-MX')}</span>
+                <td data-label="Folio" className="Ordenes-columna-fecha">
+                  <span className="Ordenes-badge-lead">{orden.folio}</span>
                 </td>
-                <td data-label="Fecha Regreso" className="Ordenes-columna-fecha">
-                  <span className="Ordenes-fecha">{new Date(orden.fechaRegreso).toLocaleDateString('es-MX')}</span>
+                <td data-label="Fecha Orden" className="Ordenes-columna-fecha">
+                  <span className="Ordenes-fecha">{new Date(orden.fecha_orden_servicio).toLocaleDateString('es-MX')}</span>
                 </td>
-                <td data-label="Hora Salida" className="Ordenes-columna-hora">
-                  <span className="Ordenes-badge-hora">{orden.horaSalida}</span>
-                </td>
-                <td data-label="Hora Regreso" className="Ordenes-columna-hora">
-                  <span className="Ordenes-badge-hora">{orden.horaRegreso}</span>
+                <td data-label="Cliente" className="Ordenes-columna-origen">
+                  <span className="Ordenes-ubicacion">{orden.nombre_cliente}</span>
                 </td>
                 <td data-label="Origen" className="Ordenes-columna-origen">
-                  <span className="Ordenes-ubicacion">{orden.origenServicio}</span>
+                  <span className="Ordenes-ubicacion">{orden.ciudad_origen}</span>
                 </td>
                 <td data-label="Destino" className="Ordenes-columna-destino">
-                  <span className="Ordenes-ubicacion">{orden.destinoServicio}</span>
+                  <span className="Ordenes-ubicacion">{orden.destino}</span>
+                </td>
+                <td data-label="Fecha Inicio" className="Ordenes-columna-fecha">
+                  <span className="Ordenes-fecha">{new Date(orden.fecha_inicio_servicio).toLocaleDateString('es-MX')}</span>
+                </td>
+                <td data-label="Conductor" className="Ordenes-columna-origen">
+                  <span className="Ordenes-nombre-principal">
+                    {orden.nombre_conductor} {orden.apellido_paterno_conductor}
+                  </span>
                 </td>
                 <td data-label="Acciones" className="Ordenes-columna-acciones">
                   <div className="Ordenes-botones-accion">
@@ -521,7 +794,6 @@ const TablaOrdenes = () => {
                       <Edit size={16} />
                     </button>
 
-                    {/* Botón RESTAURAR solo para admin con órdenes inactivas */}
                     {esAdministrador && !orden.activo && (
                       <button
                         className="Ordenes-boton-accion Ordenes-restaurar"

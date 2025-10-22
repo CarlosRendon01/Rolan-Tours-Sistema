@@ -1,85 +1,103 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Save, User, Mail, Phone, FileText, Globe, MapPin, Car, Users, AlertCircle, Calendar, Clock } from 'lucide-react';
+import { X, Save, User, FileText, MapPin, Car, DollarSign, AlertCircle, Calendar, Clock, Users } from 'lucide-react';
 
-// Asegúrate de importar el CSS actualizado
+// Importar CSS
 import './ModalEditarOrden.css';
 
 const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
   const [datosFormulario, setDatosFormulario] = useState({
-    // Datos cotización
-    fechaSalida: '',
-    fechaRegreso: '',
-    horaSalida: '',
-    horaRegreso: '',
-    pasajeros: '',
-    origenServicio: '',
-    puntoIntermedio: '',
-    destinoServicio: '',
+    // Datos Orden de Servicio
+    folio: '',
+    fecha_orden_servicio: '',
+    nombre_prestador: 'Antonio Alonso Meza',
 
-    // Datos vehículo
-    modelo_vehiculo: '',
-    marca_vehiculo: '',
-    color: '',
-    n_pasajero_vehiculo: '',
-    numero_serie: '',
-    numero_tag: '',
-    numero_placa: '',
+    // Datos Conductor
+    nombre_conductor: '',
+    apellido_paterno_conductor: '',
+    apellido_materno_conductor: '',
+    telefono_conductor: '',
+    licencia_conductor: '',
 
-    // Datos Operadores 
-    nombre_operador: '',
-    apellido_materno_operador: '',
-    apellido_paterno_operador: '',
-    telefono_operador: '',
-    telefono_familiar_operador: '',
-    correo_electronico_operador: '',
-    numero_licencia: '',
+    // Datos Servicio
+    nombre_cliente: '',
+    telefono_cliente: '',
+    ciudad_origen: '',
+    punto_intermedio: '',
+    destino: '',
+    numero_pasajeros: '',
+    fecha_inicio_servicio: '',
+    horario_inicio_servicio: '',
+    fecha_final_servicio: '',
+    horario_final_servicio: '',
+    horario_final_real: '',
+    itinerario_detallado: '',
+    direccion_retorno: '',
 
-    // Datos guía
-    nombre_guia: '',
-    apellido_paterno_guia: '',
-    apellido_materno_guia: '',
-    telefono_guia: '',
-    correo_electronico_guia: '',
+    // Vehículo
+    marca: '',
+    modelo: '',
+    placa: '',
+    km_inicial: '',
+    km_final: '',
+    litros_consumidos: '',
+    rendimiento: '',
+
+    // Control Interno
+    importe: '',
+    pagado: 'no',
+    forma_pago: '',
+    fecha_pago: '',
+    costo_proveedor: '',
+    forma_pago_proveedor: 'transferencia',
+    pagado_proveedor: 'no'
   });
 
-  const [seccionActiva, setSeccionActiva] = useState('cotizacion');
+  const [seccionActiva, setSeccionActiva] = useState('orden');
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
 
-  // Cargar datos del orden cuando se abre el modal
   useEffect(() => {
     if (estaAbierto && orden) {
       setDatosFormulario({
-        fechaSalida: orden.fechaSalida || '',
-        fechaRegreso: orden.fechaRegreso || '',
-        horaSalida: orden.horaSalida || '',
-        horaRegreso: orden.horaRegreso || '',
-        pasajeros: orden.pasajeros || '',
-        origenServicio: orden.origenServicio || '',
-        puntoIntermedio: orden.puntoIntermedio || '',
-        destinoServicio: orden.destinoServicio || '',
+        folio: orden.folio || '',
+        fecha_orden_servicio: orden.fecha_orden_servicio || '',
+        nombre_prestador: orden.nombre_prestador || 'Antonio Alonso Meza',
 
-        modelo_vehiculo: orden.modelo_vehiculo || '',
-        marca_vehiculo: orden.marca_vehiculo || '',
-        color: orden.color || '',
-        n_pasajero_vehiculo: orden.n_pasajero_vehiculo || '',
-        numero_serie: orden.numero_serie || '',
-        numero_tag: orden.numero_tag || '',
-        numero_placa: orden.numero_placa || '',
+        nombre_conductor: orden.nombre_conductor || '',
+        apellido_paterno_conductor: orden.apellido_paterno_conductor || '',
+        apellido_materno_conductor: orden.apellido_materno_conductor || '',
+        telefono_conductor: orden.telefono_conductor || '',
+        licencia_conductor: orden.licencia_conductor || '',
 
-        nombre_operador: orden.nombre_operador || '',
-        apellido_materno_operador: orden.apellido_materno_operador || '',
-        apellido_paterno_operador: orden.apellido_paterno_operador || '',
-        telefono_operador: orden.telefono_operador || '',
-        telefono_familiar_operador: orden.telefono_familiar_operador || '',
-        correo_electronico_operador: orden.correo_electronico_operador || '',
-        numero_licencia: orden.numero_licencia || '',
+        nombre_cliente: orden.nombre_cliente || '',
+        telefono_cliente: orden.telefono_cliente || '',
+        ciudad_origen: orden.ciudad_origen || '',
+        punto_intermedio: orden.punto_intermedio || '',
+        destino: orden.destino || '',
+        numero_pasajeros: orden.numero_pasajeros || '',
+        fecha_inicio_servicio: orden.fecha_inicio_servicio || '',
+        horario_inicio_servicio: orden.horario_inicio_servicio || '',
+        fecha_final_servicio: orden.fecha_final_servicio || '',
+        horario_final_servicio: orden.horario_final_servicio || '',
+        horario_final_real: orden.horario_final_real || '',
+        itinerario_detallado: orden.itinerario_detallado || '',
+        direccion_retorno: orden.direccion_retorno || '',
 
-        nombre_guia: orden.nombre_guia || '',
-        apellido_paterno_guia: orden.apellido_paterno_guia || '',
-        apellido_materno_guia: orden.apellido_materno_guia || '',
-        telefono_guia: orden.telefono_guia || '',
-        correo_electronico_guia: orden.correo_electronico_guia || '',
+        marca: orden.marca || '',
+        modelo: orden.modelo || '',
+        placa: orden.placa || '',
+        km_inicial: orden.km_inicial || '',
+        km_final: orden.km_final || '',
+        litros_consumidos: orden.litros_consumidos || '',
+        rendimiento: orden.rendimiento || '',
+
+        importe: orden.importe || '',
+        pagado: orden.pagado || 'no',
+        forma_pago: orden.forma_pago || '',
+        fecha_pago: orden.fecha_pago || '',
+        costo_proveedor: orden.costo_proveedor || '',
+        forma_pago_proveedor: orden.forma_pago_proveedor || 'transferencia',
+        pagado_proveedor: orden.pagado_proveedor || 'no'
       });
       setErrores({});
     }
@@ -108,48 +126,49 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
   const validarFormulario = () => {
     const nuevosErrores = {};
 
-    // Validaciones campos cotización (obligatorios)
-    if (!datosFormulario.fechaSalida.trim()) {
-      nuevosErrores.fechaSalida = 'La fecha de salida es obligatoria';
+    // Validaciones Datos Orden de Servicio
+    if (!datosFormulario.folio) {
+      nuevosErrores.folio = 'El folio es obligatorio';
     }
 
-    if (!datosFormulario.fechaRegreso.trim()) {
-      nuevosErrores.fechaRegreso = 'La fecha de regreso es obligatoria';
+    if (!datosFormulario.fecha_orden_servicio.trim()) {
+      nuevosErrores.fecha_orden_servicio = 'La fecha de orden de servicio es obligatoria';
     }
 
-    // Validar que fecha de regreso sea posterior a fecha de salida
-    if (datosFormulario.fechaSalida && datosFormulario.fechaRegreso) {
-      const salida = new Date(datosFormulario.fechaSalida);
-      const regreso = new Date(datosFormulario.fechaRegreso);
-      if (regreso < salida) {
-        nuevosErrores.fechaRegreso = 'La fecha de regreso debe ser posterior a la de salida';
+    // Validaciones Datos Servicio
+    if (!datosFormulario.nombre_cliente.trim()) {
+      nuevosErrores.nombre_cliente = 'El nombre del cliente es obligatorio';
+    }
+
+    if (!datosFormulario.ciudad_origen.trim()) {
+      nuevosErrores.ciudad_origen = 'La ciudad de origen es obligatoria';
+    }
+
+    if (!datosFormulario.destino.trim()) {
+      nuevosErrores.destino = 'El destino es obligatorio';
+    }
+
+    if (!datosFormulario.numero_pasajeros) {
+      nuevosErrores.numero_pasajeros = 'El número de pasajeros es obligatorio';
+    } else if (parseInt(datosFormulario.numero_pasajeros) < 1) {
+      nuevosErrores.numero_pasajeros = 'Debe haber al menos 1 pasajero';
+    }
+
+    if (!datosFormulario.fecha_inicio_servicio.trim()) {
+      nuevosErrores.fecha_inicio_servicio = 'La fecha de inicio es obligatoria';
+    }
+
+    if (!datosFormulario.fecha_final_servicio.trim()) {
+      nuevosErrores.fecha_final_servicio = 'La fecha final es obligatoria';
+    }
+
+    // Validar que fecha final sea posterior a fecha inicial
+    if (datosFormulario.fecha_inicio_servicio && datosFormulario.fecha_final_servicio) {
+      const inicio = new Date(datosFormulario.fecha_inicio_servicio);
+      const final = new Date(datosFormulario.fecha_final_servicio);
+      if (final < inicio) {
+        nuevosErrores.fecha_final_servicio = 'La fecha final debe ser posterior a la de inicio';
       }
-    }
-
-    if (!datosFormulario.horaSalida.trim()) {
-      nuevosErrores.horaSalida = 'La hora de salida es obligatoria';
-    }
-
-    if (!datosFormulario.horaRegreso.trim()) {
-      nuevosErrores.horaRegreso = 'La hora de regreso es obligatoria';
-    }
-
-    if (!datosFormulario.pasajeros) {
-      nuevosErrores.pasajeros = 'El número de pasajeros es obligatorio';
-    } else if (parseInt(datosFormulario.pasajeros) < 1) {
-      nuevosErrores.pasajeros = 'Debe haber al menos 1 pasajero';
-    }
-
-    if (!datosFormulario.origenServicio.trim()) {
-      nuevosErrores.origenServicio = 'El origen del servicio es obligatorio';
-    } else if (datosFormulario.origenServicio.trim().length < 3) {
-      nuevosErrores.origenServicio = 'El origen debe tener al menos 3 caracteres';
-    }
-
-    if (!datosFormulario.destinoServicio.trim()) {
-      nuevosErrores.destinoServicio = 'El destino del servicio es obligatorio';
-    } else if (datosFormulario.destinoServicio.trim().length < 3) {
-      nuevosErrores.destinoServicio = 'El destino debe tener al menos 3 caracteres';
     }
 
     return nuevosErrores;
@@ -182,15 +201,27 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
 
-      // Cambiar a la sección que tiene errores
-      const camposCotizacion = ['fechaSalida', 'fechaRegreso', 'horaSalida', 'horaRegreso', 'pasajeros', 'origenServicio', 'puntoIntermedio', 'destinoServicio'];
-      const erroresEnCotizacion = Object.keys(nuevosErrores).some(key => camposCotizacion.includes(key));
+      const camposOrden = ['folio', 'fecha_orden_servicio'];
+      const camposConductor = ['nombre_conductor', 'apellido_paterno_conductor', 'apellido_materno_conductor', 'telefono_conductor', 'licencia_conductor'];
+      const camposServicio = ['nombre_cliente', 'telefono_cliente', 'ciudad_origen', 'punto_intermedio', 'destino', 'numero_pasajeros', 'fecha_inicio_servicio', 'horario_inicio_servicio', 'fecha_final_servicio', 'horario_final_servicio', 'horario_final_real', 'itinerario_detallado', 'direccion_retorno'];
+      const camposVehiculo = ['marca', 'modelo', 'placa', 'km_inicial', 'km_final', 'litros_consumidos', 'rendimiento'];
+      const camposControl = ['importe', 'pagado', 'forma_pago', 'fecha_pago', 'costo_proveedor', 'forma_pago_proveedor', 'pagado_proveedor'];
 
-      if (erroresEnCotizacion) {
-        setSeccionActiva('cotizacion');
+      const erroresEnOrden = Object.keys(nuevosErrores).some(key => camposOrden.includes(key));
+      const erroresEnConductor = Object.keys(nuevosErrores).some(key => camposConductor.includes(key));
+      const erroresEnServicio = Object.keys(nuevosErrores).some(key => camposServicio.includes(key));
+      const erroresEnVehiculo = Object.keys(nuevosErrores).some(key => camposVehiculo.includes(key));
+
+      if (erroresEnOrden) {
+        setSeccionActiva('orden');
+      } else if (erroresEnConductor) {
+        setSeccionActiva('conductor');
+      } else if (erroresEnServicio) {
+        setSeccionActiva('servicio');
+      } else if (erroresEnVehiculo) {
+        setSeccionActiva('vehiculo');
       }
 
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.getElementById(primerCampoConError);
@@ -215,7 +246,6 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
       };
 
       await alGuardar(datosActualizados);
-
       mostrarNotificacionExito();
 
       setTimeout(() => {
@@ -256,145 +286,345 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
     );
   };
 
-  const renderSeccionCotizacion = () => (
+  const renderSeccionOrden = () => (
     <div className="meo-form-grid">
       <div className="meo-form-group">
-        <label htmlFor="fechaSalida">
-          <Calendar size={18} />
-          Fecha de Salida <span className="meo-required">*</span>
-        </label>
-        <input
-          type="date"
-          id="fechaSalida"
-          name="fechaSalida"
-          value={datosFormulario.fechaSalida}
-          onChange={manejarCambioFormulario}
-          className={errores.fechaSalida ? 'input-error' : ''}
-          disabled={guardando}
-        />
-        <MensajeError nombreCampo="fechaSalida" />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="fechaRegreso">
-          <Calendar size={18} />
-          Fecha de Regreso <span className="meo-required">*</span>
-        </label>
-        <input
-          type="date"
-          id="fechaRegreso"
-          name="fechaRegreso"
-          value={datosFormulario.fechaRegreso}
-          onChange={manejarCambioFormulario}
-          className={errores.fechaRegreso ? 'input-error' : ''}
-          disabled={guardando}
-        />
-        <MensajeError nombreCampo="fechaRegreso" />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="horaSalida">
-          <Clock size={18} />
-          Hora de Salida <span className="meo-required">*</span>
-        </label>
-        <input
-          type="time"
-          id="horaSalida"
-          name="horaSalida"
-          value={datosFormulario.horaSalida}
-          onChange={manejarCambioFormulario}
-          className={errores.horaSalida ? 'input-error' : ''}
-          disabled={guardando}
-        />
-        <MensajeError nombreCampo="horaSalida" />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="horaRegreso">
-          <Clock size={18} />
-          Hora de Regreso <span className="meo-required">*</span>
-        </label>
-        <input
-          type="time"
-          id="horaRegreso"
-          name="horaRegreso"
-          value={datosFormulario.horaRegreso}
-          onChange={manejarCambioFormulario}
-          className={errores.horaRegreso ? 'input-error' : ''}
-          disabled={guardando}
-        />
-        <MensajeError nombreCampo="horaRegreso" />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="pasajeros">
-          <Users size={18} />
-          Número de Pasajeros <span className="meo-required">*</span>
+        <label htmlFor="folio">
+          <FileText size={18} />
+          Folio <span className="meo-required">*</span>
         </label>
         <input
           type="number"
-          id="pasajeros"
-          name="pasajeros"
-          value={datosFormulario.pasajeros}
+          id="folio"
+          name="folio"
+          value={datosFormulario.folio}
           onChange={manejarCambioFormulario}
-          className={errores.pasajeros ? 'input-error' : ''}
-          placeholder="15"
+          className={errores.folio ? 'input-error' : ''}
+          placeholder="001"
           disabled={guardando}
           min="1"
         />
-        <MensajeError nombreCampo="pasajeros" />
+        <MensajeError nombreCampo="folio" />
       </div>
 
       <div className="meo-form-group">
-        <label htmlFor="origenServicio">
-          <MapPin size={18} />
-          Origen del Servicio <span className="meo-required">*</span>
+        <label htmlFor="fecha_orden_servicio">
+          <Calendar size={18} />
+          Fecha de Orden de Servicio <span className="meo-required">*</span>
+        </label>
+        <input
+          type="date"
+          id="fecha_orden_servicio"
+          name="fecha_orden_servicio"
+          value={datosFormulario.fecha_orden_servicio}
+          onChange={manejarCambioFormulario}
+          className={errores.fecha_orden_servicio ? 'input-error' : ''}
+          disabled={guardando}
+        />
+        <MensajeError nombreCampo="fecha_orden_servicio" />
+      </div>
+
+      <div className="meo-form-group form-group-full">
+        <label htmlFor="nombre_prestador">
+          <User size={18} />
+          Nombre del Prestador de Servicios
         </label>
         <input
           type="text"
-          id="origenServicio"
-          name="origenServicio"
-          value={datosFormulario.origenServicio}
+          id="nombre_prestador"
+          name="nombre_prestador"
+          value={datosFormulario.nombre_prestador}
           onChange={manejarCambioFormulario}
-          className={errores.origenServicio ? 'input-error' : ''}
-          placeholder="Ciudad o dirección de origen"
+          disabled={guardando}
+          style={{ backgroundColor: '#f9fafb' }}
+        />
+      </div>
+    </div>
+  );
+
+  const renderSeccionConductor = () => (
+    <div className="meo-form-grid">
+      <div className="meo-form-group">
+        <label htmlFor="nombre_conductor">
+          <User size={18} />
+          Nombre del Conductor
+        </label>
+        <input
+          type="text"
+          id="nombre_conductor"
+          name="nombre_conductor"
+          value={datosFormulario.nombre_conductor}
+          onChange={manejarCambioFormulario}
+          placeholder="Nombre"
           disabled={guardando}
         />
-        <MensajeError nombreCampo="origenServicio" />
       </div>
 
       <div className="meo-form-group">
-        <label htmlFor="puntoIntermedio">
+        <label htmlFor="apellido_paterno_conductor">Apellido Paterno</label>
+        <input
+          type="text"
+          id="apellido_paterno_conductor"
+          name="apellido_paterno_conductor"
+          value={datosFormulario.apellido_paterno_conductor}
+          onChange={manejarCambioFormulario}
+          placeholder="Apellido Paterno"
+          disabled={guardando}
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="apellido_materno_conductor">Apellido Materno</label>
+        <input
+          type="text"
+          id="apellido_materno_conductor"
+          name="apellido_materno_conductor"
+          value={datosFormulario.apellido_materno_conductor}
+          onChange={manejarCambioFormulario}
+          placeholder="Apellido Materno"
+          disabled={guardando}
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="telefono_conductor">Teléfono</label>
+        <input
+          type="tel"
+          id="telefono_conductor"
+          name="telefono_conductor"
+          value={datosFormulario.telefono_conductor}
+          onChange={manejarCambioFormulario}
+          placeholder="9511234567"
+          disabled={guardando}
+          maxLength="10"
+        />
+      </div>
+
+      <div className="meo-form-group form-group-full">
+        <label htmlFor="licencia_conductor">
+          <FileText size={18} />
+          Número de Licencia
+        </label>
+        <input
+          type="text"
+          id="licencia_conductor"
+          name="licencia_conductor"
+          value={datosFormulario.licencia_conductor}
+          onChange={manejarCambioFormulario}
+          placeholder="Número de licencia"
+          disabled={guardando}
+        />
+      </div>
+    </div>
+  );
+
+  const renderSeccionServicio = () => (
+    <div className="meo-form-grid">
+      <div className="meo-form-group">
+        <label htmlFor="nombre_cliente">
+          <User size={18} />
+          Nombre de Cliente <span className="meo-required">*</span>
+        </label>
+        <input
+          type="text"
+          id="nombre_cliente"
+          name="nombre_cliente"
+          value={datosFormulario.nombre_cliente}
+          onChange={manejarCambioFormulario}
+          className={errores.nombre_cliente ? 'input-error' : ''}
+          placeholder="Nombre del cliente"
+          disabled={guardando}
+        />
+        <MensajeError nombreCampo="nombre_cliente" />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="telefono_cliente">Teléfono</label>
+        <input
+          type="tel"
+          id="telefono_cliente"
+          name="telefono_cliente"
+          value={datosFormulario.telefono_cliente}
+          onChange={manejarCambioFormulario}
+          placeholder="9511234567"
+          disabled={guardando}
+          maxLength="10"
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="ciudad_origen">
+          <MapPin size={18} />
+          Ciudad de Origen <span className="meo-required">*</span>
+        </label>
+        <input
+          type="text"
+          id="ciudad_origen"
+          name="ciudad_origen"
+          value={datosFormulario.ciudad_origen}
+          onChange={manejarCambioFormulario}
+          className={errores.ciudad_origen ? 'input-error' : ''}
+          placeholder="Ciudad de origen"
+          disabled={guardando}
+        />
+        <MensajeError nombreCampo="ciudad_origen" />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="punto_intermedio">
           <MapPin size={18} />
           Punto Intermedio
         </label>
         <input
           type="text"
-          id="puntoIntermedio"
-          name="puntoIntermedio"
-          value={datosFormulario.puntoIntermedio}
+          id="punto_intermedio"
+          name="punto_intermedio"
+          value={datosFormulario.punto_intermedio}
           onChange={manejarCambioFormulario}
-          placeholder="Parada intermedia (opcional)"
+          placeholder="Punto intermedio (opcional)"
           disabled={guardando}
         />
       </div>
 
       <div className="meo-form-group">
-        <label htmlFor="destinoServicio">
+        <label htmlFor="destino">
           <MapPin size={18} />
-          Destino del Servicio <span className="meo-required">*</span>
+          Destino <span className="meo-required">*</span>
         </label>
         <input
           type="text"
-          id="destinoServicio"
-          name="destinoServicio"
-          value={datosFormulario.destinoServicio}
+          id="destino"
+          name="destino"
+          value={datosFormulario.destino}
           onChange={manejarCambioFormulario}
-          className={errores.destinoServicio ? 'input-error' : ''}
-          placeholder="Ciudad o dirección de destino"
+          className={errores.destino ? 'input-error' : ''}
+          placeholder="Destino final"
           disabled={guardando}
         />
-        <MensajeError nombreCampo="destinoServicio" />
+        <MensajeError nombreCampo="destino" />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="numero_pasajeros">
+          <Users size={18} />
+          Número de Pasajeros <span className="meo-required">*</span>
+        </label>
+        <input
+          type="number"
+          id="numero_pasajeros"
+          name="numero_pasajeros"
+          value={datosFormulario.numero_pasajeros}
+          onChange={manejarCambioFormulario}
+          className={errores.numero_pasajeros ? 'input-error' : ''}
+          placeholder="15"
+          disabled={guardando}
+          min="1"
+        />
+        <MensajeError nombreCampo="numero_pasajeros" />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="fecha_inicio_servicio">
+          <Calendar size={18} />
+          Fecha Inicio Servicio <span className="meo-required">*</span>
+        </label>
+        <input
+          type="date"
+          id="fecha_inicio_servicio"
+          name="fecha_inicio_servicio"
+          value={datosFormulario.fecha_inicio_servicio}
+          onChange={manejarCambioFormulario}
+          className={errores.fecha_inicio_servicio ? 'input-error' : ''}
+          disabled={guardando}
+        />
+        <MensajeError nombreCampo="fecha_inicio_servicio" />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="horario_inicio_servicio">
+          <Clock size={18} />
+          Horario Inicio Servicio
+        </label>
+        <input
+          type="time"
+          id="horario_inicio_servicio"
+          name="horario_inicio_servicio"
+          value={datosFormulario.horario_inicio_servicio}
+          onChange={manejarCambioFormulario}
+          disabled={guardando}
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="fecha_final_servicio">
+          <Calendar size={18} />
+          Fecha Final Servicio <span className="meo-required">*</span>
+        </label>
+        <input
+          type="date"
+          id="fecha_final_servicio"
+          name="fecha_final_servicio"
+          value={datosFormulario.fecha_final_servicio}
+          onChange={manejarCambioFormulario}
+          className={errores.fecha_final_servicio ? 'input-error' : ''}
+          disabled={guardando}
+        />
+        <MensajeError nombreCampo="fecha_final_servicio" />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="horario_final_servicio">
+          <Clock size={18} />
+          Horario Final Servicio
+        </label>
+        <input
+          type="time"
+          id="horario_final_servicio"
+          name="horario_final_servicio"
+          value={datosFormulario.horario_final_servicio}
+          onChange={manejarCambioFormulario}
+          disabled={guardando}
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="horario_final_real">
+          <Clock size={18} />
+          Horario Final Real
+        </label>
+        <input
+          type="time"
+          id="horario_final_real"
+          name="horario_final_real"
+          value={datosFormulario.horario_final_real}
+          onChange={manejarCambioFormulario}
+          disabled={guardando}
+        />
+      </div>
+
+      <div className="meo-form-group form-group-full">
+        <label htmlFor="itinerario_detallado">Itinerario Detallado</label>
+        <textarea
+          id="itinerario_detallado"
+          name="itinerario_detallado"
+          value={datosFormulario.itinerario_detallado}
+          onChange={manejarCambioFormulario}
+          placeholder="Descripción detallada del itinerario..."
+          disabled={guardando}
+        />
+      </div>
+
+      <div className="meo-form-group form-group-full">
+        <label htmlFor="direccion_retorno">Dirección de Retorno</label>
+        <input
+          type="text"
+          id="direccion_retorno"
+          name="direccion_retorno"
+          value={datosFormulario.direccion_retorno}
+          onChange={manejarCambioFormulario}
+          placeholder="Dirección completa de retorno"
+          disabled={guardando}
+        />
       </div>
     </div>
   );
@@ -402,15 +632,15 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
   const renderSeccionVehiculo = () => (
     <div className="meo-form-grid">
       <div className="meo-form-group">
-        <label htmlFor="marca_vehiculo">
+        <label htmlFor="marca">
           <Car size={18} />
-          Marca del Vehículo
+          Marca
         </label>
         <input
           type="text"
-          id="marca_vehiculo"
-          name="marca_vehiculo"
-          value={datosFormulario.marca_vehiculo}
+          id="marca"
+          name="marca"
+          value={datosFormulario.marca}
           onChange={manejarCambioFormulario}
           placeholder="Toyota, Mercedes, etc."
           disabled={guardando}
@@ -418,15 +648,15 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
       </div>
 
       <div className="meo-form-group">
-        <label htmlFor="modelo_vehiculo">
+        <label htmlFor="modelo">
           <Car size={18} />
-          Modelo del Vehículo
+          Modelo
         </label>
         <input
           type="text"
-          id="modelo_vehiculo"
-          name="modelo_vehiculo"
-          value={datosFormulario.modelo_vehiculo}
+          id="modelo"
+          name="modelo"
+          value={datosFormulario.modelo}
           onChange={manejarCambioFormulario}
           placeholder="Hiace, Sprinter, etc."
           disabled={guardando}
@@ -434,261 +664,185 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
       </div>
 
       <div className="meo-form-group">
-        <label htmlFor="color">Color</label>
+        <label htmlFor="placa">Placa</label>
         <input
           type="text"
-          id="color"
-          name="color"
-          value={datosFormulario.color}
-          onChange={manejarCambioFormulario}
-          placeholder="Blanco, Negro, etc."
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="n_pasajero_vehiculo">
-          <Users size={18} />
-          Número de Pasajeros
-        </label>
-        <input
-          type="number"
-          id="n_pasajero_vehiculo"
-          name="n_pasajero_vehiculo"
-          value={datosFormulario.n_pasajero_vehiculo}
-          onChange={manejarCambioFormulario}
-          placeholder="15"
-          disabled={guardando}
-          min="1"
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="numero_serie">Número de Serie</label>
-        <input
-          type="text"
-          id="numero_serie"
-          name="numero_serie"
-          value={datosFormulario.numero_serie}
-          onChange={manejarCambioFormulario}
-          placeholder="Ingrese el número de serie"
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="numero_tag">Número de TAG</label>
-        <input
-          type="text"
-          id="numero_tag"
-          name="numero_tag"
-          value={datosFormulario.numero_tag}
-          onChange={manejarCambioFormulario}
-          placeholder="Ingrese el número de TAG"
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="numero_placa">Número de Placa</label>
-        <input
-          type="text"
-          id="numero_placa"
-          name="numero_placa"
-          value={datosFormulario.numero_placa}
+          id="placa"
+          name="placa"
+          value={datosFormulario.placa}
           onChange={manejarCambioFormulario}
           placeholder="ABC-123-D"
           disabled={guardando}
           style={{ textTransform: 'uppercase' }}
         />
       </div>
-    </div>
-  );
 
-  const renderSeccionOperador = () => (
-    <div className="meo-form-grid">
       <div className="meo-form-group">
-        <label htmlFor="nombre_operador">
-          <User size={18} />
-          Nombre del Operador
-        </label>
+        <label htmlFor="km_inicial">KM Inicial</label>
+        <input
+          type="number"
+          id="km_inicial"
+          name="km_inicial"
+          value={datosFormulario.km_inicial}
+          onChange={manejarCambioFormulario}
+          placeholder="10000"
+          disabled={guardando}
+          min="0"
+          step="0.1"
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="km_final">KM Final</label>
+        <input
+          type="number"
+          id="km_final"
+          name="km_final"
+          value={datosFormulario.km_final}
+          onChange={manejarCambioFormulario}
+          placeholder="10500"
+          disabled={guardando}
+          min="0"
+          step="0.1"
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="litros_consumidos">Litros Consumidos</label>
+        <input
+          type="number"
+          id="litros_consumidos"
+          name="litros_consumidos"
+          value={datosFormulario.litros_consumidos}
+          onChange={manejarCambioFormulario}
+          placeholder="50"
+          disabled={guardando}
+          min="0"
+          step="0.01"
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="rendimiento">Rendimiento</label>
         <input
           type="text"
-          id="nombre_operador"
-          name="nombre_operador"
-          value={datosFormulario.nombre_operador}
+          id="rendimiento"
+          name="rendimiento"
+          value={datosFormulario.rendimiento}
           onChange={manejarCambioFormulario}
-          placeholder="Nombre"
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="apellido_paterno_operador">Apellido Paterno</label>
-        <input
-          type="text"
-          id="apellido_paterno_operador"
-          name="apellido_paterno_operador"
-          value={datosFormulario.apellido_paterno_operador}
-          onChange={manejarCambioFormulario}
-          placeholder="Apellido Paterno"
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="apellido_materno_operador">Apellido Materno</label>
-        <input
-          type="text"
-          id="apellido_materno_operador"
-          name="apellido_materno_operador"
-          value={datosFormulario.apellido_materno_operador}
-          onChange={manejarCambioFormulario}
-          placeholder="Apellido Materno"
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="telefono_operador">
-          <Phone size={18} />
-          Teléfono del Operador
-        </label>
-        <input
-          type="tel"
-          id="telefono_operador"
-          name="telefono_operador"
-          value={datosFormulario.telefono_operador}
-          onChange={manejarCambioFormulario}
-          placeholder="9511234567"
-          disabled={guardando}
-          maxLength="10"
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="telefono_familiar_operador">Teléfono Familiar</label>
-        <input
-          type="tel"
-          id="telefono_familiar_operador"
-          name="telefono_familiar_operador"
-          value={datosFormulario.telefono_familiar_operador}
-          onChange={manejarCambioFormulario}
-          placeholder="9511234567"
-          disabled={guardando}
-          maxLength="10"
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="correo_electronico_operador">
-          <Mail size={18} />
-          Email del Operador
-        </label>
-        <input
-          type="email"
-          id="correo_electronico_operador"
-          name="correo_electronico_operador"
-          value={datosFormulario.correo_electronico_operador}
-          onChange={manejarCambioFormulario}
-          placeholder="operador@ejemplo.com"
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="numero_licencia">
-          <FileText size={18} />
-          Número de Licencia
-        </label>
-        <input
-          type="text"
-          id="numero_licencia"
-          name="numero_licencia"
-          value={datosFormulario.numero_licencia}
-          onChange={manejarCambioFormulario}
-          placeholder="Ingrese el número de licencia"
+          placeholder="10 km/L"
           disabled={guardando}
         />
       </div>
     </div>
   );
 
-  const renderSeccionGuia = () => (
+  const renderSeccionControl = () => (
     <div className="meo-form-grid">
       <div className="meo-form-group">
-        <label htmlFor="nombre_guia">
-          <User size={18} />
-          Nombre del Guía
+        <label htmlFor="importe">
+          <DollarSign size={18} />
+          Importe
         </label>
         <input
-          type="text"
-          id="nombre_guia"
-          name="nombre_guia"
-          value={datosFormulario.nombre_guia}
+          type="number"
+          id="importe"
+          name="importe"
+          value={datosFormulario.importe}
           onChange={manejarCambioFormulario}
-          placeholder="Nombre"
+          placeholder="5000.00"
           disabled={guardando}
+          min="0"
+          step="0.01"
         />
       </div>
 
       <div className="meo-form-group">
-        <label htmlFor="apellido_paterno_guia">Apellido Paterno</label>
+        <label htmlFor="pagado">Pagado</label>
+        <select
+          id="pagado"
+          name="pagado"
+          value={datosFormulario.pagado}
+          onChange={manejarCambioFormulario}
+          disabled={guardando}
+        >
+          <option value="no">No</option>
+          <option value="si">Sí</option>
+        </select>
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="forma_pago">Forma de Pago</label>
         <input
           type="text"
-          id="apellido_paterno_guia"
-          name="apellido_paterno_guia"
-          value={datosFormulario.apellido_paterno_guia}
+          id="forma_pago"
+          name="forma_pago"
+          value={datosFormulario.forma_pago}
           onChange={manejarCambioFormulario}
-          placeholder="Apellido Paterno"
+          placeholder="Transferencia, efectivo, etc."
           disabled={guardando}
         />
       </div>
 
       <div className="meo-form-group">
-        <label htmlFor="apellido_materno_guia">Apellido Materno</label>
-        <input
-          type="text"
-          id="apellido_materno_guia"
-          name="apellido_materno_guia"
-          value={datosFormulario.apellido_materno_guia}
-          onChange={manejarCambioFormulario}
-          placeholder="Apellido Materno"
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="telefono_guia">
-          <Phone size={18} />
-          Teléfono del Guía
+        <label htmlFor="fecha_pago">
+          <Calendar size={18} />
+          Fecha de Pago
         </label>
         <input
-          type="tel"
-          id="telefono_guia"
-          name="telefono_guia"
-          value={datosFormulario.telefono_guia}
+          type="date"
+          id="fecha_pago"
+          name="fecha_pago"
+          value={datosFormulario.fecha_pago}
           onChange={manejarCambioFormulario}
-          placeholder="9511234567"
           disabled={guardando}
-          maxLength="10"
         />
       </div>
 
       <div className="meo-form-group">
-        <label htmlFor="correo_electronico_guia">
-          <Mail size={18} />
-          Email del Guía
+        <label htmlFor="costo_proveedor">
+          <DollarSign size={18} />
+          Costo Proveedor
         </label>
         <input
-          type="email"
-          id="correo_electronico_guia"
-          name="correo_electronico_guia"
-          value={datosFormulario.correo_electronico_guia}
+          type="number"
+          id="costo_proveedor"
+          name="costo_proveedor"
+          value={datosFormulario.costo_proveedor}
           onChange={manejarCambioFormulario}
-          placeholder="guia@ejemplo.com"
+          placeholder="3000.00"
           disabled={guardando}
+          min="0"
+          step="0.01"
         />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="forma_pago_proveedor">Forma Pago Proveedor</label>
+        <select
+          id="forma_pago_proveedor"
+          name="forma_pago_proveedor"
+          value={datosFormulario.forma_pago_proveedor}
+          onChange={manejarCambioFormulario}
+          disabled={guardando}
+        >
+          <option value="transferencia">Transferencia</option>
+          <option value="efectivo">Efectivo</option>
+        </select>
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="pagado_proveedor">Pagado Proveedor</label>
+        <select
+          id="pagado_proveedor"
+          name="pagado_proveedor"
+          value={datosFormulario.pagado_proveedor}
+          onChange={manejarCambioFormulario}
+          disabled={guardando}
+        >
+          <option value="no">No</option>
+          <option value="si">Sí</option>
+        </select>
       </div>
     </div>
   );
@@ -709,12 +863,28 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
         {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${seccionActiva === 'cotizacion' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('cotizacion')}
+            className={`meo-tab-button ${seccionActiva === 'orden' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('orden')}
             type="button"
           >
             <FileText size={18} />
-            Datos Cotización
+            Datos Orden de Servicio
+          </button>
+          <button
+            className={`meo-tab-button ${seccionActiva === 'conductor' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('conductor')}
+            type="button"
+          >
+            <User size={18} />
+            Datos Conductor
+          </button>
+          <button
+            className={`meo-tab-button ${seccionActiva === 'servicio' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('servicio')}
+            type="button"
+          >
+            <MapPin size={18} />
+            Datos Servicio
           </button>
           <button
             className={`meo-tab-button ${seccionActiva === 'vehiculo' ? 'active' : ''}`}
@@ -725,29 +895,22 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
             Vehículo
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'operador' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('operador')}
+            className={`meo-tab-button ${seccionActiva === 'control' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('control')}
             type="button"
           >
-            <User size={18} />
-            Operador
-          </button>
-          <button
-            className={`meo-tab-button ${seccionActiva === 'guia' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('guia')}
-            type="button"
-          >
-            <Users size={18} />
-            Guía
+            <DollarSign size={18} />
+            Control Internos
           </button>
         </div>
 
         {/* Formulario (scrolleable) */}
         <form onSubmit={manejarEnvio} className="meo-form">
-          {seccionActiva === 'cotizacion' && renderSeccionCotizacion()}
+          {seccionActiva === 'orden' && renderSeccionOrden()}
+          {seccionActiva === 'conductor' && renderSeccionConductor()}
+          {seccionActiva === 'servicio' && renderSeccionServicio()}
           {seccionActiva === 'vehiculo' && renderSeccionVehiculo()}
-          {seccionActiva === 'operador' && renderSeccionOperador()}
-          {seccionActiva === 'guia' && renderSeccionGuia()}
+          {seccionActiva === 'control' && renderSeccionControl()}
         </form>
 
         {/* Footer */}
