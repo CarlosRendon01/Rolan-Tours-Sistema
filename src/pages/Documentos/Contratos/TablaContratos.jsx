@@ -9,15 +9,12 @@ import ModalEliminarDefinitivo from './Modales/ModalEliminarDefinitivo';
 import './TablaContratos.css';
 
 const TablaContratos = () => {
-  // CAMBIAR ESTO SEGÚN EL ROL DEL USUARIO LOGUEADO
-  // true = Administrador, false = Usuario normal
   const [esAdministrador, setEsAdministrador] = useState(false);
 
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
 
-  // Estados para los modales
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [contratoAEliminar, setContratoAEliminar] = useState(null);
@@ -25,137 +22,211 @@ const TablaContratos = () => {
   const [contratoAEliminarDefinitivo, setContratoAEliminarDefinitivo] = useState(null);
   const [contratoSeleccionado, setContratoSeleccionado] = useState(null);
 
-  // Estado para los datos de Contratos - AHORA CON CAMPO "activo"
+  // Estado con la NUEVA ESTRUCTURA de datos
   const [datosContratos, setDatosContratos] = useState([
     {
       id: 1,
-      fechaSalida: '2025-10-20',
-      fechaRegreso: '2025-10-22',
-      horaSalida: '08:00',
-      horaRegreso: '18:00',
-      pasajeros: '15',
-      origenServicio: 'Oaxaca Centro',
-      puntoIntermedio: 'Tlacolula',
-      destinoServicio: 'Puerto Escondido',
+      // Datos de Contrato
+      representante_empresa: 'PEDRO HERNÁNDEZ RUÍZ',
+      domicilio: 'Calle Independencia 123, Centro, Oaxaca',
+
+      // Datos del Servicio
+      nombre_cliente: 'Juan Pérez García',
+      nacionalidad: 'Mexicana',
+      telefono_cliente: '9511234567',
+      ciudad_origen: 'Oaxaca Centro',
+      punto_intermedio: 'Tlacolula',
+      destino: 'Puerto Escondido',
+      tipo_pasaje: 'Turismo Estatal',
+      n_unidades_contratadas: 1,
+      numero_pasajeros: 15,
+      fecha_inicio_servicio: '2025-10-20',
+      horario_inicio_servicio: '08:00',
+      fecha_final_servicio: '2025-10-22',
+      horario_final_servicio: '18:00',
+      itinerario_detallado: 'Salida de Oaxaca, parada en Tlacolula para desayuno, llegada a Puerto Escondido.',
+
+      // Costo Extra
+      importe_servicio: 8500.00,
+      anticipo: 3000.00,
+      fecha_liquidacion: '2025-10-15',
+      costos_cubiertos: [
+        'Combustible a consumir durante todo el trayecto',
+        'Peaje de Casetas necesarias durante todo el trayecto',
+        'Viáticos del conductor'
+      ],
+      otro_costo_especificacion: '',
+
+      // Datos Vehículo
+      marca_vehiculo: 'Toyota',
+      modelo_vehiculo: 'Hiace',
+      placa_vehiculo: 'ABC-123-D',
+      capacidad_vehiculo: 15,
+      aire_acondicionado: true,
+      asientos_reclinables: true,
+
       fecha_registro: '02/09/2025',
       activo: true
     },
     {
       id: 2,
-      fechaSalida: '2025-10-25',
-      fechaRegreso: '2025-10-27',
-      horaSalida: '09:00',
-      horaRegreso: '19:00',
-      pasajeros: '20',
-      origenServicio: 'Oaxaca Aeropuerto',
-      puntoIntermedio: 'Ocotlán',
-      destinoServicio: 'Huatulco',
+      representante_empresa: 'PEDRO HERNÁNDEZ RUÍZ',
+      domicilio: 'Calle Independencia 123, Centro, Oaxaca',
+
+      nombre_cliente: 'María López Sánchez',
+      nacionalidad: 'Estadounidense',
+      telefono_cliente: '9512345678',
+      ciudad_origen: 'Oaxaca Aeropuerto',
+      punto_intermedio: 'Ocotlán',
+      destino: 'Huatulco',
+      tipo_pasaje: 'Turismo Internacional',
+      n_unidades_contratadas: 1,
+      numero_pasajeros: 20,
+      fecha_inicio_servicio: '2025-10-25',
+      horario_inicio_servicio: '09:00',
+      fecha_final_servicio: '2025-10-27',
+      horario_final_servicio: '19:00',
+      itinerario_detallado: 'Recogida en aeropuerto, tour por Ocotlán, destino final Huatulco.',
+
+      importe_servicio: 12000.00,
+      anticipo: 5000.00,
+      fecha_liquidacion: '2025-10-20',
+      costos_cubiertos: [
+        'Combustible a consumir durante todo el trayecto',
+        'Seguro de Viajero en accidente automovilístico siempre y cuando el pasajero esté dentro de la unidad',
+        'Piso en Aeropuerto'
+      ],
+      otro_costo_especificacion: '',
+
+      marca_vehiculo: 'Mercedes',
+      modelo_vehiculo: 'Sprinter',
+      placa_vehiculo: 'XYZ-456-E',
+      capacidad_vehiculo: 20,
+      aire_acondicionado: true,
+      asientos_reclinables: true,
+
       fecha_registro: '02/09/2025',
       activo: true
     },
     {
       id: 3,
-      fechaSalida: '2025-10-28',
-      fechaRegreso: '2025-10-30',
-      horaSalida: '07:30',
-      horaRegreso: '17:30',
-      pasajeros: '12',
-      origenServicio: 'Oaxaca Centro',
-      puntoIntermedio: '',
-      destinoServicio: 'Hierve el Agua',
+      representante_empresa: 'PEDRO HERNÁNDEZ RUÍZ',
+      domicilio: 'Calle Independencia 123, Centro, Oaxaca',
+
+      nombre_cliente: 'Carlos Ramírez Torres',
+      nacionalidad: 'Mexicana',
+      telefono_cliente: '9513456789',
+      ciudad_origen: 'Oaxaca Centro',
+      punto_intermedio: '',
+      destino: 'Hierve el Agua',
+      tipo_pasaje: 'Nacional',
+      n_unidades_contratadas: 1,
+      numero_pasajeros: 12,
+      fecha_inicio_servicio: '2025-10-28',
+      horario_inicio_servicio: '07:30',
+      fecha_final_servicio: '2025-10-30',
+      horario_final_servicio: '17:30',
+      itinerario_detallado: 'Viaje directo a Hierve el Agua, visita guiada incluida.',
+
+      importe_servicio: 6500.00,
+      anticipo: 2000.00,
+      fecha_liquidacion: '2025-10-25',
+      costos_cubiertos: [
+        'Combustible a consumir durante todo el trayecto',
+        'Viáticos del conductor'
+      ],
+      otro_costo_especificacion: '',
+
+      marca_vehiculo: 'Nissan',
+      modelo_vehiculo: 'Urvan',
+      placa_vehiculo: 'DEF-789-G',
+      capacidad_vehiculo: 12,
+      aire_acondicionado: false,
+      asientos_reclinables: true,
+
       fecha_registro: '02/09/2025',
       activo: false
     },
     {
       id: 4,
-      fechaSalida: '2025-11-01',
-      fechaRegreso: '2025-11-03',
-      horaSalida: '10:00',
-      horaRegreso: '20:00',
-      pasajeros: '18',
-      origenServicio: 'Hotel Casa Oaxaca',
-      puntoIntermedio: 'Teotitlán del Valle',
-      destinoServicio: 'Monte Albán',
+      representante_empresa: 'PEDRO HERNÁNDEZ RUÍZ',
+      domicilio: 'Calle Independencia 123, Centro, Oaxaca',
+
+      nombre_cliente: 'Ana Martínez Flores',
+      nacionalidad: 'Mexicana',
+      telefono_cliente: '9514567890',
+      ciudad_origen: 'Hotel Casa Oaxaca',
+      punto_intermedio: 'Teotitlán del Valle',
+      destino: 'Monte Albán',
+      tipo_pasaje: 'Turismo Estatal',
+      n_unidades_contratadas: 1,
+      numero_pasajeros: 18,
+      fecha_inicio_servicio: '2025-11-01',
+      horario_inicio_servicio: '10:00',
+      fecha_final_servicio: '2025-11-03',
+      horario_final_servicio: '20:00',
+      itinerario_detallado: 'Salida del hotel, visita a Teotitlán del Valle, tour en Monte Albán.',
+
+      importe_servicio: 9500.00,
+      anticipo: 4000.00,
+      fecha_liquidacion: '2025-10-28',
+      costos_cubiertos: [
+        'Combustible a consumir durante todo el trayecto',
+        'Peaje de Casetas necesarias durante todo el trayecto',
+        'Servicio a disposición en el destino por máximo 30km a la redonda'
+      ],
+      otro_costo_especificacion: '',
+
+      marca_vehiculo: 'Ford',
+      modelo_vehiculo: 'Transit',
+      placa_vehiculo: 'GHI-012-J',
+      capacidad_vehiculo: 18,
+      aire_acondicionado: true,
+      asientos_reclinables: false,
+
       fecha_registro: '02/09/2025',
       activo: true
     },
     {
       id: 5,
-      fechaSalida: '2025-11-05',
-      fechaRegreso: '2025-11-07',
-      horaSalida: '08:30',
-      horaRegreso: '18:30',
-      pasajeros: '25',
-      origenServicio: 'Oaxaca Terminal ADO',
-      puntoIntermedio: 'Mitla',
-      destinoServicio: 'Zipolite',
+      representante_empresa: 'PEDRO HERNÁNDEZ RUÍZ',
+      domicilio: 'Calle Independencia 123, Centro, Oaxaca',
+
+      nombre_cliente: 'Roberto Gómez Luna',
+      nacionalidad: 'Mexicana',
+      telefono_cliente: '9515678901',
+      ciudad_origen: 'Oaxaca Terminal ADO',
+      punto_intermedio: 'Mitla',
+      destino: 'Zipolite',
+      tipo_pasaje: 'Escolar',
+      n_unidades_contratadas: 2,
+      numero_pasajeros: 25,
+      fecha_inicio_servicio: '2025-11-05',
+      horario_inicio_servicio: '08:30',
+      fecha_final_servicio: '2025-11-07',
+      horario_final_servicio: '18:30',
+      itinerario_detallado: 'Excursión escolar con parada en Mitla para actividades educativas.',
+
+      importe_servicio: 15000.00,
+      anticipo: 7000.00,
+      fecha_liquidacion: '2025-11-01',
+      costos_cubiertos: [
+        'Combustible a consumir durante todo el trayecto',
+        'Peaje de Casetas necesarias durante todo el trayecto',
+        'Viáticos del conductor',
+        'Alimentos no especificados'
+      ],
+      otro_costo_especificacion: '',
+
+      marca_vehiculo: 'Chevrolet',
+      modelo_vehiculo: 'Express',
+      placa_vehiculo: 'JKL-345-M',
+      capacidad_vehiculo: 15,
+      aire_acondicionado: true,
+      asientos_reclinables: true,
+
       fecha_registro: '03/09/2025',
       activo: false
-    },
-    {
-      id: 6,
-      fechaSalida: '2025-11-10',
-      fechaRegreso: '2025-11-12',
-      horaSalida: '06:00',
-      horaRegreso: '16:00',
-      pasajeros: '10',
-      origenServicio: 'Oaxaca Centro',
-      puntoIntermedio: '',
-      destinoServicio: 'San José del Pacífico',
-      fecha_registro: '03/09/2025',
-      activo: true
-    },
-    {
-      id: 7,
-      fechaSalida: '2025-11-15',
-      fechaRegreso: '2025-11-17',
-      horaSalida: '09:30',
-      horaRegreso: '19:30',
-      pasajeros: '22',
-      origenServicio: 'Oaxaca Aeropuerto',
-      puntoIntermedio: 'Zaachila',
-      destinoServicio: 'Mazunte',
-      fecha_registro: '04/09/2025',
-      activo: true
-    },
-    {
-      id: 8,
-      fechaSalida: '2025-11-20',
-      fechaRegreso: '2025-11-22',
-      horaSalida: '07:00',
-      horaRegreso: '17:00',
-      pasajeros: '14',
-      origenServicio: 'Hotel Quinta Real',
-      puntoIntermedio: 'Santa María del Tule',
-      destinoServicio: 'Benito Juárez',
-      fecha_registro: '04/09/2025',
-      activo: true
-    },
-    {
-      id: 9,
-      fechaSalida: '2025-11-25',
-      fechaRegreso: '2025-11-27',
-      horaSalida: '08:00',
-      horaRegreso: '18:00',
-      pasajeros: '16',
-      origenServicio: 'Oaxaca Centro',
-      puntoIntermedio: '',
-      destinoServicio: 'Chacahua',
-      fecha_registro: '05/09/2025',
-      activo: true
-    },
-    {
-      id: 10,
-      fechaSalida: '2025-12-01',
-      fechaRegreso: '2025-12-03',
-      horaSalida: '10:30',
-      horaRegreso: '20:30',
-      pasajeros: '30',
-      origenServicio: 'Oaxaca Terminal',
-      puntoIntermedio: 'Zimatlán',
-      destinoServicio: 'Puerto Ángel',
-      fecha_registro: '05/09/2025',
-      activo: true
     }
   ]);
 
@@ -164,26 +235,24 @@ const TablaContratos = () => {
       return false;
     }
 
-    // FILTRO DE BÚSQUEDA
     const busqueda = terminoBusqueda.toLowerCase();
     return (
       contrato.id.toString().includes(busqueda) ||
-      (contrato.origenServicio && contrato.origenServicio.toLowerCase().includes(busqueda)) ||
-      (contrato.destinoServicio && contrato.destinoServicio.toLowerCase().includes(busqueda)) ||
-      (contrato.puntoIntermedio && contrato.puntoIntermedio.toLowerCase().includes(busqueda)) ||
-      (contrato.pasajeros && contrato.pasajeros.toString().includes(busqueda)) ||
-      (contrato.fechaSalida && contrato.fechaSalida.includes(busqueda))
+      (contrato.nombre_cliente && contrato.nombre_cliente.toLowerCase().includes(busqueda)) ||
+      (contrato.ciudad_origen && contrato.ciudad_origen.toLowerCase().includes(busqueda)) ||
+      (contrato.destino && contrato.destino.toLowerCase().includes(busqueda)) ||
+      (contrato.punto_intermedio && contrato.punto_intermedio.toLowerCase().includes(busqueda)) ||
+      (contrato.numero_pasajeros && contrato.numero_pasajeros.toString().includes(busqueda)) ||
+      (contrato.fecha_inicio_servicio && contrato.fecha_inicio_servicio.includes(busqueda))
     );
   });
 
-  // Calcular paginación
   const totalRegistros = contratosFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const contratosPaginados = contratosFiltrados.slice(indiceInicio, indiceFin);
 
-  // Calcular estadísticas
   const contratosActivos = datosContratos.filter(c => c.activo).length;
   const contratosInactivos = datosContratos.filter(c => !c.activo).length;
 
@@ -217,11 +286,9 @@ const TablaContratos = () => {
         generarYDescargarPDF(contrato);
         break;
       case 'eliminar':
-        // Si es admin y el contrato está inactivo, mostrar modal de eliminar definitivo
         if (esAdministrador && !contrato.activo) {
           setContratoAEliminarDefinitivo(contrato);
         } else {
-          // Si no, mostrar modal de desactivar (ModalEliminarContrato)
           setContratoAEliminar(contrato);
         }
         break;
@@ -245,12 +312,11 @@ const TablaContratos = () => {
 
   const manejarGuardarContrato = async (datosActualizados) => {
     try {
-      // Actualizar el contrato en el estado
       setDatosContratos(datosContratos.map(contrato =>
         contrato.id === datosActualizados.id ? datosActualizados : contrato
       ));
 
-      console.log('Contrato actualizada:', datosActualizados);
+      console.log('Contrato actualizado:', datosActualizados);
       return Promise.resolve();
     } catch (error) {
       console.error('Error al actualizar contrato:', error);
@@ -260,19 +326,17 @@ const TablaContratos = () => {
 
   const manejarEliminarContrato = async (contrato) => {
     if (!contrato) {
-      // Cancelar eliminación
       setContratoAEliminar(null);
       return;
     }
 
     try {
-      // SOFT DELETE: Marcar como inactivo
       setDatosContratos(datosContratos.map(c =>
         c.id === contrato.id ? { ...c, activo: false } : c
       ));
 
       setContratoAEliminar(null);
-      console.log('Contrato DESACTIVADA:', contrato);
+      console.log('Contrato DESACTIVADO:', contrato);
       return Promise.resolve();
     } catch (error) {
       console.error('Error al desactivar contrato:', error);
@@ -283,13 +347,12 @@ const TablaContratos = () => {
 
   const manejarRestaurar = async (contrato) => {
     try {
-      // Restaurar contrato (marcarlo como activo)
       setDatosContratos(datosContratos.map(c =>
         c.id === contrato.id ? { ...c, activo: true } : c
       ));
 
       setContratoARestaurar(null);
-      console.log('Contrato RESTAURADA:', contrato);
+      console.log('Contrato RESTAURADO:', contrato);
     } catch (error) {
       console.error('Error al restaurar contrato:', error);
     }
@@ -297,20 +360,17 @@ const TablaContratos = () => {
 
   const manejarEliminarDefinitivo = async (contrato) => {
     try {
-      // Eliminar definitivamente del sistema
       setDatosContratos(datosContratos.filter(c => c.id !== contrato.id));
 
       setContratoAEliminarDefinitivo(null);
-      console.log('Contrato eliminada DEFINITIVAMENTE:', contrato);
+      console.log('Contrato eliminado DEFINITIVAMENTE:', contrato);
     } catch (error) {
       console.error('Error al eliminar definitivamente contrato:', error);
     }
   };
 
-  // Función para generar el pdf actualizado 
   const generarYDescargarPDF = async (contrato) => {
     try {
-
       const plantillaUrl = '/TRANSPORTE_P1.pdf';
       const plantillaBytes = await fetch(plantillaUrl).then(res => res.arrayBuffer());
 
@@ -320,8 +380,8 @@ const TablaContratos = () => {
 
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-
-      firstPage.drawText(new Date(contrato.fechaSalida).toLocaleDateString('es-MX'), {
+      // Ejemplo de datos a llenar en el PDF
+      firstPage.drawText(contrato.nombre_cliente || '', {
         x: 150,
         y: 700,
         size: 12,
@@ -329,15 +389,21 @@ const TablaContratos = () => {
         color: rgb(0, 0, 0),
       });
 
+      firstPage.drawText(new Date(contrato.fecha_inicio_servicio).toLocaleDateString('es-MX'), {
+        x: 150,
+        y: 680,
+        size: 12,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
 
       const pdfBytes = await pdfDoc.save();
-
 
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Contrato_${contrato.id}_${contrato.fechaSalida}.pdf`;
+      link.download = `Contrato_${contrato.id}_${contrato.nombre_cliente}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
 
@@ -350,7 +416,6 @@ const TablaContratos = () => {
 
   return (
     <div className="Contratos-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="Contratos-encabezado">
         <div className="Contratos-seccion-logo">
           <div className="Contratos-lineas-decorativas">
@@ -360,7 +425,6 @@ const TablaContratos = () => {
             <div className="Contratos-linea Contratos-amarilla"></div>
           </div>
           <h1 className="Contratos-titulo">Gestión de Contratos</h1>
-          {/* Badge de rol */}
           <span style={{
             padding: '0.25rem 0.75rem',
             borderRadius: '12px',
@@ -374,14 +438,13 @@ const TablaContratos = () => {
           </span>
         </div>
 
-        {/* Estadísticas */}
         <div className="Contratos-contenedor-estadisticas">
           <div className="Contratos-estadistica">
             <div className="Contratos-icono-estadistica-circular">
               <Users size={20} />
             </div>
             <div className="Contratos-info-estadistica">
-              <span className="Contratos-label-estadistica">ACTIVAS: {contratosActivos}</span>
+              <span className="Contratos-label-estadistica">ACTIVOS: {contratosActivos}</span>
             </div>
           </div>
 
@@ -391,17 +454,15 @@ const TablaContratos = () => {
                 <BarChart3 size={20} />
               </div>
               <div className="Contratos-info-estadistica">
-                <span className="Contratos-label-estadistica">INACTIVAS: {contratosInactivos}</span>
+                <span className="Contratos-label-estadistica">INACTIVOS: {contratosInactivos}</span>
               </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Controles */}
       <div className="Contratos-controles">
         <div className="Contratos-control-registros">
-          {/* BOTÓN PARA CAMBIAR DE ROL (SOLO PARA PRUEBAS - ELIMINAR EN PRODUCCIÓN) */}
           <button
             onClick={() => setEsAdministrador(!esAdministrador)}
             style={{
@@ -451,16 +512,15 @@ const TablaContratos = () => {
         </div>
       </div>
 
-      {/* Tabla */}
       <div className="Contratos-contenedor-tabla">
         <table className="Contratos-tabla">
           <thead>
             <tr className="Contratos-fila-encabezado">
               <th>ID</th>
-              <th>FECHA SALIDA</th>
-              <th>FECHA REGRESO</th>
-              <th>HORA SALIDA</th>
-              <th>HORA REGRESO</th>
+              <th>CLIENTE</th>
+              <th>FECHA INICIO</th>
+              <th>FECHA FINAL</th>
+              <th>PASAJEROS</th>
               <th>ORIGEN</th>
               <th>DESTINO</th>
               <th>ACCIONES</th>
@@ -479,23 +539,23 @@ const TablaContratos = () => {
                 <td data-label="ID" className="Contratos-columna-id">
                   <span className="Contratos-badge-id">#{contrato.id.toString().padStart(3, '0')}</span>
                 </td>
-                <td data-label="Fecha Salida" className="Contratos-columna-fecha">
-                  <span className="Contratos-fecha">{new Date(contrato.fechaSalida).toLocaleDateString('es-MX')}</span>
+                <td data-label="Cliente">
+                  <span style={{ fontWeight: 600 }}>{contrato.nombre_cliente}</span>
                 </td>
-                <td data-label="Fecha Regreso" className="Contratos-columna-fecha">
-                  <span className="Contratos-fecha">{new Date(contrato.fechaRegreso).toLocaleDateString('es-MX')}</span>
+                <td data-label="Fecha Inicio">
+                  <span className="Contratos-fecha">{new Date(contrato.fecha_inicio_servicio).toLocaleDateString('es-MX')}</span>
                 </td>
-                <td data-label="Hora Salida" className="Contratos-columna-hora">
-                  <span className="Contratos-badge-hora">{contrato.horaSalida}</span>
+                <td data-label="Fecha Final">
+                  <span className="Contratos-fecha">{new Date(contrato.fecha_final_servicio).toLocaleDateString('es-MX')}</span>
                 </td>
-                <td data-label="Hora Regreso" className="Contratos-columna-hora">
-                  <span className="Contratos-badge-hora">{contrato.horaRegreso}</span>
+                <td data-label="Pasajeros">
+                  <span className="Contratos-badge-hora">{contrato.numero_pasajeros}</span>
                 </td>
-                <td data-label="Origen" className="Contratos-columna-origen">
-                  <span className="Contratos-ubicacion">{contrato.origenServicio}</span>
+                <td data-label="Origen">
+                  <span className="Contratos-ubicacion">{contrato.ciudad_origen}</span>
                 </td>
-                <td data-label="Destino" className="Contratos-columna-destino">
-                  <span className="Contratos-ubicacion">{contrato.destinoServicio}</span>
+                <td data-label="Destino">
+                  <span className="Contratos-ubicacion">{contrato.destino}</span>
                 </td>
                 <td data-label="Acciones" className="Contratos-columna-acciones">
                   <div className="Contratos-botones-accion">
@@ -521,7 +581,6 @@ const TablaContratos = () => {
                       <Edit size={16} />
                     </button>
 
-                    {/* Botón RESTAURAR solo para admin con Contratos inactivas */}
                     {esAdministrador && !contrato.activo && (
                       <button
                         className="Contratos-boton-accion Contratos-restaurar"
@@ -551,7 +610,6 @@ const TablaContratos = () => {
         </table>
       </div>
 
-      {/* Información de paginación y controles */}
       <div className="Contratos-pie-tabla">
         <div className="Contratos-informacion-registros">
           Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
@@ -595,14 +653,12 @@ const TablaContratos = () => {
         </div>
       </div>
 
-      {/* Modal Ver contrato */}
       <ModalVerContrato
         estaAbierto={modalVerAbierto}
         contrato={contratoSeleccionado}
         alCerrar={cerrarModalVer}
       />
 
-      {/* Modal Editar contrato */}
       <ModalEditarContrato
         estaAbierto={modalEditarAbierto}
         contrato={contratoSeleccionado}
@@ -610,7 +666,6 @@ const TablaContratos = () => {
         alGuardar={manejarGuardarContrato}
       />
 
-      {/* Modal Eliminar contrato (Desactivar) */}
       {contratoAEliminar && (
         <ModalEliminarContrato
           contrato={contratoAEliminar}
@@ -619,7 +674,6 @@ const TablaContratos = () => {
         />
       )}
 
-      {/* Modal Restaurar contrato */}
       {contratoARestaurar && (
         <ModalRestaurarContrato
           contrato={contratoARestaurar}
@@ -628,7 +682,6 @@ const TablaContratos = () => {
         />
       )}
 
-      {/* Modal Eliminar Definitivamente */}
       {contratoAEliminarDefinitivo && (
         <ModalEliminarDefinitivo
           contrato={contratoAEliminarDefinitivo}

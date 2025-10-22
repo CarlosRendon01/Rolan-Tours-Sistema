@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { X, User, Mail, Phone, FileText, Globe, MapPin, Car, Users, Calendar, Clock, Hash, CreditCard } from 'lucide-react';
-
-// Importa los estilos del modal editar (ya que usaremos el mismo diseño)
-import './ModalEditarContrato.css';
+import { X, User, Phone, FileText, Globe, MapPin, Car, Users, Calendar, Clock, DollarSign, Building, Hash } from 'lucide-react';
+import './ModalVerContrato.css';
 
 const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
-  const [seccionActiva, setSeccionActiva] = useState('cotizacion');
+  const [seccionActiva, setSeccionActiva] = useState('contrato');
 
-  // Restaurar scroll cuando se cierra
   useEffect(() => {
     const restaurarScroll = () => {
       document.body.style.overflow = '';
@@ -32,7 +29,6 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
     };
   }, [estaAbierto, alCerrar]);
 
-  // Funciones de formato
   const formatearFecha = (fecha) => {
     if (!fecha) return 'No disponible';
     try {
@@ -48,11 +44,19 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
 
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'No disponible';
-    const numeroLimpio = telefono.replace(/\D/g, '');
+    const numeroLimpio = telefono.toString().replace(/\D/g, '');
     if (numeroLimpio.length === 10) {
       return `${numeroLimpio.slice(0, 3)}-${numeroLimpio.slice(3, 6)}-${numeroLimpio.slice(6)}`;
     }
     return telefono;
+  };
+
+  const formatearMoneda = (cantidad) => {
+    if (!cantidad) return 'No disponible';
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(cantidad);
   };
 
   const CampoVisualizacion = ({ icono: Icono, etiqueta, valor }) => (
@@ -61,64 +65,147 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
         <Icono size={18} />
         {etiqueta}
       </label>
-      <div style={{
-        padding: '0.875rem 1rem',
-        border: '2px solid #ebe5e5ff',
-        borderRadius: '10px',
-        backgroundColor: '#f9fafb',
-        color: '#374151',
-        fontSize: '1rem',
-        minHeight: '45px',
-        display: 'flex',
-        alignItems: 'center'
-      }}>
+      <div className="meo-campo-visualizacion">
         {valor || 'No disponible'}
       </div>
     </div>
   );
 
-  const renderSeccionCotizacion = () => (
+  const renderSeccionContrato = () => (
     <div className="meo-form-grid">
       <CampoVisualizacion
-        icono={Calendar}
-        etiqueta="Fecha de Salida"
-        valor={contrato.fechaSalida ? formatearFecha(contrato.fechaSalida) : 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Calendar}
-        etiqueta="Fecha de Regreso"
-        valor={contrato.fechaRegreso ? formatearFecha(contrato.fechaRegreso) : 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Clock}
-        etiqueta="Hora de Salida"
-        valor={contrato.horaSalida || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Clock}
-        etiqueta="Hora de Regreso"
-        valor={contrato.horaRegreso || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Users}
-        etiqueta="Número de Pasajeros"
-        valor={contrato.pasajeros || 'No disponible'}
+        icono={Building}
+        etiqueta="Representante de la Empresa"
+        valor={contrato.representante_empresa}
       />
       <CampoVisualizacion
         icono={MapPin}
-        etiqueta="Origen del Servicio"
-        valor={contrato.origenServicio || 'No disponible'}
+        etiqueta="Domicilio"
+        valor={contrato.domicilio}
+      />
+    </div>
+  );
+
+  const renderSeccionServicio = () => (
+    <div className="meo-form-grid">
+      <CampoVisualizacion
+        icono={User}
+        etiqueta="Nombre del Cliente"
+        valor={contrato.nombre_cliente}
+      />
+      <CampoVisualizacion
+        icono={Globe}
+        etiqueta="Nacionalidad"
+        valor={contrato.nacionalidad}
+      />
+      <CampoVisualizacion
+        icono={Phone}
+        etiqueta="Teléfono"
+        valor={formatearTelefono(contrato.telefono_cliente)}
+      />
+      <CampoVisualizacion
+        icono={MapPin}
+        etiqueta="Ciudad de Origen"
+        valor={contrato.ciudad_origen}
       />
       <CampoVisualizacion
         icono={MapPin}
         etiqueta="Punto Intermedio"
-        valor={contrato.puntoIntermedio || 'No especificado'}
+        valor={contrato.punto_intermedio || 'No especificado'}
       />
       <CampoVisualizacion
         icono={MapPin}
-        etiqueta="Destino del Servicio"
-        valor={contrato.destinoServicio || 'No disponible'}
+        etiqueta="Destino"
+        valor={contrato.destino}
       />
+      <CampoVisualizacion
+        icono={FileText}
+        etiqueta="Tipo de Pasaje"
+        valor={contrato.tipo_pasaje}
+      />
+      <CampoVisualizacion
+        icono={Car}
+        etiqueta="N° Unidades Contratadas"
+        valor={contrato.n_unidades_contratadas}
+      />
+      <CampoVisualizacion
+        icono={Users}
+        etiqueta="Número de Pasajeros"
+        valor={contrato.numero_pasajeros}
+      />
+      <CampoVisualizacion
+        icono={Calendar}
+        etiqueta="Fecha Inicio Servicio"
+        valor={formatearFecha(contrato.fecha_inicio_servicio)}
+      />
+      <CampoVisualizacion
+        icono={Clock}
+        etiqueta="Horario Inicio Servicio"
+        valor={contrato.horario_inicio_servicio}
+      />
+      <CampoVisualizacion
+        icono={Calendar}
+        etiqueta="Fecha Final Servicio"
+        valor={formatearFecha(contrato.fecha_final_servicio)}
+      />
+      <CampoVisualizacion
+        icono={Clock}
+        etiqueta="Horario Final Servicio"
+        valor={contrato.horario_final_servicio}
+      />
+      <div className="meo-form-group form-group-full">
+        <label>
+          <FileText size={18} />
+          Itinerario Detallado
+        </label>
+        <div className="meo-campo-visualizacion">
+          {contrato.itinerario_detallado || 'No disponible'}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSeccionCosto = () => (
+    <div className="meo-form-grid">
+      <CampoVisualizacion
+        icono={DollarSign}
+        etiqueta="Importe del Servicio"
+        valor={formatearMoneda(contrato.importe_servicio)}
+      />
+      <CampoVisualizacion
+        icono={DollarSign}
+        etiqueta="Anticipo"
+        valor={formatearMoneda(contrato.anticipo)}
+      />
+      <CampoVisualizacion
+        icono={Calendar}
+        etiqueta="Fecha de Liquidación"
+        valor={formatearFecha(contrato.fecha_liquidacion)}
+      />
+      <div className="meo-form-group form-group-full">
+        <label>
+          <FileText size={18} />
+          Costos Cubiertos por este Servicio
+        </label>
+        <div className="meo-campo-visualizacion">
+          {contrato.costos_cubiertos && contrato.costos_cubiertos.length > 0 ? (
+            <ul className="meo-lista-costos-ver">
+              {contrato.costos_cubiertos.map((costo, index) => (
+                <li key={index}>{costo}</li>
+              ))}
+            </ul>
+          ) : (
+            'No se especificaron costos cubiertos'
+          )}
+        </div>
+      </div>
+      {contrato.costos_cubiertos?.includes('Otro, especifique') && contrato.otro_costo_especificacion && (
+        <CampoVisualizacion
+          icono={FileText}
+          etiqueta="Especificación de Otro Costo"
+          valor={contrato.otro_costo_especificacion}
+        />
+      )}
     </div>
   );
 
@@ -127,108 +214,35 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
       <CampoVisualizacion
         icono={Car}
         etiqueta="Marca del Vehículo"
-        valor={contrato.marca_vehiculo || 'No disponible'}
+        valor={contrato.marca_vehiculo}
       />
       <CampoVisualizacion
         icono={Car}
         etiqueta="Modelo del Vehículo"
-        valor={contrato.modelo_vehiculo || 'No disponible'}
+        valor={contrato.modelo_vehiculo}
       />
       <CampoVisualizacion
-        icono={Car}
-        etiqueta="Color"
-        valor={contrato.color || 'No disponible'}
+        icono={Hash}
+        etiqueta="Placa del Vehículo"
+        valor={contrato.placa_vehiculo}
       />
       <CampoVisualizacion
         icono={Users}
-        etiqueta="Número de Pasajeros"
-        valor={contrato.n_pasajero_vehiculo || 'No disponible'}
+        etiqueta="Capacidad del Vehículo"
+        valor={contrato.capacidad_vehiculo}
       />
-      <CampoVisualizacion
-        icono={Hash}
-        etiqueta="Número de Serie"
-        valor={contrato.numero_serie || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Hash}
-        etiqueta="Número de TAG"
-        valor={contrato.numero_tag || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Hash}
-        etiqueta="Número de Placa"
-        valor={contrato.numero_placa || 'No disponible'}
-      />
-    </div>
-  );
-
-  const renderSeccionOperador = () => (
-    <div className="meo-form-grid">
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Nombre del Operador"
-        valor={contrato.nombre_operador || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Apellido Paterno"
-        valor={contrato.apellido_paterno_operador || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Apellido Materno"
-        valor={contrato.apellido_materno_operador || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Phone}
-        etiqueta="Teléfono del Operador"
-        valor={formatearTelefono(contrato.telefono_operador)}
-      />
-      <CampoVisualizacion
-        icono={Phone}
-        etiqueta="Teléfono Familiar"
-        valor={formatearTelefono(contrato.telefono_familiar_operador)}
-      />
-      <CampoVisualizacion
-        icono={Mail}
-        etiqueta="Email del Operador"
-        valor={contrato.correo_electronico_operador || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={CreditCard}
-        etiqueta="Número de Licencia"
-        valor={contrato.numero_licencia || 'No disponible'}
-      />
-    </div>
-  );
-
-  const renderSeccionGuia = () => (
-    <div className="meo-form-grid">
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Nombre del Guía"
-        valor={contrato.nombre_guia || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Apellido Paterno"
-        valor={contrato.apellido_paterno_guia || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Apellido Materno"
-        valor={contrato.apellido_materno_guia || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Phone}
-        etiqueta="Teléfono del Guía"
-        valor={formatearTelefono(contrato.telefono_guia)}
-      />
-      <CampoVisualizacion
-        icono={Mail}
-        etiqueta="Email del Guía"
-        valor={contrato.correo_electronico_guia || 'No disponible'}
-      />
+      <div className="meo-form-group form-group-full">
+        <label>
+          <Car size={18} />
+          Extras del Vehículo
+        </label>
+        <div className="meo-campo-visualizacion">
+          {contrato.aire_acondicionado && '✓ Aire Acondicionado'}
+          {contrato.aire_acondicionado && contrato.asientos_reclinables && ' | '}
+          {contrato.asientos_reclinables && '✓ Asientos Reclinables'}
+          {!contrato.aire_acondicionado && !contrato.asientos_reclinables && 'Sin extras especificados'}
+        </div>
+      </div>
     </div>
   );
 
@@ -237,7 +251,6 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
   return (
     <div className="meo-overlay" onClick={alCerrar}>
       <div className="meo-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="meo-header">
           <h2>Ver Contrato</h2>
           <button className="meo-btn-cerrar" onClick={alCerrar} type="button">
@@ -245,15 +258,30 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${seccionActiva === 'cotizacion' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('cotizacion')}
+            className={`meo-tab-button ${seccionActiva === 'contrato' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('contrato')}
+            type="button"
+          >
+            <Building size={18} />
+            Datos de Contrato
+          </button>
+          <button
+            className={`meo-tab-button ${seccionActiva === 'servicio' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('servicio')}
             type="button"
           >
             <FileText size={18} />
-            Datos Cotización
+            Datos del Servicio
+          </button>
+          <button
+            className={`meo-tab-button ${seccionActiva === 'costo' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('costo')}
+            type="button"
+          >
+            <DollarSign size={18} />
+            Costo Extra
           </button>
           <button
             className={`meo-tab-button ${seccionActiva === 'vehiculo' ? 'active' : ''}`}
@@ -261,49 +289,24 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
             type="button"
           >
             <Car size={18} />
-            Vehículo
-          </button>
-          <button
-            className={`meo-tab-button ${seccionActiva === 'operador' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('operador')}
-            type="button"
-          >
-            <User size={18} />
-            Operador
-          </button>
-          <button
-            className={`meo-tab-button ${seccionActiva === 'guia' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('guia')}
-            type="button"
-          >
-            <Users size={18} />
-            Guía
+            Datos Vehículo
           </button>
         </div>
 
-        {/* Contenido (scrolleable) */}
         <div className="meo-form">
-          {seccionActiva === 'cotizacion' && renderSeccionCotizacion()}
+          {seccionActiva === 'contrato' && renderSeccionContrato()}
+          {seccionActiva === 'servicio' && renderSeccionServicio()}
+          {seccionActiva === 'costo' && renderSeccionCosto()}
           {seccionActiva === 'vehiculo' && renderSeccionVehiculo()}
-          {seccionActiva === 'operador' && renderSeccionOperador()}
-          {seccionActiva === 'guia' && renderSeccionGuia()}
         </div>
 
-        {/* Footer */}
         <div className="meo-footer">
-          <div className="meo-botones-izquierda">
-            {/* Espacio vacío para mantener el layout */}
-          </div>
+          <div className="meo-botones-izquierda"></div>
           <div className="meo-botones-derecha">
             <button
               type="button"
-              className="meo-btn-cancelar"
+              className="meo-btn-ver-cerrar"
               onClick={alCerrar}
-              style={{
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)',
-                color: 'white',
-                borderColor: '#2563eb'
-              }}
             >
               Cerrar
             </button>
