@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { X, User, Mail, Phone, FileText, Globe, MapPin, Car, Users, Calendar, Clock, Hash, CreditCard } from 'lucide-react';
+import { X, User, Phone, FileText, MapPin, Car, Users, Calendar, Clock, DollarSign, CreditCard } from 'lucide-react';
 
 // Importa los estilos del modal editar (ya que usaremos el mismo diseño)
-import './ModalEditarOrden.css';
+import './ModalVerOrden.css';
 
 const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
-  const [seccionActiva, setSeccionActiva] = useState('cotizacion');
+  const [seccionActiva, setSeccionActiva] = useState('orden');
 
   // Restaurar scroll cuando se cierra
   useEffect(() => {
@@ -55,6 +55,14 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
     return telefono;
   };
 
+  const formatearMoneda = (valor) => {
+    if (!valor) return 'No disponible';
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(valor);
+  };
+
   const CampoVisualizacion = ({ icono: Icono, etiqueta, valor }) => (
     <div className="meo-form-group">
       <label>
@@ -77,48 +85,181 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
     </div>
   );
 
-  const renderSeccionCotizacion = () => (
+  const renderSeccionOrden = () => (
     <div className="meo-form-grid">
       <CampoVisualizacion
-        icono={Calendar}
-        etiqueta="Fecha de Salida"
-        valor={orden.fechaSalida ? formatearFecha(orden.fechaSalida) : 'No disponible'}
+        icono={FileText}
+        etiqueta="Folio"
+        valor={orden.folio || 'No disponible'}
       />
       <CampoVisualizacion
         icono={Calendar}
-        etiqueta="Fecha de Regreso"
-        valor={orden.fechaRegreso ? formatearFecha(orden.fechaRegreso) : 'No disponible'}
+        etiqueta="Fecha de Orden de Servicio"
+        valor={orden.fecha_orden_servicio ? formatearFecha(orden.fecha_orden_servicio) : 'No disponible'}
+      />
+      <div className="meo-form-group form-group-full">
+        <label>
+          <User size={18} />
+          Nombre del Prestador de Servicios
+        </label>
+        <div style={{
+          padding: '0.875rem 1rem',
+          border: '2px solid #ebe5e5ff',
+          borderRadius: '10px',
+          backgroundColor: '#f9fafb',
+          color: '#374151',
+          fontSize: '1rem',
+          minHeight: '45px',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          {orden.nombre_prestador || 'Antonio Alonso Meza'}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSeccionConductor = () => (
+    <div className="meo-form-grid">
+      <CampoVisualizacion
+        icono={User}
+        etiqueta="Nombre del Conductor"
+        valor={orden.nombre_conductor || 'No disponible'}
       />
       <CampoVisualizacion
-        icono={Clock}
-        etiqueta="Hora de Salida"
-        valor={orden.horaSalida || 'No disponible'}
+        icono={User}
+        etiqueta="Apellido Paterno"
+        valor={orden.apellido_paterno_conductor || 'No disponible'}
       />
       <CampoVisualizacion
-        icono={Clock}
-        etiqueta="Hora de Regreso"
-        valor={orden.horaRegreso || 'No disponible'}
+        icono={User}
+        etiqueta="Apellido Materno"
+        valor={orden.apellido_materno_conductor || 'No disponible'}
       />
       <CampoVisualizacion
-        icono={Users}
-        etiqueta="Número de Pasajeros"
-        valor={orden.pasajeros || 'No disponible'}
+        icono={Phone}
+        etiqueta="Teléfono del Conductor"
+        valor={formatearTelefono(orden.telefono_conductor)}
+      />
+      <div className="meo-form-group form-group-full">
+        <label>
+          <FileText size={18} />
+          Número de Licencia
+        </label>
+        <div style={{
+          padding: '0.875rem 1rem',
+          border: '2px solid #ebe5e5ff',
+          borderRadius: '10px',
+          backgroundColor: '#f9fafb',
+          color: '#374151',
+          fontSize: '1rem',
+          minHeight: '45px',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          {orden.licencia_conductor || 'No disponible'}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSeccionServicio = () => (
+    <div className="meo-form-grid">
+      <CampoVisualizacion
+        icono={User}
+        etiqueta="Nombre de Cliente"
+        valor={orden.nombre_cliente || 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={Phone}
+        etiqueta="Teléfono"
+        valor={formatearTelefono(orden.telefono_cliente)}
       />
       <CampoVisualizacion
         icono={MapPin}
-        etiqueta="Origen del Servicio"
-        valor={orden.origenServicio || 'No disponible'}
+        etiqueta="Ciudad de Origen"
+        valor={orden.ciudad_origen || 'No disponible'}
       />
       <CampoVisualizacion
         icono={MapPin}
         etiqueta="Punto Intermedio"
-        valor={orden.puntoIntermedio || 'No especificado'}
+        valor={orden.punto_intermedio || 'No especificado'}
       />
       <CampoVisualizacion
         icono={MapPin}
-        etiqueta="Destino del Servicio"
-        valor={orden.destinoServicio || 'No disponible'}
+        etiqueta="Destino"
+        valor={orden.destino || 'No disponible'}
       />
+      <CampoVisualizacion
+        icono={Users}
+        etiqueta="Número de Pasajeros"
+        valor={orden.numero_pasajeros || 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={Calendar}
+        etiqueta="Fecha Inicio Servicio"
+        valor={orden.fecha_inicio_servicio ? formatearFecha(orden.fecha_inicio_servicio) : 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={Clock}
+        etiqueta="Horario Inicio Servicio"
+        valor={orden.horario_inicio_servicio || 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={Calendar}
+        etiqueta="Fecha Final Servicio"
+        valor={orden.fecha_final_servicio ? formatearFecha(orden.fecha_final_servicio) : 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={Clock}
+        etiqueta="Horario Final Servicio"
+        valor={orden.horario_final_servicio || 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={Clock}
+        etiqueta="Horario Final Real"
+        valor={orden.horario_final_real || 'No disponible'}
+      />
+      <div className="meo-form-group form-group-full">
+        <label>
+          <FileText size={18} />
+          Itinerario Detallado
+        </label>
+        <div style={{
+          padding: '0.875rem 1rem',
+          border: '2px solid #ebe5e5ff',
+          borderRadius: '10px',
+          backgroundColor: '#f9fafb',
+          color: '#374151',
+          fontSize: '1rem',
+          minHeight: '100px',
+          display: 'flex',
+          alignItems: 'flex-start',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word'
+        }}>
+          {orden.itinerario_detallado || 'No disponible'}
+        </div>
+      </div>
+      <div className="meo-form-group form-group-full">
+        <label>
+          <MapPin size={18} />
+          Dirección de Retorno
+        </label>
+        <div style={{
+          padding: '0.875rem 1rem',
+          border: '2px solid #ebe5e5ff',
+          borderRadius: '10px',
+          backgroundColor: '#f9fafb',
+          color: '#374151',
+          fontSize: '1rem',
+          minHeight: '45px',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          {orden.direccion_retorno || 'No disponible'}
+        </div>
+      </div>
     </div>
   );
 
@@ -126,108 +267,78 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
     <div className="meo-form-grid">
       <CampoVisualizacion
         icono={Car}
-        etiqueta="Marca del Vehículo"
-        valor={orden.marca_vehiculo || 'No disponible'}
+        etiqueta="Marca"
+        valor={orden.marca || 'No disponible'}
       />
       <CampoVisualizacion
         icono={Car}
-        etiqueta="Modelo del Vehículo"
-        valor={orden.modelo_vehiculo || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Car}
-        etiqueta="Color"
-        valor={orden.color || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Users}
-        etiqueta="Número de Pasajeros"
-        valor={orden.n_pasajero_vehiculo || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Hash}
-        etiqueta="Número de Serie"
-        valor={orden.numero_serie || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Hash}
-        etiqueta="Número de TAG"
-        valor={orden.numero_tag || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Hash}
-        etiqueta="Número de Placa"
-        valor={orden.numero_placa || 'No disponible'}
-      />
-    </div>
-  );
-
-  const renderSeccionOperador = () => (
-    <div className="meo-form-grid">
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Nombre del Operador"
-        valor={orden.nombre_operador || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Apellido Paterno"
-        valor={orden.apellido_paterno_operador || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={User}
-        etiqueta="Apellido Materno"
-        valor={orden.apellido_materno_operador || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Phone}
-        etiqueta="Teléfono del Operador"
-        valor={formatearTelefono(orden.telefono_operador)}
-      />
-      <CampoVisualizacion
-        icono={Phone}
-        etiqueta="Teléfono Familiar"
-        valor={formatearTelefono(orden.telefono_familiar_operador)}
-      />
-      <CampoVisualizacion
-        icono={Mail}
-        etiqueta="Email del Operador"
-        valor={orden.correo_electronico_operador || 'No disponible'}
+        etiqueta="Modelo"
+        valor={orden.modelo || 'No disponible'}
       />
       <CampoVisualizacion
         icono={CreditCard}
-        etiqueta="Número de Licencia"
-        valor={orden.numero_licencia || 'No disponible'}
+        etiqueta="Placa"
+        valor={orden.placa || 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={MapPin}
+        etiqueta="KM Inicial"
+        valor={orden.km_inicial || 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={MapPin}
+        etiqueta="KM Final"
+        valor={orden.km_final || 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={DollarSign}
+        etiqueta="Litros Consumidos"
+        valor={orden.litros_consumidos || 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={DollarSign}
+        etiqueta="Rendimiento"
+        valor={orden.rendimiento || 'No disponible'}
       />
     </div>
   );
 
-  const renderSeccionGuia = () => (
+  const renderSeccionControl = () => (
     <div className="meo-form-grid">
       <CampoVisualizacion
-        icono={User}
-        etiqueta="Nombre del Guía"
-        valor={orden.nombre_guia || 'No disponible'}
+        icono={DollarSign}
+        etiqueta="Importe"
+        valor={orden.importe ? formatearMoneda(orden.importe) : 'No disponible'}
       />
       <CampoVisualizacion
-        icono={User}
-        etiqueta="Apellido Paterno"
-        valor={orden.apellido_paterno_guia || 'No disponible'}
+        icono={FileText}
+        etiqueta="Pagado"
+        valor={orden.pagado === 'si' ? 'Sí' : orden.pagado === 'no' ? 'No' : 'No disponible'}
       />
       <CampoVisualizacion
-        icono={User}
-        etiqueta="Apellido Materno"
-        valor={orden.apellido_materno_guia || 'No disponible'}
+        icono={CreditCard}
+        etiqueta="Forma de Pago"
+        valor={orden.forma_pago || 'No disponible'}
       />
       <CampoVisualizacion
-        icono={Phone}
-        etiqueta="Teléfono del Guía"
-        valor={formatearTelefono(orden.telefono_guia)}
+        icono={Calendar}
+        etiqueta="Fecha de Pago"
+        valor={orden.fecha_pago ? formatearFecha(orden.fecha_pago) : 'No disponible'}
       />
       <CampoVisualizacion
-        icono={Mail}
-        etiqueta="Email del Guía"
-        valor={orden.correo_electronico_guia || 'No disponible'}
+        icono={DollarSign}
+        etiqueta="Costo Proveedor"
+        valor={orden.costo_proveedor ? formatearMoneda(orden.costo_proveedor) : 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={CreditCard}
+        etiqueta="Forma Pago Proveedor"
+        valor={orden.forma_pago_proveedor === 'transferencia' ? 'Transferencia' : orden.forma_pago_proveedor === 'efectivo' ? 'Efectivo' : 'No disponible'}
+      />
+      <CampoVisualizacion
+        icono={FileText}
+        etiqueta="Pagado Proveedor"
+        valor={orden.pagado_proveedor === 'si' ? 'Sí' : orden.pagado_proveedor === 'no' ? 'No' : 'No disponible'}
       />
     </div>
   );
@@ -248,12 +359,28 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
         {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${seccionActiva === 'cotizacion' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('cotizacion')}
+            className={`meo-tab-button ${seccionActiva === 'orden' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('orden')}
             type="button"
           >
             <FileText size={18} />
-            Datos Cotización
+            Datos Orden de Servicio
+          </button>
+          <button
+            className={`meo-tab-button ${seccionActiva === 'conductor' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('conductor')}
+            type="button"
+          >
+            <User size={18} />
+            Datos Conductor
+          </button>
+          <button
+            className={`meo-tab-button ${seccionActiva === 'servicio' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('servicio')}
+            type="button"
+          >
+            <MapPin size={18} />
+            Datos Servicio
           </button>
           <button
             className={`meo-tab-button ${seccionActiva === 'vehiculo' ? 'active' : ''}`}
@@ -264,29 +391,22 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
             Vehículo
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'operador' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('operador')}
+            className={`meo-tab-button ${seccionActiva === 'control' ? 'active' : ''}`}
+            onClick={() => setSeccionActiva('control')}
             type="button"
           >
-            <User size={18} />
-            Operador
-          </button>
-          <button
-            className={`meo-tab-button ${seccionActiva === 'guia' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('guia')}
-            type="button"
-          >
-            <Users size={18} />
-            Guía
+            <DollarSign size={18} />
+            Control Internos
           </button>
         </div>
 
         {/* Contenido (scrolleable) */}
         <div className="meo-form">
-          {seccionActiva === 'cotizacion' && renderSeccionCotizacion()}
+          {seccionActiva === 'orden' && renderSeccionOrden()}
+          {seccionActiva === 'conductor' && renderSeccionConductor()}
+          {seccionActiva === 'servicio' && renderSeccionServicio()}
           {seccionActiva === 'vehiculo' && renderSeccionVehiculo()}
-          {seccionActiva === 'operador' && renderSeccionOperador()}
-          {seccionActiva === 'guia' && renderSeccionGuia()}
+          {seccionActiva === 'control' && renderSeccionControl()}
         </div>
 
         {/* Footer */}
