@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, Save, User, FileText, MapPin, Car, DollarSign, AlertCircle, Calendar, Clock, Users } from 'lucide-react';
 
-// Importar CSS
 import './ModalEditarOrden.css';
 
 const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {

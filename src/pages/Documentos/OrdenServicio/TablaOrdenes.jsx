@@ -9,15 +9,14 @@ import ModalEliminarDefinitivo from './Modales/ModalEliminarDefinitivo';
 import './TablaOrdenes.css';
 
 const TablaOrdenes = () => {
-  // CAMBIAR ESTO SEGÚN EL ROL DEL USUARIO LOGUEADO
-  // true = Administrador, false = Usuario normal
+
   const [esAdministrador, setEsAdministrador] = useState(false);
 
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
 
-  // Estados para los modales
+
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [ordenAEliminar, setOrdenAEliminar] = useState(null);
@@ -25,11 +24,11 @@ const TablaOrdenes = () => {
   const [ordenAEliminarDefinitivo, setOrdenAEliminarDefinitivo] = useState(null);
   const [ordenSeleccionado, setOrdenSeleccionado] = useState(null);
 
-  // Estado para los datos de Ordenes - ACTUALIZADOS CON NUEVOS CAMPOS
+
   const [datosOrdenes, setDatosOrdenes] = useState([
     {
       id: 1,
-      // Datos Orden de Servicio
+
       folio: 101,
       fecha_orden_servicio: '2025-10-15',
       nombre_prestador: 'Antonio Alonso Meza',
@@ -277,14 +276,12 @@ const TablaOrdenes = () => {
     );
   });
 
-  // Calcular paginación
   const totalRegistros = ordenesFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const ordenesPaginados = ordenesFiltrados.slice(indiceInicio, indiceFin);
 
-  // Calcular estadísticas
   const ordenesActivos = datosOrdenes.filter(c => c.activo).length;
   const ordenesInactivos = datosOrdenes.filter(c => !c.activo).length;
 
@@ -619,7 +616,7 @@ const TablaOrdenes = () => {
 
   return (
     <div className="Ordenes-contenedor-principal">
-      {/* Header con estadísticas */}
+
       <div className="Ordenes-encabezado">
         <div className="Ordenes-seccion-logo">
           <div className="Ordenes-lineas-decorativas">
@@ -665,10 +662,8 @@ const TablaOrdenes = () => {
         </div>
       </div>
 
-      {/* Controles */}
       <div className="Ordenes-controles">
         <div className="Ordenes-control-registros">
-          {/* BOTÓN PARA CAMBIAR DE ROL (SOLO PARA PRUEBAS - ELIMINAR EN PRODUCCIÓN) */}
           <button
             onClick={() => setEsAdministrador(!esAdministrador)}
             style={{
@@ -718,7 +713,6 @@ const TablaOrdenes = () => {
         </div>
       </div>
 
-      {/* Tabla */}
       <div className="Ordenes-contenedor-tabla">
         <table className="Ordenes-tabla">
           <thead>
@@ -823,7 +817,6 @@ const TablaOrdenes = () => {
         </table>
       </div>
 
-      {/* Información de paginación y controles */}
       <div className="Ordenes-pie-tabla">
         <div className="Ordenes-informacion-registros">
           Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
@@ -867,14 +860,12 @@ const TablaOrdenes = () => {
         </div>
       </div>
 
-      {/* Modal Ver orden */}
       <ModalVerOrden
         estaAbierto={modalVerAbierto}
         orden={ordenSeleccionado}
         alCerrar={cerrarModalVer}
       />
 
-      {/* Modal Editar orden */}
       <ModalEditarOrden
         estaAbierto={modalEditarAbierto}
         orden={ordenSeleccionado}
@@ -882,7 +873,6 @@ const TablaOrdenes = () => {
         alGuardar={manejarGuardarOrden}
       />
 
-      {/* Modal Eliminar orden (Desactivar) */}
       {ordenAEliminar && (
         <ModalEliminarOrden
           orden={ordenAEliminar}
@@ -891,7 +881,6 @@ const TablaOrdenes = () => {
         />
       )}
 
-      {/* Modal Restaurar orden */}
       {ordenARestaurar && (
         <ModalRestaurarOrden
           orden={ordenARestaurar}
@@ -900,7 +889,6 @@ const TablaOrdenes = () => {
         />
       )}
 
-      {/* Modal Eliminar Definitivamente */}
       {ordenAEliminarDefinitivo && (
         <ModalEliminarDefinitivo
           orden={ordenAEliminarDefinitivo}

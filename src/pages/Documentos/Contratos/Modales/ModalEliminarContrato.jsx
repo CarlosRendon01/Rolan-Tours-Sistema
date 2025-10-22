@@ -52,12 +52,10 @@ const ModalEliminarContrato = ({ contrato, alConfirmar, esAdministrador }) => {
     try {
       setCargando(true);
 
-      // Ejecutar la eliminación
       await alConfirmar(contrato);
 
       setCargando(false);
 
-      // Mostrar notificación de éxito
       mostrarNotificacionExito();
 
     } catch (error) {

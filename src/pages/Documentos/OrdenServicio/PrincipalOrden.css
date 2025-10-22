@@ -6,7 +6,6 @@
   background: #ffffff;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .contenedor-principal-orden {
     padding: 0.5rem;

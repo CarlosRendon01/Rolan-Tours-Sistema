@@ -46,12 +46,10 @@ const ModalRestaurarOrden = ({ orden, alConfirmar, alCancelar }) => {
     try {
       setRestaurando(true);
 
-      // Ejecutar la restauración
       await alConfirmar(orden);
 
       setRestaurando(false);
 
-      // Mostrar notificación de éxito
       mostrarNotificacionExito();
 
     } catch (error) {

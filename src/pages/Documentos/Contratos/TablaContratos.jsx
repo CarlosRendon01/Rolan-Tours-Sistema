@@ -22,7 +22,6 @@ const TablaContratos = () => {
   const [contratoAEliminarDefinitivo, setContratoAEliminarDefinitivo] = useState(null);
   const [contratoSeleccionado, setContratoSeleccionado] = useState(null);
 
-  // Estado con la NUEVA ESTRUCTURA de datos
   const [datosContratos, setDatosContratos] = useState([
     {
       id: 1,

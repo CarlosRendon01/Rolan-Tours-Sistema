@@ -1,5 +1,3 @@
-/* Modal Simple para Desactivar Orden */
-
 .modal-overlay-simple {
   position: fixed;
   top: 0;
@@ -142,7 +140,6 @@
   transform: none !important;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .modal-container-simple {
     padding: 1.5rem;

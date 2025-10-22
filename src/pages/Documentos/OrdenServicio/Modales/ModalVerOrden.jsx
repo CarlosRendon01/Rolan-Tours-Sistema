@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { X, User, Phone, FileText, MapPin, Car, Users, Calendar, Clock, DollarSign, CreditCard } from 'lucide-react';
 
-// Importa los estilos del modal editar (ya que usaremos el mismo diseño)
 import './ModalVerOrden.css';
 
 const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
   const [seccionActiva, setSeccionActiva] = useState('orden');
 
-  // Restaurar scroll cuando se cierra
   useEffect(() => {
     const restaurarScroll = () => {
       document.body.style.overflow = '';
@@ -32,7 +30,6 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
     };
   }, [estaAbierto, alCerrar]);
 
-  // Funciones de formato
   const formatearFecha = (fecha) => {
     if (!fecha) return 'No disponible';
     try {
@@ -348,7 +345,7 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
   return (
     <div className="meo-overlay" onClick={alCerrar}>
       <div className="meo-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
+
         <div className="meo-header">
           <h2>Ver Orden</h2>
           <button className="meo-btn-cerrar" onClick={alCerrar} type="button">
@@ -356,7 +353,6 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
             className={`meo-tab-button ${seccionActiva === 'orden' ? 'active' : ''}`}
@@ -400,7 +396,6 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
           </button>
         </div>
 
-        {/* Contenido (scrolleable) */}
         <div className="meo-form">
           {seccionActiva === 'orden' && renderSeccionOrden()}
           {seccionActiva === 'conductor' && renderSeccionConductor()}
@@ -409,10 +404,9 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
           {seccionActiva === 'control' && renderSeccionControl()}
         </div>
 
-        {/* Footer */}
         <div className="meo-footer">
           <div className="meo-botones-izquierda">
-            {/* Espacio vacío para mantener el layout */}
+
           </div>
           <div className="meo-botones-derecha">
             <button

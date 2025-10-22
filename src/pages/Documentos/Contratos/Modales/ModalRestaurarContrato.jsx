@@ -46,12 +46,10 @@ const ModalRestaurarContrato = ({ contrato, alConfirmar, alCancelar }) => {
     try {
       setRestaurando(true);
 
-      // Ejecutar la restauración
       await alConfirmar(contrato);
 
       setRestaurando(false);
 
-      // Mostrar notificación de éxito
       mostrarNotificacionExito();
 
     } catch (error) {

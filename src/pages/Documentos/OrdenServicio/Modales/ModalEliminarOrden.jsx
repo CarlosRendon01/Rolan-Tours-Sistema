@@ -52,12 +52,10 @@ const ModalEliminarOrden = ({ orden, alConfirmar, esAdministrador }) => {
     try {
       setCargando(true);
 
-      // Ejecutar la eliminación
       await alConfirmar(orden);
 
       setCargando(false);
 
-      // Mostrar notificación de éxito
       mostrarNotificacionExito();
 
     } catch (error) {
