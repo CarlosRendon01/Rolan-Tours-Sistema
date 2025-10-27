@@ -63,17 +63,6 @@ const TablaOrdenes = () => {
       km_final: 10850,
       litros_consumidos: 85,
       rendimiento: '10 km/L',
-
-      // Control Interno
-      importe: 5500,
-      pagado: 'si',
-      forma_pago: 'Transferencia',
-      fecha_pago: '2025-10-19',
-      costo_proveedor: 3500,
-      forma_pago_proveedor: 'transferencia',
-      pagado_proveedor: 'si',
-
-      fecha_registro: '15/10/2025',
       activo: true
     },
     {
@@ -110,15 +99,6 @@ const TablaOrdenes = () => {
       litros_consumidos: 95,
       rendimiento: '10 km/L',
 
-      importe: 8500,
-      pagado: 'si',
-      forma_pago: 'Efectivo',
-      fecha_pago: '2025-10-24',
-      costo_proveedor: 5500,
-      forma_pago_proveedor: 'efectivo',
-      pagado_proveedor: 'si',
-
-      fecha_registro: '18/10/2025',
       activo: true
     },
     {
@@ -155,15 +135,6 @@ const TablaOrdenes = () => {
       litros_consumidos: 40,
       rendimiento: '10 km/L',
 
-      importe: 4200,
-      pagado: 'no',
-      forma_pago: '',
-      fecha_pago: '',
-      costo_proveedor: 2800,
-      forma_pago_proveedor: 'transferencia',
-      pagado_proveedor: 'no',
-
-      fecha_registro: '20/10/2025',
       activo: false
     },
     {
@@ -200,15 +171,6 @@ const TablaOrdenes = () => {
       litros_consumidos: 60,
       rendimiento: '10 km/L',
 
-      importe: 6800,
-      pagado: 'si',
-      forma_pago: 'Transferencia',
-      fecha_pago: '2025-10-31',
-      costo_proveedor: 4200,
-      forma_pago_proveedor: 'transferencia',
-      pagado_proveedor: 'si',
-
-      fecha_registro: '22/10/2025',
       activo: true
     },
     {
@@ -245,15 +207,6 @@ const TablaOrdenes = () => {
       litros_consumidos: 120,
       rendimiento: '10 km/L',
 
-      importe: 9500,
-      pagado: 'no',
-      forma_pago: '',
-      fecha_pago: '',
-      costo_proveedor: 6000,
-      forma_pago_proveedor: 'efectivo',
-      pagado_proveedor: 'no',
-
-      fecha_registro: '25/10/2025',
       activo: false
     }
   ]);

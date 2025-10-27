@@ -1088,7 +1088,16 @@
   margin: 1.5rem auto 1rem !important;
 }
 
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .Ordenes-contenedor-tabla {
+    overflow: scroll;
+  }
+}
+
 @media (max-width: 768px) {
+
+
   .swal-wide {
     width: 95% !important;
   }

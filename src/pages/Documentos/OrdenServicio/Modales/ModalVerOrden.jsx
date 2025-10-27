@@ -300,45 +300,7 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
     </div>
   );
 
-  const renderSeccionControl = () => (
-    <div className="meo-form-grid">
-      <CampoVisualizacion
-        icono={DollarSign}
-        etiqueta="Importe"
-        valor={orden.importe ? formatearMoneda(orden.importe) : 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={FileText}
-        etiqueta="Pagado"
-        valor={orden.pagado === 'si' ? 'Sí' : orden.pagado === 'no' ? 'No' : 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={CreditCard}
-        etiqueta="Forma de Pago"
-        valor={orden.forma_pago || 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={Calendar}
-        etiqueta="Fecha de Pago"
-        valor={orden.fecha_pago ? formatearFecha(orden.fecha_pago) : 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={DollarSign}
-        etiqueta="Costo Proveedor"
-        valor={orden.costo_proveedor ? formatearMoneda(orden.costo_proveedor) : 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={CreditCard}
-        etiqueta="Forma Pago Proveedor"
-        valor={orden.forma_pago_proveedor === 'transferencia' ? 'Transferencia' : orden.forma_pago_proveedor === 'efectivo' ? 'Efectivo' : 'No disponible'}
-      />
-      <CampoVisualizacion
-        icono={FileText}
-        etiqueta="Pagado Proveedor"
-        valor={orden.pagado_proveedor === 'si' ? 'Sí' : orden.pagado_proveedor === 'no' ? 'No' : 'No disponible'}
-      />
-    </div>
-  );
+
 
   if (!estaAbierto || !orden) return null;
 
@@ -386,14 +348,6 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
             <Car size={18} />
             Vehículo
           </button>
-          <button
-            className={`meo-tab-button ${seccionActiva === 'control' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('control')}
-            type="button"
-          >
-            <DollarSign size={18} />
-            Control Internos
-          </button>
         </div>
 
         <div className="meo-form">
@@ -401,7 +355,6 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
           {seccionActiva === 'conductor' && renderSeccionConductor()}
           {seccionActiva === 'servicio' && renderSeccionServicio()}
           {seccionActiva === 'vehiculo' && renderSeccionVehiculo()}
-          {seccionActiva === 'control' && renderSeccionControl()}
         </div>
 
         <div className="meo-footer">

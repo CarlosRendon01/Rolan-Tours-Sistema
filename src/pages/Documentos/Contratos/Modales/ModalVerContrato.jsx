@@ -99,6 +99,11 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
         valor={contrato.nacionalidad}
       />
       <CampoVisualizacion
+        icono={Globe}
+        etiqueta="rfc"
+        valor={contrato.rfc}
+      />
+      <CampoVisualizacion
         icono={Phone}
         etiqueta="Teléfono"
         valor={formatearTelefono(contrato.telefono_cliente)}

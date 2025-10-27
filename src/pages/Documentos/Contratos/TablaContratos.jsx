@@ -32,6 +32,7 @@ const TablaContratos = () => {
       // Datos del Servicio
       nombre_cliente: 'Juan Pérez García',
       nacionalidad: 'Mexicana',
+      rfc: 'GOLJ880915H80',
       telefono_cliente: '9511234567',
       ciudad_origen: 'Oaxaca Centro',
       punto_intermedio: 'Tlacolula',
@@ -74,6 +75,7 @@ const TablaContratos = () => {
 
       nombre_cliente: 'María López Sánchez',
       nacionalidad: 'Estadounidense',
+      rfc: 'MARA750101QW3',
       telefono_cliente: '9512345678',
       ciudad_origen: 'Oaxaca Aeropuerto',
       punto_intermedio: 'Ocotlán',
@@ -114,6 +116,7 @@ const TablaContratos = () => {
 
       nombre_cliente: 'Carlos Ramírez Torres',
       nacionalidad: 'Mexicana',
+      rfc: 'SOUF921225L94',
       telefono_cliente: '9513456789',
       ciudad_origen: 'Oaxaca Centro',
       punto_intermedio: '',
@@ -153,6 +156,7 @@ const TablaContratos = () => {
 
       nombre_cliente: 'Ana Martínez Flores',
       nacionalidad: 'Mexicana',
+      rfc: 'REMA800305TR2',
       telefono_cliente: '9514567890',
       ciudad_origen: 'Hotel Casa Oaxaca',
       punto_intermedio: 'Teotitlán del Valle',
@@ -193,6 +197,7 @@ const TablaContratos = () => {
 
       nombre_cliente: 'Roberto Gómez Luna',
       nacionalidad: 'Mexicana',
+      rfc: 'DIPJ660718AZ5',
       telefono_cliente: '9515678901',
       ciudad_origen: 'Oaxaca Terminal ADO',
       punto_intermedio: 'Mitla',

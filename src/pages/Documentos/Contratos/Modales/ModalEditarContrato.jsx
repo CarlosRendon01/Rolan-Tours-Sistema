@@ -11,6 +11,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
     // Datos del Servicio
     nombre_cliente: '',
     nacionalidad: '',
+    rfc: '',
     telefono_cliente: '',
     ciudad_origen: '',
     punto_intermedio: '',
@@ -73,6 +74,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
 
         nombre_cliente: contrato.nombre_cliente || '',
         nacionalidad: contrato.nacionalidad || '',
+        rfc: contrato.rfc || '',
         telefono_cliente: contrato.telefono_cliente || '',
         ciudad_origen: contrato.ciudad_origen || '',
         punto_intermedio: contrato.punto_intermedio || '',
@@ -164,6 +166,9 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
       nuevosErrores.n_unidades_contratadas = 'El número de unidades es obligatorio';
     }
 
+    if (!datosFormulario.rfc.trim()) {
+      nuevosErrores.rfc = 'El rfc es obligatorio';
+    }
     if (!datosFormulario.numero_pasajeros) {
       nuevosErrores.numero_pasajeros = 'El número de pasajeros es obligatorio';
     }
@@ -222,7 +227,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
       setErrores(nuevosErrores);
 
       const camposContrato = ['domicilio'];
-      const camposServicio = ['nombre_cliente', 'nacionalidad', 'telefono_cliente', 'ciudad_origen', 'destino', 'tipo_pasaje', 'n_unidades_contratadas', 'numero_pasajeros', 'fecha_inicio_servicio', 'horario_inicio_servicio', 'fecha_final_servicio', 'horario_final_servicio', 'itinerario_detallado'];
+      const camposServicio = ['nombre_cliente', 'nacionalidad', 'RFC', 'telefono_cliente', 'ciudad_origen', 'destino', 'tipo_pasaje', 'n_unidades_contratadas', 'numero_pasajeros', 'fecha_inicio_servicio', 'horario_inicio_servicio', 'fecha_final_servicio', 'horario_final_servicio', 'itinerario_detallado'];
       const camposCosto = ['importe_servicio', 'anticipo', 'fecha_liquidacion'];
 
       const erroresEnContrato = Object.keys(nuevosErrores).some(key => camposContrato.includes(key));
@@ -371,6 +376,22 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           value={datosFormulario.nacionalidad}
           onChange={manejarCambioFormulario}
           placeholder="Mexicana, Estadounidense, etc."
+          disabled={guardando}
+        />
+      </div>
+
+      <div className="meo-form-group">
+        <label htmlFor="rfc">
+          <Globe size={18} />
+          RFC
+        </label>
+        <input
+          type="text"
+          id="rfc"
+          name="rfc"
+          value={datosFormulario.rfc}
+          onChange={manejarCambioFormulario}
+          placeholder="CAPV841211ABC"
           disabled={guardando}
         />
       </div>

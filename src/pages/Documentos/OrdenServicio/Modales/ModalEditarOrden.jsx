@@ -41,14 +41,8 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
     litros_consumidos: '',
     rendimiento: '',
 
-    // Control Interno
-    importe: '',
-    pagado: 'no',
-    forma_pago: '',
-    fecha_pago: '',
-    costo_proveedor: '',
-    forma_pago_proveedor: 'transferencia',
-    pagado_proveedor: 'no'
+  
+
   });
 
   const [seccionActiva, setSeccionActiva] = useState('orden');
@@ -90,13 +84,6 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
         litros_consumidos: orden.litros_consumidos || '',
         rendimiento: orden.rendimiento || '',
 
-        importe: orden.importe || '',
-        pagado: orden.pagado || 'no',
-        forma_pago: orden.forma_pago || '',
-        fecha_pago: orden.fecha_pago || '',
-        costo_proveedor: orden.costo_proveedor || '',
-        forma_pago_proveedor: orden.forma_pago_proveedor || 'transferencia',
-        pagado_proveedor: orden.pagado_proveedor || 'no'
       });
       setErrores({});
     }
@@ -204,7 +191,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
       const camposConductor = ['nombre_conductor', 'apellido_paterno_conductor', 'apellido_materno_conductor', 'telefono_conductor', 'licencia_conductor'];
       const camposServicio = ['nombre_cliente', 'telefono_cliente', 'ciudad_origen', 'punto_intermedio', 'destino', 'numero_pasajeros', 'fecha_inicio_servicio', 'horario_inicio_servicio', 'fecha_final_servicio', 'horario_final_servicio', 'horario_final_real', 'itinerario_detallado', 'direccion_retorno'];
       const camposVehiculo = ['marca', 'modelo', 'placa', 'km_inicial', 'km_final', 'litros_consumidos', 'rendimiento'];
-      const camposControl = ['importe', 'pagado', 'forma_pago', 'fecha_pago', 'costo_proveedor', 'forma_pago_proveedor', 'pagado_proveedor'];
+
 
       const erroresEnOrden = Object.keys(nuevosErrores).some(key => camposOrden.includes(key));
       const erroresEnConductor = Object.keys(nuevosErrores).some(key => camposConductor.includes(key));
@@ -736,116 +723,6 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
     </div>
   );
 
-  const renderSeccionControl = () => (
-    <div className="meo-form-grid">
-      <div className="meo-form-group">
-        <label htmlFor="importe">
-          <DollarSign size={18} />
-          Importe
-        </label>
-        <input
-          type="number"
-          id="importe"
-          name="importe"
-          value={datosFormulario.importe}
-          onChange={manejarCambioFormulario}
-          placeholder="5000.00"
-          disabled={guardando}
-          min="0"
-          step="0.01"
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="pagado">Pagado</label>
-        <select
-          id="pagado"
-          name="pagado"
-          value={datosFormulario.pagado}
-          onChange={manejarCambioFormulario}
-          disabled={guardando}
-        >
-          <option value="no">No</option>
-          <option value="si">Sí</option>
-        </select>
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="forma_pago">Forma de Pago</label>
-        <input
-          type="text"
-          id="forma_pago"
-          name="forma_pago"
-          value={datosFormulario.forma_pago}
-          onChange={manejarCambioFormulario}
-          placeholder="Transferencia, efectivo, etc."
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="fecha_pago">
-          <Calendar size={18} />
-          Fecha de Pago
-        </label>
-        <input
-          type="date"
-          id="fecha_pago"
-          name="fecha_pago"
-          value={datosFormulario.fecha_pago}
-          onChange={manejarCambioFormulario}
-          disabled={guardando}
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="costo_proveedor">
-          <DollarSign size={18} />
-          Costo Proveedor
-        </label>
-        <input
-          type="number"
-          id="costo_proveedor"
-          name="costo_proveedor"
-          value={datosFormulario.costo_proveedor}
-          onChange={manejarCambioFormulario}
-          placeholder="3000.00"
-          disabled={guardando}
-          min="0"
-          step="0.01"
-        />
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="forma_pago_proveedor">Forma Pago Proveedor</label>
-        <select
-          id="forma_pago_proveedor"
-          name="forma_pago_proveedor"
-          value={datosFormulario.forma_pago_proveedor}
-          onChange={manejarCambioFormulario}
-          disabled={guardando}
-        >
-          <option value="transferencia">Transferencia</option>
-          <option value="efectivo">Efectivo</option>
-        </select>
-      </div>
-
-      <div className="meo-form-group">
-        <label htmlFor="pagado_proveedor">Pagado Proveedor</label>
-        <select
-          id="pagado_proveedor"
-          name="pagado_proveedor"
-          value={datosFormulario.pagado_proveedor}
-          onChange={manejarCambioFormulario}
-          disabled={guardando}
-        >
-          <option value="no">No</option>
-          <option value="si">Sí</option>
-        </select>
-      </div>
-    </div>
-  );
-
   if (!estaAbierto || !orden) return null;
 
   return (
@@ -893,14 +770,6 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
             <Car size={18} />
             Vehículo
           </button>
-          <button
-            className={`meo-tab-button ${seccionActiva === 'control' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('control')}
-            type="button"
-          >
-            <DollarSign size={18} />
-            Control Internos
-          </button>
         </div>
 
         {/* Formulario (scrolleable) */}
@@ -909,7 +778,6 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           {seccionActiva === 'conductor' && renderSeccionConductor()}
           {seccionActiva === 'servicio' && renderSeccionServicio()}
           {seccionActiva === 'vehiculo' && renderSeccionVehiculo()}
-          {seccionActiva === 'control' && renderSeccionControl()}
         </form>
 
         {/* Footer */}

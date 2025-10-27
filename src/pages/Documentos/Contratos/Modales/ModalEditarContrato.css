@@ -249,10 +249,6 @@
   border-color: #e5e7eb;
 }
 
-.meo-form-group input:not(.input-error):valid:not(:placeholder-shown) {
-  border-color: #10b981;
-}
-
 .meo-form-group input.input-error,
 .meo-form-group select.input-error {
   border-color: #ef4444;
@@ -294,7 +290,6 @@
   padding: 1rem;
   background: #f9fafb;
   border-radius: 10px;
-  border: 2px solid #e5e7eb;
 }
 
 .meo-checkbox-label {
