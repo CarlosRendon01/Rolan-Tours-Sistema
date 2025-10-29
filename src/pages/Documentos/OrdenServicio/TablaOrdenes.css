@@ -2,7 +2,8 @@
   width: 100%;
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   margin: 1rem;
 }
@@ -286,7 +287,6 @@
   width: 150px;
 }
 
-
 .Ordenes-fila-orden {
   border-bottom: 1px solid #dee2e6;
   transition: all 0.2s ease;
@@ -475,7 +475,7 @@
 }
 
 .Ordenes-boton-accion::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -635,7 +635,6 @@
 }
 
 @keyframes Ordenes-pulse {
-
   0%,
   100% {
     transform: scaleY(1);
@@ -937,7 +936,6 @@
   min-width: 180px;
 }
 
-
 .Ordenes-boton-accion.Ordenes-restaurar {
   background: linear-gradient(45deg, #28a745, #218838);
   color: white;
@@ -1077,7 +1075,6 @@
   animation: swal2-show 0.3s !important;
 }
 
-
 .swal2-title {
   font-size: 1.75rem !important;
   font-weight: 700 !important;
@@ -1088,7 +1085,6 @@
   margin: 1.5rem auto 1rem !important;
 }
 
-
 @media (min-width: 1024px) and (max-width: 1279px) {
   .Ordenes-contenedor-tabla {
     overflow: scroll;
@@ -1096,8 +1092,6 @@
 }
 
 @media (max-width: 768px) {
-
-
   .swal-wide {
     width: 95% !important;
   }

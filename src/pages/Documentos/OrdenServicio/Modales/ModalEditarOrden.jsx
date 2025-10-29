@@ -1,89 +1,104 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { X, Save, User, FileText, MapPin, Car, DollarSign, AlertCircle, Calendar, Clock, Users } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  X,
+  Save,
+  User,
+  FileText,
+  MapPin,
+  Car,
+  AlertCircle,
+  Calendar,
+  Clock,
+  Users,
+} from "lucide-react";
 
-import './ModalEditarOrden.css';
+import "./ModalEditarOrden.css";
 
-const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
+const ModalEditarOrden = ({
+  estaAbierto,
+  orden,
+  alCerrar,
+  alGuardar,
+  vehiculosDisponibles = [],
+}) => {
   const [datosFormulario, setDatosFormulario] = useState({
     // Datos Orden de Servicio
-    folio: '',
-    fecha_orden_servicio: '',
-    nombre_prestador: 'Antonio Alonso Meza',
+    folio: "",
+    fecha_orden_servicio: "",
+    nombre_prestador: "Antonio Alonso Meza",
 
     // Datos Conductor
-    nombre_conductor: '',
-    apellido_paterno_conductor: '',
-    apellido_materno_conductor: '',
-    telefono_conductor: '',
-    licencia_conductor: '',
+    nombre_conductor: "",
+    apellido_paterno_conductor: "",
+    apellido_materno_conductor: "",
+    telefono_conductor: "",
+    licencia_conductor: "",
 
     // Datos Servicio
-    nombre_cliente: '',
-    telefono_cliente: '',
-    ciudad_origen: '',
-    punto_intermedio: '',
-    destino: '',
-    numero_pasajeros: '',
-    fecha_inicio_servicio: '',
-    horario_inicio_servicio: '',
-    fecha_final_servicio: '',
-    horario_final_servicio: '',
-    horario_final_real: '',
-    itinerario_detallado: '',
-    direccion_retorno: '',
+    nombre_cliente: "",
+    telefono_cliente: "",
+    ciudad_origen: "",
+    punto_intermedio: "",
+    destino: "",
+    numero_pasajeros: "",
+    fecha_inicio_servicio: "",
+    horario_inicio_servicio: "",
+    fecha_final_servicio: "",
+    horario_final_servicio: "",
+    horario_final_real: "",
+    itinerario_detallado: "",
+    direccion_retorno: "",
 
     // Vehículo
-    marca: '',
-    modelo: '',
-    placa: '',
-    km_inicial: '',
-    km_final: '',
-    litros_consumidos: '',
-    rendimiento: '',
-
-  
-
+    vehiculo_id: "",
+    marca: "",
+    modelo: "",
+    placa: "",
+    km_inicial: "",
+    km_final: "",
+    litros_consumidos: "",
+    rendimiento: "",
   });
 
-  const [seccionActiva, setSeccionActiva] = useState('orden');
+  const [seccionActiva, setSeccionActiva] = useState("orden");
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
     if (estaAbierto && orden) {
       setDatosFormulario({
-        folio: orden.folio || '',
-        fecha_orden_servicio: orden.fecha_orden_servicio || '',
-        nombre_prestador: orden.nombre_prestador || 'Antonio Alonso Meza',
+        folio: orden.folio || "",
+        fecha_orden_servicio: orden.fecha_orden_servicio || "",
+        nombre_prestador: orden.nombre_prestador || "Antonio Alonso Meza",
 
-        nombre_conductor: orden.nombre_conductor || '',
-        apellido_paterno_conductor: orden.apellido_paterno_conductor || '',
-        apellido_materno_conductor: orden.apellido_materno_conductor || '',
-        telefono_conductor: orden.telefono_conductor || '',
-        licencia_conductor: orden.licencia_conductor || '',
+        nombre_conductor: orden.nombre_conductor || "",
+        apellido_paterno_conductor: orden.apellido_paterno_conductor || "",
+        apellido_materno_conductor: orden.apellido_materno_conductor || "",
+        telefono_conductor: orden.telefono_conductor || "",
+        licencia_conductor: orden.licencia_conductor || "",
 
-        nombre_cliente: orden.nombre_cliente || '',
-        telefono_cliente: orden.telefono_cliente || '',
-        ciudad_origen: orden.ciudad_origen || '',
-        punto_intermedio: orden.punto_intermedio || '',
-        destino: orden.destino || '',
-        numero_pasajeros: orden.numero_pasajeros || '',
-        fecha_inicio_servicio: orden.fecha_inicio_servicio || '',
-        horario_inicio_servicio: orden.horario_inicio_servicio || '',
-        fecha_final_servicio: orden.fecha_final_servicio || '',
-        horario_final_servicio: orden.horario_final_servicio || '',
-        horario_final_real: orden.horario_final_real || '',
-        itinerario_detallado: orden.itinerario_detallado || '',
-        direccion_retorno: orden.direccion_retorno || '',
+        nombre_cliente: orden.nombre_cliente || "",
+        telefono_cliente: orden.telefono_cliente || "",
+        ciudad_origen: orden.ciudad_origen || "",
+        punto_intermedio: orden.punto_intermedio || "",
+        destino: orden.destino || "",
+        numero_pasajeros: orden.numero_pasajeros || "",
+        fecha_inicio_servicio: orden.fecha_inicio_servicio || "",
+        horario_inicio_servicio: orden.horario_inicio_servicio || "",
+        fecha_final_servicio: orden.fecha_final_servicio || "",
+        horario_final_servicio: orden.horario_final_servicio || "",
+        horario_final_real: orden.horario_final_real || "",
+        itinerario_detallado: orden.itinerario_detallado || "",
+        direccion_retorno: orden.direccion_retorno || "",
 
-        marca: orden.marca || '',
-        modelo: orden.modelo || '',
-        placa: orden.placa || '',
-        km_inicial: orden.km_inicial || '',
-        km_final: orden.km_final || '',
-        litros_consumidos: orden.litros_consumidos || '',
-        rendimiento: orden.rendimiento || '',
-
+        vehiculo_id: orden.vehiculo_id || "",
+        marca: orden.marca || "",
+        modelo: orden.modelo || "",
+        placa: orden.placa || "",
+        km_inicial: orden.km_inicial || "",
+        km_final: orden.km_final || "",
+        litros_consumidos: orden.litros_consumidos || "",
+        rendimiento: orden.rendimiento || "",
       });
       setErrores({});
     }
@@ -97,63 +112,71 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
     });
   }, []);
 
-  const manejarCambioFormulario = useCallback((evento) => {
-    const { name, value } = evento.target;
-    setDatosFormulario(datosAnteriores => ({
-      ...datosAnteriores,
-      [name]: value
-    }));
+  const manejarCambioFormulario = useCallback(
+    (evento) => {
+      const { name, value } = evento.target;
+      setDatosFormulario((datosAnteriores) => ({
+        ...datosAnteriores,
+        [name]: value,
+      }));
 
-    if (errores[name]) {
-      limpiarErrorCampo(name);
-    }
-  }, [errores, limpiarErrorCampo]);
+      if (errores[name]) {
+        limpiarErrorCampo(name);
+      }
+    },
+    [errores, limpiarErrorCampo]
+  );
 
   const validarFormulario = () => {
     const nuevosErrores = {};
 
     // Validaciones Datos Orden de Servicio
     if (!datosFormulario.folio) {
-      nuevosErrores.folio = 'El folio es obligatorio';
+      nuevosErrores.folio = "El folio es obligatorio";
     }
 
     if (!datosFormulario.fecha_orden_servicio.trim()) {
-      nuevosErrores.fecha_orden_servicio = 'La fecha de orden de servicio es obligatoria';
+      nuevosErrores.fecha_orden_servicio =
+        "La fecha de orden de servicio es obligatoria";
     }
 
     // Validaciones Datos Servicio
     if (!datosFormulario.nombre_cliente.trim()) {
-      nuevosErrores.nombre_cliente = 'El nombre del cliente es obligatorio';
+      nuevosErrores.nombre_cliente = "El nombre del cliente es obligatorio";
     }
 
     if (!datosFormulario.ciudad_origen.trim()) {
-      nuevosErrores.ciudad_origen = 'La ciudad de origen es obligatoria';
+      nuevosErrores.ciudad_origen = "La ciudad de origen es obligatoria";
     }
 
     if (!datosFormulario.destino.trim()) {
-      nuevosErrores.destino = 'El destino es obligatorio';
+      nuevosErrores.destino = "El destino es obligatorio";
     }
 
     if (!datosFormulario.numero_pasajeros) {
-      nuevosErrores.numero_pasajeros = 'El número de pasajeros es obligatorio';
+      nuevosErrores.numero_pasajeros = "El número de pasajeros es obligatorio";
     } else if (parseInt(datosFormulario.numero_pasajeros) < 1) {
-      nuevosErrores.numero_pasajeros = 'Debe haber al menos 1 pasajero';
+      nuevosErrores.numero_pasajeros = "Debe haber al menos 1 pasajero";
     }
 
     if (!datosFormulario.fecha_inicio_servicio.trim()) {
-      nuevosErrores.fecha_inicio_servicio = 'La fecha de inicio es obligatoria';
+      nuevosErrores.fecha_inicio_servicio = "La fecha de inicio es obligatoria";
     }
 
     if (!datosFormulario.fecha_final_servicio.trim()) {
-      nuevosErrores.fecha_final_servicio = 'La fecha final es obligatoria';
+      nuevosErrores.fecha_final_servicio = "La fecha final es obligatoria";
     }
 
     // Validar que fecha final sea posterior a fecha inicial
-    if (datosFormulario.fecha_inicio_servicio && datosFormulario.fecha_final_servicio) {
+    if (
+      datosFormulario.fecha_inicio_servicio &&
+      datosFormulario.fecha_final_servicio
+    ) {
       const inicio = new Date(datosFormulario.fecha_inicio_servicio);
       const final = new Date(datosFormulario.fecha_final_servicio);
       if (final < inicio) {
-        nuevosErrores.fecha_final_servicio = 'La fecha final debe ser posterior a la de inicio';
+        nuevosErrores.fecha_final_servicio =
+          "La fecha final debe ser posterior a la de inicio";
       }
     }
 
@@ -161,20 +184,20 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
   };
 
   const mostrarNotificacionExito = () => {
-    if (typeof window !== 'undefined' && window.Swal) {
+    if (typeof window !== "undefined" && window.Swal) {
       window.Swal.fire({
-        title: '¡Excelente!',
-        text: 'La información de la orden se ha actualizado correctamente',
-        icon: 'success',
-        confirmButtonText: 'Perfecto',
-        confirmButtonColor: '#2563eb',
+        title: "¡Excelente!",
+        text: "La información de la orden se ha actualizado correctamente",
+        icon: "success",
+        confirmButtonText: "Perfecto",
+        confirmButtonColor: "#2563eb",
         timer: 3000,
         timerProgressBar: true,
         customClass: {
-          popup: 'swal-popup-custom-orden',
-          title: 'swal-title-custom-orden',
-          confirmButton: 'swal-confirm-custom-orden'
-        }
+          popup: "swal-popup-custom-orden",
+          title: "swal-title-custom-orden",
+          confirmButton: "swal-confirm-custom-orden",
+        },
       });
     }
   };
@@ -187,25 +210,61 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
 
-      const camposOrden = ['folio', 'fecha_orden_servicio'];
-      const camposConductor = ['nombre_conductor', 'apellido_paterno_conductor', 'apellido_materno_conductor', 'telefono_conductor', 'licencia_conductor'];
-      const camposServicio = ['nombre_cliente', 'telefono_cliente', 'ciudad_origen', 'punto_intermedio', 'destino', 'numero_pasajeros', 'fecha_inicio_servicio', 'horario_inicio_servicio', 'fecha_final_servicio', 'horario_final_servicio', 'horario_final_real', 'itinerario_detallado', 'direccion_retorno'];
-      const camposVehiculo = ['marca', 'modelo', 'placa', 'km_inicial', 'km_final', 'litros_consumidos', 'rendimiento'];
+      const camposOrden = ["folio", "fecha_orden_servicio"];
+      const camposConductor = [
+        "nombre_conductor",
+        "apellido_paterno_conductor",
+        "apellido_materno_conductor",
+        "telefono_conductor",
+        "licencia_conductor",
+      ];
+      const camposServicio = [
+        "nombre_cliente",
+        "telefono_cliente",
+        "ciudad_origen",
+        "punto_intermedio",
+        "destino",
+        "numero_pasajeros",
+        "fecha_inicio_servicio",
+        "horario_inicio_servicio",
+        "fecha_final_servicio",
+        "horario_final_servicio",
+        "horario_final_real",
+        "itinerario_detallado",
+        "direccion_retorno",
+      ];
+      const camposVehiculo = [
+        "vehiculo_id",
+        "marca",
+        "modelo",
+        "placa",
+        "km_inicial",
+        "km_final",
+        "litros_consumidos",
+        "rendimiento",
+      ];
 
-
-      const erroresEnOrden = Object.keys(nuevosErrores).some(key => camposOrden.includes(key));
-      const erroresEnConductor = Object.keys(nuevosErrores).some(key => camposConductor.includes(key));
-      const erroresEnServicio = Object.keys(nuevosErrores).some(key => camposServicio.includes(key));
-      const erroresEnVehiculo = Object.keys(nuevosErrores).some(key => camposVehiculo.includes(key));
+      const erroresEnOrden = Object.keys(nuevosErrores).some((key) =>
+        camposOrden.includes(key)
+      );
+      const erroresEnConductor = Object.keys(nuevosErrores).some((key) =>
+        camposConductor.includes(key)
+      );
+      const erroresEnServicio = Object.keys(nuevosErrores).some((key) =>
+        camposServicio.includes(key)
+      );
+      const erroresEnVehiculo = Object.keys(nuevosErrores).some((key) =>
+        camposVehiculo.includes(key)
+      );
 
       if (erroresEnOrden) {
-        setSeccionActiva('orden');
+        setSeccionActiva("orden");
       } else if (erroresEnConductor) {
-        setSeccionActiva('conductor');
+        setSeccionActiva("conductor");
       } else if (erroresEnServicio) {
-        setSeccionActiva('servicio');
+        setSeccionActiva("servicio");
       } else if (erroresEnVehiculo) {
-        setSeccionActiva('vehiculo');
+        setSeccionActiva("vehiculo");
       }
 
       setTimeout(() => {
@@ -213,7 +272,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
         const elemento = document.getElementById(primerCampoConError);
         if (elemento) {
           elemento.focus();
-          elemento.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          elemento.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }, 100);
 
@@ -223,12 +282,12 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
     setGuardando(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const datosActualizados = {
         ...orden,
         ...datosFormulario,
-        fecha_actualizacion: new Date().toISOString()
+        fecha_actualizacion: new Date().toISOString(),
       };
 
       await alGuardar(datosActualizados);
@@ -237,16 +296,15 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
       setTimeout(() => {
         manejarCerrar();
       }, 500);
-
     } catch (error) {
-      console.error('Error al guardar:', error);
-      if (typeof window !== 'undefined' && window.Swal) {
+      console.error("Error al guardar:", error);
+      if (typeof window !== "undefined" && window.Swal) {
         window.Swal.fire({
-          title: 'Error',
-          text: 'Hubo un problema al guardar la información. Por favor, intenta nuevamente.',
-          icon: 'error',
-          confirmButtonText: 'Reintentar',
-          confirmButtonColor: '#ef4444'
+          title: "Error",
+          text: "Hubo un problema al guardar la información. Por favor, intenta nuevamente.",
+          icon: "error",
+          confirmButtonText: "Reintentar",
+          confirmButtonColor: "#ef4444",
         });
       }
     } finally {
@@ -285,7 +343,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           name="folio"
           value={datosFormulario.folio}
           onChange={manejarCambioFormulario}
-          className={errores.folio ? 'input-error' : ''}
+          className={errores.folio ? "input-error" : ""}
           placeholder="001"
           disabled={guardando}
           min="1"
@@ -304,7 +362,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           name="fecha_orden_servicio"
           value={datosFormulario.fecha_orden_servicio}
           onChange={manejarCambioFormulario}
-          className={errores.fecha_orden_servicio ? 'input-error' : ''}
+          className={errores.fecha_orden_servicio ? "input-error" : ""}
           disabled={guardando}
         />
         <MensajeError nombreCampo="fecha_orden_servicio" />
@@ -322,7 +380,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           value={datosFormulario.nombre_prestador}
           onChange={manejarCambioFormulario}
           disabled={guardando}
-          style={{ backgroundColor: '#f9fafb' }}
+          style={{ backgroundColor: "#f9fafb" }}
         />
       </div>
     </div>
@@ -417,7 +475,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           name="nombre_cliente"
           value={datosFormulario.nombre_cliente}
           onChange={manejarCambioFormulario}
-          className={errores.nombre_cliente ? 'input-error' : ''}
+          className={errores.nombre_cliente ? "input-error" : ""}
           placeholder="Nombre del cliente"
           disabled={guardando}
         />
@@ -449,7 +507,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           name="ciudad_origen"
           value={datosFormulario.ciudad_origen}
           onChange={manejarCambioFormulario}
-          className={errores.ciudad_origen ? 'input-error' : ''}
+          className={errores.ciudad_origen ? "input-error" : ""}
           placeholder="Ciudad de origen"
           disabled={guardando}
         />
@@ -483,7 +541,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           name="destino"
           value={datosFormulario.destino}
           onChange={manejarCambioFormulario}
-          className={errores.destino ? 'input-error' : ''}
+          className={errores.destino ? "input-error" : ""}
           placeholder="Destino final"
           disabled={guardando}
         />
@@ -501,7 +559,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           name="numero_pasajeros"
           value={datosFormulario.numero_pasajeros}
           onChange={manejarCambioFormulario}
-          className={errores.numero_pasajeros ? 'input-error' : ''}
+          className={errores.numero_pasajeros ? "input-error" : ""}
           placeholder="15"
           disabled={guardando}
           min="1"
@@ -520,7 +578,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           name="fecha_inicio_servicio"
           value={datosFormulario.fecha_inicio_servicio}
           onChange={manejarCambioFormulario}
-          className={errores.fecha_inicio_servicio ? 'input-error' : ''}
+          className={errores.fecha_inicio_servicio ? "input-error" : ""}
           disabled={guardando}
         />
         <MensajeError nombreCampo="fecha_inicio_servicio" />
@@ -552,7 +610,7 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           name="fecha_final_servicio"
           value={datosFormulario.fecha_final_servicio}
           onChange={manejarCambioFormulario}
-          className={errores.fecha_final_servicio ? 'input-error' : ''}
+          className={errores.fecha_final_servicio ? "input-error" : ""}
           disabled={guardando}
         />
         <MensajeError nombreCampo="fecha_final_servicio" />
@@ -617,6 +675,44 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
 
   const renderSeccionVehiculo = () => (
     <div className="meo-form-grid">
+      <div className="meo-form-group form-group-full">
+        <label htmlFor="vehiculo_id">
+          <Car size={18} />
+          Seleccionar Vehículo
+        </label>
+        <select
+          id="vehiculo_id"
+          name="vehiculo_id"
+          value={datosFormulario.vehiculo_id}
+          onChange={(e) => {
+            const vehiculoSeleccionado = vehiculosDisponibles.find(
+              (v) => v.id === parseInt(e.target.value)
+            );
+
+            if (vehiculoSeleccionado) {
+              setDatosFormulario((prev) => ({
+                ...prev,
+                vehiculo_id: e.target.value,
+                marca: vehiculoSeleccionado.marca,
+                modelo: vehiculoSeleccionado.modelo,
+                placa: vehiculoSeleccionado.numero_placa,
+              }));
+            } else {
+              manejarCambioFormulario(e);
+            }
+          }}
+          disabled={guardando}
+          className="Ordenes-selector-registros"
+        >
+          <option value="">-- Seleccione un vehículo --</option>
+          {vehiculosDisponibles.map((vehiculo) => (
+            <option key={vehiculo.id} value={vehiculo.id}>
+              {vehiculo.nombre} - {vehiculo.numero_placa}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="meo-form-group">
         <label htmlFor="marca">
           <Car size={18} />
@@ -630,6 +726,9 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           onChange={manejarCambioFormulario}
           placeholder="Toyota, Mercedes, etc."
           disabled={guardando}
+          style={{
+            backgroundColor: datosFormulario.vehiculo_id ? "#f9fafb" : "white",
+          }}
         />
       </div>
 
@@ -646,6 +745,9 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           onChange={manejarCambioFormulario}
           placeholder="Hiace, Sprinter, etc."
           disabled={guardando}
+          style={{
+            backgroundColor: datosFormulario.vehiculo_id ? "#f9fafb" : "white",
+          }}
         />
       </div>
 
@@ -659,7 +761,10 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
           onChange={manejarCambioFormulario}
           placeholder="ABC-123-D"
           disabled={guardando}
-          style={{ textTransform: 'uppercase' }}
+          style={{
+            textTransform: "uppercase",
+            backgroundColor: datosFormulario.vehiculo_id ? "#f9fafb" : "white",
+          }}
         />
       </div>
 
@@ -727,11 +832,19 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
 
   return (
     <div className="meo-overlay" onClick={manejarCerrar}>
-      <div className="meo-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="meo-contenido modal-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="meo-header">
           <h2>Editar Orden</h2>
-          <button className="meo-btn-cerrar" onClick={manejarCerrar} disabled={guardando} type="button">
+          <button
+            className="meo-btn-cerrar"
+            onClick={manejarCerrar}
+            disabled={guardando}
+            type="button"
+          >
             <X size={24} />
           </button>
         </div>
@@ -739,32 +852,40 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
         {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${seccionActiva === 'orden' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('orden')}
+            className={`meo-tab-button ${
+              seccionActiva === "orden" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("orden")}
             type="button"
           >
             <FileText size={18} />
             Datos Orden de Servicio
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'conductor' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('conductor')}
+            className={`meo-tab-button ${
+              seccionActiva === "conductor" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("conductor")}
             type="button"
           >
             <User size={18} />
             Datos Conductor
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'servicio' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('servicio')}
+            className={`meo-tab-button ${
+              seccionActiva === "servicio" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
             <MapPin size={18} />
             Datos Servicio
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'vehiculo' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('vehiculo')}
+            className={`meo-tab-button ${
+              seccionActiva === "vehiculo" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >
             <Car size={18} />
@@ -774,28 +895,33 @@ const ModalEditarOrden = ({ estaAbierto, orden, alCerrar, alGuardar }) => {
 
         {/* Formulario (scrolleable) */}
         <form onSubmit={manejarEnvio} className="meo-form">
-          {seccionActiva === 'orden' && renderSeccionOrden()}
-          {seccionActiva === 'conductor' && renderSeccionConductor()}
-          {seccionActiva === 'servicio' && renderSeccionServicio()}
-          {seccionActiva === 'vehiculo' && renderSeccionVehiculo()}
+          {seccionActiva === "orden" && renderSeccionOrden()}
+          {seccionActiva === "conductor" && renderSeccionConductor()}
+          {seccionActiva === "servicio" && renderSeccionServicio()}
+          {seccionActiva === "vehiculo" && renderSeccionVehiculo()}
         </form>
 
         {/* Footer */}
         <div className="meo-footer">
           <div className="meo-botones-izquierda">
-            <button type="button" className="meo-btn-cancelar" onClick={manejarCerrar} disabled={guardando}>
+            <button
+              type="button"
+              className="meo-btn-cancelar"
+              onClick={manejarCerrar}
+              disabled={guardando}
+            >
               Cancelar
             </button>
           </div>
           <div className="meo-botones-derecha">
             <button
               type="button"
-              className={`meo-btn-actualizar ${guardando ? 'loading' : ''}`}
+              className={`meo-btn-actualizar ${guardando ? "loading" : ""}`}
               disabled={guardando}
               onClick={manejarEnvio}
             >
               {!guardando && <Save size={20} />}
-              <span>{guardando ? 'Actualizando...' : 'Actualizar Orden'}</span>
+              <span>{guardando ? "Actualizando..." : "Actualizar Orden"}</span>
             </button>
           </div>
         </div>

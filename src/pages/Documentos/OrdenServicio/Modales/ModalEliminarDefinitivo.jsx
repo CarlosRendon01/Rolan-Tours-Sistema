@@ -1,6 +1,6 @@
-import React from 'react';
-import { AlertTriangle, X, Trash2 } from 'lucide-react';
-import './ModalEliminarDefinitivo.css';
+import React from "react";
+import { AlertTriangle, X, Trash2 } from "lucide-react";
+import "./ModalEliminarDefinitivo.css";
 
 const ModalEliminarDefinitivo = ({ orden, alConfirmar, alCancelar }) => {
   if (!orden) return null;
@@ -29,15 +29,23 @@ const ModalEliminarDefinitivo = ({ orden, alConfirmar, alCancelar }) => {
         </div>
 
         <p className="modal-eliminar-def-descripcion">
-          ¿Está completamente seguro de <strong>ELIMINAR DEFINITIVAMENTE</strong> este orden del sistema sin posibilidad de recuperación?
+          ¿Está completamente seguro de{" "}
+          <strong>ELIMINAR DEFINITIVAMENTE</strong> este orden del sistema sin
+          posibilidad de recuperación?
         </p>
 
         <div className="modal-eliminar-def-botones">
-          <button className="modal-eliminar-def-btn-cancelar" onClick={alCancelar}>
+          <button
+            className="modal-eliminar-def-btn-cancelar"
+            onClick={alCancelar}
+          >
             <X size={18} />
             Cancelar
           </button>
-          <button className="modal-eliminar-def-btn-confirmar" onClick={manejarConfirmar}>
+          <button
+            className="modal-eliminar-def-btn-confirmar"
+            onClick={manejarConfirmar}
+          >
             <Trash2 size={18} />
             Sí, Eliminar Definitivamente
           </button>

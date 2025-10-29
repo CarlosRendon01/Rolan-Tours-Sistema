@@ -89,7 +89,6 @@
 }
 
 @keyframes warningPulse {
-
   0%,
   100% {
     transform: scale(1);
@@ -193,7 +192,6 @@
 }
 
 @keyframes warningBlink {
-
   0%,
   100% {
     opacity: 1;
