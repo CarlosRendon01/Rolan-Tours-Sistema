@@ -21,7 +21,6 @@ import "./ModalVerReserva.css";
 const ModalVerReserva = ({ reserva, onCerrar }) => {
   const [seccionActiva, setSeccionActiva] = useState("basicos");
 
-  // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
     if (typeof archivo === "string") return archivo;
@@ -29,10 +28,8 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
     return null;
   };
 
-  // Obtener URL de la foto de transferencia
   const fotoTransferenciaUrl = obtenerUrlArchivo(reserva.fotoTransferencia);
 
-  // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     if (!telefono) return "N/A";
     const limpio = telefono.replace(/\D/g, "");
@@ -45,7 +42,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
     return telefono;
   };
 
-  // Función para formatear fecha
   const formatearFecha = (fecha) => {
     if (!fecha) return "N/A";
     const date = new Date(fecha);
@@ -56,7 +52,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
     });
   };
 
-  // Función para formatear moneda
   const formatearMoneda = (cantidad) => {
     if (!cantidad) return "N/A";
     return new Intl.NumberFormat("es-MX", {
@@ -65,7 +60,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
     }).format(cantidad);
   };
 
-  // Función para ver documento
   const handleVerDocumento = (archivo) => {
     if (!archivo) {
       alert("No hay documento disponible para visualizar");
@@ -86,7 +80,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
     alert("No hay documento disponible para visualizar");
   };
 
-  // Función para descargar documento
   const handleDescargar = (archivo, nombreDocumento) => {
     if (!archivo) {
       alert("No hay documento disponible para descargar");
@@ -121,7 +114,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
 
   const renderSeccionBasicos = () => (
     <>
-      {/* Folio - Una sola línea */}
       <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
         <div className="meg-form-group">
           <label>
@@ -132,7 +124,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
         </div>
       </div>
 
-      {/* Fecha de reserva y N° habitantes */}
       <div className="meg-form-grid">
         <div className="meg-form-group">
           <label>
@@ -161,7 +152,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
         </div>
       </div>
 
-      {/* Nombre Cliente */}
       <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
         <div className="meg-form-group">
           <label>
@@ -174,7 +164,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
         </div>
       </div>
 
-      {/* N° Pasajero, Teléfono e Importe */}
       <div
         className="meg-form-grid"
         style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
@@ -217,7 +206,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
         </div>
       </div>
 
-      {/* Servicio */}
       <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
         <div className="meg-form-group">
           <label>
@@ -233,7 +221,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
         </div>
       </div>
 
-      {/* Incluye */}
       <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
         <div className="meg-form-group">
           <label>
@@ -249,7 +236,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
         </div>
       </div>
 
-      {/* No Incluye */}
       <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
         <div className="meg-form-group">
           <label>
@@ -265,7 +251,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
         </div>
       </div>
 
-      {/* Forma de pago y Pagado */}
       <div className="meg-form-grid">
         <div className="meg-form-group">
           <label>
@@ -403,7 +388,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
         className="meg-contenido modal-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="meg-header">
           <h2>Ver Reserva #{reserva.folio}</h2>
           <button className="meg-btn-cerrar" onClick={onCerrar} type="button">
@@ -411,7 +395,6 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="meg-tabs">
           <button
             className={`meg-tab-button ${
@@ -435,17 +418,13 @@ const ModalVerReserva = ({ reserva, onCerrar }) => {
           </button>
         </div>
 
-        {/* Contenido (scrolleable) */}
         <div className="meg-form">
           {seccionActiva === "basicos" && renderSeccionBasicos()}
           {seccionActiva === "documentos" && renderSeccionDocumentos()}
         </div>
 
-        {/* Footer */}
         <div className="meg-footer">
-          <div className="meg-botones-izquierda">
-            {/* Vacío intencionalmente */}
-          </div>
+          <div className="meg-botones-izquierda"></div>
           <div className="meg-botones-derecha">
             <button
               type="button"

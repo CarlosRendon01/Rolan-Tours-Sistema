@@ -23,7 +23,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
 
-  // Cargar datos de la reserva cuando se abre el modal
   useEffect(() => {
     if (reserva) {
       setFormData({
@@ -88,17 +87,14 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validar folio (numérico)
     if (!formData.folio || isNaN(formData.folio)) {
       nuevosErrores.folio = "El folio es requerido y debe ser numérico";
     }
 
-    // Validar fecha de reserva
     if (!formData.fechaReserva) {
       nuevosErrores.fechaReserva = "La fecha de reserva es requerida";
     }
 
-    // Validar número de habitantes
     if (
       !formData.numHabitantes ||
       isNaN(formData.numHabitantes) ||
@@ -107,12 +103,10 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
       nuevosErrores.numHabitantes = "Debe ser un número mayor a 0";
     }
 
-    // Validar nombre del cliente
     if (!formData.nombreCliente.trim()) {
       nuevosErrores.nombreCliente = "El nombre del cliente es requerido";
     }
 
-    // Validar número de pasajeros
     if (
       !formData.numPasajeros ||
       isNaN(formData.numPasajeros) ||
@@ -121,13 +115,10 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
       nuevosErrores.numPasajeros = "Debe ser un número mayor a 0";
     }
 
-    // Validar teléfono (10 dígitos)
     const telefonoRegex = /^\d{10}$/;
     if (!formData.telefono || !telefonoRegex.test(formData.telefono)) {
       nuevosErrores.telefono = "Debe tener 10 dígitos";
     }
-
-    // Validar importe
     if (
       !formData.importe ||
       isNaN(formData.importe) ||
@@ -136,17 +127,14 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
       nuevosErrores.importe = "El importe debe ser mayor a 0";
     }
 
-    // Validar servicio
     if (!formData.servicio.trim()) {
       nuevosErrores.servicio = "El servicio es requerido";
     }
 
-    // Validar forma de pago
     if (!formData.formaPago) {
       nuevosErrores.formaPago = "Seleccione una forma de pago";
     }
 
-    // Si forma de pago es transferencia, validar foto
     if (formData.formaPago === "transferencia" && !formData.fotoTransferencia) {
       nuevosErrores.fotoTransferencia =
         "Debe subir la foto de la transferencia";
@@ -164,7 +152,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
       if (Object.keys(nuevosErrores).length > 0) {
         setErrores(nuevosErrores);
 
-        // Focus en el primer campo con error
         setTimeout(() => {
           const primerCampoConError = Object.keys(nuevosErrores)[0];
           const elemento = document.querySelector(
@@ -199,22 +186,17 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
           fotoTransferencia: formData.fotoTransferencia,
         };
 
-        // Guardar los datos antes de cerrar
         const nombreCliente = formData.nombreCliente;
         const folioReserva = formData.folio;
 
-        // Llamar a la función onGuardar del padre
         await onGuardar(reservaData);
 
         console.log("✅ Reserva actualizada, cerrando modal primero...");
 
-        // ✅ PRIMERO: Cerrar el modal
         onCerrar();
 
-        // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
         await new Promise((resolve) => setTimeout(resolve, 300));
 
-        // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
         console.log("✅ Mostrando alerta...");
         await Swal.fire({
           icon: "success",
@@ -248,7 +230,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
       } catch (error) {
         console.error("❌ Error al actualizar:", error);
 
-        // Si hay error, también cerrar el modal primero
         onCerrar();
 
         await new Promise((resolve) => setTimeout(resolve, 300));
@@ -287,7 +268,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
         className="meg-contenido modal-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="meg-header">
           <h2>Editar Reserva</h2>
           <button className="meg-btn-cerrar" onClick={onCerrar} type="button">
@@ -295,9 +275,7 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="meg-form">
-          {/* Folio - Una sola línea */}
           <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
             <div className="meg-form-group">
               <label htmlFor="folio">
@@ -311,12 +289,12 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
                 onChange={handleChange}
                 className={errores.folio ? "input-error" : ""}
                 placeholder="Ej: 1001"
+                readOnly
               />
               <MensajeError nombreCampo="folio" />
             </div>
           </div>
 
-          {/* Fecha de reserva y N° habitantes */}
           <div className="meg-form-grid">
             <div className="meg-form-group">
               <label htmlFor="fechaReserva">
@@ -351,7 +329,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
             </div>
           </div>
 
-          {/* Nombre Cliente */}
           <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
             <div className="meg-form-group">
               <label htmlFor="nombreCliente">
@@ -365,12 +342,12 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
                 onChange={handleChange}
                 className={errores.nombreCliente ? "input-error" : ""}
                 placeholder="Ej: Juan Pérez García"
+                readOnly
               />
               <MensajeError nombreCampo="nombreCliente" />
             </div>
           </div>
 
-          {/* N° Pasajero, Teléfono e Importe */}
           <div
             className="meg-form-grid"
             style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
@@ -388,6 +365,7 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
                 className={errores.numPasajeros ? "input-error" : ""}
                 placeholder="Ej: 4"
                 min="1"
+                readOnly
               />
               <MensajeError nombreCampo="numPasajeros" />
             </div>
@@ -405,6 +383,7 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
                 className={errores.telefono ? "input-error" : ""}
                 placeholder="9511234567"
                 maxLength="10"
+                readOnly
               />
               <MensajeError nombreCampo="telefono" />
             </div>
@@ -427,7 +406,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
             </div>
           </div>
 
-          {/* Servicio */}
           <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
             <div className="meg-form-group">
               <label htmlFor="servicio">
@@ -441,12 +419,12 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
                 className={errores.servicio ? "input-error" : ""}
                 placeholder="Descripción del servicio..."
                 rows="3"
+                readOnly
               />
               <MensajeError nombreCampo="servicio" />
             </div>
           </div>
 
-          {/* Incluye */}
           <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
             <div className="meg-form-group">
               <label htmlFor="incluye">Incluye</label>
@@ -461,7 +439,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
             </div>
           </div>
 
-          {/* No Incluye */}
           <div className="meg-form-grid" style={{ gridTemplateColumns: "1fr" }}>
             <div className="meg-form-group">
               <label htmlFor="noIncluye">No Incluye</label>
@@ -476,7 +453,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
             </div>
           </div>
 
-          {/* Forma de pago y Pagado */}
           <div className="meg-form-grid">
             <div className="meg-form-group">
               <label htmlFor="formaPago">
@@ -512,7 +488,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
             </div>
           </div>
 
-          {/* Foto de transferencia (solo si forma de pago es transferencia) */}
           {formData.formaPago === "transferencia" && (
             <div
               className="meg-form-grid"
@@ -544,7 +519,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
           )}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="meg-footer">
           <div className="meg-botones-izquierda">
             <button

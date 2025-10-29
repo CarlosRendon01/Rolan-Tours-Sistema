@@ -1,23 +1,24 @@
-import Swal from 'sweetalert2';
-import './ModalEliminarReserva.css';
+import Swal from "sweetalert2";
+import "./ModalEliminarReserva.css";
 
 /**
  * Modal de confirmación para eliminar un guía usando SweetAlert2
- * @param {Object} reserva - Objeto con información del guía a eliminar
- * @param {Function} onConfirmar - Callback cuando se confirma la eliminación
- * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
+ @param {Object} reserva 
+@param {Function} onConfirmar 
+ @returns {Promise<boolean>} 
  */
 export const modalEliminarReserva = async (reserva, onConfirmar) => {
-  // Validar datos del guía
   if (!reserva?.nombre || !reserva?.apellidoPaterno) {
-    await modalError('Información del guía incompleta');
+    await modalError("Información del guía incompleta");
     return false;
   }
 
-  const nombreCompleto = `${reserva.nombre} ${reserva.apellidoPaterno} ${reserva.apellidoMaterno || ''}`.trim();
+  const nombreCompleto = `${reserva.nombre} ${reserva.apellidoPaterno} ${
+    reserva.apellidoMaterno || ""
+  }`.trim();
 
   const resultado = await Swal.fire({
-    title: '¿Eliminar este guía?',
+    title: "¿Eliminar este guía?",
     html: `
       <div class="eliminar-reserva-contenido">
         <p class="eliminar-reserva-texto">¿Estás seguro de eliminar al guía:</p>
@@ -31,66 +32,64 @@ export const modalEliminarReserva = async (reserva, onConfirmar) => {
         </div>
       </div>
     `,
-    icon: 'warning',
+    icon: "warning",
     showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar",
     customClass: {
-      popup: 'eliminar-reserva-popup',
-      title: 'eliminar-reserva-titulo',
-      htmlContainer: 'eliminar-reserva-html',
-      confirmButton: 'eliminar-reserva-boton-confirmar',
-      cancelButton: 'eliminar-reserva-boton-cancelar',
-      icon: 'eliminar-reserva-icono',
-      actions: 'eliminar-reserva-acciones'
+      popup: "eliminar-reserva-popup",
+      title: "eliminar-reserva-titulo",
+      htmlContainer: "eliminar-reserva-html",
+      confirmButton: "eliminar-reserva-boton-confirmar",
+      cancelButton: "eliminar-reserva-boton-cancelar",
+      icon: "eliminar-reserva-icono",
+      actions: "eliminar-reserva-acciones",
     },
     buttonsStyling: false,
     reverseButtons: true,
     focusCancel: true,
-    width: '420px'
+    width: "420px",
   });
 
   if (resultado.isConfirmed) {
-    modalCargando('Eliminando guía...');
+    modalCargando("Eliminando guía...");
 
     try {
       if (onConfirmar) {
         await onConfirmar(reserva);
       }
 
-      // Delay mínimo para UX
-      await new Promise(resolve => setTimeout(resolve, 600));
+      await new Promise((resolve) => setTimeout(resolve, 600));
 
       Swal.close();
 
-      // Mostrar éxito
       await Swal.fire({
-        title: '¡Eliminado!',
+        title: "¡Eliminado!",
         html: `
           <div class="eliminar-reserva-exito-contenido">
             <p class="eliminar-reserva-exito-texto">El guía ha sido eliminado exitosamente</p>
             <p class="eliminar-reserva-exito-detalle">Guía: ${nombreCompleto}</p>
           </div>
         `,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
+        icon: "success",
+        confirmButtonText: "Aceptar",
         customClass: {
-          popup: 'eliminar-reserva-popup',
-          title: 'eliminar-reserva-titulo-exito',
-          htmlContainer: 'eliminar-reserva-html',
-          confirmButton: 'eliminar-reserva-boton-exito',
-          icon: 'eliminar-reserva-icono-exito'
+          popup: "eliminar-reserva-popup",
+          title: "eliminar-reserva-titulo-exito",
+          htmlContainer: "eliminar-reserva-html",
+          confirmButton: "eliminar-reserva-boton-exito",
+          icon: "eliminar-reserva-icono-exito",
         },
         buttonsStyling: false,
         timer: 3000,
-        timerProgressBar: true
+        timerProgressBar: true,
       });
 
       return true;
     } catch (error) {
       Swal.close();
-      await modalError('No se pudo eliminar el guía. Intenta nuevamente.');
-      console.error('Error al eliminar guía:', error);
+      await modalError("No se pudo eliminar el guía. Intenta nuevamente.");
+      console.error("Error al eliminar guía:", error);
       return false;
     }
   }
@@ -102,19 +101,21 @@ export const modalEliminarReserva = async (reserva, onConfirmar) => {
  * Modal de error genérico
  * @param {string} mensaje - Mensaje de error a mostrar
  */
-export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
+export const modalError = async (
+  mensaje = "Ocurrió un error al procesar la solicitud"
+) => {
   await Swal.fire({
-    title: 'Error',
+    title: "Error",
     text: mensaje,
-    icon: 'error',
-    confirmButtonText: 'Aceptar',
+    icon: "error",
+    confirmButtonText: "Aceptar",
     customClass: {
-      popup: 'eliminar-reserva-popup',
-      title: 'eliminar-reserva-titulo-error',
-      confirmButton: 'eliminar-reserva-boton-error',
-      icon: 'eliminar-reserva-icono-error'
+      popup: "eliminar-reserva-popup",
+      title: "eliminar-reserva-titulo-error",
+      confirmButton: "eliminar-reserva-boton-error",
+      icon: "eliminar-reserva-icono-error",
     },
-    buttonsStyling: false
+    buttonsStyling: false,
   });
 };
 
@@ -122,7 +123,7 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
  * Modal de cargando
  * @param {string} mensaje - Mensaje a mostrar mientras carga
  */
-export const modalCargando = (mensaje = 'Procesando...') => {
+export const modalCargando = (mensaje = "Procesando...") => {
   Swal.fire({
     title: mensaje,
     allowOutsideClick: false,
@@ -130,18 +131,15 @@ export const modalCargando = (mensaje = 'Procesando...') => {
     allowEnterKey: false,
     showConfirmButton: false,
     customClass: {
-      popup: 'eliminar-reserva-popup-cargando',
-      title: 'eliminar-reserva-titulo-cargando'
+      popup: "eliminar-reserva-popup-cargando",
+      title: "eliminar-reserva-titulo-cargando",
     },
     didOpen: () => {
       Swal.showLoading();
-    }
+    },
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
 export const cerrarModalCargando = () => {
   Swal.close();
 };

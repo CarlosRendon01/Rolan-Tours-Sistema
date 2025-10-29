@@ -7,7 +7,6 @@ import ModalEditarReserva from "./ModalesReservas/ModalEditarReserva";
 import { modalEliminarReserva } from "./ModalesReservas/ModalEliminarReserva";
 
 const ReservasPrincipal = () => {
-  // Estado para almacenar las reservas
   const [reservas, setReservas] = useState([
     {
       id: 1,
@@ -162,13 +161,11 @@ const ReservasPrincipal = () => {
     },
   ]);
 
-  // Estados para controlar los modales
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
   const [reservaSeleccionado, setReservaSeleccionado] = useState(null);
 
-  // Funciones para manejar los modales
   const manejarVer = (reserva) => {
     setReservaSeleccionado(reserva);
     setModalVerAbierto(true);
@@ -188,7 +185,6 @@ const ReservasPrincipal = () => {
     }
   };
 
-  // Función para cerrar modales
   const cerrarModales = () => {
     setModalVerAbierto(false);
     setModalEditarAbierto(false);
@@ -196,7 +192,6 @@ const ReservasPrincipal = () => {
     setReservaSeleccionado(null);
   };
 
-  // Función para actualizar reserva
   const actualizarReserva = (reservaActualizado) => {
     setReservas(
       reservas.map((r) =>
@@ -206,7 +201,6 @@ const ReservasPrincipal = () => {
     cerrarModales();
   };
 
-  // Función para eliminar reserva
   const eliminarReserva = (id) => {
     setReservas(reservas.filter((r) => r.id !== id));
     cerrarModales();
@@ -223,7 +217,6 @@ const ReservasPrincipal = () => {
           onEliminar={manejarEliminar}
         />
 
-        {/* Modal VER */}
         {modalVerAbierto && reservaSeleccionado && (
           <ModalVerReserva
             reserva={reservaSeleccionado}
@@ -231,7 +224,6 @@ const ReservasPrincipal = () => {
           />
         )}
 
-        {/* Modal EDITAR */}
         {modalEditarAbierto && reservaSeleccionado && (
           <ModalEditarReserva
             reserva={reservaSeleccionado}
