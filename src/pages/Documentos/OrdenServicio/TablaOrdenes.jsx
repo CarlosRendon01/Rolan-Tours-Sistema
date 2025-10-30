@@ -22,7 +22,7 @@ import "./TablaOrdenes.css";
 const TablaOrdenes = () => {
   const [esAdministrador, setEsAdministrador] = useState(false);
   const [vehiculosDisponibles, setVehiculosDisponibles] = useState([]);
-
+  const [conductoresDisponibles, setConductoresDisponibles] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
@@ -254,6 +254,36 @@ const TablaOrdenes = () => {
       },
     ];
     setVehiculosDisponibles(vehiculosEjemplo);
+  }, []);
+
+  useEffect(() => {
+    const conductoresEjemplo = [
+      {
+        id: 1,
+        nombre_conductor: "Carlos",
+        apellido_paterno_conductor: "Pérez",
+        apellido_materno_conductor: "Torres",
+        telefono_conductor: "9511244232",
+        licencia_conductor: "CAC123356",
+      },
+      {
+        id: 2,
+        nombre_conductor: "Marco",
+        apellido_paterno_conductor: "Matínez",
+        apellido_materno_conductor: "Antonio",
+        telefono_conductor: "9517879880",
+        licencia_conductor: "MMA123356",
+      },
+      {
+        id: 3,
+        nombre_conductor: "Rafael",
+        apellido_paterno_conductor: "Sanchéz",
+        apellido_materno_conductor: "Clavel",
+        telefono_conductor: "9517564653",
+        licencia_conductor: "RSC123356",
+      },
+    ];
+    setConductoresDisponibles(conductoresEjemplo);
   }, []);
 
   const ordenesFiltrados = datosOrdenes.filter((orden) => {
@@ -918,6 +948,7 @@ const TablaOrdenes = () => {
         alCerrar={cerrarModalEditar}
         alGuardar={manejarGuardarOrden}
         vehiculosDisponibles={vehiculosDisponibles}
+        conductoresDisponibles={conductoresDisponibles}
       />
 
       {ordenAEliminar && (

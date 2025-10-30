@@ -20,6 +20,7 @@ const ModalEditarOrden = ({
   alCerrar,
   alGuardar,
   vehiculosDisponibles = [],
+  conductoresDisponibles = [],
 }) => {
   const [datosFormulario, setDatosFormulario] = useState({
     // Datos Orden de Servicio
@@ -28,6 +29,7 @@ const ModalEditarOrden = ({
     nombre_prestador: "Antonio Alonso Meza",
 
     // Datos Conductor
+    conductor_id: "",
     nombre_conductor: "",
     apellido_paterno_conductor: "",
     apellido_materno_conductor: "",
@@ -70,7 +72,7 @@ const ModalEditarOrden = ({
         folio: orden.folio || "",
         fecha_orden_servicio: orden.fecha_orden_servicio || "",
         nombre_prestador: orden.nombre_prestador || "Antonio Alonso Meza",
-
+        conductor_id: orden.conductor_id || "",
         nombre_conductor: orden.nombre_conductor || "",
         apellido_paterno_conductor: orden.apellido_paterno_conductor || "",
         apellido_materno_conductor: orden.apellido_materno_conductor || "",
@@ -212,6 +214,7 @@ const ModalEditarOrden = ({
 
       const camposOrden = ["folio", "fecha_orden_servicio"];
       const camposConductor = [
+        "conductor_id",
         "nombre_conductor",
         "apellido_paterno_conductor",
         "apellido_materno_conductor",
@@ -388,6 +391,48 @@ const ModalEditarOrden = ({
 
   const renderSeccionConductor = () => (
     <div className="meo-form-grid">
+      <div className="meo-form-group form-group-full">
+        <label htmlFor="conductor_id">
+          <Users size={18} />
+          Seleccionar Conductor
+        </label>
+        <select
+          id="conductor_id"
+          name="conductor_id"
+          value={datosFormulario.conductor_id}
+          onChange={(e) => {
+            const conductorSeleccionado = conductoresDisponibles.find(
+              (v) => v.id === parseInt(e.target.value)
+            );
+
+            if (conductorSeleccionado) {
+              setDatosFormulario((prev) => ({
+                ...prev,
+                conductor_id: e.target.value,
+                nombre_conductor: conductorSeleccionado.nombre_conductor,
+                apellido_paterno_conductor:
+                  conductorSeleccionado.apellido_paterno_conductor,
+                apellido_materno_conductor:
+                  conductorSeleccionado.apellido_materno_conductor,
+              }));
+            } else {
+              manejarCambioFormulario(e);
+            }
+          }}
+          disabled={guardando}
+          className="Ordenes-selector-registros"
+        >
+          <option value="">-- Seleccione un conductor --</option>
+          {conductoresDisponibles.map((conductor) => (
+            <option key={conductor.id} value={conductor.id}>
+              {conductor.nombre_conductor} {}
+              {conductor.apellido_paterno_conductor} {}
+              {conductor.apellido_materno_conductor}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="meo-form-group">
         <label htmlFor="nombre_conductor">
           <User size={18} />
@@ -401,6 +446,7 @@ const ModalEditarOrden = ({
           onChange={manejarCambioFormulario}
           placeholder="Nombre"
           disabled={guardando}
+          readOnly
         />
       </div>
 
@@ -414,6 +460,7 @@ const ModalEditarOrden = ({
           onChange={manejarCambioFormulario}
           placeholder="Apellido Paterno"
           disabled={guardando}
+          readOnly
         />
       </div>
 
@@ -427,6 +474,7 @@ const ModalEditarOrden = ({
           onChange={manejarCambioFormulario}
           placeholder="Apellido Materno"
           disabled={guardando}
+          readOnly
         />
       </div>
 
@@ -441,6 +489,7 @@ const ModalEditarOrden = ({
           placeholder="9511234567"
           disabled={guardando}
           maxLength="10"
+          readOnly
         />
       </div>
 
@@ -457,6 +506,7 @@ const ModalEditarOrden = ({
           onChange={manejarCambioFormulario}
           placeholder="Número de licencia"
           disabled={guardando}
+          readOnly
         />
       </div>
     </div>
