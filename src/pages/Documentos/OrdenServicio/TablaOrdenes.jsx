@@ -768,7 +768,6 @@ const TablaOrdenes = () => {
         <table className="Ordenes-tabla">
           <thead>
             <tr className="Ordenes-fila-encabezado">
-              <th>ID</th>
               <th>FOLIO</th>
               <th>FECHA ORDEN</th>
               <th>CLIENTE</th>
@@ -789,11 +788,6 @@ const TablaOrdenes = () => {
                   background: orden.activo ? "white" : "#f8d7da",
                 }}
               >
-                <td data-label="ID" className="Ordenes-columna-id">
-                  <span className="Ordenes-badge-id">
-                    #{orden.id.toString().padStart(3, "0")}
-                  </span>
-                </td>
                 <td data-label="Folio" className="Ordenes-columna-fecha">
                   <span className="Ordenes-badge-lead">{orden.folio}</span>
                 </td>
@@ -805,7 +799,7 @@ const TablaOrdenes = () => {
                   </span>
                 </td>
                 <td data-label="Cliente" className="Ordenes-columna-origen">
-                  <span className="Ordenes-ubicacion">
+                  <span className="Ordenes-ubicaciones">
                     {orden.nombre_cliente}
                   </span>
                 </td>

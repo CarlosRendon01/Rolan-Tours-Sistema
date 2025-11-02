@@ -779,6 +779,7 @@ const ModalEditarOrden = ({
           style={{
             backgroundColor: datosFormulario.vehiculo_id ? "#f9fafb" : "white",
           }}
+          readOnly
         />
       </div>
 
@@ -798,6 +799,7 @@ const ModalEditarOrden = ({
           style={{
             backgroundColor: datosFormulario.vehiculo_id ? "#f9fafb" : "white",
           }}
+          readOnly
         />
       </div>
 
@@ -815,6 +817,7 @@ const ModalEditarOrden = ({
             textTransform: "uppercase",
             backgroundColor: datosFormulario.vehiculo_id ? "#f9fafb" : "white",
           }}
+          readOnly
         />
       </div>
 
@@ -830,6 +833,7 @@ const ModalEditarOrden = ({
           disabled={guardando}
           min="0"
           step="0.1"
+          readOnly
         />
       </div>
 
@@ -845,6 +849,7 @@ const ModalEditarOrden = ({
           disabled={guardando}
           min="0"
           step="0.1"
+          readOnly
         />
       </div>
 
@@ -860,6 +865,7 @@ const ModalEditarOrden = ({
           disabled={guardando}
           min="0"
           step="0.01"
+          readOnly
         />
       </div>
 
@@ -873,6 +879,7 @@ const ModalEditarOrden = ({
           onChange={manejarCambioFormulario}
           placeholder="10 km/L"
           disabled={guardando}
+          readOnly
         />
       </div>
     </div>

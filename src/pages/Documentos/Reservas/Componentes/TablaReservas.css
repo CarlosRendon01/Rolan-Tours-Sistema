@@ -1,3 +1,7 @@
+/* ============================================
+   SISTEMA DE RESERVAS - PALETA ROJA CLÁSICA PROFESIONAL
+   ============================================ */
+
 .reservas-contenedor-principal {
   width: 100%;
   background: #ffffff;
@@ -7,20 +11,40 @@
   overflow: hidden;
   margin: 1rem;
 }
+
+/* ============================================
+   BADGES DE ESTADO
+   ============================================ */
+
 .reservas-idioma-tag.reservas-pagado {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
+  font-family: sans-serif;
+  background: #dcfce7;
+  color: #166534;
   display: flex;
+  font-weight: 700;
   align-items: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #bbf7d0;
 }
+
 .reservas-idioma-tag.reservas-no-pagado {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 700;
   display: flex;
   align-items: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #fecaca;
 }
+
+/* ============================================
+   ENCABEZADO PRINCIPAL
+   ============================================ */
+
 .reservas-encabezado {
-  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   padding: 2rem;
   display: flex;
   justify-content: space-between;
@@ -37,6 +61,10 @@
   z-index: 2;
 }
 
+/* ============================================
+   LÍNEAS DECORATIVAS
+   ============================================ */
+
 .reservas-lineas-decorativas {
   display: flex;
   flex-direction: column;
@@ -51,8 +79,8 @@
 }
 
 .reservas-linea.reservas-azul {
-  background: #60a5fa;
-  box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+  background: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
 .reservas-linea.reservas-verde {
@@ -79,6 +107,10 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* ============================================
+   ESTADÍSTICAS DEL ENCABEZADO
+   ============================================ */
+
 .reservas-contenedor-estadisticas {
   display: flex;
   gap: 2rem;
@@ -96,13 +128,13 @@
 .reservas-icono-estadistica-circular {
   width: 60px;
   height: 60px;
-  background: #10b981;
+  background: #dc2626;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
 }
 
 .reservas-icono-estadistica-cuadrado {
@@ -113,7 +145,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
+  color: #78350f;
   box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
 }
 
@@ -130,12 +162,15 @@
   letter-spacing: 0.5px;
 }
 
+/* ============================================
+   CONTROLES Y BÚSQUEDA
+   ============================================ */
+
 .reservas-controles {
   padding: 1.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f8f9fa;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -168,7 +203,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
   color: white;
   border: none;
   border-radius: 6px;
@@ -176,13 +211,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
 .reservas-boton-agregar:hover {
-  background: linear-gradient(135deg, #059669, #047857);
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
 }
 
 .reservas-control-busqueda {
@@ -210,8 +245,8 @@
 
 .reservas-entrada-buscar:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  border-color: #dc2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
 }
 
 .reservas-icono-buscar {
@@ -220,6 +255,10 @@
   color: #6c757d;
   pointer-events: none;
 }
+
+/* ============================================
+   TABLA
+   ============================================ */
 
 .reservas-contenedor-tabla {
   overflow-x: auto;
@@ -242,7 +281,7 @@
 }
 
 .reservas-fila-encabezado {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   color: white;
 }
 
@@ -250,13 +289,17 @@
   padding: 1rem 0.75rem;
   text-align: left;
   font-weight: 700;
-  color: black;
+  color: white;
   font-size: 0.8rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   white-space: nowrap;
-  background: white;
-  border-right: 1px solid #dee2e6;
+  background: transparent;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reservas-fila-encabezado th:last-child {
+  border-right: none;
 }
 
 .reservas-fila-encabezado th:nth-child(1) {
@@ -287,14 +330,17 @@
   width: 150px;
 }
 
+/* ============================================
+   FILAS DE LA TABLA
+   ============================================ */
+
 .reservas-fila-reserva {
   border-bottom: 1px solid #dee2e6;
   transition: all 0.2s ease;
 }
 
 .reservas-fila-reserva:hover {
-  background-color: #f8f9fa;
-  transform: translateY(-1px);
+  background-color: #fef2f2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -303,7 +349,7 @@
 }
 
 .reservas-fila-reserva:nth-child(even):hover {
-  background-color: #f8f9fa;
+  background-color: #fef2f2;
 }
 
 .reservas-fila-reserva td {
@@ -312,9 +358,13 @@
   font-size: 0.85rem;
 }
 
+/* ============================================
+   COLUMNAS Y BADGES
+   ============================================ */
+
 .reservas-columna-id .reservas-badge-id {
-  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
-  color: #1e40af;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
   font-weight: 600;
@@ -330,12 +380,12 @@
 .reservas-avatar {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1e40af;
+  color: #991b1b;
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -358,13 +408,12 @@
 }
 
 .reservas-badge-edad {
-  background: #f0fdf4;
-  color: #15803d;
+  font-family: sans-serif;
+  color: #000000a2;
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.75rem;
-  border: 1px solid #bbf7d0;
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
@@ -400,8 +449,8 @@
 }
 
 .reservas-valor-telefono {
-  color: #475569;
-  font-weight: 500;
+  color: #000000ad;
+  font-weight: 700;
   font-family: monospace;
   display: flex;
   align-items: center;
@@ -415,7 +464,6 @@
 }
 
 .reservas-idioma-tag {
-  background: #ede9fe;
   color: #2130b6;
   padding: 0.2rem 0.5rem;
   border-radius: 8px;
@@ -423,6 +471,10 @@
   font-size: 0.7rem;
   border: 1px solid #ddd6fe;
 }
+
+/* ============================================
+   BOTONES DE ACCIÓN
+   ============================================ */
 
 .reservas-columna-acciones {
   position: relative;
@@ -491,19 +543,34 @@
 }
 
 .reservas-boton-accion.reservas-eliminar {
-  background: linear-gradient(45deg, #ef4444, #dc2626);
+  background: linear-gradient(45deg, #dc2626, #b91c1c);
   color: white;
 }
 
 .reservas-boton-accion.reservas-eliminar:hover {
-  background: linear-gradient(45deg, #dc2626, #b91c1c);
+  background: linear-gradient(45deg, #b91c1c, #991b1b);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
 }
+
+.Ordenes-boton-accion.Reservas-descargar {
+  background: linear-gradient(45deg, #7c3aed, #6d28d9);
+  color: white;
+}
+
+.Ordenes-boton-accion.Reservas-descargar:hover {
+  background: linear-gradient(45deg, #6d28d9, #5b21b6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+/* ============================================
+   PIE DE TABLA Y PAGINACIÓN
+   ============================================ */
 
 .reservas-pie-tabla {
   padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -577,18 +644,21 @@
 }
 
 .reservas-numero-pagina.reservas-activo {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  border-color: #3b82f6;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: #dc2626;
   color: white;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
 
 @keyframes reservas-fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -604,7 +674,6 @@
   100% {
     transform: scaleY(1);
   }
-
   50% {
     transform: scaleY(1.2);
   }
@@ -630,6 +699,10 @@
   animation-delay: 0.3s;
 }
 
+/* ============================================
+   ESTADO VACÍO
+   ============================================ */
+
 .reservas-estado-vacio {
   text-align: center;
   padding: 3rem 2rem;
@@ -654,6 +727,10 @@
   font-size: 0.875rem;
   color: #6b7280;
 }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
 
 @media (max-width: 992px) {
   .reservas-encabezado {
@@ -747,27 +824,27 @@
   }
 
   .reservas-fila-reserva td:nth-child(1):before {
-    content: "ID:";
+    content: "FOLIO:";
   }
 
   .reservas-fila-reserva td:nth-child(2):before {
-    content: "GUÍA:";
+    content: "CLIENTE:";
   }
 
   .reservas-fila-reserva td:nth-child(3):before {
-    content: "EDAD:";
+    content: "FECHA:";
   }
 
   .reservas-fila-reserva td:nth-child(4):before {
-    content: "GÉNERO:";
+    content: "PASAJEROS:";
   }
 
   .reservas-fila-reserva td:nth-child(5):before {
-    content: "TELÉFONO:";
+    content: "IMPORTE:";
   }
 
   .reservas-fila-reserva td:nth-child(6):before {
-    content: "IDIOMAS:";
+    content: "ESTADO:";
   }
 
   .reservas-fila-reserva td:nth-child(7):before {

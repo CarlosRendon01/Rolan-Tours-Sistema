@@ -1,14 +1,21 @@
+/* ============================================
+   SISTEMA DE CONTRATOS - PALETA ROJA CLÁSICA PROFESIONAL
+   ============================================ */
+
+/* ========== CONTENEDOR PRINCIPAL ========== */
 .Contratos-contenedor-principal {
   width: 100%;
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   margin: 1rem;
 }
 
+/* ========== ENCABEZADO ========== */
 .Contratos-encabezado {
-  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   padding: 2rem;
   display: flex;
   justify-content: space-between;
@@ -25,6 +32,16 @@
   z-index: 2;
 }
 
+.Contratos-titulo {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== LÍNEAS DECORATIVAS ========== */
 .Contratos-lineas-decorativas {
   display: flex;
   flex-direction: column;
@@ -39,34 +56,26 @@
 }
 
 .Contratos-linea.Contratos-roja {
-  background: #6b86ff;
-  box-shadow: 0 0 10px rgba(107, 134, 255, 0.5);
+  background: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
 .Contratos-linea.Contratos-azul {
-  background: #4ecdc4;
-  box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+  background: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
 .Contratos-linea.Contratos-verde {
-  background: #45b7d1;
-  box-shadow: 0 0 10px rgba(69, 183, 209, 0.5);
+  background: #fbbf24;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
 }
 
 .Contratos-linea.Contratos-amarilla {
-  background: #f9ca24;
-  box-shadow: 0 0 10px rgba(249, 202, 36, 0.5);
+  background: #a78bfa;
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
 }
 
-.Contratos-titulo {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
+/* ========== ESTADÍSTICAS ========== */
 .Contratos-contenedor-estadisticas {
   display: flex;
   gap: 2rem;
@@ -84,25 +93,25 @@
 .Contratos-icono-estadistica-circular {
   width: 60px;
   height: 60px;
-  background: #00bcd4;
+  background: #dc2626;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
 }
 
 .Contratos-icono-estadistica-cuadrado {
   width: 60px;
   height: 60px;
-  background: #ffeb3b;
+  background: #fbbf24;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
-  box-shadow: 0 4px 15px rgba(255, 235, 59, 0.3);
+  color: #78350f;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
 }
 
 .Contratos-info-estadistica {
@@ -118,35 +127,7 @@
   letter-spacing: 0.5px;
 }
 
-.Contratos-header-tabla {
-  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
-  padding: 1rem 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 0 2rem;
-  border-radius: 8px 8px 0 0;
-}
-
-.Contratos-icono-tabla {
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.Contratos-titulo-tabla {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-  margin: 0;
-}
-
+/* ========== CONTROLES ========== */
 .Contratos-controles {
   padding: 1.5rem 2rem;
   display: flex;
@@ -205,8 +186,8 @@
 
 .Contratos-entrada-buscar:focus {
   outline: none;
-  border-color: #dc3545;
-  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+  border-color: #dc2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
 }
 
 .Contratos-icono-buscar {
@@ -216,6 +197,7 @@
   pointer-events: none;
 }
 
+/* ========== TABLA ========== */
 .Contratos-contenedor-tabla {
   overflow-x: auto;
   border: 1px solid #dee2e6;
@@ -237,7 +219,7 @@
 }
 
 .Contratos-fila-encabezado {
-  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   color: white;
 }
 
@@ -245,64 +227,63 @@
   padding: 1rem 0.75rem;
   text-align: left;
   font-weight: 700;
-  color: black;
+  color: white;
   font-size: 0.8rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   white-space: nowrap;
-  background: white;
-  border-right: 1px solid #dee2e6;
+  background: transparent;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.Contratos-fila-encabezado th:last-child {
+  border-right: none;
 }
 
 .Contratos-fila-encabezado th:nth-child(1) {
   width: 80px;
 }
-
 .Contratos-fila-encabezado th:nth-child(2) {
   width: 200px;
 }
-
 .Contratos-fila-encabezado th:nth-child(3) {
   width: 220px;
 }
-
 .Contratos-fila-encabezado th:nth-child(4) {
   width: 250px;
 }
-
 .Contratos-fila-encabezado th:nth-child(5) {
   width: 150px;
 }
-
 .Contratos-fila-encabezado th:nth-child(6) {
   width: 150px;
 }
-
 .Contratos-fila-encabezado th:nth-child(7) {
   width: 150px;
 }
-
 .Contratos-fila-encabezado th:nth-child(8) {
   width: 150px;
 }
 
+/* ========== FILAS DE DATOS ========== */
 .Contratos-fila-contrato {
   border-bottom: 1px solid #dee2e6;
   transition: all 0.2s ease;
+  animation: Contratos-fadeIn 0.3s ease;
+  background-color: white;
 }
 
 .Contratos-fila-contrato:hover {
-  background-color: #f8f9fa;
-  transform: translateY(-1px);
+  background-color: #fef2f2 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .Contratos-fila-contrato:nth-child(even) {
-  background-color: #fdfdfd;
+  background-color: white;
 }
 
 .Contratos-fila-contrato:nth-child(even):hover {
-  background-color: #f8f9fa;
+  background-color: #fef2f2 !important;
 }
 
 .Contratos-fila-contrato td {
@@ -311,145 +292,90 @@
   font-size: 0.85rem;
 }
 
-.Contratos-fila-contrato td:nth-child(1) {
-  font-weight: 600;
-  color: #495057;
-}
-
+.Contratos-fila-contrato td:nth-child(1),
 .Contratos-fila-contrato td:nth-child(2) {
-  font-weight: 500;
-  color: #495057;
+  font-weight: 600;
+  color: #202224;
 }
 
 .Contratos-fila-contrato td:nth-child(3) {
-  color: #dc3545;
+  color: #202224;
 }
 
-.Contratos-fila-contrato td:nth-child(4) {
-  font-weight: 500;
-  color: #495057;
-}
-
+.Contratos-fila-contrato td:nth-child(4),
 .Contratos-fila-contrato td:nth-child(5) {
-  background: linear-gradient(45deg, #ffeaea, #fff5f5);
-  color: #dc3545;
-  font-weight: 500;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 3px rgba(220, 53, 69, 0.1);
+  vertical-align: top;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
+/* Estados de fila */
+.Contratos-fila-contrato.Contratos-inactivo,
+.Contratos-fila-contrato.Contratos-inactivo:nth-child(even) {
+  background-color: #fee2e2 !important;
+}
+
+.Contratos-fila-contrato.Contratos-inactivo:hover,
+.Contratos-fila-contrato.Contratos-inactivo:nth-child(even):hover {
+  background-color: #fecaca !important;
+}
+
+/* ========== BADGES Y ETIQUETAS ========== */
 .Contratos-columna-id .Contratos-badge-id {
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-  color: #1565c0;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.75rem;
+  border: 1px solid #fca5a5;
 }
 
-.Contratos-info-usuario {
-  display: flex;
+.Contratos-columna-origen,
+.Contratos-columna-destino {
+  position: relative;
+}
+
+.Contratos-columna-origen .Contratos-ubicacion,
+.Contratos-columna-destino .Contratos-ubicacion {
+  color: #0a0202;
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-}
-
-.Contratos-avatar {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #2e7d32;
-}
-
-.Contratos-datos-usuario {
-  display: flex;
-  flex-direction: column;
+  gap: 0.4rem;
+  line-height: 1.3;
+  word-wrap: break-word;
+  max-width: 100%;
 }
 
 .Contratos-nombre-principal {
   font-weight: 600;
-  color: #2c3e50;
+  color: #1e293b;
   line-height: 1.2;
 }
 
-.Contratos-subtexto {
-  font-size: 0.75rem;
-  color: #27ae60;
-  font-weight: 500;
-}
-
-.Contratos-enlace-email {
-  color: #dc3545;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.Contratos-enlace-email:hover {
-  color: #b71c1c;
-  text-decoration: underline;
-}
-
-.Contratos-telefono {
-  font-family: monospace;
-  background: #f8f9fa;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  color: #495057;
-}
-
-.Contratos-badge-lead {
-  background: linear-gradient(45deg, #ffeaea, #fff5f5);
-  color: #dc3545;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.75rem;
-  border: 1px solid #f5c6cb;
-}
-
-.Contratos-badge-canal {
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-}
-
-.Contratos-canal-whatsapp {
-  background: #e8f5e8;
-  color: #25d366;
-  border: 1px solid #c3e6cb;
-}
-
-.Contratos-canal-facebook {
-  background: #e3f2fd;
-  color: #1877f2;
-  border: 1px solid #b3d4fc;
-}
-
-.Contratos-canal-instagram {
-  background: #fce4ec;
-  color: #e4405f;
-  border: 1px solid #f8bbd9;
-}
-
-.Contratos-canal-sitio-web {
-  background: #fff3e0;
-  color: #ff9800;
-  border: 1px solid #ffcc02;
-}
-
 .Contratos-fecha {
-  color: #6c757d;
+  color: #272a2c;
   font-size: 0.8rem;
 }
 
+.Contratos-badge-hora {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border: 1px solid #fca5a5;
+}
+
+/* ========== BOTONES DE ACCIÓN ========== */
 .Contratos-columna-acciones {
   position: relative;
-  width: 150px;
+  width: 180px;
+  min-width: 180px;
 }
 
 .Contratos-botones-accion {
@@ -474,7 +400,7 @@
 }
 
 .Contratos-boton-accion::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -491,53 +417,64 @@
   height: 100px;
 }
 
+.Contratos-boton-accion:hover {
+  transform: translateY(-2px);
+}
+
 .Contratos-boton-accion.Contratos-ver {
-  background: linear-gradient(45deg, #ffc107, #ffb700);
+  background: linear-gradient(45deg, #fbbf24, #f59e0b);
   color: white;
 }
 
 .Contratos-boton-accion.Contratos-ver:hover {
-  background: linear-gradient(45deg, #ffc107, #ffb700);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  background: linear-gradient(45deg, #f59e0b, #d97706);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
 }
 
 .Contratos-boton-accion.Contratos-descargar {
-  background: linear-gradient(45deg, #1707ff, #6200ff);
+  background: linear-gradient(45deg, #7c3aed, #6d28d9);
   color: white;
 }
 
 .Contratos-boton-accion.Contratos-descargar:hover {
-  background: linear-gradient(45deg, #4346f7, #735aff);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  background: linear-gradient(45deg, #6d28d9, #5b21b6);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
 }
 
 .Contratos-boton-accion.Contratos-editar {
-  background: linear-gradient(45deg, #17a2b8, #17a2b8);
+  background: linear-gradient(45deg, #3b82f6, #2563eb);
   color: #ffffff;
 }
 
 .Contratos-boton-accion.Contratos-editar:hover {
-  background: linear-gradient(45deg, #138496, #1aa179);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+  background: linear-gradient(45deg, #2563eb, #1d4ed8);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .Contratos-boton-accion.Contratos-eliminar {
-  background: linear-gradient(45deg, #dc3545, #c82333);
+  background: linear-gradient(45deg, #dc2626, #b91c1c);
   color: white;
 }
 
 .Contratos-boton-accion.Contratos-eliminar:hover {
-  background: linear-gradient(45deg, #c82333, #b21e2f);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+  background: linear-gradient(45deg, #b91c1c, #991b1b);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
 }
 
+.Contratos-boton-accion.Contratos-restaurar {
+  background: linear-gradient(45deg, #10b981, #059669);
+  color: white;
+}
+
+.Contratos-boton-accion.Contratos-restaurar:hover {
+  background: linear-gradient(45deg, #059669, #047857);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* ========== PIE DE TABLA Y PAGINACIÓN ========== */
 .Contratos-pie-tabla {
   padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -611,35 +548,29 @@
 }
 
 .Contratos-numero-pagina.Contratos-activo {
-  background: linear-gradient(135deg, #dc3545, #b71c1c);
-  border-color: #dc3545;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: #dc2626;
   color: white;
-  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
+/* ========== ANIMACIONES ========== */
 @keyframes Contratos-fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.Contratos-fila-contrato {
-  animation: Contratos-fadeIn 0.3s ease;
-}
-
 @keyframes Contratos-pulse {
-
   0%,
   100% {
     transform: scaleY(1);
   }
-
   50% {
     transform: scaleY(1.2);
   }
@@ -652,19 +583,66 @@
 .Contratos-lineas-decorativas:hover .Contratos-linea:nth-child(1) {
   animation-delay: 0s;
 }
-
 .Contratos-lineas-decorativas:hover .Contratos-linea:nth-child(2) {
   animation-delay: 0.1s;
 }
-
 .Contratos-lineas-decorativas:hover .Contratos-linea:nth-child(3) {
   animation-delay: 0.2s;
 }
-
 .Contratos-lineas-decorativas:hover .Contratos-linea:nth-child(4) {
   animation-delay: 0.3s;
 }
 
+/* ========== ESTILOS SWEETALERT ========== */
+.swal-wide {
+  width: 600px !important;
+  max-width: 90% !important;
+}
+
+.swal2-html-container {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+.swal2-title {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  padding: 1rem 1.5rem 0.5rem !important;
+}
+
+.swal2-icon {
+  margin: 1.5rem auto 1rem !important;
+}
+
+.swal2-confirm,
+.swal2-cancel {
+  font-weight: 600 !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 6px !important;
+  font-size: 0.95rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.swal2-confirm:hover,
+.swal2-cancel:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.swal2-timer-progress-bar {
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+.swal2-show {
+  animation: swal2-show 0.3s !important;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .Contratos-contenedor-tabla {
+    overflow: scroll;
+  }
+}
 
 @media (max-width: 992px) {
   .Contratos-encabezado {
@@ -686,16 +664,13 @@
     font-size: 1.2rem;
   }
 
-  .Contratos-controles {
+  .Contratos-controles,
+  .Contratos-pie-tabla {
     padding: 1rem 1.5rem;
   }
 
   .Contratos-contenedor-tabla {
     margin: 0 1.5rem;
-  }
-
-  .Contratos-pie-tabla {
-    padding: 1rem 1.5rem;
   }
 
   .Contratos-controles-derecha {
@@ -786,42 +761,6 @@
     border-bottom: none;
   }
 
-  .Contratos-fila-contrato td:nth-child(1):before {
-    content: "ID:";
-  }
-
-  .Contratos-fila-contrato td:nth-child(2):before {
-    content: "FECHA SALIDA:";
-  }
-
-  .Contratos-fila-contrato td:nth-child(3):before {
-    content: "FECHA REGRESO:";
-  }
-
-  .Contratos-fila-contrato td:nth-child(4):before {
-    content: "HORA SALIDA:";
-  }
-
-  .Contratos-fila-contrato td:nth-child(5):before {
-    content: "HORA REGRESO:";
-  }
-
-  .Contratos-fila-contrato td:nth-child(6):before {
-    content: "PASAJEROS:";
-  }
-
-  .Contratos-fila-contrato td:nth-child(7):before {
-    content: "ORIGEN SERVICIO:";
-  }
-
-  .Contratos-fila-contrato td:nth-child(8):before {
-    content: "DESTINO SERVICIO:";
-  }
-
-  .Contratos-fila-contrato td:nth-child(9):before {
-    content: "ACCIONES:";
-  }
-
   .Contratos-fila-contrato td:before {
     position: absolute;
     left: 0.75rem;
@@ -834,11 +773,29 @@
     width: calc(40% - 1.5rem);
   }
 
-  .Contratos-fila-contrato td:nth-child(5) {
-    background: transparent;
-    color: inherit;
-    border-radius: 0;
-    box-shadow: none;
+  .Contratos-fila-contrato td:nth-child(1):before {
+    content: "ID:";
+  }
+  .Contratos-fila-contrato td:nth-child(2):before {
+    content: "CLIENTE:";
+  }
+  .Contratos-fila-contrato td:nth-child(3):before {
+    content: "FECHA INICIO:";
+  }
+  .Contratos-fila-contrato td:nth-child(4):before {
+    content: "FECHA FINAL:";
+  }
+  .Contratos-fila-contrato td:nth-child(5):before {
+    content: "PASAJEROS:";
+  }
+  .Contratos-fila-contrato td:nth-child(6):before {
+    content: "ORIGEN:";
+  }
+  .Contratos-fila-contrato td:nth-child(7):before {
+    content: "DESTINO:";
+  }
+  .Contratos-fila-contrato td:nth-child(8):before {
+    content: "ACCIONES:";
   }
 
   .Contratos-columna-acciones {
@@ -865,6 +822,20 @@
   .Contratos-numeros-paginacion {
     order: -1;
     margin: 0 0 0.5rem 0;
+  }
+
+  .swal-wide {
+    width: 95% !important;
+  }
+
+  .swal2-title {
+    font-size: 1.4rem !important;
+  }
+
+  .swal2-confirm,
+  .swal2-cancel {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
   }
 }
 
@@ -897,209 +868,8 @@
     font-size: 0.7rem;
   }
 
-  .Contratos-numeros-paginacion .Contratos-numero-pagina:not(.Contratos-activo) {
+  .Contratos-numeros-paginacion
+    .Contratos-numero-pagina:not(.Contratos-activo) {
     display: none;
-  }
-}
-
-.Contratos-boton-accion.Contratos-restaurar {
-  background: linear-gradient(45deg, #28a745, #218838);
-  color: white;
-}
-
-.Contratos-boton-accion.Contratos-restaurar:hover {
-  background: linear-gradient(45deg, #218838, #1e7e34);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
-}
-
-.Contratos-fila-contrato.Contratos-inactivo {
-  background-color: #f8d7da !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:hover {
-  background-color: #f5c6cb !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:nth-child(even) {
-  background-color: #f8d7da !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:nth-child(even):hover {
-  background-color: #f5c6cb !important;
-}
-
-.Contratos-columna-acciones {
-  min-width: 180px;
-}
-
-.Contratos-fila-encabezado th:last-child {
-  min-width: 180px;
-}
-
-.Contratos-boton-accion.Contratos-restaurar {
-  background: linear-gradient(45deg, #28a745, #218838);
-  color: white;
-}
-
-.Contratos-boton-accion.Contratos-restaurar:hover {
-  background: linear-gradient(45deg, #218838, #1e7e34);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
-}
-
-.Contratos-fila-contrato.Contratos-inactivo {
-  background-color: #f8d7da !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:hover {
-  background-color: #f5c6cb !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:nth-child(even) {
-  background-color: #f8d7da !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:nth-child(even):hover {
-  background-color: #f5c6cb !important;
-}
-
-.Contratos-tabla {
-  min-width: 500px;
-}
-
-.Contratos-fila-encabezado th:nth-child(1) {
-  width: 70px;
-}
-
-.Contratos-fila-encabezado th:nth-child(2) {
-  width: 180px;
-}
-
-.Contratos-fila-encabezado th:nth-child(3) {
-  width: 200px;
-}
-
-.Contratos-fila-encabezado th:nth-child(4) {
-  width: 130px;
-}
-
-.Contratos-fila-encabezado th:nth-child(5) {
-  width: 120px;
-}
-
-.Contratos-fila-encabezado th:nth-child(6) {
-  width: 130px;
-}
-
-.Contratos-fila-encabezado th:nth-child(8) {
-  width: 130px;
-}
-
-.Contratos-fila-encabezado th:nth-child(9) {
-  width: 180px;
-}
-
-.Contratos-columna-acciones {
-  width: 180px;
-  min-width: 180px;
-}
-
-.Contratos-boton-accion.Contratos-restaurar {
-  background: linear-gradient(45deg, #28a745, #218838);
-  color: white;
-}
-
-.Contratos-boton-accion.Contratos-restaurar:hover {
-  background: linear-gradient(45deg, #218838, #1e7e34);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
-}
-
-
-.Contratos-fila-contrato.Contratos-inactivo {
-  background-color: #f8d7da !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:hover {
-  background-color: #f5c6cb !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:nth-child(even) {
-  background-color: #f8d7da !important;
-}
-
-.Contratos-fila-contrato.Contratos-inactivo:nth-child(even):hover {
-  background-color: #f5c6cb !important;
-}
-
-
-.swal-wide {
-  width: 600px !important;
-  max-width: 90% !important;
-}
-
-.swal2-html-container {
-  overflow: visible !important;
-  max-height: none !important;
-}
-
-.swal2-confirm {
-  font-weight: 600 !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 6px !important;
-  font-size: 0.95rem !important;
-  transition: all 0.3s ease !important;
-}
-
-.swal2-cancel {
-  font-weight: 600 !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 6px !important;
-  font-size: 0.95rem !important;
-  transition: all 0.3s ease !important;
-}
-
-.swal2-confirm:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-.swal2-cancel:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-}
-
-.swal2-timer-progress-bar {
-  background: rgba(255, 255, 255, 0.6) !important;
-}
-
-.swal2-show {
-  animation: swal2-show 0.3s !important;
-}
-
-.swal2-title {
-  font-size: 1.75rem !important;
-  font-weight: 700 !important;
-  padding: 1rem 1.5rem 0.5rem !important;
-}
-
-.swal2-icon {
-  margin: 1.5rem auto 1rem !important;
-}
-
-@media (max-width: 768px) {
-  .swal-wide {
-    width: 95% !important;
-  }
-
-  .swal2-title {
-    font-size: 1.4rem !important;
-  }
-
-  .swal2-confirm,
-  .swal2-cancel {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.875rem !important;
   }
 }

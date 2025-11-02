@@ -14,6 +14,7 @@ import {
   XCircle,
   User,
 } from "lucide-react";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import "./TablaReservas.css";
 
 const TablaReservas = ({
@@ -108,11 +109,53 @@ const TablaReservas = ({
       case "editar":
         onEditar(reserva);
         break;
+      case "pdf":
+        generarYDescargarPDF(reserva);
+        break;
       case "eliminar":
         onEliminar(reserva);
         break;
       default:
         break;
+    }
+  };
+
+  const generarYDescargarPDF = async (reserva) => {
+    try {
+      const plantillaUrl = "/HOJARESERVA_ROLAN.pdf";
+      const plantillaBytes = await fetch(plantillaUrl).then((res) =>
+        res.arrayBuffer()
+      );
+
+      const pdfDoc = await PDFDocument.load(plantillaBytes);
+      const pages = pdfDoc.getPages();
+      const firstPage = pages[0];
+
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      firstPage.drawText(reserva.folio.toString(), {
+        x: 140,
+        y: 350,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
+
+      const pdfBytes = await pdfDoc.save();
+
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Reserva_${reserva.folio}_${reserva.nombreCliente}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+
+      console.log("PDF generado y descargado correctamente");
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+      alert("Error al generar el PDF. Por favor, intente nuevamente.");
     }
   };
 
@@ -269,10 +312,7 @@ const TablaReservas = ({
                       data-label="Importe"
                       className="reservas-columna-telefono"
                     >
-                      <span
-                        className="reservas-valor-telefono"
-                        style={{ fontWeight: "700", color: "#2563eb" }}
-                      >
+                      <span className="reservas-valor-telefono">
                         <DollarSign size={14} />
                         {formatearMoneda(reserva.importe)}
                       </span>
@@ -296,7 +336,7 @@ const TablaReservas = ({
                                 size={14}
                                 style={{ marginRight: "4px" }}
                               />
-                              Pagado
+                              PAGADO
                             </>
                           ) : (
                             <>
@@ -304,7 +344,7 @@ const TablaReservas = ({
                                 size={14}
                                 style={{ marginRight: "4px" }}
                               />
-                              No Pagado
+                              NO PAGADO
                             </>
                           )}
                         </span>
@@ -322,6 +362,14 @@ const TablaReservas = ({
                           title="Ver reserva"
                         >
                           <Eye size={16} />
+                        </button>
+
+                        <button
+                          className="Ordenes-boton-accion Reservas-descargar"
+                          onClick={() => manejarAccion("pdf", reserva)}
+                          title="Descargar reserva"
+                        >
+                          <FileText size={16} />
                         </button>
                         <button
                           className="reservas-boton-accion reservas-editar"
