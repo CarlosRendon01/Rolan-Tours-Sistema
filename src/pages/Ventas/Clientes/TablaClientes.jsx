@@ -483,7 +483,7 @@ const TablaClientes = () => {
         <div className="clientes-informacion-registros">
           Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
           {terminoBusqueda && (
-            <span style={{color: '#6c757d', marginLeft: '0.5rem'}}>
+            <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
               (filtrado de {datosClientes.length} registros totales)
             </span>
           )}
@@ -500,15 +500,49 @@ const TablaClientes = () => {
           </button>
 
           <div className="clientes-numeros-paginacion">
-            {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
-              <button
-                key={numero}
-                className={`clientes-numero-pagina ${paginaActual === numero ? 'clientes-activo' : ''}`}
-                onClick={() => cambiarPagina(numero)}
-              >
-                {numero}
-              </button>
-            ))}
+            {(() => {
+              const botonesPorBloque = 5;
+              const bloqueActual = Math.floor((paginaActual - 1) / botonesPorBloque);
+              const inicio = bloqueActual * botonesPorBloque + 1;
+              const fin = Math.min(inicio + botonesPorBloque - 1, totalPaginas);
+
+              const paginasVisibles = Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
+
+              return (
+                <>
+                  {/* Botón para retroceder bloques */}
+                  {inicio > 1 && (
+                    <button
+                      className="clientes-numero-pagina"
+                      onClick={() => cambiarPagina(inicio - 1)}
+                    >
+                      ...
+                    </button>
+                  )}
+
+                  {/* Botones de las páginas visibles */}
+                  {paginasVisibles.map((numero) => (
+                    <button
+                      key={numero}
+                      className={`clientes-numero-pagina ${paginaActual === numero ? 'clientes-activo' : ''}`}
+                      onClick={() => cambiarPagina(numero)}
+                    >
+                      {numero}
+                    </button>
+                  ))}
+
+                  {/* Botón para avanzar bloques */}
+                  {fin < totalPaginas && (
+                    <button
+                      className="clientes-numero-pagina"
+                      onClick={() => cambiarPagina(fin + 1)}
+                    >
+                      ...
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
 
           <button
