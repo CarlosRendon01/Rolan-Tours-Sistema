@@ -1,103 +1,128 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { X, Save, User, Mail, Phone, FileText, Globe, MapPin, Car, Users, AlertCircle, Calendar, Clock, DollarSign, Building } from 'lucide-react';
-import './ModalEditarContrato.css';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  X,
+  Save,
+  User,
+  Mail,
+  Phone,
+  FileText,
+  Globe,
+  MapPin,
+  Car,
+  Users,
+  AlertCircle,
+  Calendar,
+  Clock,
+  DollarSign,
+  Building,
+} from "lucide-react";
+import "./ModalEditarContrato.css";
 
-const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => {
+const ModalEditarContrato = ({
+  estaAbierto,
+  contrato,
+  alCerrar,
+  alGuardar,
+}) => {
   const [datosFormulario, setDatosFormulario] = useState({
     // Datos de Contrato
-    representante_empresa: 'PEDRO HERNÁNDEZ RUÍZ',
-    domicilio: '',
+    representante_empresa: "PEDRO HERNÁNDEZ RUÍZ",
+    domicilio: "",
 
     // Datos del Servicio
-    nombre_cliente: '',
-    nacionalidad: '',
-    rfc: '',
-    telefono_cliente: '',
-    ciudad_origen: '',
-    punto_intermedio: '',
-    destino: '',
-    tipo_pasaje: 'Turismo Estatal',
-    n_unidades_contratadas: '',
-    numero_pasajeros: '',
-    fecha_inicio_servicio: '',
-    horario_inicio_servicio: '',
-    fecha_final_servicio: '',
-    horario_final_servicio: '',
-    itinerario_detallado: '',
+    nombre_cliente: "",
+    nacionalidad: "",
+    rfc: "",
+    telefono_cliente: "",
+    ciudad_origen: "",
+    punto_intermedio: "",
+    destino: "",
+    tipo_pasaje: "Turismo Estatal",
+    otro_tipo_pasaje_especificacion: "",
+    n_unidades_contratadas: "",
+    numero_pasajeros: "",
+    fecha_inicio_servicio: "",
+    horario_inicio_servicio: "",
+    fecha_final_servicio: "",
+    horario_final_servicio: "",
+    itinerario_detallado: "",
 
     // Costo Extra
-    importe_servicio: '',
-    anticipo: '',
-    fecha_liquidacion: '',
+    importe_servicio: "",
+    anticipo: "",
+    fecha_liquidacion: "",
     costos_cubiertos: [],
-    otro_costo_especificacion: '',
+    otro_costo_especificacion: "",
 
     // Datos Vehículo
-    marca_vehiculo: '',
-    modelo_vehiculo: '',
-    placa_vehiculo: '',
-    capacidad_vehiculo: '',
+    marca_vehiculo: "",
+    modelo_vehiculo: "",
+    placa_vehiculo: "",
+    capacidad_vehiculo: "",
     aire_acondicionado: false,
     asientos_reclinables: false,
   });
 
-  const [seccionActiva, setSeccionActiva] = useState('contrato');
+  const [seccionActiva, setSeccionActiva] = useState("contrato");
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
 
   const opcionesTipoPasaje = [
-    'Turismo Estatal',
-    'Turismo Internacional',
-    'Nacional',
-    'Escolar',
-    'Otro'
+    "Turismo Estatal",
+    "Turismo Internacional",
+    "Nacional",
+    "Escolar",
+    "Otro",
   ];
 
   const opcionesCostosCubiertos = [
-    'Combustible a consumir durante todo el trayecto',
-    'Peaje de Casetas necesarias durante todo el trayecto',
-    'Viáticos del conductor',
-    'Servicio a disposición en el destino por máximo 30km a la redonda',
-    'Servicio a disposición en el destino por máximo 10 horas al día',
-    'Seguro de Viajero en accidente automovilístico siempre y cuando el pasajero esté dentro de la unidad',
-    'Piso en Aeropuerto',
-    'Alimentos no especificados',
-    'Actividades no especificadas',
-    'Otro, especifique'
+    "Combustible a consumir durante todo el trayecto",
+    "Peaje de Casetas necesarias durante todo el trayecto",
+    "Viáticos del conductor",
+    "Servicio a disposición en el destino por máximo 30km a la redonda",
+    "Servicio a disposición en el destino por máximo 10 horas al día",
+    "Seguro de Viajero en accidente automovilístico siempre y cuando el pasajero esté dentro de la unidad",
+    "Piso en Aeropuerto",
+    "Alimentos no especificados",
+    "Actividades no especificadas",
+    "Otro, especifique",
   ];
 
   useEffect(() => {
     if (estaAbierto && contrato) {
       setDatosFormulario({
-        representante_empresa: contrato.representante_empresa || 'PEDRO HERNÁNDEZ RUÍZ',
-        domicilio: contrato.domicilio || '',
+        representante_empresa:
+          contrato.representante_empresa || "PEDRO HERNÁNDEZ RUÍZ",
+        domicilio: contrato.domicilio || "",
 
-        nombre_cliente: contrato.nombre_cliente || '',
-        nacionalidad: contrato.nacionalidad || '',
-        rfc: contrato.rfc || '',
-        telefono_cliente: contrato.telefono_cliente || '',
-        ciudad_origen: contrato.ciudad_origen || '',
-        punto_intermedio: contrato.punto_intermedio || '',
-        destino: contrato.destino || '',
-        tipo_pasaje: contrato.tipo_pasaje || 'Turismo Estatal',
-        n_unidades_contratadas: contrato.n_unidades_contratadas || '',
-        numero_pasajeros: contrato.numero_pasajeros || '',
-        fecha_inicio_servicio: contrato.fecha_inicio_servicio || '',
-        horario_inicio_servicio: contrato.horario_inicio_servicio || '',
-        fecha_final_servicio: contrato.fecha_final_servicio || '',
-        horario_final_servicio: contrato.horario_final_servicio || '',
-        itinerario_detallado: contrato.itinerario_detallado || '',
+        nombre_cliente: contrato.nombre_cliente || "",
+        nacionalidad: contrato.nacionalidad || "",
+        rfc: contrato.rfc || "",
+        telefono_cliente: contrato.telefono_cliente || "",
+        ciudad_origen: contrato.ciudad_origen || "",
+        punto_intermedio: contrato.punto_intermedio || "",
+        destino: contrato.destino || "",
+        tipo_pasaje: contrato.tipo_pasaje || "Turismo Estatal",
+        otro_tipo_pasaje_especificacion:
+          contrato.otro_tipo_pasaje_especificacion || "",
+        n_unidades_contratadas: contrato.n_unidades_contratadas || "",
+        numero_pasajeros: contrato.numero_pasajeros || "",
+        fecha_inicio_servicio: contrato.fecha_inicio_servicio || "",
+        horario_inicio_servicio: contrato.horario_inicio_servicio || "",
+        fecha_final_servicio: contrato.fecha_final_servicio || "",
+        horario_final_servicio: contrato.horario_final_servicio || "",
+        itinerario_detallado: contrato.itinerario_detallado || "",
 
-        importe_servicio: contrato.importe_servicio || '',
-        anticipo: contrato.anticipo || '',
-        fecha_liquidacion: contrato.fecha_liquidacion || '',
+        importe_servicio: contrato.importe_servicio || "",
+        anticipo: contrato.anticipo || "",
+        fecha_liquidacion: contrato.fecha_liquidacion || "",
         costos_cubiertos: contrato.costos_cubiertos || [],
-        otro_costo_especificacion: contrato.otro_costo_especificacion || '',
+        otro_costo_especificacion: contrato.otro_costo_especificacion || "",
 
-        marca_vehiculo: contrato.marca_vehiculo || '',
-        modelo_vehiculo: contrato.modelo_vehiculo || '',
-        placa_vehiculo: contrato.placa_vehiculo || '',
-        capacidad_vehiculo: contrato.capacidad_vehiculo || '',
+        marca_vehiculo: contrato.marca_vehiculo || "",
+        modelo_vehiculo: contrato.modelo_vehiculo || "",
+        placa_vehiculo: contrato.placa_vehiculo || "",
+        capacidad_vehiculo: contrato.capacidad_vehiculo || "",
         aire_acondicionado: contrato.aire_acondicionado || false,
         asientos_reclinables: contrato.asientos_reclinables || false,
       });
@@ -113,28 +138,31 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
     });
   }, []);
 
-  const manejarCambioFormulario = useCallback((evento) => {
-    const { name, value, type, checked } = evento.target;
+  const manejarCambioFormulario = useCallback(
+    (evento) => {
+      const { name, value, type, checked } = evento.target;
 
-    setDatosFormulario(datosAnteriores => ({
-      ...datosAnteriores,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+      setDatosFormulario((datosAnteriores) => ({
+        ...datosAnteriores,
+        [name]: type === "checkbox" ? checked : value,
+      }));
 
-    if (errores[name]) {
-      limpiarErrorCampo(name);
-    }
-  }, [errores, limpiarErrorCampo]);
+      if (errores[name]) {
+        limpiarErrorCampo(name);
+      }
+    },
+    [errores, limpiarErrorCampo]
+  );
 
   const manejarCambioCostosCubiertos = (opcion) => {
-    setDatosFormulario(datosAnteriores => {
+    setDatosFormulario((datosAnteriores) => {
       const costos = datosAnteriores.costos_cubiertos.includes(opcion)
-        ? datosAnteriores.costos_cubiertos.filter(c => c !== opcion)
+        ? datosAnteriores.costos_cubiertos.filter((c) => c !== opcion)
         : [...datosAnteriores.costos_cubiertos, opcion];
 
       return {
         ...datosAnteriores,
-        costos_cubiertos: costos
+        costos_cubiertos: costos,
       };
     });
   };
@@ -143,75 +171,86 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
     const nuevosErrores = {};
 
     if (!datosFormulario.domicilio.trim()) {
-      nuevosErrores.domicilio = 'El domicilio es obligatorio';
+      nuevosErrores.domicilio = "El domicilio es obligatorio";
     }
 
     if (!datosFormulario.nombre_cliente.trim()) {
-      nuevosErrores.nombre_cliente = 'El nombre del cliente es obligatorio';
+      nuevosErrores.nombre_cliente = "El nombre del cliente es obligatorio";
     }
 
     if (!datosFormulario.telefono_cliente) {
-      nuevosErrores.telefono_cliente = 'El teléfono es obligatorio';
+      nuevosErrores.telefono_cliente = "El teléfono es obligatorio";
     }
 
     if (!datosFormulario.ciudad_origen.trim()) {
-      nuevosErrores.ciudad_origen = 'La ciudad de origen es obligatoria';
+      nuevosErrores.ciudad_origen = "La ciudad de origen es obligatoria";
     }
-
+    if (
+      datosFormulario.tipo_pasaje === "Otro" &&
+      !datosFormulario.otro_tipo_pasaje_especificacion.trim()
+    ) {
+      nuevosErrores.otro_tipo_pasaje_especificacion =
+        "Debe especificar el tipo de pasaje";
+    }
     if (!datosFormulario.destino.trim()) {
-      nuevosErrores.destino = 'El destino es obligatorio';
+      nuevosErrores.destino = "El destino es obligatorio";
     }
 
     if (!datosFormulario.n_unidades_contratadas) {
-      nuevosErrores.n_unidades_contratadas = 'El número de unidades es obligatorio';
+      nuevosErrores.n_unidades_contratadas =
+        "El número de unidades es obligatorio";
     }
 
     if (!datosFormulario.rfc.trim()) {
-      nuevosErrores.rfc = 'El rfc es obligatorio';
+      nuevosErrores.rfc = "El rfc es obligatorio";
     }
     if (!datosFormulario.numero_pasajeros) {
-      nuevosErrores.numero_pasajeros = 'El número de pasajeros es obligatorio';
+      nuevosErrores.numero_pasajeros = "El número de pasajeros es obligatorio";
     }
 
     if (!datosFormulario.fecha_inicio_servicio) {
-      nuevosErrores.fecha_inicio_servicio = 'La fecha de inicio es obligatoria';
+      nuevosErrores.fecha_inicio_servicio = "La fecha de inicio es obligatoria";
     }
 
     if (!datosFormulario.horario_inicio_servicio) {
-      nuevosErrores.horario_inicio_servicio = 'El horario de inicio es obligatorio';
+      nuevosErrores.horario_inicio_servicio =
+        "El horario de inicio es obligatorio";
     }
 
     if (!datosFormulario.fecha_final_servicio) {
-      nuevosErrores.fecha_final_servicio = 'La fecha final es obligatoria';
+      nuevosErrores.fecha_final_servicio = "La fecha final es obligatoria";
     }
 
     if (!datosFormulario.horario_final_servicio) {
-      nuevosErrores.horario_final_servicio = 'El horario final es obligatorio';
+      nuevosErrores.horario_final_servicio = "El horario final es obligatorio";
     }
 
-    if (datosFormulario.fecha_inicio_servicio && datosFormulario.fecha_final_servicio) {
+    if (
+      datosFormulario.fecha_inicio_servicio &&
+      datosFormulario.fecha_final_servicio
+    ) {
       const inicio = new Date(datosFormulario.fecha_inicio_servicio);
       const final = new Date(datosFormulario.fecha_final_servicio);
       if (final < inicio) {
-        nuevosErrores.fecha_final_servicio = 'La fecha final debe ser posterior a la fecha de inicio';
+        nuevosErrores.fecha_final_servicio =
+          "La fecha final debe ser posterior a la fecha de inicio";
       }
     }
-
     if (!datosFormulario.importe_servicio) {
-      nuevosErrores.importe_servicio = 'El importe del servicio es obligatorio';
+      nuevosErrores.importe_servicio = "El importe del servicio es obligatorio";
     }
 
     return nuevosErrores;
   };
 
   const mostrarNotificacionExito = () => {
-    if (typeof window !== 'undefined' && window.Swal) {
+    if (typeof window !== "undefined" && window.Swal) {
       window.Swal.fire({
-        title: '¡Excelente!',
-        text: 'La información del contrato se ha actualizado correctamente',
-        icon: 'success',
-        confirmButtonText: 'Perfecto',
-        confirmButtonColor: '#2563eb',
+        title: "¡Excelente!",
+        text: "La información del contrato se ha actualizado correctamente",
+        icon: "success",
+        confirmButtonText: "Perfecto",
+        confirmButtonColor: "#2563eb",
         timer: 3000,
         timerProgressBar: true,
       });
@@ -226,20 +265,41 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
 
-      const camposContrato = ['domicilio'];
-      const camposServicio = ['nombre_cliente', 'nacionalidad', 'RFC', 'telefono_cliente', 'ciudad_origen', 'destino', 'tipo_pasaje', 'n_unidades_contratadas', 'numero_pasajeros', 'fecha_inicio_servicio', 'horario_inicio_servicio', 'fecha_final_servicio', 'horario_final_servicio', 'itinerario_detallado'];
-      const camposCosto = ['importe_servicio', 'anticipo', 'fecha_liquidacion'];
+      const camposContrato = ["domicilio"];
+      const camposServicio = [
+        "nombre_cliente",
+        "nacionalidad",
+        "RFC",
+        "telefono_cliente",
+        "ciudad_origen",
+        "destino",
+        "tipo_pasaje",
+        "n_unidades_contratadas",
+        "numero_pasajeros",
+        "fecha_inicio_servicio",
+        "horario_inicio_servicio",
+        "fecha_final_servicio",
+        "horario_final_servicio",
+        "itinerario_detallado",
+      ];
+      const camposCosto = ["importe_servicio", "anticipo", "fecha_liquidacion"];
 
-      const erroresEnContrato = Object.keys(nuevosErrores).some(key => camposContrato.includes(key));
-      const erroresEnServicio = Object.keys(nuevosErrores).some(key => camposServicio.includes(key));
-      const erroresEnCosto = Object.keys(nuevosErrores).some(key => camposCosto.includes(key));
+      const erroresEnContrato = Object.keys(nuevosErrores).some((key) =>
+        camposContrato.includes(key)
+      );
+      const erroresEnServicio = Object.keys(nuevosErrores).some((key) =>
+        camposServicio.includes(key)
+      );
+      const erroresEnCosto = Object.keys(nuevosErrores).some((key) =>
+        camposCosto.includes(key)
+      );
 
       if (erroresEnContrato) {
-        setSeccionActiva('contrato');
+        setSeccionActiva("contrato");
       } else if (erroresEnServicio) {
-        setSeccionActiva('servicio');
+        setSeccionActiva("servicio");
       } else if (erroresEnCosto) {
-        setSeccionActiva('costo');
+        setSeccionActiva("costo");
       }
 
       setTimeout(() => {
@@ -247,7 +307,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
         const elemento = document.getElementById(primerCampoConError);
         if (elemento) {
           elemento.focus();
-          elemento.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          elemento.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }, 100);
 
@@ -257,12 +317,12 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
     setGuardando(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const datosActualizados = {
         ...contrato,
         ...datosFormulario,
-        fecha_actualizacion: new Date().toISOString()
+        fecha_actualizacion: new Date().toISOString(),
       };
 
       await alGuardar(datosActualizados);
@@ -272,16 +332,15 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
       setTimeout(() => {
         manejarCerrar();
       }, 500);
-
     } catch (error) {
-      console.error('Error al guardar:', error);
-      if (typeof window !== 'undefined' && window.Swal) {
+      console.error("Error al guardar:", error);
+      if (typeof window !== "undefined" && window.Swal) {
         window.Swal.fire({
-          title: 'Error',
-          text: 'Hubo un problema al guardar la información. Por favor, intenta nuevamente.',
-          icon: 'error',
-          confirmButtonText: 'Reintentar',
-          confirmButtonColor: '#ef4444'
+          title: "Error",
+          text: "Hubo un problema al guardar la información. Por favor, intenta nuevamente.",
+          icon: "error",
+          confirmButtonText: "Reintentar",
+          confirmButtonColor: "#ef4444",
         });
       }
     } finally {
@@ -335,7 +394,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="domicilio"
           value={datosFormulario.domicilio}
           onChange={manejarCambioFormulario}
-          className={errores.domicilio ? 'input-error' : ''}
+          className={errores.domicilio ? "input-error" : ""}
           placeholder="Calle, número, colonia, ciudad"
           disabled={guardando}
         />
@@ -357,7 +416,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="nombre_cliente"
           value={datosFormulario.nombre_cliente}
           onChange={manejarCambioFormulario}
-          className={errores.nombre_cliente ? 'input-error' : ''}
+          className={errores.nombre_cliente ? "input-error" : ""}
           placeholder="Nombre completo"
           disabled={guardando}
         />
@@ -407,7 +466,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="telefono_cliente"
           value={datosFormulario.telefono_cliente}
           onChange={manejarCambioFormulario}
-          className={errores.telefono_cliente ? 'input-error' : ''}
+          className={errores.telefono_cliente ? "input-error" : ""}
           placeholder="9511234567"
           disabled={guardando}
           maxLength="10"
@@ -426,7 +485,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="ciudad_origen"
           value={datosFormulario.ciudad_origen}
           onChange={manejarCambioFormulario}
-          className={errores.ciudad_origen ? 'input-error' : ''}
+          className={errores.ciudad_origen ? "input-error" : ""}
           placeholder="Ciudad o dirección de origen"
           disabled={guardando}
         />
@@ -460,7 +519,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="destino"
           value={datosFormulario.destino}
           onChange={manejarCambioFormulario}
-          className={errores.destino ? 'input-error' : ''}
+          className={errores.destino ? "input-error" : ""}
           placeholder="Ciudad o dirección de destino"
           disabled={guardando}
         />
@@ -479,11 +538,36 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           onChange={manejarCambioFormulario}
           disabled={guardando}
         >
-          {opcionesTipoPasaje.map(opcion => (
-            <option key={opcion} value={opcion}>{opcion}</option>
+          {opcionesTipoPasaje.map((opcion) => (
+            <option key={opcion} value={opcion}>
+              {opcion}
+            </option>
           ))}
         </select>
       </div>
+
+      {datosFormulario.tipo_pasaje === "Otro" && (
+        <div className="meo-form-group">
+          <label htmlFor="otro_tipo_pasaje_especificacion">
+            <FileText size={18} />
+            Especifique el tipo de pasaje{" "}
+            <span className="meo-required">*</span>
+          </label>
+          <input
+            type="text"
+            id="otro_tipo_pasaje_especificacion"
+            name="otro_tipo_pasaje_especificacion"
+            value={datosFormulario.otro_tipo_pasaje_especificacion}
+            onChange={manejarCambioFormulario}
+            placeholder="Especifique el tipo de pasaje..."
+            disabled={guardando}
+            className={
+              errores.otro_tipo_pasaje_especificacion ? "input-error" : ""
+            }
+          />
+          <MensajeError nombreCampo="otro_tipo_pasaje_especificacion" />
+        </div>
+      )}
 
       <div className="meo-form-group">
         <label htmlFor="n_unidades_contratadas">
@@ -496,7 +580,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="n_unidades_contratadas"
           value={datosFormulario.n_unidades_contratadas}
           onChange={manejarCambioFormulario}
-          className={errores.n_unidades_contratadas ? 'input-error' : ''}
+          className={errores.n_unidades_contratadas ? "input-error" : ""}
           placeholder="1"
           disabled={guardando}
           min="1"
@@ -515,7 +599,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="numero_pasajeros"
           value={datosFormulario.numero_pasajeros}
           onChange={manejarCambioFormulario}
-          className={errores.numero_pasajeros ? 'input-error' : ''}
+          className={errores.numero_pasajeros ? "input-error" : ""}
           placeholder="15"
           disabled={guardando}
           min="1"
@@ -534,7 +618,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="fecha_inicio_servicio"
           value={datosFormulario.fecha_inicio_servicio}
           onChange={manejarCambioFormulario}
-          className={errores.fecha_inicio_servicio ? 'input-error' : ''}
+          className={errores.fecha_inicio_servicio ? "input-error" : ""}
           disabled={guardando}
         />
         <MensajeError nombreCampo="fecha_inicio_servicio" />
@@ -551,7 +635,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="horario_inicio_servicio"
           value={datosFormulario.horario_inicio_servicio}
           onChange={manejarCambioFormulario}
-          className={errores.horario_inicio_servicio ? 'input-error' : ''}
+          className={errores.horario_inicio_servicio ? "input-error" : ""}
           disabled={guardando}
         />
         <MensajeError nombreCampo="horario_inicio_servicio" />
@@ -568,7 +652,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="fecha_final_servicio"
           value={datosFormulario.fecha_final_servicio}
           onChange={manejarCambioFormulario}
-          className={errores.fecha_final_servicio ? 'input-error' : ''}
+          className={errores.fecha_final_servicio ? "input-error" : ""}
           disabled={guardando}
         />
         <MensajeError nombreCampo="fecha_final_servicio" />
@@ -585,7 +669,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="horario_final_servicio"
           value={datosFormulario.horario_final_servicio}
           onChange={manejarCambioFormulario}
-          className={errores.horario_final_servicio ? 'input-error' : ''}
+          className={errores.horario_final_servicio ? "input-error" : ""}
           disabled={guardando}
         />
         <MensajeError nombreCampo="horario_final_servicio" />
@@ -622,7 +706,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           name="importe_servicio"
           value={datosFormulario.importe_servicio}
           onChange={manejarCambioFormulario}
-          className={errores.importe_servicio ? 'input-error' : ''}
+          className={errores.importe_servicio ? "input-error" : ""}
           placeholder="0.00"
           disabled={guardando}
           min="0"
@@ -684,7 +768,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
         </div>
       </div>
 
-      {datosFormulario.costos_cubiertos.includes('Otro, especifique') && (
+      {datosFormulario.costos_cubiertos.includes("Otro, especifique") && (
         <div className="meo-form-group form-group-full">
           <label htmlFor="otro_costo_especificacion">
             Especifique otro costo
@@ -750,7 +834,7 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
           onChange={manejarCambioFormulario}
           placeholder="ABC-123-D"
           disabled={guardando}
-          style={{ textTransform: 'uppercase' }}
+          style={{ textTransform: "uppercase" }}
         />
       </div>
 
@@ -803,42 +887,58 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
 
   return (
     <div className="meo-overlay" onClick={manejarCerrar}>
-      <div className="meo-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="meo-contenido modal-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="meo-header">
           <h2>Editar Contrato</h2>
-          <button className="meo-btn-cerrar" onClick={manejarCerrar} disabled={guardando} type="button">
+          <button
+            className="meo-btn-cerrar"
+            onClick={manejarCerrar}
+            disabled={guardando}
+            type="button"
+          >
             <X size={24} />
           </button>
         </div>
 
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${seccionActiva === 'contrato' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('contrato')}
+            className={`meo-tab-button ${
+              seccionActiva === "contrato" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("contrato")}
             type="button"
           >
             <Building size={18} />
             Datos de Contrato
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'servicio' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('servicio')}
+            className={`meo-tab-button ${
+              seccionActiva === "servicio" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
             <FileText size={18} />
             Datos del Servicio
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'costo' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('costo')}
+            className={`meo-tab-button ${
+              seccionActiva === "costo" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("costo")}
             type="button"
           >
             <DollarSign size={18} />
             Costo Extra
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'vehiculo' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('vehiculo')}
+            className={`meo-tab-button ${
+              seccionActiva === "vehiculo" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >
             <Car size={18} />
@@ -847,27 +947,34 @@ const ModalEditarContrato = ({ estaAbierto, contrato, alCerrar, alGuardar }) => 
         </div>
 
         <form onSubmit={manejarEnvio} className="meo-form">
-          {seccionActiva === 'contrato' && renderSeccionContrato()}
-          {seccionActiva === 'servicio' && renderSeccionServicio()}
-          {seccionActiva === 'costo' && renderSeccionCosto()}
-          {seccionActiva === 'vehiculo' && renderSeccionVehiculo()}
+          {seccionActiva === "contrato" && renderSeccionContrato()}
+          {seccionActiva === "servicio" && renderSeccionServicio()}
+          {seccionActiva === "costo" && renderSeccionCosto()}
+          {seccionActiva === "vehiculo" && renderSeccionVehiculo()}
         </form>
 
         <div className="meo-footer">
           <div className="meo-botones-izquierda">
-            <button type="button" className="meo-btn-cancelar" onClick={manejarCerrar} disabled={guardando}>
+            <button
+              type="button"
+              className="meo-btn-cancelar"
+              onClick={manejarCerrar}
+              disabled={guardando}
+            >
               Cancelar
             </button>
           </div>
           <div className="meo-botones-derecha">
             <button
               type="button"
-              className={`meo-btn-actualizar ${guardando ? 'loading' : ''}`}
+              className={`meo-btn-actualizar ${guardando ? "loading" : ""}`}
               disabled={guardando}
               onClick={manejarEnvio}
             >
               {!guardando && <Save size={20} />}
-              <span>{guardando ? 'Actualizando...' : 'Actualizar Contrato'}</span>
+              <span>
+                {guardando ? "Actualizando..." : "Actualizar Contrato"}
+              </span>
             </button>
           </div>
         </div>

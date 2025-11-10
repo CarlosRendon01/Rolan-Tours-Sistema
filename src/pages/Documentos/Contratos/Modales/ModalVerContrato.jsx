@@ -1,41 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { X, User, Phone, FileText, Globe, MapPin, Car, Users, Calendar, Clock, DollarSign, Building, Hash } from 'lucide-react';
-import './ModalVerContrato.css';
+import React, { useState, useEffect } from "react";
+import {
+  X,
+  User,
+  Phone,
+  FileText,
+  Globe,
+  MapPin,
+  Car,
+  Users,
+  Calendar,
+  Clock,
+  DollarSign,
+  Building,
+  Hash,
+} from "lucide-react";
+import "./ModalVerContrato.css";
 
 const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
-  const [seccionActiva, setSeccionActiva] = useState('contrato');
+  const [seccionActiva, setSeccionActiva] = useState("contrato");
 
   useEffect(() => {
     const restaurarScroll = () => {
-      document.body.style.overflow = '';
-      document.body.style.overflowY = '';
-      document.documentElement.style.overflow = '';
+      document.body.style.overflow = "";
+      document.body.style.overflowY = "";
+      document.documentElement.style.overflow = "";
     };
 
     const manejarTeclaEscape = (evento) => {
-      if (evento.key === 'Escape') {
+      if (evento.key === "Escape") {
         alCerrar();
       }
     };
 
     if (estaAbierto) {
-      document.addEventListener('keydown', manejarTeclaEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", manejarTeclaEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', manejarTeclaEscape);
+      document.removeEventListener("keydown", manejarTeclaEscape);
       restaurarScroll();
     };
   }, [estaAbierto, alCerrar]);
 
   const formatearFecha = (fecha) => {
-    if (!fecha) return 'No disponible';
+    if (!fecha) return "No disponible";
     try {
-      return new Date(fecha).toLocaleDateString('es-MX', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      return new Date(fecha).toLocaleDateString("es-MX", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       });
     } catch {
       return fecha;
@@ -43,19 +57,22 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
   };
 
   const formatearTelefono = (telefono) => {
-    if (!telefono) return 'No disponible';
-    const numeroLimpio = telefono.toString().replace(/\D/g, '');
+    if (!telefono) return "No disponible";
+    const numeroLimpio = telefono.toString().replace(/\D/g, "");
     if (numeroLimpio.length === 10) {
-      return `${numeroLimpio.slice(0, 3)}-${numeroLimpio.slice(3, 6)}-${numeroLimpio.slice(6)}`;
+      return `${numeroLimpio.slice(0, 3)}-${numeroLimpio.slice(
+        3,
+        6
+      )}-${numeroLimpio.slice(6)}`;
     }
     return telefono;
   };
 
   const formatearMoneda = (cantidad) => {
-    if (!cantidad) return 'No disponible';
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
+    if (!cantidad) return "No disponible";
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
     }).format(cantidad);
   };
 
@@ -65,9 +82,7 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
         <Icono size={18} />
         {etiqueta}
       </label>
-      <div className="meo-campo-visualizacion">
-        {valor || 'No disponible'}
-      </div>
+      <div className="meo-campo-visualizacion">{valor || "No disponible"}</div>
     </div>
   );
 
@@ -98,11 +113,7 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
         etiqueta="Nacionalidad"
         valor={contrato.nacionalidad}
       />
-      <CampoVisualizacion
-        icono={Globe}
-        etiqueta="rfc"
-        valor={contrato.rfc}
-      />
+      <CampoVisualizacion icono={Globe} etiqueta="rfc" valor={contrato.rfc} />
       <CampoVisualizacion
         icono={Phone}
         etiqueta="Teléfono"
@@ -116,18 +127,28 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
       <CampoVisualizacion
         icono={MapPin}
         etiqueta="Punto Intermedio"
-        valor={contrato.punto_intermedio || 'No especificado'}
+        valor={contrato.punto_intermedio || "No especificado"}
       />
       <CampoVisualizacion
         icono={MapPin}
         etiqueta="Destino"
         valor={contrato.destino}
       />
-      <CampoVisualizacion
-        icono={FileText}
-        etiqueta="Tipo de Pasaje"
-        valor={contrato.tipo_pasaje}
-      />
+
+      {contrato.tipo_pasaje === "Otro" ? (
+        <CampoVisualizacion
+          icono={FileText}
+          etiqueta="Tipo de Pasaje (Otro)"
+          valor={contrato.otro_tipo_pasaje_especificacion}
+        />
+      ) : (
+        <CampoVisualizacion
+          icono={FileText}
+          etiqueta="Tipo de Pasaje"
+          valor={contrato.tipo_pasaje}
+        />
+      )}
+
       <CampoVisualizacion
         icono={Car}
         etiqueta="N° Unidades Contratadas"
@@ -164,7 +185,7 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
           Itinerario Detallado
         </label>
         <div className="meo-campo-visualizacion">
-          {contrato.itinerario_detallado || 'No disponible'}
+          {contrato.itinerario_detallado || "No disponible"}
         </div>
       </div>
     </div>
@@ -200,17 +221,18 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
               ))}
             </ul>
           ) : (
-            'No se especificaron costos cubiertos'
+            "No se especificaron costos cubiertos"
           )}
         </div>
       </div>
-      {contrato.costos_cubiertos?.includes('Otro, especifique') && contrato.otro_costo_especificacion && (
-        <CampoVisualizacion
-          icono={FileText}
-          etiqueta="Especificación de Otro Costo"
-          valor={contrato.otro_costo_especificacion}
-        />
-      )}
+      {contrato.costos_cubiertos?.includes("Otro, especifique") &&
+        contrato.otro_costo_especificacion && (
+          <CampoVisualizacion
+            icono={FileText}
+            etiqueta="Especificación de Otro Costo"
+            valor={contrato.otro_costo_especificacion}
+          />
+        )}
     </div>
   );
 
@@ -242,10 +264,14 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
           Extras del Vehículo
         </label>
         <div className="meo-campo-visualizacion">
-          {contrato.aire_acondicionado && '✓ Aire Acondicionado'}
-          {contrato.aire_acondicionado && contrato.asientos_reclinables && ' | '}
-          {contrato.asientos_reclinables && '✓ Asientos Reclinables'}
-          {!contrato.aire_acondicionado && !contrato.asientos_reclinables && 'Sin extras especificados'}
+          {contrato.aire_acondicionado && "✓ Aire Acondicionado"}
+          {contrato.aire_acondicionado &&
+            contrato.asientos_reclinables &&
+            " | "}
+          {contrato.asientos_reclinables && "✓ Asientos Reclinables"}
+          {!contrato.aire_acondicionado &&
+            !contrato.asientos_reclinables &&
+            "Sin extras especificados"}
         </div>
       </div>
     </div>
@@ -255,7 +281,10 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
 
   return (
     <div className="meo-overlay" onClick={alCerrar}>
-      <div className="meo-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="meo-contenido modal-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="meo-header">
           <h2>Ver Contrato</h2>
           <button className="meo-btn-cerrar" onClick={alCerrar} type="button">
@@ -265,32 +294,40 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
 
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${seccionActiva === 'contrato' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('contrato')}
+            className={`meo-tab-button ${
+              seccionActiva === "contrato" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("contrato")}
             type="button"
           >
             <Building size={18} />
             Datos de Contrato
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'servicio' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('servicio')}
+            className={`meo-tab-button ${
+              seccionActiva === "servicio" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
             <FileText size={18} />
             Datos del Servicio
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'costo' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('costo')}
+            className={`meo-tab-button ${
+              seccionActiva === "costo" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("costo")}
             type="button"
           >
             <DollarSign size={18} />
             Costo Extra
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === 'vehiculo' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('vehiculo')}
+            className={`meo-tab-button ${
+              seccionActiva === "vehiculo" ? "active" : ""
+            }`}
+            onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >
             <Car size={18} />
@@ -299,10 +336,10 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
         </div>
 
         <div className="meo-form">
-          {seccionActiva === 'contrato' && renderSeccionContrato()}
-          {seccionActiva === 'servicio' && renderSeccionServicio()}
-          {seccionActiva === 'costo' && renderSeccionCosto()}
-          {seccionActiva === 'vehiculo' && renderSeccionVehiculo()}
+          {seccionActiva === "contrato" && renderSeccionContrato()}
+          {seccionActiva === "servicio" && renderSeccionServicio()}
+          {seccionActiva === "costo" && renderSeccionCosto()}
+          {seccionActiva === "vehiculo" && renderSeccionVehiculo()}
         </div>
 
         <div className="meo-footer">

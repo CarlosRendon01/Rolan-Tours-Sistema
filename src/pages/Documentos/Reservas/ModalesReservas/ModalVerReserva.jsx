@@ -18,8 +18,13 @@ import {
 } from "lucide-react";
 import "./ModalVerReserva.css";
 
-const ModalVerReserva = ({ reserva, onCerrar }) => {
+const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
   const [seccionActiva, setSeccionActiva] = useState("basicos");
+
+  // VALIDACIÓN TEMPRANA - Debe ir al inicio
+  if (!estaAbierto || !reserva) {
+    return null;
+  }
 
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;

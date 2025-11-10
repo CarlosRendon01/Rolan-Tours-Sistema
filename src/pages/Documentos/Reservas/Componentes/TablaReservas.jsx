@@ -8,7 +8,6 @@ import {
   Trash2,
   FileText,
   Calendar,
-  Plus,
   DollarSign,
   CheckCircle,
   XCircle,
@@ -16,22 +15,179 @@ import {
 } from "lucide-react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import "./TablaReservas.css";
+import ModalEliminarReserva from "../ModalesReservas/ModalEliminarReserva";
+import ModalEditarReserva from "../ModalesReservas/ModalEditarReserva";
+import ModalVerReserva from "../ModalesReservas/ModalVerReserva";
 
-const TablaReservas = ({
-  reservas = [],
-  setReservas,
-  onVer,
-  onEditar,
-  onEliminar,
-  onAgregar,
-}) => {
+const TablaReservas = () => {
+  const [modalVerAbierto, setModalVerAbierto] = useState(false);
+  const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
+  const [reservaAEliminar, setReservaAEliminar] = useState(null);
+  const [reservaSeleccionado, setReservaSeleccionado] = useState(null);
+  const [reservasDatos, setReservasDatos] = useState([
+    {
+      id: 1,
+      folio: 1001,
+      fechaReserva: "2024-01-15",
+      numHabitantes: 2,
+      nombreCliente: "María González Ramírez",
+      numPasajeros: 4,
+      telefono: "5551234567",
+      importe: 3500.0,
+      servicio:
+        "Tour por Monte Albán y artesanías de Oaxaca. Incluye visita guiada por la zona arqueológica con explicación detallada de la historia zapoteca.",
+      incluye:
+        "Transporte, guía certificado, entradas a zonas arqueológicas, botella de agua",
+      noIncluye: "Alimentos, propinas, souvenirs",
+      formaPago: "transferencia",
+      pagado: "pagado",
+      fotoTransferencia: null,
+      activo: true,
+    },
+    {
+      id: 2,
+      folio: 1002,
+      fechaReserva: "2024-01-20",
+      numHabitantes: 1,
+      nombreCliente: "Carlos Hernández López",
+      numPasajeros: 2,
+      telefono: "5552345678",
+      importe: 2800.0,
+      servicio:
+        "Experiencia gastronómica en Oaxaca. Recorrido por mercados locales y clase de cocina tradicional oaxaqueña.",
+      incluye:
+        "Transporte, guía especializado, ingredientes para clase de cocina, degustación de mezcal",
+      noIncluye: "Comidas adicionales, bebidas alcohólicas extras",
+      formaPago: "efectivo",
+      pagado: "no pagado",
+      fotoTransferencia: null,
+      activo: true,
+    },
+    {
+      id: 3,
+      folio: 1003,
+      fechaReserva: "2024-02-05",
+      numHabitantes: 3,
+      nombreCliente: "Ana Martínez Pérez",
+      numPasajeros: 6,
+      telefono: "5553456789",
+      importe: 5200.0,
+      servicio:
+        "Tour completo Hierve el Agua y fábrica de mezcal. Día completo de aventura natural y cultural.",
+      incluye:
+        "Transporte en van climatizada, guía bilingüe, entradas, comida típica, degustación de mezcal",
+      noIncluye: "Propinas, actividades opcionales extras",
+      formaPago: "transferencia",
+      pagado: "pagado",
+      fotoTransferencia: null,
+      activo: true,
+    },
+    {
+      id: 4,
+      folio: 1004,
+      fechaReserva: "2024-02-10",
+      numHabitantes: 2,
+      nombreCliente: "Roberto Sánchez García",
+      numPasajeros: 3,
+      telefono: "5554567890",
+      importe: 4100.0,
+      servicio:
+        "Ruta del mezcal artesanal. Visita a tres palenques tradicionales con explicación del proceso de elaboración.",
+      incluye:
+        "Transporte privado, guía experto, degustación en palenques, botana oaxaqueña",
+      noIncluye: "Compra de botellas de mezcal, comidas completas",
+      formaPago: "efectivo",
+      pagado: "pagado",
+      fotoTransferencia: null,
+      activo: true,
+    },
+    {
+      id: 5,
+      folio: 1005,
+      fechaReserva: "2024-02-18",
+      numHabitantes: 1,
+      nombreCliente: "Laura Torres Ramírez",
+      numPasajeros: 1,
+      telefono: "5555678901",
+      importe: 1800.0,
+      servicio:
+        "City tour por el centro histórico de Oaxaca. Recorrido a pie por los principales monumentos y edificios coloniales.",
+      incluye: "Guía certificado, entradas a iglesias y museos, mapa turístico",
+      noIncluye: "Transporte, alimentos, bebidas",
+      formaPago: "transferencia",
+      pagado: "no pagado",
+      fotoTransferencia: null,
+      activo: true,
+    },
+    {
+      id: 6,
+      folio: 1006,
+      fechaReserva: "2024-03-01",
+      numHabitantes: 4,
+      nombreCliente: "José Luis Fernández Díaz",
+      numPasajeros: 8,
+      telefono: "5556789012",
+      importe: 6500.0,
+      servicio:
+        "Tour de día completo a las cascadas de Reforma. Incluye caminata, natación y comida campestre.",
+      incluye:
+        "Transporte, guía de aventura, equipo de seguridad, comida campestre, seguro",
+      noIncluye: "Ropa de baño, toallas, cambio de ropa",
+      formaPago: "transferencia",
+      pagado: "pagado",
+      fotoTransferencia: null,
+      activo: true,
+    },
+    {
+      id: 7,
+      folio: 1007,
+      fechaReserva: "2024-03-10",
+      numHabitantes: 2,
+      nombreCliente: "Patricia Morales Castillo",
+      numPasajeros: 5,
+      telefono: "5557890123",
+      importe: 4800.0,
+      servicio:
+        "Experiencia textil en Teotitlán del Valle. Visita a talleres de tejido de lana y demostración de teñido natural.",
+      incluye:
+        "Transporte, guía cultural, demostración de tejido, taller de teñido, refrigerio",
+      noIncluye: "Compra de textiles, comida completa",
+      formaPago: "efectivo",
+      pagado: "no pagado",
+      fotoTransferencia: null,
+      activo: true,
+    },
+    {
+      id: 8,
+      folio: 1008,
+      fechaReserva: "2024-03-15",
+      numHabitantes: 1,
+      nombreCliente: "Miguel Ángel Ruiz Medina",
+      numPasajeros: 2,
+      telefono: "5558901234",
+      importe: 3200.0,
+      servicio:
+        "Tour fotográfico por Oaxaca. Recorrido especial para fotografía en los mejores spots de la ciudad.",
+      incluye:
+        "Guía fotógrafo profesional, transporte a locaciones, tips de fotografía",
+      noIncluye: "Equipo fotográfico, alimentos, edición de fotos",
+      formaPago: "transferencia",
+      pagado: "pagado",
+      fotoTransferencia: null,
+      activo: true,
+    },
+  ]);
+
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
-  const reservasFiltradas = reservas.filter((reserva) => {
+  const reservasFiltradas = reservasDatos.filter((reserva) => {
+    if (!reserva.activo) return false;
+
     const busqueda = terminoBusqueda.toLowerCase();
     const nombreCliente = reserva.nombreCliente.toLowerCase();
+
     return (
       nombreCliente.includes(busqueda) ||
       reserva.folio.toString().includes(busqueda) ||
@@ -46,8 +202,10 @@ const TablaReservas = ({
   const indiceFin = indiceInicio + registrosPorPagina;
   const reservasPaginadas = reservasFiltradas.slice(indiceInicio, indiceFin);
 
-  const totalReservas = reservas.length;
-  const reservasPagadas = reservas.filter((r) => r.pagado === "pagado").length;
+  const totalReservas = reservasDatos.filter((r) => r.activo).length;
+  const reservasPagadas = reservasDatos.filter(
+    (r) => r.pagado === "pagado" && r.activo
+  ).length;
 
   const formatearTelefono = (telefono) => {
     const limpio = telefono.replace(/\D/g, "");
@@ -104,19 +262,69 @@ const TablaReservas = ({
   const manejarAccion = (accion, reserva) => {
     switch (accion) {
       case "ver":
-        onVer(reserva);
+        setReservaSeleccionado(reserva);
+        setModalVerAbierto(true);
         break;
       case "editar":
-        onEditar(reserva);
+        setReservaSeleccionado(reserva);
+        setModalEditarAbierto(true);
         break;
       case "pdf":
         generarYDescargarPDF(reserva);
         break;
       case "eliminar":
-        onEliminar(reserva);
+        setReservaAEliminar(reserva);
         break;
       default:
         break;
+    }
+  };
+
+  const cerrarModalVer = () => {
+    setModalVerAbierto(false);
+    setReservaSeleccionado(null);
+  };
+
+  const manejarEliminarReserva = async (reserva) => {
+    if (!reserva) {
+      setReservaAEliminar(null);
+      return;
+    }
+
+    try {
+      setReservasDatos(
+        reservasDatos.map((c) =>
+          c.id === reserva.id ? { ...c, activo: false } : c
+        )
+      );
+
+      setReservaAEliminar(null);
+      console.log("Reserva DESACTIVADA:", reserva);
+      return Promise.resolve();
+    } catch (error) {
+      console.error("Error al desactivar reserva:", error);
+      setReservaAEliminar(null);
+      throw error;
+    }
+  };
+
+  const cerrarModalEditar = () => {
+    setModalEditarAbierto(false);
+    setReservaSeleccionado(null);
+  };
+
+  const manejarGuardarReserva = async (datosActualizados) => {
+    try {
+      setReservasDatos(
+        reservasDatos.map((reserva) =>
+          reserva.id === datosActualizados.id ? datosActualizados : reserva
+        )
+      );
+      console.log(`Reserva actualizada:`, datosActualizados);
+      return Promise.resolve();
+    } catch (error) {
+      console.error("Error al actualizar reserva:", error);
+      throw error;
     }
   };
 
@@ -132,7 +340,6 @@ const TablaReservas = ({
       const firstPage = pages[0];
 
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
       firstPage.drawText(reserva.folio.toString(), {
         x: 140,
@@ -313,7 +520,6 @@ const TablaReservas = ({
                       className="reservas-columna-telefono"
                     >
                       <span className="reservas-valor-telefono">
-                        <DollarSign size={14} />
                         {formatearMoneda(reserva.importe)}
                       </span>
                     </td>
@@ -400,7 +606,8 @@ const TablaReservas = ({
               {totalRegistros} registros
               {terminoBusqueda && (
                 <span style={{ color: "#6c757d", marginLeft: "0.5rem" }}>
-                  (filtrado de {reservas.length} registros totales)
+                  (filtrado de {reservasDatos.filter((r) => r.activo).length}{" "}
+                  registros totales)
                 </span>
               )}
             </div>
@@ -443,6 +650,28 @@ const TablaReservas = ({
           </div>
         </>
       )}
+
+      {modalVerAbierto && reservaSeleccionado && (
+        <ModalVerReserva
+          estaAbierto={modalVerAbierto}
+          reserva={reservaSeleccionado}
+          onCerrar={cerrarModalVer}
+        />
+      )}
+
+      {modalEditarAbierto && reservaSeleccionado && (
+        <ModalEditarReserva
+          estaAbierto={modalEditarAbierto}
+          reserva={reservaSeleccionado}
+          onCerrar={cerrarModalEditar}
+          onGuardar={manejarGuardarReserva}
+        />
+      )}
+
+      <ModalEliminarReserva
+        reserva={reservaAEliminar}
+        alConfirmar={manejarEliminarReserva}
+      />
     </div>
   );
 };

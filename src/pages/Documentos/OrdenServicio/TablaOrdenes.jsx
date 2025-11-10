@@ -17,6 +17,7 @@ import ModalEditarOrden from "./Modales/ModalEditarOrden";
 import ModalEliminarOrden from "./Modales/ModalEliminarOrden";
 import ModalRestaurarOrden from "./Modales/ModalRestaurarOrden";
 import ModalEliminarDefinitivo from "./Modales/ModalEliminarDefinitivo";
+import ModalVisualizarPDF from "./Modales/ModalVisualizarPDF";
 import "./TablaOrdenes.css";
 
 const TablaOrdenes = () => {
@@ -35,22 +36,22 @@ const TablaOrdenes = () => {
     useState(null);
   const [ordenSeleccionado, setOrdenSeleccionado] = useState(null);
 
+  // Estados para el modal de visualización PDF
+  const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [ordenPDFActual, setOrdenPDFActual] = useState(null);
+
   const [datosOrdenes, setDatosOrdenes] = useState([
     {
       id: 1,
-
       folio: 101,
       fecha_orden_servicio: "2025-10-15",
       nombre_prestador: "Antonio Alonso Meza",
-
-      // Datos Conductor
       nombre_conductor: "Juan",
       apellido_paterno_conductor: "Pérez",
       apellido_materno_conductor: "García",
       telefono_conductor: "9511234567",
       licencia_conductor: "LIC123456",
-
-      // Datos Servicio
       nombre_cliente: "Hotel Posada Real",
       telefono_cliente: "9517654321",
       ciudad_origen: "Oaxaca Centro",
@@ -65,8 +66,6 @@ const TablaOrdenes = () => {
       itinerario_detallado:
         "Salida desde centro, parada en Tlacolula por 30 min, continuar a Puerto Escondido",
       direccion_retorno: "Av. Juárez 123, Centro, Oaxaca",
-
-      // Vehículo
       marca: "Toyota",
       modelo: "Hiace",
       placa: "ABC-123-D",
@@ -81,13 +80,11 @@ const TablaOrdenes = () => {
       folio: 102,
       fecha_orden_servicio: "2025-10-18",
       nombre_prestador: "Antonio Alonso Meza",
-
       nombre_conductor: "María",
       apellido_paterno_conductor: "López",
       apellido_materno_conductor: "Martínez",
       telefono_conductor: "9512345678",
       licencia_conductor: "LIC234567",
-
       nombre_cliente: "Grupo Turístico Norte",
       telefono_cliente: "9518765432",
       ciudad_origen: "Oaxaca Aeropuerto",
@@ -102,7 +99,6 @@ const TablaOrdenes = () => {
       itinerario_detallado:
         "Recoger en aeropuerto, tour por Ocotlán, destino final Huatulco",
       direccion_retorno: "Carretera Oaxaca-Xoxocotlán km 5.5",
-
       marca: "Mercedes",
       modelo: "Sprinter",
       placa: "XYZ-456-E",
@@ -110,7 +106,6 @@ const TablaOrdenes = () => {
       km_final: 25950,
       litros_consumidos: 95,
       rendimiento: "10 km/L",
-
       activo: true,
     },
     {
@@ -118,13 +113,11 @@ const TablaOrdenes = () => {
       folio: 103,
       fecha_orden_servicio: "2025-10-20",
       nombre_prestador: "Antonio Alonso Meza",
-
       nombre_conductor: "Carlos",
       apellido_paterno_conductor: "Hernández",
       apellido_materno_conductor: "Ruiz",
       telefono_conductor: "9513456789",
       licencia_conductor: "LIC345678",
-
       nombre_cliente: "Familia Ramírez",
       telefono_cliente: "9519876543",
       ciudad_origen: "Oaxaca Centro",
@@ -139,7 +132,6 @@ const TablaOrdenes = () => {
       itinerario_detallado:
         "Tour directo a Hierve el Agua, recorrido completo y regreso",
       direccion_retorno: "Calle Alcalá 501, Centro",
-
       marca: "Ford",
       modelo: "Transit",
       placa: "DEF-789-F",
@@ -147,7 +139,6 @@ const TablaOrdenes = () => {
       km_final: 15400,
       litros_consumidos: 40,
       rendimiento: "10 km/L",
-
       activo: false,
     },
     {
@@ -155,13 +146,11 @@ const TablaOrdenes = () => {
       folio: 104,
       fecha_orden_servicio: "2025-10-22",
       nombre_prestador: "Antonio Alonso Meza",
-
       nombre_conductor: "Ana",
       apellido_paterno_conductor: "Sánchez",
       apellido_materno_conductor: "Torres",
       telefono_conductor: "9514567890",
       licencia_conductor: "LIC456789",
-
       nombre_cliente: "Hotel Casa Oaxaca",
       telefono_cliente: "9510987654",
       ciudad_origen: "Hotel Casa Oaxaca",
@@ -176,7 +165,6 @@ const TablaOrdenes = () => {
       itinerario_detallado:
         "Visita a talleres de Teotitlán, luego Monte Albán, regreso al hotel",
       direccion_retorno: "García Vigil 407, Centro",
-
       marca: "Chevrolet",
       modelo: "Express",
       placa: "GHI-012-G",
@@ -184,7 +172,6 @@ const TablaOrdenes = () => {
       km_final: 30600,
       litros_consumidos: 60,
       rendimiento: "10 km/L",
-
       activo: true,
     },
     {
@@ -192,13 +179,11 @@ const TablaOrdenes = () => {
       folio: 105,
       fecha_orden_servicio: "2025-10-25",
       nombre_prestador: "Antonio Alonso Meza",
-
       nombre_conductor: "Roberto",
       apellido_paterno_conductor: "Mendoza",
       apellido_materno_conductor: "Cruz",
       telefono_conductor: "9515678901",
       licencia_conductor: "LIC567890",
-
       nombre_cliente: "Agencia Viajes Express",
       telefono_cliente: "9511098765",
       ciudad_origen: "Oaxaca Terminal ADO",
@@ -213,7 +198,6 @@ const TablaOrdenes = () => {
       itinerario_detallado:
         "Salida terminal, parada Mitla, destino playa Zipolite",
       direccion_retorno: "Calzada Héroes de Chapultepec 1036",
-
       marca: "Toyota",
       modelo: "Coaster",
       placa: "JKL-345-H",
@@ -221,7 +205,6 @@ const TablaOrdenes = () => {
       km_final: 21200,
       litros_consumidos: 120,
       rendimiento: "10 km/L",
-
       activo: false,
     },
   ]);
@@ -291,7 +274,6 @@ const TablaOrdenes = () => {
       return false;
     }
 
-    // FILTRO DE BÚSQUEDA
     const busqueda = terminoBusqueda.toLowerCase();
     return (
       orden.id.toString().includes(busqueda) ||
@@ -344,7 +326,7 @@ const TablaOrdenes = () => {
         setModalEditarAbierto(true);
         break;
       case "pdf":
-        generarYDescargarPDF(orden);
+        visualizarPDF(orden);
         break;
       case "eliminar":
         if (esAdministrador && !orden.activo) {
@@ -369,6 +351,15 @@ const TablaOrdenes = () => {
   const cerrarModalEditar = () => {
     setModalEditarAbierto(false);
     setOrdenSeleccionado(null);
+  };
+
+  const cerrarModalPDF = () => {
+    setModalPDFAbierto(false);
+    if (pdfUrl) {
+      window.URL.revokeObjectURL(pdfUrl);
+    }
+    setPdfUrl(null);
+    setOrdenPDFActual(null);
   };
 
   const manejarGuardarOrden = async (datosActualizados) => {
@@ -436,7 +427,7 @@ const TablaOrdenes = () => {
     }
   };
 
-  const generarYDescargarPDF = async (orden) => {
+  const generarPDF = async (orden) => {
     try {
       const plantillaUrl = "/ORDENSERVICIO.pdf";
       const plantillaBytes = await fetch(plantillaUrl).then((res) =>
@@ -449,6 +440,7 @@ const TablaOrdenes = () => {
 
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
       firstPage.drawText(
         new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX"),
         {
@@ -468,7 +460,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      //folio
       firstPage.drawText(orden.folio.toString(), {
         x: 530,
         y: 718.5,
@@ -500,6 +491,7 @@ const TablaOrdenes = () => {
         font: font,
         color: rgb(0, 0, 0),
       });
+
       firstPage.drawText(orden.telefono_cliente.toString(), {
         x: 435,
         y: 639,
@@ -507,6 +499,7 @@ const TablaOrdenes = () => {
         font: font,
         color: rgb(0, 0, 0),
       });
+
       firstPage.drawText(orden.ciudad_origen, {
         x: 88,
         y: 606,
@@ -514,6 +507,7 @@ const TablaOrdenes = () => {
         font: font,
         color: rgb(0, 0, 0),
       });
+
       firstPage.drawText(orden.destino, {
         x: 285,
         y: 606,
@@ -521,6 +515,7 @@ const TablaOrdenes = () => {
         font: font,
         color: rgb(0, 0, 0),
       });
+
       firstPage.drawText(orden.numero_pasajeros.toString(), {
         x: 478,
         y: 606,
@@ -595,8 +590,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      //VEHICULO
-
       firstPage.drawText(orden.marca, {
         x: 140,
         y: 392,
@@ -604,6 +597,7 @@ const TablaOrdenes = () => {
         font: font,
         color: rgb(0, 0, 0),
       });
+
       firstPage.drawText(orden.modelo, {
         x: 170,
         y: 392,
@@ -611,6 +605,7 @@ const TablaOrdenes = () => {
         font: font,
         color: rgb(0, 0, 0),
       });
+
       firstPage.drawText(orden.placa, {
         x: 213,
         y: 392,
@@ -644,19 +639,47 @@ const TablaOrdenes = () => {
       });
 
       const pdfBytes = await pdfDoc.save();
+      return pdfBytes;
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+      throw error;
+    }
+  };
 
+  const visualizarPDF = async (orden) => {
+    try {
+      setOrdenPDFActual(orden);
+      setModalPDFAbierto(true);
+      setPdfUrl(null); // Mostrar loading
+
+      const pdfBytes = await generarPDF(orden);
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      setPdfUrl(url);
+    } catch (error) {
+      console.error("Error al visualizar PDF:", error);
+      alert("Error al generar la previsualización del PDF.");
+      cerrarModalPDF();
+    }
+  };
+
+  const descargarPDF = async () => {
+    try {
+      if (!ordenPDFActual) return;
+
+      const pdfBytes = await generarPDF(ordenPDFActual);
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `Orden_${orden.folio}_${orden.fecha_inicio_servicio}.pdf`;
+      link.download = `Orden_${ordenPDFActual.folio}_${ordenPDFActual.fecha_inicio_servicio}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
 
-      console.log("PDF generado y descargado correctamente");
+      console.log("PDF descargado correctamente");
     } catch (error) {
-      console.error("Error al generar PDF:", error);
-      alert("Error al generar el PDF. Por favor, intente nuevamente.");
+      console.error("Error al descargar PDF:", error);
+      alert("Error al descargar el PDF. Por favor, intente nuevamente.");
     }
   };
 
@@ -671,17 +694,7 @@ const TablaOrdenes = () => {
             <div className="Ordenes-linea Ordenes-amarilla"></div>
           </div>
           <h1 className="Ordenes-titulo">Gestión de Órdenes</h1>
-          <span
-            style={{
-              padding: "0.25rem 0.75rem",
-              borderRadius: "12px",
-              fontSize: "0.85rem",
-              fontWeight: "600",
-              background: "rgba(255, 255, 255, 0.2)",
-              color: "white",
-              marginLeft: "1rem",
-            }}
-          >
+          <span className="Ordenes-badge-rol">
             {esAdministrador ? "ADMINISTRADOR" : "USUARIO"}
           </span>
         </div>
@@ -717,16 +730,7 @@ const TablaOrdenes = () => {
         <div className="Ordenes-control-registros">
           <button
             onClick={() => setEsAdministrador(!esAdministrador)}
-            style={{
-              padding: "0.5rem 1rem",
-              background: "linear-gradient(135deg, #17a2b8, #138496)",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontWeight: "600",
-              marginRight: "1rem",
-            }}
+            className="Ordenes-boton-cambiar-rol"
           >
             Cambiar a {esAdministrador ? "Usuario" : "Admin"}
           </button>
@@ -782,11 +786,9 @@ const TablaOrdenes = () => {
             {ordenesPaginados.map((orden, index) => (
               <tr
                 key={orden.id}
-                className="Ordenes-fila-orden"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                  background: orden.activo ? "white" : "#f8d7da",
-                }}
+                className={`Ordenes-fila-orden ${
+                  !orden.activo ? "Ordenes-fila-inactiva" : ""
+                }`}
               >
                 <td data-label="Folio" className="Ordenes-columna-fecha">
                   <span className="Ordenes-badge-lead">{orden.folio}</span>
@@ -835,7 +837,7 @@ const TablaOrdenes = () => {
                     <button
                       className="Ordenes-boton-accion Ordenes-descargar"
                       onClick={() => manejarAccion("pdf", orden)}
-                      title="Descargar orden"
+                      title="Previsualizar y descargar orden"
                     >
                       <FileText size={16} />
                     </button>
@@ -852,11 +854,6 @@ const TablaOrdenes = () => {
                         className="Ordenes-boton-accion Ordenes-restaurar"
                         onClick={() => manejarAccion("restaurar", orden)}
                         title="Restaurar orden"
-                        style={{
-                          background:
-                            "linear-gradient(45deg, #28a745, #218838)",
-                          color: "white",
-                        }}
                       >
                         <RotateCcw size={16} />
                       </button>
@@ -887,7 +884,7 @@ const TablaOrdenes = () => {
           {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros}{" "}
           registros
           {terminoBusqueda && (
-            <span style={{ color: "#6c757d", marginLeft: "0.5rem" }}>
+            <span className="Ordenes-texto-filtrado">
               (filtrado de {datosOrdenes.length} registros totales)
             </span>
           )}
@@ -943,6 +940,14 @@ const TablaOrdenes = () => {
         alGuardar={manejarGuardarOrden}
         vehiculosDisponibles={vehiculosDisponibles}
         conductoresDisponibles={conductoresDisponibles}
+      />
+
+      <ModalVisualizarPDF
+        estaAbierto={modalPDFAbierto}
+        pdfUrl={pdfUrl}
+        orden={ordenPDFActual}
+        alCerrar={cerrarModalPDF}
+        alDescargar={descargarPDF}
       />
 
       {ordenAEliminar && (
