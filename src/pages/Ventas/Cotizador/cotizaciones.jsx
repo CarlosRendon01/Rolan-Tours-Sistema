@@ -37,7 +37,31 @@ const Cotizacion = () => {
       });
 
       console.log('Cotizaciones cargadas:', response.data);
-      setCotizaciones(response.data);
+
+      // 🔹 Normalizar los extras antes de guardar en el estado
+      const cotizacionesProcesadas = response.data.map((cotizacion) => {
+        let extras = [];
+
+        if (cotizacion.extra) {
+          try {
+            const parsed =
+              typeof cotizacion.extra === "string"
+                ? JSON.parse(cotizacion.extra)
+                : cotizacion.extra;
+
+            extras = parsed.extras_seleccionados || [];
+          } catch (e) {
+            console.error("Error al parsear extras en cotización:", cotizacion.id, e);
+          }
+        }
+
+        return {
+          ...cotizacion,
+          extras,
+        };
+      });
+
+      setCotizaciones(cotizacionesProcesadas);
     } catch (error) {
       console.error('Error al cargar cotizaciones:', error);
       if (error.response?.status === 401) {

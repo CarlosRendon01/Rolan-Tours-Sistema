@@ -1,3 +1,16 @@
+.btn-eliminar-extra {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 1rem;
+}
+
+.btn-eliminar-extra:hover {
+  color: #c0392b;
+}
+
 .nCotización-container {
   display: flex;
   align-items: center;
@@ -103,6 +116,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -127,6 +141,7 @@
     opacity: 0;
     transform: translateY(-30px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -149,12 +164,10 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.1) 100%);
 }
 
 .header-formulario h2 {
@@ -199,6 +212,7 @@
   border-radius: 8px 8px 0 0;
   margin: 0 2px;
 }
+
 .cotizacion-tab-button:hover:not(.active) {
   background: rgba(59, 130, 246, 0.05);
   color: #475569;
@@ -230,6 +244,7 @@
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
