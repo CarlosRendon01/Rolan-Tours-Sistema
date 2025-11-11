@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
-// ❌ REMOVEMOS useNavigate - ya no lo necesitamos
-// import { useNavigate } from 'react-router-dom';
 import './FormularioLoginCard.css';
 import axios from 'axios';
 
 const FormularioLoginCard = ({ alIniciarSesion }) => {
-  const [correo, setCorreo] = useState('alex@email.com');
-  const [contraseña, setContraseña] = useState('Contraseña');
+  const [correo, setCorreo] = useState('');
+  const [contraseña, setContraseña] = useState('');
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
   const [estaCargando, setEstaCargando] = useState(false);
   const [mensajeError, setMensajeError] = useState('');
-  // ❌ REMOVEMOS useNavigate
-  // const navegador = useNavigate();
 
   const manejarEnvioFormulario = async (evento) => {
     evento.preventDefault();
@@ -24,9 +20,10 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
         contrasena: contraseña,
       });
 
-      // ✅ Si tu API devuelve un token o datos del usuario:
       if (respuesta.data && respuesta.data.token) {
         localStorage.setItem('token', respuesta.data.token);
+        localStorage.setItem('user', JSON.stringify(respuesta.data.user));
+        console.log('Usuario logueado:', respuesta.data.user);
         alIniciarSesion(respuesta.data.user); // envía el usuario al componente padre
       } else {
         setMensajeError('Respuesta inesperada del servidor.');
@@ -118,7 +115,6 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
           <button type="submit" className="boton-enviar" disabled={estaCargando}>
             {estaCargando ? 'INICIANDO...' : 'INICIAR SESIÓN'}
           </button>
-
         </form>
       </div>
 
@@ -126,7 +122,7 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
       <div className="seccion-transporte">
         <div className="encabezado-transporte">
           <img
-            src="/assets/RolanTransportes.png"
+            src="/assets/RolanTranshportes.png"
             alt="Rolan Transporte Logo"
             className="logo-rolan-transporte-img"
           />
