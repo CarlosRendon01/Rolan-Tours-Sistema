@@ -18,12 +18,17 @@ import "./TablaReservas.css";
 import ModalEliminarReserva from "../ModalesReservas/ModalEliminarReserva";
 import ModalEditarReserva from "../ModalesReservas/ModalEditarReserva";
 import ModalVerReserva from "../ModalesReservas/ModalVerReserva";
+import ModalVisualizarPDF from "../ModalesReservas/ModalVisualizarPDF";
+import "../ModalesReservas/ModalVisualizarPDF.css";
 
 const TablaReservas = () => {
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [reservaAEliminar, setReservaAEliminar] = useState(null);
   const [reservaSeleccionado, setReservaSeleccionado] = useState(null);
+  const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [reservaPDFActual, setReservaPDFActual] = useState(null);
   const [reservasDatos, setReservasDatos] = useState([
     {
       id: 1,
@@ -270,7 +275,7 @@ const TablaReservas = () => {
         setModalEditarAbierto(true);
         break;
       case "pdf":
-        generarYDescargarPDF(reserva);
+        visualizarPDF(reserva);
         break;
       case "eliminar":
         setReservaAEliminar(reserva);
@@ -312,6 +317,14 @@ const TablaReservas = () => {
     setModalEditarAbierto(false);
     setReservaSeleccionado(null);
   };
+  const cerrarModalPDF = () => {
+    setModalPDFAbierto(false);
+    if (pdfUrl) {
+      window.URL.revokeObjectURL(pdfUrl);
+    }
+    setPdfUrl(null);
+    setReservaPDFActual(null);
+  };
 
   const manejarGuardarReserva = async (datosActualizados) => {
     try {
@@ -328,7 +341,7 @@ const TablaReservas = () => {
     }
   };
 
-  const generarYDescargarPDF = async (reserva) => {
+  const generarPDF = async (reserva) => {
     try {
       const plantillaUrl = "/HOJARESERVA_ROLAN.pdf";
       const plantillaBytes = await fetch(plantillaUrl).then((res) =>
@@ -340,29 +353,106 @@ const TablaReservas = () => {
       const firstPage = pages[0];
 
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      firstPage.drawText(reserva.folio.toString(), {
-        x: 140,
-        y: 350,
-        size: 9,
-        font: font,
-        color: rgb(0, 0, 0),
-      });
+      const dibujar = (texto, x, y, size = 9) => {
+        if (texto) {
+          firstPage.drawText(texto.toString(), {
+            x,
+            y,
+            size,
+            font,
+            color: rgb(0, 0, 0),
+          });
+        }
+      };
+
+      const fechaActual = new Date();
+      const formatoActual = {
+        weeyday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+
+      const fechaCompleta = fechaActual.toLocaleDateString(
+        "es-ES",
+        formatoActual
+      );
+      const formatearFecha = (fecha) =>
+        new Date(fecha).toLocaleDateString("es-MX");
+      const formatearFecha2 = (fecha) =>
+        new Date(fecha).toLocaleDateString("es-ES", formatoActual);
+
+      const campos = [
+        { valor: reserva.folio.toString(), x: 495, y: 325 },
+        { valor: formatearFecha2(reserva.fechaReserva), x: 190, y: 273 },
+        { valor: reserva.numHabitantes.toString(), x: 490, y: 273 },
+        { valor: reserva.numPasajeros.toString(), x: 110, y: 208 },
+        { valor: reserva.telefono, x: 240, y: 208 },
+        { valor: reserva.importe.toString(), x: 450, y: 208 },
+        { valor: reserva.nombreCliente, x: 108, y: 240 },
+        { valor: reserva.servicio, x: 110, y: 143 },
+        { valor: reserva.incluye, x: 118, y: 175 },
+        { valor: reserva.noIncluye, x: 120, y: 107 },
+      ];
+
+      campos.forEach(({ valor, x, y }) => dibujar(valor, x, y));
+
+      if (reserva.formaPago === "transferencia") {
+        dibujar(reserva.formaPago, 158, 76);
+      } else if (reserva.formaPago === "efectivo") {
+        dibujar(reserva.formaPago, 158, 76);
+      }
+
+      if (reserva.pagado === "pagado") {
+        dibujar(reserva.pagado, 258, 76);
+      } else if (reserva.pagado === "no pagado") {
+        dibujar(reserva.pagado, 358, 76);
+      }
 
       const pdfBytes = await pdfDoc.save();
+      return pdfBytes;
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+      throw error;
+    }
+  };
 
+  const visualizarPDF = async (reserva) => {
+    try {
+      setReservaPDFActual(reserva);
+      setModalPDFAbierto(true);
+      setPdfUrl(null); // Mostrar loading
+
+      const pdfBytes = await generarPDF(reserva);
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      setPdfUrl(url);
+    } catch (error) {
+      console.error("Error al visualizar PDF:", error);
+      alert("Error al generar la previsualización del PDF.");
+      cerrarModalPDF();
+    }
+  };
+
+  const descargarPDF = async () => {
+    try {
+      if (!reservaPDFActual) return;
+
+      const pdfBytes = await generarPDF(reservaPDFActual);
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `Reserva_${reserva.folio}_${reserva.nombreCliente}.pdf`;
+      link.download = `Reserva_${reservaPDFActual.nombreCliente}_${reservaPDFActual.folio}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
 
-      console.log("PDF generado y descargado correctamente");
+      console.log("PDF descargado correctamente");
     } catch (error) {
-      console.error("Error al generar PDF:", error);
-      alert("Error al generar el PDF. Por favor, intente nuevamente.");
+      console.error("Error al descargar PDF:", error);
+      alert("Error al descargar el PDF. Por favor, intente nuevamente.");
     }
   };
 
@@ -658,6 +748,13 @@ const TablaReservas = () => {
           onCerrar={cerrarModalVer}
         />
       )}
+      <ModalVisualizarPDF
+        estaAbierto={modalPDFAbierto}
+        pdfUrl={pdfUrl}
+        reserva={reservaPDFActual}
+        alCerrar={cerrarModalPDF}
+        alDescargar={descargarPDF}
+      />
 
       {modalEditarAbierto && reservaSeleccionado && (
         <ModalEditarReserva

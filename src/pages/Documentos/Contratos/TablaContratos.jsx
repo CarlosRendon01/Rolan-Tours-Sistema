@@ -387,7 +387,18 @@ const TablaContratos = () => {
           });
         }
       };
+      const fechaActual = new Date();
+      const formatoActual = {
+        weeyday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
 
+      const fechaCompleta = fechaActual.toLocaleDateString(
+        "es-ES",
+        formatoActual
+      );
       const formatearFecha = (fecha) =>
         new Date(fecha).toLocaleDateString("es-MX");
 
@@ -420,8 +431,18 @@ const TablaContratos = () => {
         { valor: contrato.anticipo, x: 190, y: 92 },
         { valor: contrato.fecha_liquidacion, x: 190, y: 79 },
       ];
+      const campos2 = [
+        { valor: contrato.modelo_vehiculo, x: 125, y: 595 },
+        { valor: contrato.placa_vehiculo, x: 125, y: 585 },
+        { valor: contrato.marca_vehiculo, x: 125, y: 575 },
+        { valor: contrato.capacidad_vehiculo, x: 240, y: 595 },
+        { valor: fechaCompleta, x: 313, y: 120 },
+        { valor: contrato.nombre_cliente, x: 190, y: 70 },
+        { valor: contrato.representante_empresa, x: 320, y: 70 },
+      ];
 
       campos.forEach(({ valor, x, y }) => dibujar(valor, x, y));
+      campos2.forEach(({ valor, x, y }) => dibujarSegundaPagina(valor, x, y));
 
       const coordenadasTipoPasaje = {
         "Turismo Estatal": { x: 148, y: 235 },
@@ -459,6 +480,13 @@ const TablaContratos = () => {
         "Actividades no especificadas": { x: 89, y: 626 },
         "Otro, especifique": { x: 89, y: 616 },
       };
+
+      if (contrato.aire_acondicionado === true) {
+        dibujarSegundaPagina("X", 264, 585);
+      }
+      if (contrato.asientos_reclinables === true) {
+        dibujarSegundaPagina("X", 264, 575);
+      }
 
       if (
         contrato.costos_cubiertos &&

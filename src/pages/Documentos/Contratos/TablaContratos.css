@@ -1,8 +1,3 @@
-/* ============================================
-   SISTEMA DE CONTRATOS - PALETA ROJA CLÁSICA PROFESIONAL
-   ============================================ */
-
-/* ========== CONTENEDOR PRINCIPAL ========== */
 .Contratos-contenedor-principal {
   width: 100%;
   background: #ffffff;
@@ -13,7 +8,6 @@
   margin: 1rem;
 }
 
-/* ========== ENCABEZADO ========== */
 .Contratos-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   padding: 2rem;
@@ -41,7 +35,6 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ========== LÍNEAS DECORATIVAS ========== */
 .Contratos-lineas-decorativas {
   display: flex;
   flex-direction: column;
@@ -75,7 +68,6 @@
   box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
 }
 
-/* ========== ESTADÍSTICAS ========== */
 .Contratos-contenedor-estadisticas {
   display: flex;
   gap: 2rem;
@@ -127,7 +119,6 @@
   letter-spacing: 0.5px;
 }
 
-/* ========== CONTROLES ========== */
 .Contratos-controles {
   padding: 1.5rem 2rem;
   display: flex;
@@ -197,7 +188,6 @@
   pointer-events: none;
 }
 
-/* ========== TABLA ========== */
 .Contratos-contenedor-tabla {
   overflow-x: auto;
   border: 1px solid #dee2e6;
@@ -265,7 +255,6 @@
   width: 150px;
 }
 
-/* ========== FILAS DE DATOS ========== */
 .Contratos-fila-contrato {
   border-bottom: 1px solid #dee2e6;
   transition: all 0.2s ease;
@@ -309,7 +298,6 @@
   padding-bottom: 1rem;
 }
 
-/* Estados de fila */
 .Contratos-fila-contrato.Contratos-inactivo,
 .Contratos-fila-contrato.Contratos-inactivo:nth-child(even) {
   background-color: #fee2e2 !important;
@@ -320,7 +308,6 @@
   background-color: #fecaca !important;
 }
 
-/* ========== BADGES Y ETIQUETAS ========== */
 .Contratos-columna-id .Contratos-badge-id {
   background: linear-gradient(135deg, #fee2e2, #fecaca);
   color: #991b1b;
@@ -362,16 +349,13 @@
 }
 
 .Contratos-badge-hora {
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
   color: #991b1b;
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
   font-weight: 700;
   font-size: 0.75rem;
-  border: 1px solid #fca5a5;
 }
 
-/* ========== BOTONES DE ACCIÓN ========== */
 .Contratos-columna-acciones {
   position: relative;
   width: 180px;
@@ -554,7 +538,6 @@
   box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
-/* ========== ANIMACIONES ========== */
 @keyframes Contratos-fadeIn {
   from {
     opacity: 0;
@@ -593,7 +576,6 @@
   animation-delay: 0.3s;
 }
 
-/* ========== ESTILOS SWEETALERT ========== */
 .swal-wide {
   width: 600px !important;
   max-width: 90% !important;
@@ -637,7 +619,6 @@
   animation: swal2-show 0.3s !important;
 }
 
-/* ========== RESPONSIVE ========== */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .Contratos-contenedor-tabla {
     overflow: scroll;
