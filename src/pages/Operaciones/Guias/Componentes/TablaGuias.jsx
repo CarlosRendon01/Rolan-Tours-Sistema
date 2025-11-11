@@ -16,11 +16,11 @@ const TablaGuias = ({
 
   const guiasFiltradas = guias.filter(guia => {
     const busqueda = terminoBusqueda.toLowerCase();
-    const nombreCompleto = `${guia.nombre} ${guia.apellidoPaterno} ${guia.apellidoMaterno}`.toLowerCase();
+    const nombreCompleto = `${guia.nombre} ${guia.apellido_paterno || guia.apellidoPaterno} ${guia.apellido_materno || guia.apellidoMaterno}`.toLowerCase();
     return (
       nombreCompleto.includes(busqueda) ||
       guia.id.toString().includes(busqueda) ||
-      guia.correoElectronico.toLowerCase().includes(busqueda)
+      (guia.email || guia.correoElectronico || '').toLowerCase().includes(busqueda)
     );
   });
 
@@ -31,9 +31,10 @@ const TablaGuias = ({
   const guiasPaginadas = guiasFiltradas.slice(indiceInicio, indiceFin);
 
   const totalGuias = guias.length;
-  const guiasActivas = guias.filter(g => g.activo !== false).length;
+  const guiasActivas = guias.filter(g => g.estado_operativo === 'activo' || g.activo !== false).length;
 
   const formatearTelefono = (telefono) => {
+    if (!telefono) return '';
     const limpio = telefono.replace(/\D/g, '');
     if (limpio.length === 10) {
       return `(${limpio.substring(0, 3)}) ${limpio.substring(3, 6)}-${limpio.substring(6)}`;
@@ -42,14 +43,20 @@ const TablaGuias = ({
   };
 
   const obtenerIniciales = (nombre, apellidoP) => {
+    if (!nombre || !apellidoP) return '??';
     return `${nombre.charAt(0)}${apellidoP.charAt(0)}`;
   };
 
-  const obtenerClaseGenero = (genero) => {
-    const generoLower = genero.toLowerCase();
-    if (generoLower === 'masculino' || generoLower === 'm') return 'masculino';
-    if (generoLower === 'femenino' || generoLower === 'f') return 'femenino';
-    return 'otro';
+  const calcularEdad = (fechaNacimiento) => {
+    if (!fechaNacimiento) return '-';
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+    return edad;
   };
 
   const cambiarPagina = (nuevaPagina) => {
@@ -183,95 +190,109 @@ const TablaGuias = ({
                   <th>ID</th>
                   <th>NOMBRE COMPLETO</th>
                   <th>EDAD</th>
-                  <th>GÉNERO</th>
                   <th>TELÉFONO</th>
                   <th>IDIOMAS</th>
+                  <th>ESTADO</th>
                   <th>ACCIONES</th>
                 </tr>
               </thead>
               <tbody>
-                {guiasPaginadas.map((guia, index) => (
-                  <tr 
-                    key={guia.id} 
-                    className="guias-fila-guia"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <td data-label="ID" className="guias-columna-id">
-                      <span className="guias-badge-id">
-                        #{guia.id.toString().padStart(3, '0')}
-                      </span>
-                    </td>
-                    
-                    <td data-label="Nombre Completo" className="guias-columna-nombre">
-                      <div className="guias-info-guia">
-                        <div className="guias-avatar">
-                          {obtenerIniciales(guia.nombre, guia.apellidoPaterno)}
+                {guiasPaginadas.map((guia, index) => {
+                  const apellidoPaterno = guia.apellido_paterno || guia.apellidoPaterno || '';
+                  const apellidoMaterno = guia.apellido_materno || guia.apellidoMaterno || '';
+                  const correo = guia.email || guia.correoElectronico || '';
+                  const telefono = guia.telefono || guia.telefonoPersonal || '';
+                  const edad = guia.edad || calcularEdad(guia.fecha_nacimiento);
+                  const idiomasArray = guia.idiomas ? (typeof guia.idiomas === 'string' ? guia.idiomas.split(',').map(i => i.trim()) : guia.idiomas) : [];
+                  const estadoOperativo = guia.estado_operativo || (guia.activo !== false ? 'activo' : 'inactivo');
+
+                  return (
+                    <tr 
+                      key={guia.id} 
+                      className="guias-fila-guia"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <td data-label="ID" className="guias-columna-id">
+                        <span className="guias-badge-id">
+                          #{guia.id.toString().padStart(3, '0')}
+                        </span>
+                      </td>
+                      
+                      <td data-label="Nombre Completo" className="guias-columna-nombre">
+                        <div className="guias-info-guia">
+                          <div className="guias-avatar">
+                            {obtenerIniciales(guia.nombre, apellidoPaterno)}
+                          </div>
+                          <div className="guias-datos-guia">
+                            <span className="guias-nombre-principal">
+                              {guia.nombre} {apellidoPaterno} {apellidoMaterno}
+                            </span>
+                            <span className="guias-subtexto">{correo}</span>
+                          </div>
                         </div>
-                        <div className="guias-datos-guia">
-                          <span className="guias-nombre-principal">
-                            {guia.nombre} {guia.apellidoPaterno} {guia.apellidoMaterno}
-                          </span>
-                          <span className="guias-subtexto">{guia.correoElectronico}</span>
+                      </td>
+                      
+                      <td data-label="Edad" className="guias-columna-edad">
+                        <span className="guias-badge-edad">
+                          {edad} años
+                        </span>
+                      </td>
+                      
+                      <td data-label="Teléfono" className="guias-columna-telefono">
+                        <span className="guias-valor-telefono">
+                          <Phone size={14} />
+                          {formatearTelefono(telefono)}
+                        </span>
+                      </td>
+                      
+                      <td data-label="Idiomas" className="guias-columna-idiomas">
+                        <div className="guias-badge-idiomas">
+                          {idiomasArray.length > 0 ? (
+                            idiomasArray.map((idioma, idx) => (
+                              <span key={idx} className="guias-idioma-tag">
+                                {idioma}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="guias-idioma-tag">No especificado</span>
+                          )}
                         </div>
-                      </div>
-                    </td>
-                    
-                    <td data-label="Edad" className="guias-columna-edad">
-                      <span className="guias-badge-edad">
-                        {guia.edad} años
-                      </span>
-                    </td>
-                    
-                    <td data-label="Género" className="guias-columna-genero">
-                      <span className={`guias-badge-genero ${obtenerClaseGenero(guia.genero)}`}>
-                        {guia.genero}
-                      </span>
-                    </td>
-                    
-                    <td data-label="Teléfono" className="guias-columna-telefono">
-                      <span className="guias-valor-telefono">
-                        <Phone size={14} />
-                        {formatearTelefono(guia.telefonoPersonal)}
-                      </span>
-                    </td>
-                    
-                    <td data-label="Idiomas" className="guias-columna-idiomas">
-                      <div className="guias-badge-idiomas">
-                        {guia.idiomas && guia.idiomas.map((idioma, idx) => (
-                          <span key={idx} className="guias-idioma-tag">
-                            {idioma}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    
-                    <td data-label="Acciones" className="guias-columna-acciones">
-                      <div className="guias-botones-accion">
-                        <button 
-                          className="guias-boton-accion guias-ver"
-                          onClick={() => manejarAccion('ver', guia)}
-                          title="Ver guía"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button 
-                          className="guias-boton-accion guias-editar"
-                          onClick={() => manejarAccion('editar', guia)}
-                          title="Editar guía"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button 
-                          className="guias-boton-accion guias-eliminar"
-                          onClick={() => manejarAccion('eliminar', guia)}
-                          title="Eliminar guía"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      
+                      <td data-label="Estado" className="guias-columna-estado">
+                        <span className={`guias-badge-estado ${estadoOperativo}`}>
+                          {estadoOperativo === 'activo' ? 'Activo' : 'Inactivo'}
+                        </span>
+                      </td>
+                      
+                      <td data-label="Acciones" className="guias-columna-acciones">
+                        <div className="guias-botones-accion">
+                          <button 
+                            className="guias-boton-accion guias-ver"
+                            onClick={() => manejarAccion('ver', guia)}
+                            title="Ver guía"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button 
+                            className="guias-boton-accion guias-editar"
+                            onClick={() => manejarAccion('editar', guia)}
+                            title="Editar guía"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button 
+                            className="guias-boton-accion guias-eliminar"
+                            onClick={() => manejarAccion('eliminar', guia)}
+                            title="Eliminar guía"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

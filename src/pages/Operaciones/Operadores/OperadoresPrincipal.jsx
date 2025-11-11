@@ -123,11 +123,15 @@ const OperadoresPrincipal = () => {
     };
 
     const manejarEliminar = async (operador) => {
-        const confirmado = await modalEliminarOperador(operador, eliminarOperador);
+        const confirmado = await modalEliminarOperador(operador, async () => {
+            eliminarOperador(operador.id); // ✅ Ahora sí pasamos el ID correcto
+        });
+
         if (confirmado) {
             console.log('Operador eliminado:', operador);
         }
     };
+
 
     const manejarAgregar = () => {
         setModalAgregarAbierto(true);
