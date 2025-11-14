@@ -21,10 +21,26 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
       });
 
       if (respuesta.data && respuesta.data.token) {
-        localStorage.setItem('token', respuesta.data.token);
-        localStorage.setItem('user', JSON.stringify(respuesta.data.user));
-        console.log('Usuario logueado:', respuesta.data.user);
-        alIniciarSesion(respuesta.data.user); // envía el usuario al componente padre
+        const token = respuesta.data.token;
+        const usuario =
+          respuesta.data.user;
+
+        if (usuario) {
+          const rol = usuario.roles;
+
+          // Guardar datos en localStorage
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(usuario));
+          localStorage.setItem('rol', rol);
+
+          console.log('✅ Usuario logueado:', usuario);
+          console.log('🎭 Rol detectado:', rol);
+
+          alIniciarSesion(usuario); // Envía el usuario al componente padre
+        } else {
+          setMensajeError('No se recibió información del usuario.');
+          console.error('❌ Estructura inesperada del backend:', respuesta.data);
+        }
       } else {
         setMensajeError('Respuesta inesperada del servidor.');
       }
