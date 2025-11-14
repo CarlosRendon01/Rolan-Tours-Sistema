@@ -9,9 +9,8 @@ const NuevaCotizacion = ({
   onGuardarCliente,
   cotizacionEditar,
   onCancelarEdicion,
-
+  mostrarBoton = true,
 }) => {
-  document.body.style.overflow = "hidden";
   const [mostrarModal, setMostrarModal] = useState(false);
   const [pasoActual, setPasoActual] = useState(1);
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -65,6 +64,20 @@ const NuevaCotizacion = ({
     tour: [],
     hospedaje: [],
   });
+
+  useEffect(() => {
+    // Solo bloquea el scroll cuando el modal está abierto
+    if (mostrarModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    // Limpia cuando el componente se desmonta
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [mostrarModal]);
 
   useEffect(() => {
     const fetchExtras = async () => {
@@ -219,7 +232,6 @@ const NuevaCotizacion = ({
         ],
         3: [
           { campo: "num_pasajeros", nombre: "N° pasajeros" },
-          { campo: "punto_intermedio", nombre: "Punto Intermedio" },
           { campo: "destino", nombre: "Destino Servicio" },
         ],
         4: [
@@ -663,15 +675,16 @@ const NuevaCotizacion = ({
 
   return (
     <>
-      <button
-        className="cotizacion-boton-agregar"
-        onClick={abrirModal}
-        title="Nueva Cotización"
-      >
-        <FontAwesomeIcon icon={faPlus} />
-        <span>Nueva Cotización</span>
-      </button>
-
+      {mostrarBoton && (
+        <button
+          className="cotizacion-boton-agregar"
+          onClick={abrirModal}
+          title="Nueva Cotización"
+        >
+          <FontAwesomeIcon icon={faPlus} />
+          <span>Nueva Cotización</span>
+        </button>
+      )}
       {mostrarModal && (
         <div className="modal-overlay" onClick={cerrarModal}>
           <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>

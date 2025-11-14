@@ -9,6 +9,7 @@ const Cotizacion = () => {
   const [cotizaciones, setCotizaciones] = useState([]);
   const [cotizacionEditar, setCotizacionEditar] = useState(null);
   const [cargando, setCargando] = useState(false);
+  const rol = localStorage.getItem("rol");
 
   const API_URL = "http://127.0.0.1:8000/api/cotizaciones";
 
@@ -189,6 +190,7 @@ const Cotizacion = () => {
             onEliminar={handleEliminarCotizacion}
             botonNuevaCotizacion={
               <NuevaCotizacion
+                mostrarBoton={rol === "admin"}
                 onGuardarCotizacion={handleGuardarCotizacion}
                 cotizacionEditar={cotizacionEditar}
                 onCancelarEdicion={handleCancelarEdicion}
