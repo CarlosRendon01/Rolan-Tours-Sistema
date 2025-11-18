@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { 
-  Calendar, 
-  Search, 
-  X, 
+import {
+  Calendar,
+  Search,
+  X,
   History,
   AlertCircle
 } from "lucide-react";
@@ -47,7 +47,7 @@ const BuscadorFecha = () => {
   const manejarCambioFechaDesde = (e) => {
     const nuevaFecha = e.target.value;
     setFechaDesde(nuevaFecha);
-    
+
     // Si hay fecha hasta seleccionada, validar
     if (fechaHasta || nuevaFecha) {
       const erroresValidacion = validarFechas(nuevaFecha, fechaHasta);
@@ -63,7 +63,7 @@ const BuscadorFecha = () => {
   const manejarCambioFechaHasta = (e) => {
     const nuevaFecha = e.target.value;
     setFechaHasta(nuevaFecha);
-    
+
     // Validar fechas
     const erroresValidacion = validarFechas(fechaDesde, nuevaFecha);
     setErrores(erroresValidacion);
@@ -76,10 +76,10 @@ const BuscadorFecha = () => {
       });
       return;
     }
-    
+
     // Validar fechas antes de buscar
     const erroresValidacion = validarFechas(fechaDesde, fechaHasta);
-    
+
     if (Object.keys(erroresValidacion).length > 0) {
       setErrores(erroresValidacion);
       return;
@@ -88,7 +88,7 @@ const BuscadorFecha = () => {
     // Limpiar errores
     setErrores({});
     setLoading(true);
-    
+
     // Agregar al historial
     const nuevaBusqueda = {
       id: Date.now(),
@@ -97,11 +97,11 @@ const BuscadorFecha = () => {
       fecha: new Date().toLocaleDateString()
     };
     setHistorial(prev => [nuevaBusqueda, ...prev.slice(0, 4)]);
-    
+
     // Simular búsqueda y obtener resultados
     setTimeout(() => {
       setLoading(false);
-      
+
       // Aquí simularemos algunos resultados (en una app real vendrían de una API)
       const resultadosSimulados = [
         {
@@ -138,10 +138,10 @@ const BuscadorFecha = () => {
           tipo: "Aventura"
         }
       ];
-      
+
       setResultadosBusqueda(resultadosSimulados);
       setModalAbierto(true);
-      
+
     }, 1500);
   };
 
@@ -170,15 +170,18 @@ const BuscadorFecha = () => {
     setFechaHasta(busqueda.fechaHasta);
     setErrores({}); // Limpiar errores al cargar del historial
   };
-
+  const eliminarDelHistorial = (id, e) => {
+    e.stopPropagation(); // Evita que se active el onClick del botón padre
+    setHistorial(prev => prev.filter(busqueda => busqueda.id !== id));
+  };
   return (
     <>
       <div className="contenedor-buscador">
         <div className="tarjeta-buscador">
-          
+
           {/* Línea principal con todos los elementos */}
           <div className="linea-principal">
-            
+
             {/* Icono de calendario */}
             <div className="icono-principal">
               <Calendar size={24} />
@@ -243,7 +246,7 @@ const BuscadorFecha = () => {
 
             {/* Botones de acción */}
             <div className="grupo-botones">
-              <button 
+              <button
                 onClick={manejarLimpiar}
                 className={`boton-limpiar ${tieneFechas ? 'activo' : 'deshabilitado'}`}
                 disabled={!tieneFechas}
@@ -252,7 +255,7 @@ const BuscadorFecha = () => {
                 <X size={16} />
               </button>
 
-              <button 
+              <button
                 onClick={manejarBusqueda}
                 className={`boton-buscar ${(tieneFechas && !tieneErrores) ? 'activo' : 'deshabilitado'}`}
                 disabled={!tieneFechas || loading || tieneErrores}
@@ -297,8 +300,8 @@ const BuscadorFecha = () => {
               <div className="estado-pendiente">
                 <div className="icono-estado estado-amarillo"></div>
                 <span>
-                  {!fechaDesde && !fechaHasta ? 'Selecciona las fechas de búsqueda' : 
-                   !fechaDesde ? 'Selecciona la fecha desde' : 'Selecciona la fecha hasta'}
+                  {!fechaDesde && !fechaHasta ? 'Selecciona las fechas de búsqueda' :
+                    !fechaDesde ? 'Selecciona la fecha desde' : 'Selecciona la fecha hasta'}
                 </span>
               </div>
             )}
@@ -319,7 +322,16 @@ const BuscadorFecha = () => {
                     onClick={() => cargarBusquedaDelHistorial(busqueda)}
                   >
                     <span>{formatearFecha(busqueda.fechaDesde)} - {formatearFecha(busqueda.fechaHasta)}</span>
-                    <small>{busqueda.fecha}</small>
+                    <div className="historial-info">
+                      <small>{busqueda.fecha}</small>
+                      <button
+                        className="boton-eliminar-historial"
+                        onClick={(e) => eliminarDelHistorial(busqueda.id, e)}
+                        title="Eliminar del historial"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
                   </button>
                 ))}
               </div>
