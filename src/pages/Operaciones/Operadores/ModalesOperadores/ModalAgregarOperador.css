@@ -660,3 +660,205 @@
     transform: scale(1);
   }
 }
+/* ========================================
+   VISTA PREVIA DE CREDENCIAL - DOS COLUMNAS
+   ======================================== */
+
+/* Contenedor principal con dos columnas */
+.modal-agregar-contenedor-principal {
+  display: grid !important;
+  grid-template-columns: 1fr 380px !important;
+  gap: 0 !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+  background: #f8f9fa !important;
+}
+
+/* Columna izquierda - Formulario */
+.modal-agregar-columna-formulario {
+  overflow-y: auto !important;
+  background: white !important;
+  border-right: 1px solid #e5e7eb !important;
+}
+
+/* Columna derecha - Vista Previa */
+.modal-agregar-columna-preview {
+  display: flex !important;
+  flex-direction: column !important;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%) !important;
+  overflow-y: auto !important;
+  padding: 2rem 1.5rem !important;
+}
+
+/* Header de la vista previa */
+.modal-agregar-preview-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.modal-agregar-preview-header svg {
+  color: #2563eb !important;
+}
+
+.modal-agregar-preview-header h3 {
+  margin: 0 !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}
+
+/* Contenedor de la credencial */
+.modal-agregar-preview-content {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem 0 !important;
+}
+
+/* Ajustar tamaño de la credencial en vista previa */
+.modal-agregar-preview-content .credencial-card {
+  transform: scale(0.95) !important;
+  transition: transform 0.3s ease !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.modal-agregar-preview-content .credencial-card:hover {
+  transform: scale(1) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+}
+
+.modal-agregar-preview-content .credencial-container {
+  padding: 0 !important;
+}
+
+/* Info de la vista previa */
+.modal-agregar-preview-info {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.75rem !important;
+  padding: 1.25rem !important;
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 10px !important;
+  margin-top: 1.5rem !important;
+}
+
+.modal-agregar-preview-info svg {
+  color: #2563eb !important;
+  flex-shrink: 0 !important;
+  margin-top: 2px !important;
+}
+
+.modal-agregar-preview-info p {
+  margin: 0 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+  color: #1e40af !important;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+/* Tablets - Vista previa más pequeña */
+@media (max-width: 1200px) {
+  .modal-agregar-contenedor-principal {
+    grid-template-columns: 1fr 320px !important;
+  }
+  
+  .modal-agregar-preview-content .credencial-card {
+    transform: scale(0.8) !important;
+  }
+  
+  .modal-agregar-preview-content .credencial-card:hover {
+    transform: scale(0.85) !important;
+  }
+}
+
+/* Tablets pequeñas - Columnas apiladas */
+@media (max-width: 1024px) {
+  .modal-agregar-contenedor-principal {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 1fr auto !important;
+  }
+  
+  .modal-agregar-columna-formulario {
+    border-right: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+  
+  .modal-agregar-columna-preview {
+    max-height: 400px !important;
+    padding: 1.5rem !important;
+  }
+  
+  .modal-agregar-preview-content .credencial-card {
+    transform: scale(0.7) !important;
+  }
+  
+  .modal-agregar-preview-content .credencial-card:hover {
+    transform: scale(0.75) !important;
+  }
+}
+
+/* Mobile - Solo formulario, sin vista previa */
+@media (max-width: 768px) {
+  .modal-agregar-columna-preview {
+    display: none !important;
+  }
+  
+  .modal-agregar-contenedor-principal {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Ajustar scrollbar de la columna del formulario */
+.modal-agregar-columna-formulario::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.modal-agregar-columna-formulario::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+}
+
+.modal-agregar-columna-formulario::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 4px !important;
+}
+
+.modal-agregar-columna-formulario::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+
+/* Scrollbar de la vista previa */
+.modal-agregar-columna-preview::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.modal-agregar-columna-preview::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.modal-agregar-columna-preview::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 3px !important;
+}
+
+.modal-agregar-columna-preview::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+
+/* Asegurar que el modal sea más ancho para acomodar ambas columnas */
+.modal-agregar-contenido.modal-agregar-xl {
+  max-width: 1600px !important;
+}
+
+/* Ajustar altura del modal */
+.modal-agregar-contenido {
+  max-height: 92vh !important;
+}
