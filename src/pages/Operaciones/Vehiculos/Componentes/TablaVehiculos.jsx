@@ -3,7 +3,8 @@ import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Truck, BarChart3,
 import './TablaVehiculos.css';
 
 const TablaVehiculos = ({ 
-  vehiculos,
+  vehiculos,        // ✅ Recibe vehiculos desde el padre
+  setVehiculos,     // ✅ Por si necesitas actualizar (opcional)
   onVer, 
   onEditar, 
   onEliminar,
