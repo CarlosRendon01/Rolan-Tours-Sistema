@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import PrincipalComponente from "../Generales/componentes/PrincipalComponente"; // ← AGREGAR
 import { useVehiculos } from "../Operaciones/Vehiculos/VehiculosContext";
-import CardVehiculo from './Componentes/CardVehiculo';
-import ModalMantenimiento from './ModalesMantenimiento/ModalMantenimiento';
-import ModalRegistrarMantenimiento from './ModalesMantenimiento/Modalregistrarmantenimiento';
-import { Search, Filter, CheckCircle, Clock, AlertTriangle, Wrench } from 'lucide-react';
-import './MantenimientoPrincipal.css';
+import CardVehiculo from "./Componentes/CardVehiculo";
+import ModalMantenimiento from "./ModalesMantenimiento/ModalMantenimiento";
+import ModalRegistrarMantenimiento from "./ModalesMantenimiento/Modalregistrarmantenimiento";
+import {
+  Search,
+  Filter,
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  Wrench,
+} from "lucide-react";
+import "./MantenimientoPrincipal.css";
 
 const MantenimientoPrincipal = () => {
   const {
@@ -14,11 +21,11 @@ const MantenimientoPrincipal = () => {
     obtenerMantenimiento,
     registrarMantenimiento,
     actualizarMantenimiento,
-    obtenerEstadisticas
+    obtenerEstadisticas,
   } = useVehiculos();
 
-  const [busqueda, setBusqueda] = useState('');
-  const [filtroEstado, setFiltroEstado] = useState('todos'); // todos, verde, amarillo, rojo
+  const [busqueda, setBusqueda] = useState("");
+  const [filtroEstado, setFiltroEstado] = useState("todos"); // todos, verde, amarillo, rojo
   const [modalDetallesAbierto, setModalDetallesAbierto] = useState(false);
   const [modalRegistrarAbierto, setModalRegistrarAbierto] = useState(false);
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
@@ -27,18 +34,20 @@ const MantenimientoPrincipal = () => {
   const estadisticas = obtenerEstadisticas();
 
   // Filtrar vehículos
-  const vehiculosFiltrados = vehiculos.filter(vehiculo => {
+  const vehiculosFiltrados = vehiculos.filter((vehiculo) => {
     const mantenimiento = obtenerMantenimiento(vehiculo.id);
     if (!mantenimiento) return false;
 
     // Filtro de búsqueda
-    const cumpleBusqueda = vehiculo.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+    const cumpleBusqueda =
+      vehiculo.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
       vehiculo.numero_placa.toLowerCase().includes(busqueda.toLowerCase()) ||
       vehiculo.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
       vehiculo.modelo.toLowerCase().includes(busqueda.toLowerCase());
 
     // Filtro de estado
-    const cumpleEstado = filtroEstado === 'todos' || mantenimiento.estado === filtroEstado;
+    const cumpleEstado =
+      filtroEstado === "todos" || mantenimiento.estado === filtroEstado;
 
     return cumpleBusqueda && cumpleEstado;
   });
@@ -51,7 +60,7 @@ const MantenimientoPrincipal = () => {
 
   // Abrir modal de registrar mantenimiento
   const handleRegistrarMantenimiento = (vehiculoId) => {
-    const vehiculo = vehiculos.find(v => v.id === vehiculoId);
+    const vehiculo = vehiculos.find((v) => v.id === vehiculoId);
     setVehiculoSeleccionado(vehiculo);
     setModalDetallesAbierto(false);
     setModalRegistrarAbierto(true);
@@ -65,13 +74,12 @@ const MantenimientoPrincipal = () => {
   // Actualizar kilometraje
   const handleActualizarKilometraje = (vehiculoId, nuevoKm) => {
     actualizarMantenimiento(vehiculoId, {
-      kilometraje_actual: nuevoKm
+      kilometraje_actual: nuevoKm,
     });
   };
 
   return (
     <PrincipalComponente>
-
       <div className="mantenimiento-principal">
         {/* Header con estadísticas */}
         <div className="mantenimiento-encabezado">
@@ -92,7 +100,9 @@ const MantenimientoPrincipal = () => {
                 <Wrench size={20} />
               </div>
               <div className="mantenimiento-info-estadistica">
-                <span className="mantenimiento-numero">{estadisticas.total}</span>
+                <span className="mantenimiento-numero">
+                  {estadisticas.total}
+                </span>
                 <span className="mantenimiento-label">Total</span>
               </div>
             </div>
@@ -102,7 +112,9 @@ const MantenimientoPrincipal = () => {
                 <CheckCircle size={20} />
               </div>
               <div className="mantenimiento-info-estadistica">
-                <span className="mantenimiento-numero">{estadisticas.verde}</span>
+                <span className="mantenimiento-numero">
+                  {estadisticas.verde}
+                </span>
                 <span className="mantenimiento-label">En buen estado</span>
               </div>
             </div>
@@ -112,7 +124,9 @@ const MantenimientoPrincipal = () => {
                 <Clock size={20} />
               </div>
               <div className="mantenimiento-info-estadistica">
-                <span className="mantenimiento-numero">{estadisticas.amarillo}</span>
+                <span className="mantenimiento-numero">
+                  {estadisticas.amarillo}
+                </span>
                 <span className="mantenimiento-label">Próximo</span>
               </div>
             </div>
@@ -122,7 +136,9 @@ const MantenimientoPrincipal = () => {
                 <AlertTriangle size={20} />
               </div>
               <div className="mantenimiento-info-estadistica">
-                <span className="mantenimiento-numero">{estadisticas.rojo}</span>
+                <span className="mantenimiento-numero">
+                  {estadisticas.rojo}
+                </span>
                 <span className="mantenimiento-label">Urgente</span>
               </div>
             </div>
@@ -149,28 +165,36 @@ const MantenimientoPrincipal = () => {
           <div className="mantenimiento-filtros">
             <Filter size={18} />
             <button
-              className={`mantenimiento-btn-filtro ${filtroEstado === 'todos' ? 'active' : ''}`}
-              onClick={() => setFiltroEstado('todos')}
+              className={`mantenimiento-btn-filtro ${
+                filtroEstado === "todos" ? "active" : ""
+              }`}
+              onClick={() => setFiltroEstado("todos")}
             >
               Todos ({estadisticas.total})
             </button>
             <button
-              className={`mantenimiento-btn-filtro verde ${filtroEstado === 'verde' ? 'active' : ''}`}
-              onClick={() => setFiltroEstado('verde')}
+              className={`mantenimiento-btn-filtro verde ${
+                filtroEstado === "verde" ? "active" : ""
+              }`}
+              onClick={() => setFiltroEstado("verde")}
             >
               <CheckCircle size={16} />
               Buen estado ({estadisticas.verde})
             </button>
             <button
-              className={`mantenimiento-btn-filtro amarillo ${filtroEstado === 'amarillo' ? 'active' : ''}`}
-              onClick={() => setFiltroEstado('amarillo')}
+              className={`mantenimiento-btn-filtro amarillo ${
+                filtroEstado === "amarillo" ? "active" : ""
+              }`}
+              onClick={() => setFiltroEstado("amarillo")}
             >
               <Clock size={16} />
               Próximo ({estadisticas.amarillo})
             </button>
             <button
-              className={`mantenimiento-btn-filtro rojo ${filtroEstado === 'rojo' ? 'active' : ''}`}
-              onClick={() => setFiltroEstado('rojo')}
+              className={`mantenimiento-btn-filtro rojo ${
+                filtroEstado === "rojo" ? "active" : ""
+              }`}
+              onClick={() => setFiltroEstado("rojo")}
             >
               <AlertTriangle size={16} />
               Urgente ({estadisticas.rojo})
@@ -183,14 +207,14 @@ const MantenimientoPrincipal = () => {
           <div className="mantenimiento-vacio">
             <Wrench size={80} strokeWidth={1.5} />
             <p className="mantenimiento-mensaje-vacio">
-              {busqueda || filtroEstado !== 'todos'
-                ? 'No se encontraron vehículos con los filtros aplicados'
-                : 'No hay vehículos registrados en el sistema'}
+              {busqueda || filtroEstado !== "todos"
+                ? "No se encontraron vehículos con los filtros aplicados"
+                : "No hay vehículos registrados en el sistema"}
             </p>
           </div>
         ) : (
           <div className="mantenimiento-grid">
-            {vehiculosFiltrados.map(vehiculo => {
+            {vehiculosFiltrados.map((vehiculo) => {
               const mantenimiento = obtenerMantenimiento(vehiculo.id);
               return (
                 <CardVehiculo
@@ -231,9 +255,7 @@ const MantenimientoPrincipal = () => {
           />
         )}
       </div>
-
     </PrincipalComponente>
-
   );
 };
 
