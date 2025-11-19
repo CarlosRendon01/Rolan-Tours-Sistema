@@ -1,21 +1,10 @@
 import React, { useState } from 'react';
-import { X, Save, Wrench, Calendar, DollarSign, FileText } from 'lucide-react';
+import { X, Save, Wrench, Calendar, DollarSign, FileText, Plus } from 'lucide-react';
 import Swal from 'sweetalert2';
 import './ModalRegistrarMantenimiento.css';
 
 const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCerrar }) => {
-  const [formData, setFormData] = useState({
-    tipo: '',
-    kilometraje: mantenimiento.kilometraje_actual,
-    descripcion: '',
-    costo: '',
-    fecha: new Date().toISOString().split('T')[0]
-  });
-
-  const [errores, setErrores] = useState({});
-  const [guardando, setGuardando] = useState(false);
-
-  const tiposMantenimiento = [
+  const tiposMantenimientoIniciales = [
     'Mantenimiento Preventivo',
     'Mantenimiento Correctivo',
     'Cambio de Aceite',
@@ -31,8 +20,32 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
     'Otro'
   ];
 
+  const [tiposMantenimiento, setTiposMantenimiento] = useState(tiposMantenimientoIniciales);
+  const [nuevoTipo, setNuevoTipo] = useState('');
+  const [mostrarCampoNuevoTipo, setMostrarCampoNuevoTipo] = useState(false);
+
+  const [formData, setFormData] = useState({
+    tipo: '',
+    kilometraje: mantenimiento.kilometraje_actual,
+    descripcion: '',
+    costo: '',
+    fecha: new Date().toISOString().split('T')[0]
+  });
+
+  const [errores, setErrores] = useState({});
+  const [guardando, setGuardando] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Si selecciona "Otro", mostrar campo de texto
+    if (name === 'tipo' && value === 'Otro') {
+      setMostrarCampoNuevoTipo(true);
+    } else if (name === 'tipo' && value !== 'Otro') {
+      setMostrarCampoNuevoTipo(false);
+      setNuevoTipo('');
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -46,6 +59,55 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
         return nuevosErrores;
       });
     }
+  };
+
+  const handleAgregarNuevoTipo = () => {
+    const tipoLimpio = nuevoTipo.trim();
+    
+    if (!tipoLimpio) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campo vacío',
+        text: 'Por favor ingresa el nombre del tipo de mantenimiento',
+        confirmButtonColor: '#667eea'
+      });
+      return;
+    }
+
+    // Verificar si ya existe
+    if (tiposMantenimiento.some(tipo => tipo.toLowerCase() === tipoLimpio.toLowerCase())) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Tipo existente',
+        text: 'Este tipo de mantenimiento ya existe en la lista',
+        confirmButtonColor: '#667eea'
+      });
+      return;
+    }
+
+    // Agregar el nuevo tipo antes de "Otro"
+    const nuevostiposMantenimiento = [...tiposMantenimiento];
+    nuevostiposMantenimiento.splice(nuevostiposMantenimiento.length - 1, 0, tipoLimpio);
+    setTiposMantenimiento(nuevostiposMantenimiento);
+
+    // Seleccionar automáticamente el nuevo tipo
+    setFormData(prev => ({
+      ...prev,
+      tipo: tipoLimpio
+    }));
+
+    // Limpiar y ocultar campo
+    setNuevoTipo('');
+    setMostrarCampoNuevoTipo(false);
+
+    // Mensaje de éxito
+    Swal.fire({
+      icon: 'success',
+      title: '¡Tipo agregado!',
+      text: `"${tipoLimpio}" se ha agregado a la lista`,
+      timer: 2000,
+      showConfirmButton: false
+    });
   };
 
   const validarFormulario = () => {
@@ -78,9 +140,7 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
     return nuevosErrores;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
@@ -173,7 +233,7 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
         </div>
 
         {/* Formulario */}
-        <form onSubmit={handleSubmit} className="modal-reg-mant-form">
+        <div className="modal-reg-mant-form">
           {/* Tipo de mantenimiento */}
           <div className="modal-reg-mant-form-group">
             <label htmlFor="tipo">
@@ -196,6 +256,64 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
               <span className="modal-reg-mant-error">{errores.tipo}</span>
             )}
           </div>
+
+          {/* Campo para nuevo tipo de mantenimiento */}
+          {mostrarCampoNuevoTipo && (
+            <div className="modal-reg-mant-form-group" style={{ background: '#f0f9ff', padding: '16px', borderRadius: '8px', border: '2px dashed #667eea' }}>
+              <label htmlFor="nuevoTipo" style={{ color: '#1e40af' }}>
+                <Plus size={18} />
+                Nuevo Tipo de Mantenimiento
+              </label>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'start' }}>
+                <input
+                  type="text"
+                  id="nuevoTipo"
+                  value={nuevoTipo}
+                  onChange={(e) => setNuevoTipo(e.target.value)}
+                  placeholder="Ej: Cambio de Batería"
+                  style={{ flex: 1 }}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAgregarNuevoTipo();
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleAgregarNuevoTipo}
+                  style={{
+                    padding: '12px 20px',
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s',
+                    whiteSpace: 'nowrap'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(37, 99, 235, 0.35)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  <Plus size={18} />
+                  Agregar
+                </button>
+              </div>
+              <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '8px', marginBottom: '0' }}>
+                Escribe el nombre del nuevo tipo y presiona "Agregar" o Enter
+              </p>
+            </div>
+          )}
 
           {/* Kilometraje y Fecha */}
           <div className="modal-reg-mant-form-row">
@@ -279,7 +397,7 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
               <span className="modal-reg-mant-error">{errores.descripcion}</span>
             )}
           </div>
-        </form>
+        </div>
 
         {/* Footer */}
         <div className="modal-reg-mant-footer">

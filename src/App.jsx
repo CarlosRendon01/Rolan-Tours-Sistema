@@ -9,9 +9,9 @@ import PrincipalLogin from "./pages/Login/PrincipalLogin.jsx";
 import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrincipal.jsx";
 import OperadorPrincipal from "./pages/Operaciones/Vehiculos/operadorprincipal.jsx";
 import GuiasPrincipal from "./pages/Operaciones/Guias/GuiasPrincipal.jsx";
-import PrincipalOrden from "./pages/Documentos/OrdenServicio/PrincipalOrden.jsx";
-import PrincipalContrato from "./pages/Documentos/Contratos/PrincipalContrato.jsx";
-import ReservasPrincipal from "./pages/Documentos/Reservas/ReservasPrincipal.jsx";
+// import PrincipalOrden from "./pages/Documentos/OrdenServicio/PrincipalOrden.jsx";
+//import PrincipalContrato from "./pages/Documentos/Contratos/PrincipalContrato.jsx";
+//import ReservasPrincipal from "./pages/Documentos/Reservas/ReservasPrincipal.jsx";
 import ProveedoresPrincipal from "./pages/Operaciones/Proveedores/ProveedoresPrincipal.jsx";
 import CoordinadoresPrincipal from "./pages/Operaciones/Coordinadores/CoordinadoresPrincipal.jsx";
 import TransportePrincipal from "./pages/Servicios/Transporte/TransportePrincipal.jsx";
@@ -58,19 +58,29 @@ function App() {
             <Route path="/cotizaciones" element={<PrincipalCotizacion />} />
             <Route path="/pagos" element={<PrincipalPago />} />
 
-            {/* Rutas de Documentos */}
+            {/* Rutas de Documentos 
             <Route
               path="/contratos"
               element={<PrincipalContrato titulo="Contratos" />}
             />
+
+            */}
+
+
+            {/*
             <Route
               path="/orden-servicio"
               element={<PrincipalOrden titulo="Órdenes de Servicio" />}
             />
+            */}
+
+            {/*
+
             <Route
               path="/reservas"
               element={<ReservasPrincipal titulo="Reservas" />}
             />
+          */}
 
             {/* Rutas de Operaciones */}
             <Route path="/operadores" element={<OperadoresPrincipal />} />
