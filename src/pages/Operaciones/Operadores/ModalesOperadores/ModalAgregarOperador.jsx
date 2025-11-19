@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { X, Save, User, FileText, Image, Phone, Mail, Calendar } from 'lucide-react';
+import { X, Save, User, FileText, Image, Phone, Mail, Calendar, CreditCard } from 'lucide-react';
 import Swal from 'sweetalert2';
 import './ModalAgregarOperador.css';
+import CredencialOperador from '../Credenciales/CredencialOperador';
 
 const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
@@ -34,6 +35,20 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
+
+  // Función para obtener URL segura de la foto para vista previa
+  const obtenerFotoUrl = () => {
+    if (!formData.foto) return null;
+    if (formData.foto instanceof File) {
+      try {
+        return URL.createObjectURL(formData.foto);
+      } catch (error) {
+        console.error('Error al crear URL de foto:', error);
+        return null;
+      }
+    }
+    return null;
+  };
 
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
@@ -589,13 +604,39 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
-        <form onSubmit={handleSubmit} className="modal-agregar-form">
-          {seccionActiva === 'personales' && renderSeccionPersonales()}
-          {seccionActiva === 'contacto' && renderSeccionContacto()}
-          {seccionActiva === 'licencia' && renderSeccionLicencia()}
-          {seccionActiva === 'documentos' && renderSeccionDocumentos()}
-        </form>
+        {/* Contenedor con dos columnas: Formulario + Vista Previa */}
+        <div className="modal-agregar-contenedor-principal">
+          {/* Columna Izquierda - Formulario */}
+          <div className="modal-agregar-columna-formulario">
+            <form onSubmit={handleSubmit} className="modal-agregar-form">
+              {seccionActiva === 'personales' && renderSeccionPersonales()}
+              {seccionActiva === 'contacto' && renderSeccionContacto()}
+              {seccionActiva === 'licencia' && renderSeccionLicencia()}
+              {seccionActiva === 'documentos' && renderSeccionDocumentos()}
+            </form>
+          </div>
+
+          {/* Columna Derecha - Vista Previa de Credencial */}
+          <div className="modal-agregar-columna-preview">
+            <div className="modal-agregar-preview-header">
+              <CreditCard size={20} />
+              <h3>Vista Previa de Credencial</h3>
+            </div>
+            <div className="modal-agregar-preview-content">
+              <CredencialOperador 
+                operador={{
+                  ...formData,
+                  cargo: 'Conductor', // Valor por defecto
+                  foto: obtenerFotoUrl()
+                }} 
+              />
+            </div>
+            <div className="modal-agregar-preview-info">
+              <FileText size={16} />
+              <p>Esta es una vista previa en tiempo real de cómo se verá la credencial del operador.</p>
+            </div>
+          </div>
+        </div>
 
         {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="modal-agregar-footer">
