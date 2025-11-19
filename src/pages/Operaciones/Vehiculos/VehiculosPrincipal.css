@@ -1,0 +1,21 @@
+/* ========================================
+   VEHICULOSPRINCIPAL.CSS - SIMPLIFICADO
+   Solo estilos de layout principal
+   ======================================== */
+
+/* El componente principal ya no necesita muchos estilos 
+   porque todo está integrado en TablaVehiculos */
+
+/* Si PrincipalComponente no tiene padding, puedes agregar aquí */
+.vehiculos-principal-wrapper {
+  padding: 1rem;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+/* Responsive para el wrapper si lo necesitas */
+@media (max-width: 768px) {
+  .vehiculos-principal-wrapper {
+    padding: 0.5rem;
+  }
+}

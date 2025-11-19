@@ -1,0 +1,12 @@
+.proveedores-principal {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 0;
+  margin: 0;
+}
+
+/* Estilos globales del contenedor */
+.proveedores-principal * {
+  box-sizing: border-box;
+}

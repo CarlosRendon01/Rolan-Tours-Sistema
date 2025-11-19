@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { 
+import {
   Calendar,        // Icono de calendario
   ChevronLeft,     // Flecha izquierda  
   ChevronRight,    // Flecha derecha
@@ -144,7 +144,7 @@ const CalendarioViajes = () => {
     const nuevaFecha = new Date(fechaActual);
     nuevaFecha.setMonth(fechaActual.getMonth() + direccion);
     setFechaActual(nuevaFecha);
-    
+
     // Simular carga de nuevos datos
     setTimeout(() => {
       setCargando(false);
@@ -277,8 +277,8 @@ const CalendarioViajes = () => {
     if (!mostrarModal || !eventoSeleccionado) return null;
 
     return createPortal(
-      <div 
-        className="calendario-superposicion-modal" 
+      <div
+        className="calendario-superposicion-modal"
         onClick={cerrarModal}
         style={{
           position: 'fixed',
@@ -295,8 +295,8 @@ const CalendarioViajes = () => {
           padding: '20px'
         }}
       >
-        <div 
-          className="calendario-contenido-modal" 
+        <div
+          className="calendario-contenido-modal"
           onClick={(e) => e.stopPropagation()}
           style={{
             background: 'white',
@@ -313,8 +313,8 @@ const CalendarioViajes = () => {
           <div className={`calendario-encabezado-modal ${obtenerColorTipo(eventoSeleccionado.tipo)}`}>
             <div className="calendario-seccion-titulo-modal">
               <h3 className="calendario-titulo-modal">{eventoSeleccionado.titulo}</h3>
-              <button 
-                onClick={cerrarModal} 
+              <button
+                onClick={cerrarModal}
                 className="calendario-btn-cerrar-modal"
                 aria-label="Cerrar modal"
               >
@@ -323,7 +323,7 @@ const CalendarioViajes = () => {
             </div>
             <p className="calendario-subtitulo-modal">Detalles del viaje</p>
           </div>
-          
+
           <div className="calendario-cuerpo-modal">
             <div className="calendario-elemento-detalle">
               <span className="calendario-etiqueta-detalle">Estado:</span>
@@ -331,37 +331,37 @@ const CalendarioViajes = () => {
                 {obtenerTextoEstado(eventoSeleccionado.estado)}
               </span>
             </div>
-            
+
             <div className="calendario-elemento-detalle">
               <Clock size={14} className="calendario-icono-detalle" />
               <span className="calendario-etiqueta-detalle">Horario:</span>
               <span className="calendario-valor-detalle">{eventoSeleccionado.hora_inicio} - {eventoSeleccionado.hora_fin}</span>
             </div>
-            
+
             <div className="calendario-elemento-detalle">
               <Users size={14} className="calendario-icono-detalle" />
               <span className="calendario-etiqueta-detalle">Clientes:</span>
               <span className="calendario-valor-detalle">{eventoSeleccionado.clientes} personas</span>
             </div>
-            
+
             <div className="calendario-elemento-detalle">
               <MapPin size={14} className="calendario-icono-detalle" />
               <span className="calendario-etiqueta-detalle">Guía:</span>
               <span className="calendario-valor-detalle">{eventoSeleccionado.guia}</span>
             </div>
-            
+
             {eventoSeleccionado.descripcion && (
               <div className="calendario-elemento-detalle">
                 <span className="calendario-etiqueta-detalle">Descripción:</span>
                 <span className="calendario-valor-detalle">{eventoSeleccionado.descripcion}</span>
               </div>
             )}
-            
+
             <div className="calendario-info-vehiculo">
               <div className="calendario-etiqueta-vehiculo">Vehículo asignado:</div>
               <div className="calendario-detalle-vehiculo">{eventoSeleccionado.vehiculo}</div>
             </div>
-            
+
             <div className="calendario-acciones-modal">
               <button className="calendario-btn-ver-mas" onClick={manejarVerMas}>
                 <Eye size={14} />
@@ -394,23 +394,23 @@ const CalendarioViajes = () => {
                 <p className="calendario-subtitulo">Roland Tours - Gestión de itinerarios</p>
               </div>
             </div>
-            
+
             <div className="calendario-navegacion-mes">
-              <button 
-                onClick={() => navegarMes(-1)} 
+              <button
+                onClick={() => navegarMes(-1)}
                 className="calendario-btn-navegacion"
                 aria-label="Mes anterior"
                 disabled={cargando}
               >
                 <ChevronLeft size={18} />
               </button>
-              
+
               <h3 className="calendario-mes-actual">
                 {meses[fechaActual.getMonth()]} {fechaActual.getFullYear()}
               </h3>
-              
-              <button 
-                onClick={() => navegarMes(1)} 
+
+              <button
+                onClick={() => navegarMes(1)}
                 className="calendario-btn-navegacion"
                 aria-label="Mes siguiente"
                 disabled={cargando}
@@ -434,7 +434,7 @@ const CalendarioViajes = () => {
               <span>Traslados</span>
             </div>
           </div>
-          
+
           <div className="calendario-total-viajes">
             Total de viajes del mes: <span className="calendario-numero-total">{eventos.length}</span>
           </div>
@@ -462,14 +462,14 @@ const CalendarioViajes = () => {
               {eventos.filter(e => e.tipo === 'tour' && e.estado === 'confirmado').length}
             </div>
           </div>
-          
+
           <div className="calendario-tarjeta-estadistica calendario-estadistica-traslados">
             <div className="calendario-etiqueta-estadistica">Traslados</div>
             <div className="calendario-valor-estadistica">
               {eventos.filter(e => e.tipo === 'traslado').length}
             </div>
           </div>
-          
+
           <div className="calendario-tarjeta-estadistica calendario-estadistica-clientes">
             <div className="calendario-etiqueta-estadistica">Total Clientes</div>
             <div className="calendario-valor-estadistica">
@@ -479,7 +479,7 @@ const CalendarioViajes = () => {
         </div>
       </div>
 
-     
+
       {/* Modal renderizado con createPortal */}
       {renderModal()}
     </>
