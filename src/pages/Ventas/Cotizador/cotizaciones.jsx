@@ -22,22 +22,22 @@ const Cotizacion = () => {
   const cargarCotizaciones = async () => {
     try {
       setCargando(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
 
       if (!token) {
-        console.error('No hay token disponible');
+        console.error("No hay token disponible");
         setCargando(false);
         return;
       }
 
       const response = await axios.get(API_URL, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
       });
 
-      console.log('Cotizaciones cargadas:', response.data);
+      console.log("Cotizaciones cargadas:", response.data);
 
       // 🔹 Normalizar los extras antes de guardar en el estado
       const cotizacionesProcesadas = response.data.map((cotizacion) => {
@@ -52,7 +52,11 @@ const Cotizacion = () => {
 
             extras = parsed.extras_seleccionados || [];
           } catch (e) {
-            console.error("Error al parsear extras en cotización:", cotizacion.id, e);
+            console.error(
+              "Error al parsear extras en cotización:",
+              cotizacion.id,
+              e
+            );
           }
         }
 
@@ -64,13 +68,16 @@ const Cotizacion = () => {
 
       setCotizaciones(cotizacionesProcesadas);
     } catch (error) {
-      console.error('Error al cargar cotizaciones:', error);
+      console.error("Error al cargar cotizaciones:", error);
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
       } else {
-        alert('Error al cargar cotizaciones: ' + (error.response?.data?.error || error.message));
+        alert(
+          "Error al cargar cotizaciones: " +
+            (error.response?.data?.error || error.message)
+        );
       }
     } finally {
       setCargando(false);
@@ -80,52 +87,49 @@ const Cotizacion = () => {
   const handleGuardarCotizacion = useCallback(
     async (nuevaCotizacion, esEdicion = false) => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
 
         if (!token) {
-          alert('No hay sesión activa');
+          alert("No hay sesión activa");
           return;
         }
 
         if (esEdicion) {
           // ACTUALIZAR
-          await axios.put(
-            `${API_URL}/${nuevaCotizacion.id}`,
-            nuevaCotizacion,
-            {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
-              }
-            }
-          );
+          await axios.put(`${API_URL}/${nuevaCotizacion.id}`, nuevaCotizacion, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
         } else {
           // CREAR
-          await axios.post(
-            API_URL,
-            nuevaCotizacion,
-            {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
-              }
-            }
-          );
+          await axios.post(API_URL, nuevaCotizacion, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
         }
 
         // Recargar cotizaciones después de guardar
         await cargarCotizaciones();
         setCotizacionEditar(null);
 
-        console.log(esEdicion ? "Cotización actualizada" : "Nueva cotización agregada");
+        console.log(
+          esEdicion ? "Cotización actualizada" : "Nueva cotización agregada"
+        );
       } catch (error) {
         console.error("Error al guardar cotización:", error);
         if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/login";
         } else {
-          alert('Error al guardar la cotización: ' + (error.response?.data?.error || error.message));
+          alert(
+            "Error al guardar la cotización: " +
+              (error.response?.data?.error || error.message)
+          );
         }
         throw error;
       }
@@ -145,22 +149,19 @@ const Cotizacion = () => {
   const handleEliminarCotizacion = useCallback(
     async (id) => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
 
         if (!token) {
-          alert('No hay sesión activa');
+          alert("No hay sesión activa");
           return;
         }
 
-        await axios.delete(
-          `${API_URL}/${id}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Accept': 'application/json'
-            }
-          }
-        );
+        await axios.delete(`${API_URL}/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
 
         // Recargar cotizaciones después de eliminar
         await cargarCotizaciones();
@@ -168,11 +169,14 @@ const Cotizacion = () => {
       } catch (error) {
         console.error("Error al eliminar cotización:", error);
         if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/login";
         } else {
-          alert('Error al eliminar la cotización: ' + (error.response?.data?.error || error.message));
+          alert(
+            "Error al eliminar la cotización: " +
+              (error.response?.data?.error || error.message)
+          );
         }
         throw error;
       }

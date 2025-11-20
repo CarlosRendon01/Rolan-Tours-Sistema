@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./nuevaCotizacion.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import axios from 'axios';
+import axios from "axios";
 
 const NuevaCotizacion = ({
   onGuardarCotizacion,
@@ -44,6 +44,7 @@ const NuevaCotizacion = ({
     hospedaje: "",
     extras: [],
     total: "",
+    totalLetra: "",
     lista: [],
   });
 
@@ -82,26 +83,26 @@ const NuevaCotizacion = ({
   useEffect(() => {
     const fetchExtras = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://127.0.0.1:8000/api/extras', {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://127.0.0.1:8000/api/extras", {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
         });
 
         const data = response.data;
 
         // Agrupar por tipo
-        const transporte = data.filter(e => e.tipo === 'transporte');
-        const restaurante = data.filter(e => e.tipo === 'restaurante');
-        const tour = data.filter(e => e.tipo === 'tour');
-        const hospedaje = data.filter(e => e.tipo === 'hospedaje');
+        const transporte = data.filter((e) => e.tipo === "transporte");
+        const restaurante = data.filter((e) => e.tipo === "restaurante");
+        const tour = data.filter((e) => e.tipo === "tour");
+        const hospedaje = data.filter((e) => e.tipo === "hospedaje");
 
         setOpcionesExtras({ transporte, restaurante, tour, hospedaje });
-        console.log('Extras cargados:', data);
+        console.log("Extras cargados:", data);
       } catch (error) {
-        console.error('Error al cargar extras:', error);
+        console.error("Error al cargar extras:", error);
       }
     };
 
@@ -228,7 +229,6 @@ const NuevaCotizacion = ({
           { campo: "nombre", nombre: "Nombre", esCliente: true },
           { campo: "email", nombre: "Email", esCliente: true },
           { campo: "telefono", nombre: "Teléfono", esCliente: true },
-
         ],
         3: [
           { campo: "num_pasajeros", nombre: "N° pasajeros" },
@@ -345,6 +345,7 @@ const NuevaCotizacion = ({
       hospedaje: "",
       extras: [],
       total: "",
+      totalLetra: "",
       lista: [],
     });
     setDatosCliente({
@@ -376,9 +377,7 @@ const NuevaCotizacion = ({
         origen: cotizacionEditar.origen || "Oaxaca de Juarez, Oaxaca",
         punto_intermedio: cotizacionEditar.punto_intermedio || "",
         destino: cotizacionEditar.destino || "",
-        fecha:
-          cotizacionEditar.fecha ||
-          new Date().toISOString().split("T")[0],
+        fecha: cotizacionEditar.fecha || new Date().toISOString().split("T")[0],
         tipo_cliente: cotizacionEditar.tipo_cliente || "solo_una_vez",
         descripcion: cotizacionEditar.descripcion || "",
         transporte: cotizacionEditar.transporte || "",
@@ -387,6 +386,7 @@ const NuevaCotizacion = ({
         hospedaje: cotizacionEditar.hospedaje || "",
         extras: cotizacionEditar.extras || [],
         total: cotizacionEditar.total || "",
+        totalLetra: cotizacionEditar.totalLetra || "",
         lista: cotizacionEditar.lista || [],
       });
 
@@ -429,7 +429,6 @@ const NuevaCotizacion = ({
     limpiarTodosErrores();
 
     setFormData({
-
       folio: generarFolioAutomatico(),
       fecha_salida: "",
       fecha_regreso: "",
@@ -456,6 +455,7 @@ const NuevaCotizacion = ({
       hospedaje: "",
       extras: [],
       total: "",
+      totalLetra: "",
       lista: [],
     });
     setDatosCliente({
@@ -529,7 +529,9 @@ const NuevaCotizacion = ({
     const { name, value } = e.target;
     if (!value) return;
 
-    const selected = opcionesExtras[name].find((extra) => extra.nombre === value);
+    const selected = opcionesExtras[name].find(
+      (extra) => extra.nombre === value
+    );
     if (!selected) return;
 
     setFormData((prev) => {
@@ -546,7 +548,10 @@ const NuevaCotizacion = ({
       ];
 
       // Recalcular total
-      const totalExtras = nuevosExtras.reduce((acc, curr) => acc + curr.costo, 0);
+      const totalExtras = nuevosExtras.reduce(
+        (acc, curr) => acc + curr.costo,
+        0
+      );
       return {
         ...prev,
         extras: nuevosExtras,
@@ -558,7 +563,10 @@ const NuevaCotizacion = ({
   const handleEliminarExtra = (index) => {
     setFormData((prev) => {
       const nuevosExtras = prev.extras.filter((_, i) => i !== index);
-      const totalExtras = nuevosExtras.reduce((acc, curr) => acc + curr.costo, 0);
+      const totalExtras = nuevosExtras.reduce(
+        (acc, curr) => acc + curr.costo,
+        0
+      );
       return {
         ...prev,
         extras: nuevosExtras,
@@ -641,6 +649,7 @@ const NuevaCotizacion = ({
         hospedaje: "",
         extras: [],
         total: "",
+        totalLetra: "",
         lista: [],
       });
 
@@ -654,7 +663,6 @@ const NuevaCotizacion = ({
       setPasoActual(1);
       setErroresCampos({});
       setModoEdicion(false);
-
     } catch (error) {
       console.error("Error al guardar:", error);
       // El error ya se maneja en Cotizacion.jsx, no mostrar alert duplicado
@@ -695,40 +703,45 @@ const NuevaCotizacion = ({
             <div className="cotizacion-tabs">
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 1 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 1 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(1)}
               >
                 Información General
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 2 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 2 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(2)}
               >
                 Datos del Cliente
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 3 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 3 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(3)}
               >
                 Datos del Servicio
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 4 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 4 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(4)}
               >
                 Detalles del Viaje
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 5 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 5 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(5)}
               >
                 Extras y Total
@@ -863,7 +876,6 @@ const NuevaCotizacion = ({
                       />
                       <MensajeError nombreCampo="telefono" />
                     </label>
-
                   </div>
 
                   <div className="botones-navegacion">
@@ -904,7 +916,9 @@ const NuevaCotizacion = ({
                         name="num_pasajeros"
                         value={formData.num_pasajeros}
                         onChange={handleInputChange}
-                        className={erroresCampos.num_pasajeros ? "campo-error" : ""}
+                        className={
+                          erroresCampos.num_pasajeros ? "campo-error" : ""
+                        }
                         min="1"
                       />
                       <MensajeError nombreCampo="num_pasajeros" />
@@ -921,7 +935,6 @@ const NuevaCotizacion = ({
                         onChange={handleInputChange}
                       />
                     </label>
-
                   </div>
 
                   <label>
@@ -959,16 +972,12 @@ const NuevaCotizacion = ({
                       name="destino"
                       value={formData.destino}
                       onChange={handleInputChange}
-                      className={
-                        erroresCampos.destino ? "campo-error" : ""
-                      }
+                      className={erroresCampos.destino ? "campo-error" : ""}
                       placeholder="Busca un lugar..."
                       autoComplete="off"
                     />
                     <MensajeError nombreCampo="destino" />
                   </label>
-
-
 
                   <div className="botones-navegacion">
                     <button
@@ -1265,6 +1274,15 @@ const NuevaCotizacion = ({
                         step="0.01"
                         min="0"
                         placeholder="0.00"
+                      />
+                    </label>
+                    <label>
+                      Total en letra: (Opcional)
+                      <textarea
+                        name="totalLetra"
+                        value={formData.totalLetra}
+                        onChange={handleInputChange}
+                        placeholder=""
                       />
                     </label>
                   </div>

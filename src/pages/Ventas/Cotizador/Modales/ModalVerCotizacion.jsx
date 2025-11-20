@@ -12,6 +12,7 @@ import {
   MapPin,
   PackagePlus,
   UserStar,
+  DollarSign,
   X,
   Hash,
 } from "lucide-react";
@@ -80,6 +81,16 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
     }
   }, [estaAbierto, restaurarScroll]);
 
+  const CampoVisualizacion = ({ icono: Icono, etiqueta, valor }) => (
+    <div className="elemento-informacion-ver">
+      <div className="etiqueta-informacion-ver">
+        <Icono size={18} />
+        {etiqueta}
+      </div>
+      <div className="valor-informacion-ver">{valor || "No disponible"}</div>
+    </div>
+  );
+
   if (!estaAbierto || !cotizacion) {
     return null;
   }
@@ -88,9 +99,10 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
   let cotizacionesPorVehiculo = [];
   if (cotizacion.lista) {
     try {
-      const parsed = typeof cotizacion.lista === "string"
-        ? JSON.parse(cotizacion.lista)
-        : cotizacion.lista;
+      const parsed =
+        typeof cotizacion.lista === "string"
+          ? JSON.parse(cotizacion.lista)
+          : cotizacion.lista;
       cotizacionesPorVehiculo = parsed.cotizaciones_todos_vehiculos || [];
     } catch (error) {
       console.error("Error al parsear cotizaciones por vehículo:", error);
@@ -99,232 +111,156 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
 
   return (
     <div className="superposicion-modal-ver" onClick={manejarCierre}>
-      <div className="contenido-modal-ver" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="contenido-modal-ver modal-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="encabezado-modal-ver">
+          <h2 className="titulo-modal-ver">
+            <FileText size={24} />
+            Ver Cotización
+          </h2>
           <button
             className="boton-cerrar-modal-ver"
             onClick={manejarCierre}
             aria-label="Cerrar modal"
             type="button"
           >
-            <X size={20} />
+            <X size={24} />
           </button>
-          <h2 className="titulo-modal-ver">
-            <FileText size={24} />
-            Información de Cotización
-          </h2>
         </div>
 
-        <div className="modal-tabs" style={{
-          display: 'flex',
-          borderBottom: '2px solid #dee2e6',
-          marginBottom: '1.5rem',
-          gap: '0.5rem'
-        }}>
+        <div className="modal-tabs">
           <button
-            className={`tab-button ${pestanaActiva === "informacion" ? "active" : ""}`}
+            className={`tab-button ${
+              pestanaActiva === "informacion" ? "active" : ""
+            }`}
             onClick={() => setPestanaActiva("informacion")}
-            style={{
-              padding: '0.75rem 1.5rem',
-              border: 'none',
-              background: pestanaActiva === "informacion" ? '#3498db' : 'transparent',
-              color: pestanaActiva === "informacion" ? 'white' : '#7f8c8d',
-              cursor: 'pointer',
-              borderRadius: '8px 8px 0 0',
-              fontWeight: pestanaActiva === "informacion" ? '600' : '400',
-              transition: 'all 0.3s ease'
-            }}
+            type="button"
           >
+            <FileText size={18} />
             Información General
           </button>
           <button
-            className={`tab-button ${pestanaActiva === "cotizaciones" ? "active" : ""}`}
+            className={`tab-button ${
+              pestanaActiva === "cotizaciones" ? "active" : ""
+            }`}
             onClick={() => setPestanaActiva("cotizaciones")}
-            style={{
-              padding: '0.75rem 1.5rem',
-              border: 'none',
-              background: pestanaActiva === "cotizaciones" ? '#3498db' : 'transparent',
-              color: pestanaActiva === "cotizaciones" ? 'white' : '#7f8c8d',
-              cursor: 'pointer',
-              borderRadius: '8px 8px 0 0',
-              fontWeight: pestanaActiva === "cotizaciones" ? '600' : '400',
-              transition: 'all 0.3s ease'
-            }}
+            type="button"
           >
+            <Car size={18} />
             Cotizaciones por Vehículo
           </button>
         </div>
 
         <div className="cuerpo-modal-ver">
           {pestanaActiva === "informacion" && (
-            <>
-              <div className="lista-informacion-cliente-ver">
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <Hash size={16} />
-                    ID de la Cotización
-                  </div>
-                  <div className="valor-informacion-ver">
-                    #{cotizacion.id || "No disponible"}
-                  </div>
-                </div>
+            <div className="lista-informacion-cliente-ver">
+              <CampoVisualizacion
+                icono={Hash}
+                etiqueta="ID de la Cotización"
+                valor={`#${cotizacion.id || "No disponible"}`}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <FileText size={16} />
-                    Folio
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.folio || "No disponible"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={FileText}
+                etiqueta="Folio"
+                valor={cotizacion.folio}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <User size={16} />
-                    Nombre Cliente
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.cliente?.nombre || "No disponible"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={User}
+                etiqueta="Nombre Cliente"
+                valor={cotizacion.cliente?.nombre}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <UserStar size={16} />
-                    Tipo de cliente
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.tipo_cliente || "No disponible"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={UserStar}
+                etiqueta="Tipo de Cliente"
+                valor={cotizacion.tipo_cliente}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <Mail size={16} />
-                    Correo Electrónico
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.cliente?.email || "No disponible"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={Mail}
+                etiqueta="Correo Electrónico"
+                valor={cotizacion.cliente?.email}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <Phone size={16} />
-                    Teléfono
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {formatearTelefono(cotizacion.cliente?.telefono)}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={Phone}
+                etiqueta="Teléfono"
+                valor={formatearTelefono(cotizacion.cliente?.telefono)}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <Calendar size={16} />
-                    Fecha de Salida
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {formatearFecha(cotizacion.fecha_salida)}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={Calendar}
+                etiqueta="Fecha de Salida"
+                valor={formatearFecha(cotizacion.fecha_salida)}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <Calendar size={16} />
-                    Fecha de Regreso
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {formatearFecha(cotizacion.fecha_regreso)}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={Calendar}
+                etiqueta="Fecha de Regreso"
+                valor={formatearFecha(cotizacion.fecha_regreso)}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <CalendarClock size={16} />
-                    Hora salida
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.hora_salida || "No disponible"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={CalendarClock}
+                etiqueta="Hora Salida"
+                valor={cotizacion.hora_salida}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <CalendarClock size={16} />
-                    Hora regreso
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.hora_regreso || "No disponible"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={CalendarClock}
+                etiqueta="Hora Regreso"
+                valor={cotizacion.hora_regreso}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <Route size={16} />
-                    Total Kilometros
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.total_kilometros || "No disponible"}
-                  </div>
-                </div>
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <Car size={16} />
-                    Vehiculo
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.vehiculo?.nombre || "No disponible"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={Route}
+                etiqueta="Total Kilómetros"
+                valor={cotizacion.total_kilometros}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <MapPin size={16} />
-                    Destino
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.destinoServicio ||
-                      cotizacion.destino ||
-                      "No especificado"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={Car}
+                etiqueta="Vehículo"
+                valor={cotizacion.vehiculo?.nombre}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <FileText size={16} />
-                    Número de Lead
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.lead_id || "No asignado"}
-                  </div>
-                </div>
+              <CampoVisualizacion
+                icono={MapPin}
+                etiqueta="Destino"
+                valor={cotizacion.destinoServicio || cotizacion.destino}
+              />
 
-                <div className="elemento-informacion-ver">
-                  <div className="etiqueta-informacion-ver">
-                    <Globe size={16} />
-                    Canal de Contacto
-                  </div>
-                  <div className="valor-informacion-ver">
-                    {cotizacion.cliente?.canal_contacto || "No especificado"}
-                  </div>
-                </div>
-              </div>
-              <div className="elemento-informacion-ver">
+              <CampoVisualizacion
+                icono={FileText}
+                etiqueta="Número de Lead"
+                valor={cotizacion.lead_id || "No asignado"}
+              />
+
+              <CampoVisualizacion
+                icono={Globe}
+                etiqueta="Canal de Contacto"
+                valor={cotizacion.cliente?.canal_contacto || "No especificado"}
+              />
+
+              <div className="elemento-informacion-ver form-group-full">
                 <div className="etiqueta-informacion-ver">
-                  <PackagePlus size={16} />
+                  <PackagePlus size={18} />
                   Extras
                 </div>
                 <div className="valor-informacion-ver">
                   {(() => {
                     let extrasData = [];
 
-                    // Si extra viene como JSON string, intenta parsearlo
                     if (cotizacion.extra) {
                       try {
-                        const parsed = typeof cotizacion.extra === "string"
-                          ? JSON.parse(cotizacion.extra)
-                          : cotizacion.extra;
+                        const parsed =
+                          typeof cotizacion.extra === "string"
+                            ? JSON.parse(cotizacion.extra)
+                            : cotizacion.extra;
 
                         extrasData = parsed.extras_seleccionados || [];
                       } catch (error) {
@@ -340,7 +276,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                       <ul className="lista-extras-ver">
                         {extrasData.map((extra, i) => (
                           <li key={i}>
-                            <strong>{extra.tipo}</strong>: {extra.valor} — ${extra.costo}
+                            <strong>{extra.tipo}</strong>: {extra.valor} — $
+                            {extra.costo}
                           </li>
                         ))}
                       </ul>
@@ -348,96 +285,129 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                   })()}
                 </div>
               </div>
-            </>
+
+              <CampoVisualizacion
+                icono={DollarSign}
+                etiqueta="Total"
+                valor={cotizacion.total || "No especificado"}
+              />
+            </div>
           )}
 
           {pestanaActiva === "cotizaciones" && (
             <div className="contenido-cotizaciones">
               {cotizacionesPorVehiculo.length > 0 ? (
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                  gap: '1.5rem'
-                }}>
+                <div className="grid-cotizaciones">
                   {cotizacionesPorVehiculo.map((cotizacion, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        border: '2px solid #dee2e6',
-                        borderRadius: '12px',
-                        padding: '1.5rem',
-                        background: 'white',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                      }}
-                    >
-                      <h4 style={{
-                        marginBottom: '1rem',
-                        color: '#2c3e50',
-                        fontSize: '1.3rem',
-                        borderBottom: '2px solid #3498db',
-                        paddingBottom: '0.5rem'
-                      }}>
+                    <div key={index} className="tarjeta-vehiculo">
+                      <h4 className="titulo-vehiculo">
                         {cotizacion.vehiculo_nombre}
                       </h4>
 
-                      <div style={{ marginBottom: '0.5rem', color: '#7f8c8d' }}>
-                        Capacidad: {cotizacion.capacidad_pasajeros || 'N/A'} pasajeros
+                      <div className="capacidad-vehiculo">
+                        Capacidad: {cotizacion.capacidad_pasajeros || "N/A"}{" "}
+                        pasajeros
                       </div>
 
-                      <div style={{ marginTop: '1rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #ecf0f1' }}>
+                      <div className="contenedor-costos">
+                        <div className="fila-costo">
                           <span>Renta:</span>
-                          <span>${cotizacion.costos.renta_ajustada.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                          <span>
+                            $
+                            {cotizacion.costos.renta_ajustada.toLocaleString(
+                              "es-MX",
+                              { minimumFractionDigits: 2 }
+                            )}
+                          </span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #ecf0f1' }}>
+                        <div className="fila-costo">
                           <span>Combustible:</span>
-                          <span>${cotizacion.costos.combustible.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                          <span>
+                            $
+                            {cotizacion.costos.combustible.toLocaleString(
+                              "es-MX",
+                              { minimumFractionDigits: 2 }
+                            )}
+                          </span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #ecf0f1' }}>
+                        <div className="fila-costo">
                           <span>Desgaste:</span>
-                          <span>${cotizacion.costos.desgaste.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                          <span>
+                            $
+                            {cotizacion.costos.desgaste.toLocaleString(
+                              "es-MX",
+                              { minimumFractionDigits: 2 }
+                            )}
+                          </span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #ecf0f1' }}>
+                        <div className="fila-costo">
                           <span>Casetas:</span>
-                          <span>${cotizacion.costos.casetas.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                          <span>
+                            $
+                            {cotizacion.costos.casetas.toLocaleString("es-MX", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #ecf0f1' }}>
+                        <div className="fila-costo">
                           <span>Chofer:</span>
-                          <span>${cotizacion.costos.chofer.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                          <span>
+                            $
+                            {cotizacion.costos.chofer.toLocaleString("es-MX", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0', marginTop: '0.5rem', borderTop: '2px solid #3498db' }}>
-                          <span style={{ fontWeight: '600' }}>Subtotal:</span>
-                          <span style={{ fontWeight: '600' }}>${cotizacion.costos.subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                        <div className="fila-costo fila-subtotal">
+                          <span>Subtotal:</span>
+                          <span>
+                            $
+                            {cotizacion.costos.subtotal.toLocaleString(
+                              "es-MX",
+                              { minimumFractionDigits: 2 }
+                            )}
+                          </span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', color: '#e67e22' }}>
+                        <div className="fila-costo fila-iva">
                           <span>IVA (16%):</span>
-                          <span style={{ fontWeight: '600' }}>${cotizacion.costos.iva.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                          <span>
+                            $
+                            {cotizacion.costos.iva.toLocaleString("es-MX", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', marginTop: '0.5rem', background: '#3498db', color: 'white', borderRadius: '8px' }}>
-                          <span style={{ fontWeight: 'bold' }}>TOTAL:</span>
-                          <span style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>${cotizacion.costos.total_con_iva.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                        <div className="fila-costo fila-total">
+                          <span>TOTAL:</span>
+                          <span>
+                            $
+                            {cotizacion.costos.total_con_iva.toLocaleString(
+                              "es-MX",
+                              { minimumFractionDigits: 2 }
+                            )}
+                          </span>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p style={{ textAlign: 'center', color: '#7f8c8d', padding: '2rem' }}>
+                <p className="mensaje-sin-cotizaciones">
                   No hay cotizaciones disponibles
                 </p>
               )}
             </div>
           )}
+        </div>
 
-          <div className="contenedor-boton-inferior-ver">
-            <button
-              className="boton-cerrar-inferior-ver"
-              onClick={manejarCierre}
-              type="button"
-            >
-              Cerrar
-            </button>
-          </div>
+        <div className="contenedor-boton-inferior-ver">
+          <button
+            className="boton-cerrar-inferior-ver"
+            onClick={manejarCierre}
+            type="button"
+          >
+            Cerrar
+          </button>
         </div>
       </div>
     </div>
