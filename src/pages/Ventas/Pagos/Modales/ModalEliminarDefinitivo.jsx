@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import { X, XCircle, AlertTriangle, Trash2, Shield } from 'lucide-react';
 import './ModalEliminarDefinitivo.css';
 
@@ -48,12 +49,21 @@ const ModalEliminarDefinitivo = ({ estaAbierto, alCerrar, pago, alEliminar }) =>
     try {
       // Simular delay de operación
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Ejecutar la función de eliminación
-      if (alEliminar && typeof alEliminar === 'function') {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://127.0.0.1:8000/api/pagos/${pago.id}/force`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
+      if (alEliminar) {
         await alEliminar(pago);
       }
-      
+
       // Cerrar el modal
       setTimeout(() => {
         setCargando(false);
@@ -61,7 +71,7 @@ const ModalEliminarDefinitivo = ({ estaAbierto, alCerrar, pago, alEliminar }) =>
         setTextoConfirmacion('');
         alCerrar();
       }, 500);
-      
+
     } catch (error) {
       console.error('Error al eliminar pago:', error);
       setCargando(false);
@@ -103,7 +113,7 @@ const ModalEliminarDefinitivo = ({ estaAbierto, alCerrar, pago, alEliminar }) =>
               <div className="eliminar-alerta-texto">
                 <p className="eliminar-alerta-titulo">🚨 Eliminación Permanente</p>
                 <p className="eliminar-alerta-descripcion">
-                  Estás a punto de <strong>ELIMINAR DEFINITIVAMENTE</strong> este pago del sistema. 
+                  Estás a punto de <strong>ELIMINAR DEFINITIVAMENTE</strong> este pago del sistema.
                   Esta acción <strong>NO SE PUEDE DESHACER</strong>.
                 </p>
               </div>
@@ -121,15 +131,11 @@ const ModalEliminarDefinitivo = ({ estaAbierto, alCerrar, pago, alEliminar }) =>
                 </div>
                 <div className="eliminar-info-fila">
                   <span className="eliminar-info-label">Cliente:</span>
-                  <span className="eliminar-info-valor">{pago.cliente}</span>
+                  <span className="eliminar-info-valor">{pago.cliente?.nombre || 'Sin nombre'}</span>
                 </div>
                 <div className="eliminar-info-fila">
                   <span className="eliminar-info-label">Monto:</span>
-                  <span className="eliminar-info-valor eliminar-monto">{pago.monto}</span>
-                </div>
-                <div className="eliminar-info-fila">
-                  <span className="eliminar-info-label">Factura:</span>
-                  <span className="eliminar-info-valor">{pago.numeroFactura}</span>
+                  <span className="eliminar-info-valor eliminar-monto">{pago.planPago.montoTotal}</span>
                 </div>
                 <div className="eliminar-info-fila">
                   <span className="eliminar-info-label">Estado:</span>
@@ -211,9 +217,8 @@ const ModalEliminarDefinitivo = ({ estaAbierto, alCerrar, pago, alEliminar }) =>
 
           {/* Datos Destacados */}
           <div className="eliminar-datos-destacados">
-            <p className="eliminar-cliente-nombre">{pago.cliente}</p>
-            <p className="eliminar-monto-grande">{pago.monto}</p>
-            <p className="eliminar-factura-numero">Factura: {pago.numeroFactura}</p>
+            <p className="eliminar-cliente-nombre">{pago.cliente?.nombre || 'Sin nombre'}</p>
+            <p className="eliminar-monto-grande">{pago.planPago.montoTotal}</p>
           </div>
 
           {/* Input de Confirmación */}
