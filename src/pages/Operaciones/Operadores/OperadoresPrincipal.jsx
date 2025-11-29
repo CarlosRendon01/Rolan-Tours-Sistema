@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import TablaOperadores from './Componentes/TablaOperadores';
 import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
 import './OperadoresPrincipal.css';
@@ -9,98 +10,7 @@ import { modalEliminarOperador } from './ModalesOperadores/ModalEliminarOperador
 
 const OperadoresPrincipal = () => {
     // Estado para almacenar los operadores
-    const [operadores, setOperadores] = useState([
-        {
-            id: 1,
-            nombre: 'Juan',
-            apellidoPaterno: 'García',
-            apellidoMaterno: 'López',
-            edad: 35,
-            telefonoEmergencia: '5551234567',
-            telefonoPersonal: '5559876543',
-            telefonoFamiliar: '5556547890',
-            numeroLicencia: 'LIC-2024-001',
-            correoElectronico: 'juan.garcia@email.com',
-            fechaVigenciaLicencia: '2024-01-15',
-            fechaVencimientoLicencia: '2026-01-15',
-            fechaVencimientoExamen: '2025-06-20',
-            foto: null,
-            ine: null,
-            comentarios: 'Operador con experiencia de 10 años'
-        },
-        {
-            id: 2,
-            nombre: 'María',
-            apellidoPaterno: 'Hernández',
-            apellidoMaterno: 'Martínez',
-            edad: 28,
-            telefonoEmergencia: '5552345678',
-            telefonoPersonal: '5558765432',
-            telefonoFamiliar: '5557654321',
-            numeroLicencia: 'LIC-2024-002',
-            correoElectronico: 'maria.hernandez@email.com',
-            fechaVigenciaLicencia: '2024-03-10',
-            fechaVencimientoLicencia: '2025-11-10',
-            fechaVencimientoExamen: '2025-03-15',
-            foto: null,
-            ine: null,
-            comentarios: 'Excelente desempeño y puntualidad'
-        },
-        {
-            id: 3,
-            nombre: 'Carlos',
-            apellidoPaterno: 'Rodríguez',
-            apellidoMaterno: 'Sánchez',
-            edad: 42,
-            telefonoEmergencia: '5553456789',
-            telefonoPersonal: '5557654321',
-            telefonoFamiliar: '5558765432',
-            numeroLicencia: 'LIC-2024-003',
-            correoElectronico: 'carlos.rodriguez@email.com',
-            fechaVigenciaLicencia: '2023-06-20',
-            fechaVencimientoLicencia: '2025-06-20',
-            fechaVencimientoExamen: '2025-12-10',
-            foto: null,
-            ine: null,
-            comentarios: 'Especializado en rutas largas'
-        },
-        {
-            id: 4,
-            nombre: 'Ana',
-            apellidoPaterno: 'Pérez',
-            apellidoMaterno: 'González',
-            edad: 31,
-            telefonoEmergencia: '5554567890',
-            telefonoPersonal: '5556543210',
-            telefonoFamiliar: '5559876543',
-            numeroLicencia: 'LIC-2024-004',
-            correoElectronico: 'ana.perez@email.com',
-            fechaVigenciaLicencia: '2024-02-05',
-            fechaVencimientoLicencia: '2024-10-05',
-            fechaVencimientoExamen: '2025-02-05',
-            foto: null,
-            ine: null,
-            comentarios: 'Licencia por vencer pronto'
-        },
-        {
-            id: 5,
-            nombre: 'Luis',
-            apellidoPaterno: 'Ramírez',
-            apellidoMaterno: 'Torres',
-            edad: 39,
-            telefonoEmergencia: '5555678901',
-            telefonoPersonal: '5555432109',
-            telefonoFamiliar: '5558901234',
-            numeroLicencia: 'LIC-2024-005',
-            correoElectronico: 'luis.ramirez@email.com',
-            fechaVigenciaLicencia: '2024-04-18',
-            fechaVencimientoLicencia: '2026-04-18',
-            fechaVencimientoExamen: '2025-10-25',
-            foto: null,
-            ine: null,
-            comentarios: 'Conocimiento en mantenimiento básico'
-        }
-    ]);
+    const [operadores, setOperadores] = useState([]);
 
     // Estados para controlar los modales
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
@@ -108,6 +18,22 @@ const OperadoresPrincipal = () => {
     const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
     const [operadorSeleccionado, setOperadorSeleccionado] = useState(null);
+
+    const recargarOperadores = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get("http://127.0.0.1:8000/api/operadores", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                }
+            });
+            setOperadores(response.data);
+            console.log('✅ Operadores recargados');
+        } catch (error) {
+            console.error('❌ Error al recargar operadores:', error);
+        }
+    };
 
     // Funciones para manejar los modales
     const manejarVer = (operador) => {
@@ -123,15 +49,11 @@ const OperadoresPrincipal = () => {
     };
 
     const manejarEliminar = async (operador) => {
-        const confirmado = await modalEliminarOperador(operador, async () => {
-            eliminarOperador(operador.id); // ✅ Ahora sí pasamos el ID correcto
-        });
-
+        const confirmado = await modalEliminarOperador(operador, recargarOperadores);
         if (confirmado) {
             console.log('Operador eliminado:', operador);
         }
     };
-
 
     const manejarAgregar = () => {
         setModalAgregarAbierto(true);
@@ -148,27 +70,95 @@ const OperadoresPrincipal = () => {
     };
 
     // Función para agregar operador
-    const agregarOperador = (nuevoOperador) => {
-        const operadorConId = {
-            ...nuevoOperador,
-            id: operadores.length > 0 ? Math.max(...operadores.map(o => o.id)) + 1 : 1
-        };
-        setOperadores([...operadores, operadorConId]);
-        cerrarModales();
+    const agregarOperador = async (nuevoOperador) => {
+        try {
+            const token = localStorage.getItem("token");
+
+            // ✅ CORREGIDO: Preparar datos exactamente como el backend los espera
+            const operadorData = {
+                nombre: nuevoOperador.nombre,
+                apellido_paterno: nuevoOperador.apellidoPaterno,
+                apellido_materno: nuevoOperador.apellidoMaterno,
+                edad: parseInt(nuevoOperador.edad),
+                correo_electronico: nuevoOperador.correoElectronico,
+                telefono_personal: nuevoOperador.telefonoPersonal,
+                telefono_emergencia: nuevoOperador.telefonoEmergencia,
+                telefono_familiar: nuevoOperador.telefonoFamiliar || null,
+                numero_licencia: nuevoOperador.numeroLicencia,
+                fecha_vigencia_licencia: nuevoOperador.fechaVigenciaLicencia,
+                fecha_vencimiento_licencia: nuevoOperador.fechaVencimientoLicencia,
+                fecha_vencimiento_examen: nuevoOperador.fechaVencimientoExamen,
+                comentarios: nuevoOperador.comentarios || null,
+            };
+
+            console.log("📦 Datos a enviar al backend:", operadorData);
+
+            const response = await axios.post(
+                "http://127.0.0.1:8000/api/operadores",
+                operadorData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    }
+                }
+            );
+
+            console.log("✅ Operador creado:", response.data);
+            await recargarOperadores(); // Recargar la lista
+            return response.data; // ✅ Retornar los datos para que el modal sepa que terminó
+        } catch (error) {
+            console.error("❌ Error al crear operador:", error);
+            console.error("❌ Respuesta del servidor:", error.response?.data);
+            throw error; // ✅ Lanzar el error para que el modal lo maneje
+        }
     };
 
     // Función para actualizar operador
-    const actualizarOperador = (operadorActualizado) => {
-        setOperadores(operadores.map(op =>
-            op.id === operadorActualizado.id ? operadorActualizado : op
-        ));
-        cerrarModales();
-    };
+    const actualizarOperador = async (operadorActualizado) => {
+        try {
+            const token = localStorage.getItem("token");
 
-    // Función para eliminar operador
-    const eliminarOperador = (id) => {
-        setOperadores(operadores.filter(op => op.id !== id));
-        cerrarModales();
+            // ✅ CORREGIDO: Preparar datos exactamente como el backend los espera
+            const operadorData = {
+                nombre: operadorActualizado.nombre,
+                apellido_paterno: operadorActualizado.apellidoPaterno,
+                apellido_materno: operadorActualizado.apellidoMaterno,
+                edad: parseInt(operadorActualizado.edad),
+                correo_electronico: operadorActualizado.correoElectronico,
+                telefono_personal: operadorActualizado.telefonoPersonal,
+                telefono_emergencia: operadorActualizado.telefonoEmergencia,
+                telefono_familiar: operadorActualizado.telefonoFamiliar || null,
+                numero_licencia: operadorActualizado.numeroLicencia,
+                fecha_vigencia_licencia: operadorActualizado.fechaVigenciaLicencia,
+                fecha_vencimiento_licencia: operadorActualizado.fechaVencimientoLicencia,
+                fecha_vencimiento_examen: operadorActualizado.fechaVencimientoExamen,
+                comentarios: operadorActualizado.comentarios || null,
+            };
+
+            console.log("📦 Datos a actualizar:", operadorData);
+
+            const response = await axios.put(
+                `http://127.0.0.1:8000/api/operadores/${operadorActualizado.id}`,
+                operadorData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    }
+                }
+            );
+
+            console.log("✅ Operador actualizado:", response.data);
+            await recargarOperadores(); // Recargar la lista
+            return response.data; // ✅ Retornar los datos para que el modal sepa que terminó
+        } catch (error) {
+            console.error("❌ Error al actualizar operador:", error);
+            console.error("❌ Respuesta del servidor:", error.response?.data);
+            throw error; // ✅ Lanzar el error para que el modal lo maneje
+        }
     };
 
     return (
@@ -182,7 +172,6 @@ const OperadoresPrincipal = () => {
                     onEliminar={manejarEliminar}
                     onAgregar={manejarAgregar}
                 />
-
 
                 {/* Modal VER */}
                 {modalVerAbierto && operadorSeleccionado && (
@@ -200,8 +189,6 @@ const OperadoresPrincipal = () => {
                         onCerrar={cerrarModales}
                     />
                 )}
-
-
 
                 {/* Modal AGREGAR */}
                 {modalAgregarAbierto && (

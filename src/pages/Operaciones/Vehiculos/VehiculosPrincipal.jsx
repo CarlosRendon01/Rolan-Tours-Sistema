@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
 import TablaVehiculos from './Componentes/TablaVehiculos';
 import ModalVehiculo from './ModalesVehiculos/ModalVehiculo';
@@ -17,71 +18,25 @@ const VehiculosPrincipal = () => {
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
 
-  // Cargar datos de ejemplo al montar el componente
+  const recargarVehiculos = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://127.0.0.1:8000/api/vehiculos", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
+      setVehiculos(response.data);
+      console.log('✅ Vehículos cargados:', response.data);
+    } catch (error) {
+      console.error('❌ Error al cargar vehículos:', error);
+    }
+  };
+
+  // Cargar vehículos al montar el componente
   useEffect(() => {
-    const vehiculosEjemplo = [
-      {
-        id: 1,
-        nombre: 'Sprinter Mercedes-Benz',
-        rendimiento: 12.50,
-        precio_combustible: 24.50,
-        desgaste: 0.15,
-        costo_renta: 2500.00,
-        costo_chofer_dia: 800.00,
-        marca: 'Mercedes-Benz',
-        modelo: 'Sprinter 2024',
-        año: 2024,
-        color: 'Blanco',
-        numero_placa: 'ABC-123',
-        numero_pasajeros: 15,
-        vehiculos_disponibles: 3,
-        numero_serie: 'WDB9066661N123456',
-        nip: '1234',
-        numero_tag: 'TAG-001',
-        numero_combustible: 'COMB-001'
-      },
-      {
-        id: 2,
-        nombre: 'Hiace Toyota',
-        rendimiento: 10.80,
-        precio_combustible: 24.50,
-        desgaste: 0.12,
-        costo_renta: 2000.00,
-        costo_chofer_dia: 750.00,
-        marca: 'Toyota',
-        modelo: 'Hiace 2023',
-        año: 2023,
-        color: 'Gris',
-        numero_placa: 'XYZ-456',
-        numero_pasajeros: 12,
-        vehiculos_disponibles: 2,
-        numero_serie: 'JTFSX23P5E5123456',
-        nip: '5678',
-        numero_tag: 'TAG-002',
-        numero_combustible: 'COMB-002'
-      },
-      {
-        id: 3,
-        nombre: 'Urvan Nissan',
-        rendimiento: 9.50,
-        precio_combustible: 24.50,
-        desgaste: 0.10,
-        costo_renta: 1800.00,
-        costo_chofer_dia: 700.00,
-        marca: 'Nissan',
-        modelo: 'Urvan 2023',
-        año: 2023,
-        color: 'Negro',
-        numero_placa: 'DEF-789',
-        numero_pasajeros: 14,
-        vehiculos_disponibles: 4,
-        numero_serie: 'JN1TANS25U0123456',
-        nip: '9012',
-        numero_tag: 'TAG-003',
-        numero_combustible: 'COMB-003'
-      }
-    ];
-    setVehiculos(vehiculosEjemplo);
+    recargarVehiculos();
   }, []);
 
   const handleAgregarVehiculo = () => {
@@ -99,71 +54,107 @@ const VehiculosPrincipal = () => {
   };
 
   const handleEliminarVehiculo = async (vehiculo) => {
-    const confirmado = await modalEliminarVehiculo(vehiculo, async (vehiculoAEliminar) => {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setVehiculos(prev => prev.filter(v => v.id !== vehiculoAEliminar.id));
-      console.log('✅ Vehículo eliminado exitosamente:', vehiculoAEliminar.nombre);
-    });
+    const confirmado = await modalEliminarVehiculo(vehiculo, await recargarVehiculos)
+    if (confirmado) {
+      console.log('Vehículo eliminado:', vehiculo);
+    }
   };
 
   // ✅ AGREGAR - Esta función NO cierra el modal, lo hace el ModalVehiculo después de la alerta
   const handleGuardarNuevoVehiculo = async (vehiculo) => {
-    const nuevoId = vehiculos.length > 0 ? Math.max(...vehiculos.map(v => v.id)) + 1 : 1;
+    try {
+      const token = localStorage.getItem("token");
 
-    // Convertir archivos File a URLs visualizables
-    const documentosConURL = {};
-    if (vehiculo.documentos) {
-      Object.keys(vehiculo.documentos).forEach(key => {
-        const archivo = vehiculo.documentos[key];
-        if (archivo && archivo instanceof File) {
-          documentosConURL[key] = URL.createObjectURL(archivo);
-        } else if (archivo) {
-          documentosConURL[key] = archivo;
+      const vehiculoData = {
+        nombre: vehiculo.nombre,
+        rendimiento: parseFloat(vehiculo.rendimiento),
+        precio_combustible: parseFloat(vehiculo.precio_combustible),
+        desgaste: parseFloat(vehiculo.desgaste),
+        costo_renta: parseFloat(vehiculo.costo_renta),
+        costo_chofer_dia: parseFloat(vehiculo.costo_chofer_dia),
+        marca: vehiculo.marca,
+        modelo: vehiculo.modelo,
+        anio: parseInt(vehiculo.anio),
+        numero_placa: vehiculo.numero_placa,
+        numero_pasajeros: parseInt(vehiculo.numero_pasajeros),
+        vehiculos_disponibles: parseInt(vehiculo.vehiculos_disponibles),
+        numero_serie: vehiculo.numero_serie || null,
+        nip: vehiculo.nip || null,
+        numero_tag: vehiculo.numero_tag || null,
+        numero_combustible: vehiculo.numero_combustible || null,
+        color: vehiculo.color || null,
+        comentarios: vehiculo.comentarios || null,
+      };
+
+      console.log("📦 Datos a enviar al backend:", vehiculoData);
+
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/vehiculos",
+        vehiculoData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
         }
-      });
+      );
+
+      console.log("✅ Vehiculo creado:", response.data);
+      await recargarVehiculos(); // Recargar la lista
+      return response.data; // ✅ Retornar los datos para que el modal sepa que terminó
+    } catch (error) {
+      console.error("❌ Error al crear vehiculo:", error);
+      console.error("❌ Respuesta del servidor:", error.response?.data);
+      throw error; // ✅ Lanzar el error para que el modal lo maneje
     }
-
-    const nuevoVehiculo = {
-      ...vehiculo,
-      id: nuevoId,
-      documentos: documentosConURL
-    };
-
-    setVehiculos(prev => [...prev, nuevoVehiculo]);
-
-    console.log('✅ Vehículo agregado:', nuevoVehiculo);
-    console.log('📸 URL foto_vehiculo:', nuevoVehiculo.documentos?.foto_vehiculo);
-    
-    // Simular delay de guardado (opcional)
-    await new Promise(resolve => setTimeout(resolve, 500));
   };
 
-  const handleActualizarVehiculo = (vehiculoActualizado) => {
-    const documentosConURL = {};
-    if (vehiculoActualizado.documentos) {
-      Object.keys(vehiculoActualizado.documentos).forEach(key => {
-        const archivo = vehiculoActualizado.documentos[key];
-        if (archivo && archivo instanceof File) {
-          documentosConURL[key] = URL.createObjectURL(archivo);
-        } else if (archivo) {
-          documentosConURL[key] = archivo;
+  const handleActualizarVehiculo = async (vehiculoActualizado) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const vehiculoData = {
+        nombre: vehiculoActualizado.nombre,
+        rendimiento: parseFloat(vehiculoActualizado.rendimiento),
+        precio_combustible: parseFloat(vehiculoActualizado.precio_combustible),
+        desgaste: parseFloat(vehiculoActualizado.desgaste),
+        costo_renta: parseFloat(vehiculoActualizado.costo_renta),
+        costo_chofer_dia: parseFloat(vehiculoActualizado.costo_chofer_dia),
+        marca: vehiculoActualizado.marca,
+        modelo: vehiculoActualizado.modelo,
+        anio: parseInt(vehiculoActualizado.anio),
+        numero_placa: vehiculoActualizado.numero_placa,
+        numero_pasajeros: parseInt(vehiculoActualizado.numero_pasajeros),
+        vehiculos_disponibles: parseInt(vehiculoActualizado.vehiculos_disponibles),
+        numero_serie: vehiculoActualizado.numero_serie || null,
+        nip: vehiculoActualizado.nip || null,
+        numero_tag: vehiculoActualizado.numero_tag || null,
+        numero_combustible: vehiculoActualizado.numero_combustible || null,
+        color: vehiculoActualizado.color || null,
+        comentarios: vehiculoActualizado.comentarios || null,
+      };
+
+      console.log("📦 Datos a actualizar:", vehiculoData);
+
+      const response = await axios.put(
+        `http://127.0.0.1:8000/api/vehiculos/${vehiculoActualizado.id}`,
+        vehiculoData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
         }
-      });
+      );
+
+      console.log("✅ Vehiculo actualizado:", response.data);
+      await recargarVehiculos(); // Recargar la lista
+      return response.data; // ✅ Retornar los datos para que el modal sepa que terminó
+    } catch (error) {
+      console.error("❌ Error al actualizar vehiculo:", error);
+      console.error("❌ Respuesta del servidor:", error.response?.data);
+      throw error; // ✅ Lanzar el error para que el modal lo maneje
     }
-
-    const vehiculoConDocumentos = {
-      ...vehiculoActualizado,
-      documentos: documentosConURL
-    };
-
-    setVehiculos(prev =>
-      prev.map(v => v.id === vehiculoConDocumentos.id ? vehiculoConDocumentos : v)
-    );
-
-    setModalEditarAbierto(false);
-    setVehiculoSeleccionado(null);
-
-    console.log('✅ Vehículo actualizado:', vehiculoConDocumentos);
   };
 
   const handleCerrarModalAgregar = () => {

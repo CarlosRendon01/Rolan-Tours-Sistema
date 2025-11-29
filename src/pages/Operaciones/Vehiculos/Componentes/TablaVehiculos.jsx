@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Truck, BarChart3, Plus } from 'lucide-react';
 import './TablaVehiculos.css';
 
-const TablaVehiculos = ({ 
+const TablaVehiculos = ({
   vehiculos,        // ✅ Recibe vehiculos desde el padre
   setVehiculos,     // ✅ Por si necesitas actualizar (opcional)
-  onVer, 
-  onEditar, 
+  onVer,
+  onEditar,
   onEliminar,
-  onAgregar 
+  onAgregar
 }) => {
   // Solo estados locales para UI (paginación, búsqueda)
   const [paginaActual, setPaginaActual] = useState(1);
@@ -34,8 +34,11 @@ const TablaVehiculos = ({
   // Calcular estadísticas
   const totalVehiculos = vehiculos.length;
   const promedioRendimiento = vehiculos.length > 0
-    ? (vehiculos.reduce((sum, v) => sum + v.rendimiento, 0) / vehiculos.length).toFixed(2)
-    : 0;
+    ? (vehiculos.reduce((sum, v) => {
+      const rendimiento = parseFloat(v.rendimiento) || 0;
+      return sum + rendimiento;
+    }, 0) / vehiculos.length).toFixed(2)
+    : '0.00';
 
   const formatearMoneda = (valor) => {
     return new Intl.NumberFormat('es-MX', {
@@ -46,7 +49,8 @@ const TablaVehiculos = ({
   };
 
   const formatearDecimal = (valor) => {
-    return parseFloat(valor).toFixed(2);
+    const numero = parseFloat(valor);
+    return isNaN(numero) ? '0.00' : numero.toFixed(2);
   };
 
   const obtenerClaseRendimiento = (rendimiento) => {
@@ -100,7 +104,7 @@ const TablaVehiculos = ({
           </div>
           <h1 className="vehiculos-titulo">Gestión de Vehículos</h1>
         </div>
-        
+
         {/* Estadísticas */}
         <div className="vehiculos-contenedor-estadisticas">
           <div className="vehiculos-estadistica">
@@ -111,7 +115,7 @@ const TablaVehiculos = ({
               <span className="vehiculos-label-estadistica">TOTAL: {totalVehiculos}</span>
             </div>
           </div>
-          
+
           <div className="vehiculos-estadistica">
             <div className="vehiculos-icono-estadistica-cuadrado">
               <BarChart3 size={20} />
@@ -127,9 +131,9 @@ const TablaVehiculos = ({
       <div className="vehiculos-controles">
         <div className="vehiculos-control-registros">
           <label htmlFor="registros">Mostrar</label>
-          <select 
+          <select
             id="registros"
-            value={registrosPorPagina} 
+            value={registrosPorPagina}
             onChange={manejarCambioRegistros}
             className="vehiculos-selector-registros"
           >
@@ -142,7 +146,7 @@ const TablaVehiculos = ({
         </div>
 
         <div className="vehiculos-controles-derecha">
-          <button 
+          <button
             className="vehiculos-boton-agregar"
             onClick={onAgregar}
             title="Agregar nuevo vehículo"
@@ -176,8 +180,8 @@ const TablaVehiculos = ({
           </div>
           <p className="vehiculos-mensaje-vacio">No se encontraron vehículos</p>
           <p className="vehiculos-submensaje-vacio">
-            {terminoBusqueda 
-              ? 'Intenta ajustar los filtros de búsqueda' 
+            {terminoBusqueda
+              ? 'Intenta ajustar los filtros de búsqueda'
               : 'Comienza agregando un vehículo a tu flota'}
           </p>
         </div>
@@ -199,8 +203,8 @@ const TablaVehiculos = ({
               </thead>
               <tbody>
                 {vehiculosPaginados.map((vehiculo, index) => (
-                  <tr 
-                    key={vehiculo.id} 
+                  <tr
+                    key={vehiculo.id}
                     className="vehiculos-fila-vehiculo"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
@@ -209,7 +213,7 @@ const TablaVehiculos = ({
                         #{vehiculo.id.toString().padStart(3, '0')}
                       </span>
                     </td>
-                    
+
                     <td data-label="Vehículo" className="vehiculos-columna-nombre">
                       <div className="vehiculos-info-vehiculo">
                         <div className="vehiculos-avatar">
@@ -221,54 +225,54 @@ const TablaVehiculos = ({
                         </div>
                       </div>
                     </td>
-                    
+
                     <td data-label="Rendimiento" className="vehiculos-columna-rendimiento">
                       <span className={`vehiculos-badge-rendimiento ${obtenerClaseRendimiento(vehiculo.rendimiento)}`}>
                         {formatearDecimal(vehiculo.rendimiento)} km/L
                       </span>
                     </td>
-                    
+
                     <td data-label="Precio Combustible" className="vehiculos-columna-combustible">
                       <span className="vehiculos-valor-moneda">
                         {formatearMoneda(vehiculo.precio_combustible)}
                       </span>
                     </td>
-                    
+
                     <td data-label="Desgaste" className="vehiculos-columna-desgaste">
                       <span className="vehiculos-valor-desgaste">
                         {formatearDecimal(vehiculo.desgaste)}
                       </span>
                     </td>
-                    
+
                     <td data-label="Costo Renta" className="vehiculos-columna-renta">
                       <span className="vehiculos-valor-moneda">
                         {formatearMoneda(vehiculo.costo_renta)}
                       </span>
                     </td>
-                    
+
                     <td data-label="Costo Chofer/Día" className="vehiculos-columna-chofer">
                       <span className="vehiculos-valor-moneda">
                         {formatearMoneda(vehiculo.costo_chofer_dia)}
                       </span>
                     </td>
-                    
+
                     <td data-label="Acciones" className="vehiculos-columna-acciones">
                       <div className="vehiculos-botones-accion">
-                        <button 
+                        <button
                           className="vehiculos-boton-accion vehiculos-ver"
                           onClick={() => manejarAccion('ver', vehiculo)}
                           title="Ver vehículo"
                         >
                           <Eye size={16} />
                         </button>
-                        <button 
+                        <button
                           className="vehiculos-boton-accion vehiculos-editar"
                           onClick={() => manejarAccion('editar', vehiculo)}
                           title="Editar vehículo"
                         >
                           <Edit size={16} />
                         </button>
-                        <button 
+                        <button
                           className="vehiculos-boton-accion vehiculos-eliminar"
                           onClick={() => manejarAccion('eliminar', vehiculo)}
                           title="Eliminar vehículo"
@@ -288,14 +292,14 @@ const TablaVehiculos = ({
             <div className="vehiculos-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
               {terminoBusqueda && (
-                <span style={{color: '#6c757d', marginLeft: '0.5rem'}}>
+                <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
                   (filtrado de {vehiculos.length} registros totales)
                 </span>
               )}
             </div>
-            
+
             <div className="vehiculos-controles-paginacion">
-              <button 
+              <button
                 className="vehiculos-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual - 1)}
                 disabled={paginaActual === 1}
@@ -303,7 +307,7 @@ const TablaVehiculos = ({
                 <ChevronLeft size={18} />
                 Anterior
               </button>
-              
+
               <div className="vehiculos-numeros-paginacion">
                 {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
                   <button
@@ -315,8 +319,8 @@ const TablaVehiculos = ({
                   </button>
                 ))}
               </div>
-              
-              <button 
+
+              <button
                 className="vehiculos-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual + 1)}
                 disabled={paginaActual === totalPaginas}
