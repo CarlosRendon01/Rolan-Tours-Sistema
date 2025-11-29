@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Home, Hotel, Plus, Users } from 'lucide-react';
 import './TablaHospedaje.css';
 
-const TablaHospedaje = ({ 
+const TablaHospedaje = ({
   hospedajes,
-  onVer, 
-  onEditar, 
+  onVer,
+  onEditar,
   onEliminar,
-  onAgregar 
+  onAgregar
 }) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
@@ -58,11 +58,12 @@ const TablaHospedaje = ({
       'USD': '$',
       'EUR': '€'
     };
-    return `${simbolos[moneda] || '$'}${precio.toFixed(2)} ${moneda}`;
+    const precioNumero = parseFloat(precio) || 0; // ✅ Convertir a número
+    return `${simbolos[moneda] || '$'}${precioNumero.toFixed(2)} ${moneda}`;
   };
 
   const obtenerIconoTipoHospedaje = (tipo) => {
-    switch(tipo) {
+    switch (tipo) {
       case 'Hotel':
         return <Hotel size={18} />;
       case 'Cabaña':
@@ -118,7 +119,7 @@ const TablaHospedaje = ({
           </div>
           <h1 className="hospedaje-titulo">Gestión de Hospedaje</h1>
         </div>
-        
+
         <div className="hospedaje-contenedor-estadisticas">
           <div className="hospedaje-estadistica">
             <div className="hospedaje-icono-estadistica-circular">
@@ -128,7 +129,7 @@ const TablaHospedaje = ({
               <span className="hospedaje-label-estadistica">TOTAL: {totalHospedajes}</span>
             </div>
           </div>
-          
+
           <div className="hospedaje-estadistica">
             <div className="hospedaje-icono-estadistica-cuadrado">
               <Home size={20} />
@@ -143,9 +144,9 @@ const TablaHospedaje = ({
       <div className="hospedaje-controles">
         <div className="hospedaje-control-registros">
           <label htmlFor="registros">Mostrar</label>
-          <select 
+          <select
             id="registros"
-            value={registrosPorPagina} 
+            value={registrosPorPagina}
             onChange={manejarCambioRegistros}
             className="hospedaje-selector-registros"
           >
@@ -158,7 +159,7 @@ const TablaHospedaje = ({
         </div>
 
         <div className="hospedaje-controles-derecha">
-          <button 
+          <button
             className="hospedaje-boton-agregar"
             onClick={onAgregar}
             title="Agregar nuevo servicio de hospedaje"
@@ -191,8 +192,8 @@ const TablaHospedaje = ({
           </div>
           <p className="hospedaje-mensaje-vacio">No se encontraron servicios de hospedaje</p>
           <p className="hospedaje-submensaje-vacio">
-            {terminoBusqueda 
-              ? 'Intenta ajustar los filtros de búsqueda' 
+            {terminoBusqueda
+              ? 'Intenta ajustar los filtros de búsqueda'
               : 'Comienza agregando un servicio de hospedaje'}
           </p>
         </div>
@@ -216,8 +217,8 @@ const TablaHospedaje = ({
               <tbody>
                 {hospedajesPaginados.map((hospedaje, index) => {
                   return (
-                    <tr 
-                      key={hospedaje.id} 
+                    <tr
+                      key={hospedaje.id}
                       className="hospedaje-fila-hospedaje"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
@@ -226,7 +227,7 @@ const TablaHospedaje = ({
                           {hospedaje.codigo_servicio}
                         </span>
                       </td>
-                      
+
                       <td data-label="Servicio" className="hospedaje-columna-servicio">
                         <div className="hospedaje-info-servicio">
                           <div className="hospedaje-icono-servicio">
@@ -240,26 +241,26 @@ const TablaHospedaje = ({
                           </div>
                         </div>
                       </td>
-                      
+
                       <td data-label="Tipo Hospedaje" className="hospedaje-columna-tipo">
                         <span className={`hospedaje-badge-tipo ${obtenerClaseTipoHospedaje(hospedaje.tipo_hospedaje)}`}>
                           {hospedaje.tipo_hospedaje}
                         </span>
                       </td>
-                      
+
                       <td data-label="Habitación" className="hospedaje-columna-habitacion">
                         <span className="hospedaje-badge-habitacion">
                           {hospedaje.tipo_habitacion}
                         </span>
                       </td>
-                      
+
                       <td data-label="Capacidad" className="hospedaje-columna-capacidad">
                         <span className="hospedaje-badge-capacidad">
                           <Users size={14} />
                           {hospedaje.capacidad} {hospedaje.capacidad === 1 ? 'huésped' : 'huéspedes'}
                         </span>
                       </td>
-                      
+
                       <td data-label="Precio" className="hospedaje-columna-precio">
                         <div className="hospedaje-precio-contenedor">
                           <span className="hospedaje-precio-principal">
@@ -270,36 +271,36 @@ const TablaHospedaje = ({
                           </span>
                         </div>
                       </td>
-                      
+
                       <td data-label="Proveedor" className="hospedaje-columna-proveedor">
                         <span className="hospedaje-proveedor-texto">
                           {hospedaje.nombre_proveedor}
                         </span>
                       </td>
-                      
+
                       <td data-label="Estado" className="hospedaje-columna-estado">
                         <span className={`hospedaje-badge-estado ${obtenerClaseEstado(hospedaje.estado)}`}>
                           {hospedaje.estado}
                         </span>
                       </td>
-                      
+
                       <td data-label="Acciones" className="hospedaje-columna-acciones">
                         <div className="hospedaje-botones-accion">
-                          <button 
+                          <button
                             className="hospedaje-boton-accion hospedaje-ver"
                             onClick={() => manejarAccion('ver', hospedaje)}
                             title="Ver detalles"
                           >
                             <Eye size={16} />
                           </button>
-                          <button 
+                          <button
                             className="hospedaje-boton-accion hospedaje-editar"
                             onClick={() => manejarAccion('editar', hospedaje)}
                             title="Editar hospedaje"
                           >
                             <Edit size={16} />
                           </button>
-                          <button 
+                          <button
                             className="hospedaje-boton-accion hospedaje-eliminar"
                             onClick={() => manejarAccion('eliminar', hospedaje)}
                             title="Eliminar hospedaje"
@@ -319,14 +320,14 @@ const TablaHospedaje = ({
             <div className="hospedaje-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
               {terminoBusqueda && (
-                <span style={{color: '#6c757d', marginLeft: '0.5rem'}}>
+                <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
                   (filtrado de {hospedajes.length} registros totales)
                 </span>
               )}
             </div>
-            
+
             <div className="hospedaje-controles-paginacion">
-              <button 
+              <button
                 className="hospedaje-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual - 1)}
                 disabled={paginaActual === 1}
@@ -334,7 +335,7 @@ const TablaHospedaje = ({
                 <ChevronLeft size={18} />
                 Anterior
               </button>
-              
+
               <div className="hospedaje-numeros-paginacion">
                 {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
                   <button
@@ -346,8 +347,8 @@ const TablaHospedaje = ({
                   </button>
                 ))}
               </div>
-              
-              <button 
+
+              <button
                 className="hospedaje-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual + 1)}
                 disabled={paginaActual === totalPaginas}

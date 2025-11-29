@@ -58,9 +58,9 @@ const TablaTours = ({
   // Función para obtener clase de estado
   const obtenerClaseEstado = (estado) => {
     const estados = {
-      'activo': 'activo',
-      'inactivo': 'inactivo',
-      'mantenimiento': 'mantenimiento'
+      'Activo': 'activo',
+      'Inactivo': 'inactivo',
+      'Mantenimiento': 'mantenimiento'
     };
     return estados[estado.toLowerCase()] || 'inactivo';
   };
