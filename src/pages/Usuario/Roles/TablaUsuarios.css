@@ -440,7 +440,6 @@
   font-size: 0.8rem;
   line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -530,7 +529,7 @@
 
 .roles-acceso-eliminar {
   background: #fee2e2;
-  color: #991b1b;
+  color: #1e40af;
   border-color: #fecaca;
 }
 
@@ -672,6 +671,63 @@
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   border-color: #ffffff;
   color: white;
+}
+
+/* Columnas específicas de Usuarios */
+.roles-columna-genero {
+  vertical-align: middle !important;
+}
+
+.roles-genero-contenedor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.roles-genero-icono {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.roles-genero-texto {
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.roles-columna-puesto {
+  vertical-align: middle !important;
+}
+
+.roles-puesto-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1e40af;
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid #93c5fd;
+}
+
+.roles-columna-telefono {
+  vertical-align: middle !important;
+}
+
+.roles-telefono-contenedor {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.roles-telefono-contenedor svg {
+  color: #10b981;
 }
 
 /* Estado vacío */
