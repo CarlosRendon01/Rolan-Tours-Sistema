@@ -1,26 +1,26 @@
-import { 
-  X, Building2, Phone, Mail, MapPin, CreditCard, 
+import {
+  X, Building2, Phone, Mail, MapPin, CreditCard,
   FileText, Hash, Briefcase, DollarSign, Eye, Download,
   User, Globe, CheckCircle
 } from 'lucide-react';
 import './ModalVerProveedor.css';
 
 const ModalVerProveedor = ({ proveedor, onCerrar }) => {
-  
+
   // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
-    
+
     // Si ya es una URL string, retornarla
     if (typeof archivo === 'string') {
       return archivo;
     }
-    
+
     // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
-    
+
     return null;
   };
 
@@ -28,7 +28,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
   const fotoUrl = obtenerUrlArchivo(proveedor.foto_proveedor);
   const rfcUrl = obtenerUrlArchivo(proveedor.documento_rfc);
   const identificacionUrl = obtenerUrlArchivo(proveedor.identificacion);
-  
+
   // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'N/A';
@@ -45,6 +45,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
       'Transporte': 'transporte',
       'Hospedaje': 'hospedaje',
       'Restaurante': 'restaurante',
+      'Tour': 'tour',
       'Otro': 'otro'
     };
     return tipos[tipo] || 'otro';
@@ -52,13 +53,15 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
 
   // Función para obtener icono de tipo de proveedor
   const obtenerIconoTipo = (tipo) => {
-    switch(tipo) {
+    switch (tipo) {
       case 'Transporte':
         return '🚚';
       case 'Hospedaje':
         return '🏨';
       case 'Restaurante':
         return '🍽️';
+      case 'Tour':
+        return '📦';
       default:
         return '📦';
     }
@@ -70,20 +73,20 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
       alert('No hay documento disponible para visualizar');
       return;
     }
-    
+
     // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       window.open(url, '_blank');
       return;
     }
-    
+
     // Si es una URL string
     if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
       window.open(archivo, '_blank');
       return;
     }
-    
+
     alert('No hay documento disponible para visualizar');
   };
 
@@ -93,7 +96,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
       alert('No hay documento disponible para descargar');
       return;
     }
-    
+
     // Si es un objeto File
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
@@ -106,7 +109,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
       URL.revokeObjectURL(url);
       return;
     }
-    
+
     // Si es una URL string
     if (typeof archivo === 'string') {
       const link = document.createElement('a');
@@ -117,7 +120,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
       document.body.removeChild(link);
       return;
     }
-    
+
     alert('No hay documento disponible para descargar');
   };
 
@@ -132,7 +135,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
             <div>
               <h2>{proveedor.nombre_razon_social}</h2>
               <p className="mvp-subtitulo">
-                Proveedor #{proveedor.id_proveedor.toString().padStart(3, '0')}
+                Proveedor #{proveedor.id.toString().padStart(3, '0')}
               </p>
             </div>
           </div>
@@ -168,17 +171,17 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                     <div className="mvp-spec-item">
                       <span className="mvp-spec-label">Estado</span>
                       <span className="mvp-spec-valor">
-                        {proveedor.estado === 'activo' ? '✓ Activo' : 'Inactivo'}
+                        {proveedor.activo ? '✓ Activo' : 'Inactivo'}
                       </span>
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Foto del Proveedor */}
                 <div className="mvp-proveedor-imagen-container">
                   {fotoUrl ? (
-                    <img 
-                      src={fotoUrl} 
+                    <img
+                      src={fotoUrl}
                       alt={proveedor.nombre_razon_social}
                       className="mvp-proveedor-foto"
                       onError={(e) => {
@@ -272,7 +275,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                       <span className="mvp-detalle-label">ID</span>
                     </div>
                     <span className="mvp-detalle-valor">
-                      #{proveedor.id_proveedor.toString().padStart(3, '0')}
+                      #{proveedor.id.toString().padStart(3, '0')}
                     </span>
                   </div>
                 </div>
@@ -305,7 +308,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                           <Building2 size={32} />
                           <span>Fotografía</span>
                           <div className="mvp-botones-documento">
-                            <button 
+                            <button
                               className="mvp-btn-descargar mvp-btn-ver"
                               onClick={() => handleVerDocumento(proveedor.foto_proveedor)}
                               title="Ver fotografía en nueva pestaña"
@@ -313,7 +316,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvp-btn-descargar mvp-btn-download"
                               onClick={() => handleDescargar(proveedor.foto_proveedor, 'foto')}
                               title="Descargar fotografía"
@@ -324,13 +327,13 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                           </div>
                         </div>
                       )}
-                      
+
                       {rfcUrl && (
                         <div className="mvp-documento-item">
                           <CreditCard size={32} />
                           <span>RFC</span>
                           <div className="mvp-botones-documento">
-                            <button 
+                            <button
                               className="mvp-btn-descargar mvp-btn-ver"
                               onClick={() => handleVerDocumento(proveedor.documento_rfc)}
                               title="Ver RFC en nueva pestaña"
@@ -338,7 +341,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvp-btn-descargar mvp-btn-download"
                               onClick={() => handleDescargar(proveedor.documento_rfc, 'rfc')}
                               title="Descargar RFC"
@@ -355,7 +358,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                           <User size={32} />
                           <span>Identificación</span>
                           <div className="mvp-botones-documento">
-                            <button 
+                            <button
                               className="mvp-btn-descargar mvp-btn-ver"
                               onClick={() => handleVerDocumento(proveedor.identificacion)}
                               title="Ver identificación en nueva pestaña"
@@ -363,7 +366,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvp-btn-descargar mvp-btn-download"
                               onClick={() => handleDescargar(proveedor.identificacion, 'identificacion')}
                               title="Descargar identificación"
@@ -458,18 +461,18 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                 </div>
                 <div className="mvp-direccion-container">
                   <div className="mvp-direccion-item" style={{
-                    background: proveedor.estado === 'activo' ? '#dcfce7' : '#fee2e2',
+                    background: proveedor.activo ? '#dcfce7' : '#fee2e2',
                     padding: '1.5rem',
                     textAlign: 'center'
                   }}>
                     <span style={{
                       fontSize: '1.2rem',
                       fontWeight: '700',
-                      color: proveedor.estado === 'activo' ? '#166534' : '#991b1b',
+                      color: proveedor.activo ? '#166534' : '#991b1b',
                       textTransform: 'uppercase',
                       letterSpacing: '0.5px'
                     }}>
-                      {proveedor.estado === 'activo' ? '✓ Activo' : '✗ Inactivo'}
+                      {proveedor.activo ? '✓ Activo' : '✗ Inactivo'}
                     </span>
                   </div>
                 </div>

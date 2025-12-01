@@ -12,7 +12,7 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
     desgaste: '',
     costo_renta: '',
     costo_chofer_dia: '',
-    
+
     // Campos adicionales
     numero_serie: '',
     nip: '',
@@ -21,12 +21,12 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
     marca: '',
     modelo: '',
     color: '',
-    año: '',
+    anio: '',
     numero_placa: '',
     numero_pasajeros: '',
     comentarios: '',
     vehiculos_disponibles: '',
-    
+
     // Documentos
     foto_vehiculo: null,
     foto_poliza_seguro: null,
@@ -56,7 +56,7 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         marca: vehiculo.marca || '',
         modelo: vehiculo.modelo || '',
         color: vehiculo.color || '',
-        año: vehiculo.año || '',
+        anio: vehiculo.anio || '',
         numero_placa: vehiculo.numero_placa || '',
         numero_pasajeros: vehiculo.numero_pasajeros || '',
         comentarios: vehiculo.comentarios || '',
@@ -84,7 +84,7 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
       ...prev,
       [name]: value
     }));
-    
+
     if (errores[name]) {
       limpiarErrorCampo(name);
     }
@@ -97,7 +97,7 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         ...prev,
         [name]: files[0]
       }));
-      
+
       if (errores[name]) {
         limpiarErrorCampo(name);
       }
@@ -140,8 +140,8 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
     }
 
     const añoActual = new Date().getFullYear();
-    if (!formData.año || parseInt(formData.año) < 1900 || parseInt(formData.año) > añoActual + 1) {
-      nuevosErrores.año = 'Año inválido';
+    if (!formData.anio || parseInt(formData.anio) < 1900 || parseInt(formData.anio) > añoActual + 1) {
+      nuevosErrores.anio = 'Año inválido';
     }
 
     if (!formData.numero_placa.trim()) {
@@ -161,7 +161,7 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    
+
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
@@ -169,7 +169,7 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
 
       // Determinar qué sección tiene errores
       const camposBasicos = ['nombre', 'rendimiento', 'precio_combustible', 'desgaste', 'costo_renta', 'costo_chofer_dia'];
-      const camposAdicionales = ['marca', 'modelo', 'año', 'numero_placa', 'numero_pasajeros', 'vehiculos_disponibles'];
+      const camposAdicionales = ['marca', 'modelo', 'anio', 'numero_placa', 'numero_pasajeros', 'vehiculos_disponibles'];
 
       const erroresEnBasicos = Object.keys(nuevosErrores).some(key => camposBasicos.includes(key));
       const erroresEnAdicionales = Object.keys(nuevosErrores).some(key => camposAdicionales.includes(key));
@@ -211,7 +211,7 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         marca: formData.marca,
         modelo: formData.modelo,
         color: formData.color,
-        año: parseInt(formData.año),
+        anio: parseInt(formData.anio),
         numero_placa: formData.numero_placa,
         numero_pasajeros: parseInt(formData.numero_pasajeros),
         comentarios: formData.comentarios,
@@ -444,19 +444,19 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
       </div>
 
       <div className="mev-form-group">
-        <label htmlFor="año">
+        <label htmlFor="anio">
           Año <span className="mev-required">*</span>
         </label>
         <input
           type="number"
-          id="año"
-          name="año"
-          value={formData.año}
+          id="anio"
+          name="anio"
+          value={formData.anio}
           onChange={handleChange}
-          className={errores.año ? 'input-error' : ''}
+          className={errores.anio ? 'input-error' : ''}
           placeholder="2024"
         />
-        <MensajeError nombreCampo="año" />
+        <MensajeError nombreCampo="anio" />
       </div>
 
       <div className="mev-form-group">
@@ -597,8 +597,8 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         />
         {formData.foto_vehiculo && (
           <span className="mev-file-name">
-            {typeof formData.foto_vehiculo === 'string' 
-              ? 'Archivo existente' 
+            {typeof formData.foto_vehiculo === 'string'
+              ? 'Archivo existente'
               : formData.foto_vehiculo.name}
           </span>
         )}
@@ -618,8 +618,8 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         />
         {formData.foto_poliza_seguro && (
           <span className="mev-file-name">
-            {typeof formData.foto_poliza_seguro === 'string' 
-              ? 'Archivo existente' 
+            {typeof formData.foto_poliza_seguro === 'string'
+              ? 'Archivo existente'
               : formData.foto_poliza_seguro.name}
           </span>
         )}
@@ -639,8 +639,8 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         />
         {formData.foto_factura && (
           <span className="mev-file-name">
-            {typeof formData.foto_factura === 'string' 
-              ? 'Archivo existente' 
+            {typeof formData.foto_factura === 'string'
+              ? 'Archivo existente'
               : formData.foto_factura.name}
           </span>
         )}
@@ -660,8 +660,8 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         />
         {formData.foto_verificaciones && (
           <span className="mev-file-name">
-            {typeof formData.foto_verificaciones === 'string' 
-              ? 'Archivo existente' 
+            {typeof formData.foto_verificaciones === 'string'
+              ? 'Archivo existente'
               : formData.foto_verificaciones.name}
           </span>
         )}
@@ -681,8 +681,8 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         />
         {formData.foto_folio_antt && (
           <span className="mev-file-name">
-            {typeof formData.foto_folio_antt === 'string' 
-              ? 'Archivo existente' 
+            {typeof formData.foto_folio_antt === 'string'
+              ? 'Archivo existente'
               : formData.foto_folio_antt.name}
           </span>
         )}
@@ -744,8 +744,8 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
             </button>
           </div>
           <div className="mev-botones-derecha">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={`mev-btn-actualizar ${guardando ? 'loading' : ''}`}
               disabled={guardando}
               onClick={handleSubmit}
