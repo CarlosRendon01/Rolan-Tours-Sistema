@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import axios from "axios";
 import {
   Search,
   ChevronLeft,
@@ -22,18 +23,17 @@ import { generarPDFFacturaTimbrada, imprimirFacturaTimbrada } from '../ModalesFa
 import { modalEliminarFactura } from '../ModalesFactura/ModalEliminarFactura';
 import ModalRegenerarFactura from '../ModalesFactura/ModalRegenerarFactura';
 import ModalEliminarDefinitivoFactura from '../ModalesFactura/ModalEliminarDefinitivoFactura';
+import { SiTruenas } from 'react-icons/si';
 
 // Constantes para estados de factura
 const ESTADOS_FACTURA = {
-  TIMBRADA: 'Timbrada',
-  CANCELADA: 'Cancelada'
+  TIMBRADA: 'TIMBRADA',
+  CANCELADA: 'CANCELADA'
 };
 
-const TablaFacturas = ({ 
-  vistaActual, 
+const TablaFacturas = ({
+  vistaActual,
   onCambiarVista,
-  datosIniciales = [],
-  rolUsuario = 'vendedor', // 'vendedor' o 'administrador'
   onEliminar = null,
   onRegenerar = null,
   onEliminarDefinitivo = null
@@ -44,200 +44,63 @@ const TablaFacturas = ({
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [cargando, setCargando] = useState(false);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
-  
+
+  const [rolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
+
   // Estados para modales
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] = useState(false);
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
 
-  // Datos de ejemplo para facturas
-  const datosFacturasEjemplo = [
-    {
-      id: 1,
-      numeroFactura: 'FACT-2025-001',
-      cliente: 'Angel Rafael Hernández',
-      monto: 15000.00,
-      fechaEmision: '15/09/2025',
-      fechaVencimiento: '15/10/2025',
-      rfc: 'HERA850615ABC',
-      uuid: 'A1B2C3D4-E5F6-7890-ABCD-123456789012',
-      estado: ESTADOS_FACTURA.TIMBRADA,
-      serie: 'A',
-      folio: '0001',
-      usoCfdi: 'G03 - Gastos en general',
-      metodoPago: '01 - Efectivo',
-      formaPago: '01 - Contado',
-      emailEnviado: true,
-      fechaEnvio: '15/09/2025',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 2,
-      numeroFactura: 'FACT-2025-002',
-      cliente: 'Marco Antonio Silva',
-      monto: 8500.00,
-      fechaEmision: '14/09/2025',
-      fechaVencimiento: '14/10/2025',
-      rfc: 'SIMA901020DEF',
-      uuid: 'E5F6G7H8-I9J0-1234-EFGH-567890123456',
-      estado: ESTADOS_FACTURA.TIMBRADA,
-      serie: 'A',
-      folio: '0002',
-      usoCfdi: 'G03 - Gastos en general',
-      metodoPago: '04 - Tarjeta de crédito',
-      formaPago: '01 - Contado',
-      emailEnviado: true,
-      fechaEnvio: '14/09/2025',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 3,
-      numeroFactura: 'FACT-2025-003',
-      cliente: 'Carlos Eduardo López',
-      monto: 12300.00,
-      fechaEmision: '13/09/2025',
-      fechaVencimiento: '13/10/2025',
-      rfc: 'LOPC751203GHI',
-      uuid: 'I9J0K1L2-M3N4-5678-IJKL-901234567890',
-      estado: ESTADOS_FACTURA.TIMBRADA,
-      serie: 'A',
-      folio: '0003',
-      usoCfdi: 'P01 - Por definir',
-      metodoPago: '03 - Transferencia electrónica',
-      formaPago: '01 - Contado',
-      emailEnviado: false,
-      fechaEnvio: null,
-      eliminadoVisualmente: true,
-      fechaEliminacion: '14/09/2025',
-      eliminadoPor: 'Juan Pérez'
-    },
-    {
-      id: 4,
-      numeroFactura: 'FACT-2025-004',
-      cliente: 'Elías Abisaí González',
-      monto: 25000.00,
-      fechaEmision: '12/09/2025',
-      fechaVencimiento: '12/10/2025',
-      rfc: 'GOAE880425JKL',
-      uuid: 'M3N4O5P6-Q7R8-9012-MNOP-345678901234',
-      estado: ESTADOS_FACTURA.TIMBRADA,
-      serie: 'A',
-      folio: '0004',
-      usoCfdi: 'G02 - Gastos médicos por incapacidad',
-      metodoPago: '03 - Transferencia electrónica',
-      formaPago: '99 - Por definir',
-      emailEnviado: true,
-      fechaEnvio: '12/09/2025',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 5,
-      numeroFactura: 'FACT-2025-005',
-      cliente: 'María González Ruiz',
-      monto: 5800.00,
-      fechaEmision: '11/09/2025',
-      fechaVencimiento: '11/10/2025',
-      rfc: 'GORM920815MNO',
-      uuid: 'Q7R8S9T0-U1V2-3456-QRST-789012345678',
-      estado: ESTADOS_FACTURA.TIMBRADA,
-      serie: 'A',
-      folio: '0005',
-      usoCfdi: 'G03 - Gastos en general',
-      metodoPago: '03 - Transferencia electrónica',
-      formaPago: '01 - Contado',
-      emailEnviado: true,
-      fechaEnvio: '11/09/2025',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 6,
-      numeroFactura: 'FACT-2025-006',
-      cliente: 'José Luis Martínez',
-      monto: 18750.00,
-      fechaEmision: '10/09/2025',
-      fechaVencimiento: '10/10/2025',
-      rfc: 'MALJ751128PQR',
-      uuid: 'U1V2W3X4-Y5Z6-7890-UVWX-123456789012',
-      estado: ESTADOS_FACTURA.CANCELADA,
-      serie: 'A',
-      folio: '0006',
-      usoCfdi: 'G03 - Gastos en general',
-      metodoPago: '01 - Efectivo',
-      formaPago: '01 - Contado',
-      emailEnviado: true,
-      fechaEnvio: '10/09/2025',
-      fechaCancelacion: '11/09/2025',
-      motivoCancelacion: 'Error en datos del cliente',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 7,
-      numeroFactura: 'FACT-2025-007',
-      cliente: 'Roberto Sánchez Morales',
-      monto: 16500.00,
-      fechaEmision: '08/09/2025',
-      fechaVencimiento: '08/10/2025',
-      rfc: 'SAMR850720VWX',
-      uuid: 'Y5Z6A7B8-C9D0-1234-YZAB-567890123456',
-      estado: ESTADOS_FACTURA.TIMBRADA,
-      serie: 'A',
-      folio: '0007',
-      usoCfdi: 'G03 - Gastos en general',
-      metodoPago: '03 - Transferencia electrónica',
-      formaPago: '01 - Contado',
-      emailEnviado: true,
-      fechaEnvio: '08/09/2025',
-      eliminadoVisualmente: true,
-      fechaEliminacion: '09/09/2025',
-      eliminadoPor: 'María López'
-    },
-    {
-      id: 8,
-      numeroFactura: 'FACT-2025-008',
-      cliente: 'Ana Patricia Delgado',
-      monto: 22100.00,
-      fechaEmision: '07/09/2025',
-      fechaVencimiento: '07/10/2025',
-      rfc: 'DELA880520YZA',
-      uuid: 'Z7A8B9C0-D1E2-3456-ZABC-901234567890',
-      estado: ESTADOS_FACTURA.CANCELADA,
-      serie: 'A',
-      folio: '0008',
-      usoCfdi: 'G03 - Gastos en general',
-      metodoPago: '04 - Tarjeta de crédito',
-      formaPago: '01 - Contado',
-      emailEnviado: true,
-      fechaEnvio: '07/09/2025',
-      fechaCancelacion: '09/09/2025',
-      motivoCancelacion: 'Cancelación a petición del cliente',
-      eliminadoVisualmente: false
-    }
-  ];
+  const API_URL = "http://127.0.0.1:8000/api/facturas"; // Ajusta al dominio/backend real
 
-  const datosFacturas = datosIniciales.length > 0 ? datosIniciales : datosFacturasEjemplo;
+  // Datos de ejemplo para facturas
+  const [datosFacturas, setdatosFacturas] = useState([]);
+
+  useEffect(() => {
+    cargarFacturas();
+  }, []);
+
+  const cargarFacturas = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(API_URL, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
+
+      const facturas = res.data.data || [];
+      setdatosFacturas(facturas);
+      console.log("Facturas cargadas:", facturas);
+    } catch (error) {
+      console.error("Error al cargar facturas:", error);
+    }
+  };
 
   // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
-    if (rolUsuario === 'administrador') {
+    if (rolUsuario === 'admin') {
       if (mostrarEliminados) {
-        return datosFacturas.filter(f => f.eliminadoVisualmente === true);
+        return datosFacturas.filter(f => f.activo === false);
       }
       return datosFacturas;
     } else {
-      return datosFacturas.filter(f => !f.eliminadoVisualmente);
+      return datosFacturas.filter(f => f.activo === true);
     }
   }, [datosFacturas, rolUsuario, mostrarEliminados]);
 
   // Cálculo de estadísticas
   const estadisticas = useMemo(() => {
-    const datos = rolUsuario === 'administrador' ? datosFacturas : datosSegunRol;
+    const datos = rolUsuario === 'admin' ? datosFacturas : datosSegunRol;
     const totalFacturas = datos.length;
-    const timbradas = datos.filter(f => f.estado === ESTADOS_FACTURA.TIMBRADA && !f.eliminadoVisualmente).length;
-    const canceladas = datos.filter(f => f.estado === ESTADOS_FACTURA.CANCELADA && !f.eliminadoVisualmente).length;
-    const eliminadas = datos.filter(f => f.eliminadoVisualmente === true).length;
+    const timbradas = datos.filter(f => f.estado === ESTADOS_FACTURA.TIMBRADA && f.activo === true).length;
+    const canceladas = datos.filter(f => f.estado === ESTADOS_FACTURA.CANCELADA && f.activo === true).length;
+    const eliminadas = datos.filter(f => f.activo === false).length;
 
     const montoTotal = datos
-      .filter(f => f.estado === ESTADOS_FACTURA.TIMBRADA && !f.eliminadoVisualmente)
+      .filter(f => f.estado === ESTADOS_FACTURA.TIMBRADA && f.activo === true)
       .reduce((total, factura) => total + factura.monto, 0);
 
     return { totalFacturas, timbradas, canceladas, eliminadas, montoTotal };
@@ -261,7 +124,7 @@ const TablaFacturas = ({
     }
 
     if (filtroEstado !== 'todos') {
-      datos = datos.filter(factura => 
+      datos = datos.filter(factura =>
         factura.estado.toLowerCase() === filtroEstado.toLowerCase()
       );
     }
@@ -309,18 +172,28 @@ const TablaFacturas = ({
   };
 
   const manejarRegenerar = async (factura, motivo) => {
-    if (onRegenerar) {
-      await onRegenerar(factura, motivo);
-    } else {
-      console.log('Factura regenerada:', factura.id, 'Motivo:', motivo);
+    try {
+      await cargarFacturas();
+      console.log('✅ Factura regenerada:', factura.id);
+
+      if (onRegenerar) {
+        await onRegenerar(factura, motivo);
+      }
+    } catch (error) {
+      console.error('Error al regenerar:', error);
     }
   };
 
   const manejarEliminarDefinitivo = async (factura, motivo) => {
-    if (onEliminarDefinitivo) {
-      await onEliminarDefinitivo(factura, motivo);
-    } else {
-      console.log('Factura eliminada definitivamente:', factura.id, 'Motivo:', motivo);
+    try {
+      await cargarFacturas();
+      console.log('✅ Factura eliminada definitivamente:', factura.id);
+
+      if (onEliminarDefinitivo) {
+        await onEliminarDefinitivo(factura, motivo);
+      }
+    } catch (error) {
+      console.error('Error al eliminar definitivamente:', error);
     }
   };
 
@@ -348,9 +221,11 @@ const TablaFacturas = ({
 
         case 'eliminar':
           setCargando(false);
-          const confirmado = await modalEliminarFactura(factura, onEliminar);
-          if (confirmado && !onEliminar) {
-            console.log('Factura eliminada:', factura.id);
+          const confirmado = await modalEliminarFactura(factura, async () => {
+            await cargarFacturas();
+          });
+          if (confirmado) {
+            await cargarFacturas();
           }
           return;
 
@@ -369,8 +244,8 @@ const TablaFacturas = ({
     }
   }, [onEliminar]);
 
-  const obtenerClaseEstado = useCallback((estado, eliminado) => {
-    if (eliminado) {
+  const obtenerClaseEstado = useCallback((estado, activo) => {
+    if (activo === false) {
       return 'facturas-estado-eliminado';
     }
     switch (estado) {
@@ -429,16 +304,10 @@ const TablaFacturas = ({
           <div>
             <h1 className="facturas-titulo">
               Registro de Facturas
-              {rolUsuario === 'administrador' && (
-                <span className="facturas-badge-rol-admin">
-                  <Shield size={16} />
-                  Admin
-                </span>
-              )}
             </h1>
             <p className="facturas-subtitulo">
-              {mostrarEliminados 
-                ? 'Facturas eliminadas - Solo visible para administradores' 
+              {mostrarEliminados
+                ? 'Facturas eliminadas'
                 : 'Consulta de facturas emitidas y timbradas'}
             </p>
           </div>
@@ -460,7 +329,7 @@ const TablaFacturas = ({
             <span className="facturas-valor-estadistica">{estadisticas.canceladas}</span>
             <span className="facturas-etiqueta-estadistica">Canceladas</span>
           </div>
-          {rolUsuario === 'administrador' && (
+          {rolUsuario === 'admin' && (
             <div className="facturas-tarjeta-estadistica eliminados">
               <Trash2 className="facturas-icono-estadistica" size={20} />
               <span className="facturas-valor-estadistica">{estadisticas.eliminadas}</span>
@@ -469,7 +338,7 @@ const TablaFacturas = ({
           )}
           <div className="facturas-tarjeta-estadistica pendientes">
             <DollarSign className="facturas-icono-estadistica" size={20} />
-            <span className="facturas-valor-estadistica">${estadisticas.montoTotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+            <span className="facturas-valor-estadistica">${(estadisticas?.montoTotal ?? 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
             <span className="facturas-etiqueta-estadistica">Facturado</span>
           </div>
         </div>
@@ -525,8 +394,7 @@ const TablaFacturas = ({
               <option value="facturas">Registro de Facturas</option>
             </select>
           </div>
-
-          {rolUsuario === 'administrador' && (
+          {rolUsuario === 'admin' && (
             <button
               className={`facturas-boton-toggle-eliminados ${mostrarEliminados ? 'activo' : ''}`}
               onClick={() => setMostrarEliminados(!mostrarEliminados)}
@@ -565,8 +433,8 @@ const TablaFacturas = ({
               {terminoBusqueda || filtroEstado !== 'todos'
                 ? 'Intenta ajustar los filtros de búsqueda'
                 : mostrarEliminados
-                ? 'No hay facturas eliminadas en el sistema'
-                : 'No hay facturas registradas en el sistema'}
+                  ? 'No hay facturas eliminadas en el sistema'
+                  : 'No hay facturas registradas en el sistema'}
             </p>
           </div>
         ) : (
@@ -585,20 +453,20 @@ const TablaFacturas = ({
             </thead>
             <tbody>
               {datosPaginados.map((factura, indice) => (
-                <tr 
-                  key={factura.id} 
-                  className={`facturas-fila-pago ${factura.eliminadoVisualmente ? 'facturas-fila-eliminada' : ''}`}
+                <tr
+                  key={factura.id}
+                  className={`facturas-fila-pago ${!factura.activo ? 'facturas-fila-eliminada' : ''}`}
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Factura" className="facturas-columna-factura">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <span style={{ fontWeight: '600', color: factura.eliminadoVisualmente ? '#94a3b8' : '#111827' }}>
+                      <span style={{ fontWeight: '600', color: factura.activo ? '#94a3b8' : '#111827' }}>
                         {factura.numeroFactura}
                       </span>
                       <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
                         Serie {factura.serie} - Folio {factura.folio}
                       </span>
-                      {factura.eliminadoVisualmente && (
+                      {!factura.activo && (
                         <span className="facturas-badge-eliminado-mini">
                           <Trash2 size={10} />
                           Eliminada
@@ -606,12 +474,12 @@ const TablaFacturas = ({
                       )}
                     </div>
                   </td>
-                  <td data-label="Cliente" className="facturas-columna-cliente" style={{ color: factura.eliminadoVisualmente ? '#94a3b8' : '#111827' }}>
+                  <td data-label="Cliente" className="facturas-columna-cliente" style={{ color: factura.activo ? '#94a3b8' : '#111827' }}>
                     {factura.cliente}
                   </td>
                   <td data-label="RFC" className="facturas-columna-factura">{factura.rfc}</td>
                   <td data-label="Monto" className="facturas-columna-monto">
-                    ${factura.monto.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                    ${(factura.monto ?? 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                   </td>
                   <td data-label="Fecha Emisión">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -621,7 +489,7 @@ const TablaFacturas = ({
                           Cancelada: {factura.fechaCancelacion}
                         </span>
                       )}
-                      {factura.eliminadoVisualmente && factura.fechaEliminacion && (
+                      {!factura.activo && factura.fechaEliminacion && (
                         <span style={{ fontSize: '0.75rem', color: '#f59e0b' }}>
                           Eliminada: {factura.fechaEliminacion}
                         </span>
@@ -642,14 +510,14 @@ const TablaFacturas = ({
                     </div>
                   </td>
                   <td data-label="Estado">
-                    <span className={`facturas-badge-estado ${obtenerClaseEstado(factura.estado, factura.eliminadoVisualmente)}`}>
+                    <span className={`facturas-badge-estado ${obtenerClaseEstado(factura.estado, factura.activo)}`}>
                       <span className="facturas-indicador-estado"></span>
-                      {factura.eliminadoVisualmente ? 'Eliminada' : factura.estado}
+                      {factura.activo === false ? 'Eliminada' : factura.estado}
                     </span>
                   </td>
                   <td data-label="Acciones" className="facturas-columna-acciones">
                     <div className="facturas-botones-accion">
-                      {!factura.eliminadoVisualmente ? (
+                      {factura.activo === true ? (
                         <>
                           <button
                             className="facturas-boton-accion facturas-ver"
@@ -702,7 +570,7 @@ const TablaFacturas = ({
                             </>
                           )}
                         </>
-                      ) : rolUsuario === 'administrador' ? (
+                      ) : (factura.activo === false && rolUsuario === 'admin') ? (
                         <>
                           <button
                             className="facturas-boton-accion facturas-regenerar"

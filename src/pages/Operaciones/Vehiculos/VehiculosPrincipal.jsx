@@ -9,8 +9,13 @@ import { modalEliminarVehiculo } from './ModalesVehiculos/ModalEliminarVehiculo'
 import './VehiculosPrincipal.css';
 
 const VehiculosPrincipal = () => {
-  // Estado principal de vehículos
-  const [vehiculos, setVehiculos] = useState([]);
+  // Obtener funciones y estado del Context
+  const {
+    vehiculos,
+    agregarVehiculo,
+    actualizarVehiculo,
+    eliminarVehiculo
+  } = useVehiculos();
 
   // Estados de los modales
   const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
@@ -60,7 +65,7 @@ const VehiculosPrincipal = () => {
     }
   };
 
-  // ✅ AGREGAR - Esta función NO cierra el modal, lo hace el ModalVehiculo después de la alerta
+  // Esta función NO cierra el modal, lo hace el ModalVehiculo después de la alerta
   const handleGuardarNuevoVehiculo = async (vehiculo) => {
     try {
       const token = localStorage.getItem("token");
@@ -166,7 +171,6 @@ const VehiculosPrincipal = () => {
       <div className="vehiculos-principal">
         <TablaVehiculos
           vehiculos={vehiculos}
-          setVehiculos={setVehiculos}
           onVer={handleVerVehiculo}
           onEditar={handleEditarVehiculo}
           onEliminar={handleEliminarVehiculo}

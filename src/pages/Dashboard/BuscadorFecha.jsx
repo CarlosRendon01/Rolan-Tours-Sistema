@@ -170,7 +170,10 @@ const BuscadorFecha = () => {
     setFechaHasta(busqueda.fechaHasta);
     setErrores({}); // Limpiar errores al cargar del historial
   };
-
+  const eliminarDelHistorial = (id, e) => {
+    e.stopPropagation(); // Evita que se active el onClick del botón padre
+    setHistorial(prev => prev.filter(busqueda => busqueda.id !== id));
+  };
   return (
     <>
       <div className="contenedor-buscador">
@@ -319,7 +322,16 @@ const BuscadorFecha = () => {
                     onClick={() => cargarBusquedaDelHistorial(busqueda)}
                   >
                     <span>{formatearFecha(busqueda.fechaDesde)} - {formatearFecha(busqueda.fechaHasta)}</span>
-                    <small>{busqueda.fecha}</small>
+                    <div className="historial-info">
+                      <small>{busqueda.fecha}</small>
+                      <button
+                        className="boton-eliminar-historial"
+                        onClick={(e) => eliminarDelHistorial(busqueda.id, e)}
+                        title="Eliminar del historial"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
                   </button>
                 ))}
               </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import { X, RotateCcw, CheckCircle } from 'lucide-react';
 import './ModalReactivarPago.css';
 
@@ -35,30 +36,41 @@ const ModalReactivarPago = ({ estaAbierto, alCerrar, pago, alReactivar }) => {
 
   const manejarReactivar = async () => {
     setCargando(true);
-    
+
     try {
       // Simular delay de operación
       await new Promise(resolve => setTimeout(resolve, 800));
-      
+
       // Ejecutar la función de reactivación
-      if (alReactivar && typeof alReactivar === 'function') {
+      const token = localStorage.getItem("token");
+      await axios.post(`http://127.0.0.1:8000/api/pagos/${pago.id}/restore`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
+      );
+      
+      if (alReactivar) {
         await alReactivar(pago);
       }
       
       setCargando(false);
-      
+
       // Mostrar notificación de éxito
       mostrarNotificacionExito();
-      
+
       // Cerrar modal después de 500ms
       setTimeout(() => {
         alCerrar();
       }, 500);
-      
+
     } catch (error) {
       console.error('Error al reactivar pago:', error);
       setCargando(false);
-      
+
       if (typeof window !== 'undefined' && window.Swal) {
         window.Swal.fire({
           title: 'Error',
@@ -82,8 +94,8 @@ const ModalReactivarPago = ({ estaAbierto, alCerrar, pago, alReactivar }) => {
   return (
     <div className="modal-reactivar-overlay" onClick={manejarCancelar}>
       <div className="modal-reactivar-contenido" onClick={(e) => e.stopPropagation()}>
-        <button 
-          className="modal-reactivar-cerrar" 
+        <button
+          className="modal-reactivar-cerrar"
           onClick={manejarCancelar}
           disabled={cargando}
           aria-label="Cerrar"
@@ -104,7 +116,7 @@ const ModalReactivarPago = ({ estaAbierto, alCerrar, pago, alReactivar }) => {
         <div className="modal-reactivar-info">
           <div className="modal-reactivar-info-item">
             <strong>Cliente:</strong>
-            <span>{pago.cliente}</span>
+            <span>{pago.cliente?.nombre || 'Sin nombre'}</span>
           </div>
         </div>
 
@@ -114,16 +126,16 @@ const ModalReactivarPago = ({ estaAbierto, alCerrar, pago, alReactivar }) => {
         </div>
 
         <div className="modal-reactivar-botones">
-          <button 
-            className="modal-reactivar-btn-cancelar" 
+          <button
+            className="modal-reactivar-btn-cancelar"
             onClick={manejarCancelar}
             disabled={cargando}
           >
             <X size={18} />
             Cancelar
           </button>
-          <button 
-            className="modal-reactivar-btn-confirmar" 
+          <button
+            className="modal-reactivar-btn-confirmar"
             onClick={manejarReactivar}
             disabled={cargando}
           >
