@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";  // ⭐ Agregar useEffect
+import axios from 'axios';
 import {
   Search,
   Edit,
@@ -21,7 +22,7 @@ import ModalVisualizarPDF from "../Contratos/Modales/ModalVisualizarPDF";
 import "./TablaContratos.css";
 
 const TablaContratos = () => {
-  const [esAdministrador, setEsAdministrador] = useState(false);
+  const [rolUsuario, setRolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
 
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
@@ -38,227 +39,33 @@ const TablaContratos = () => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [contratoPDFActual, setContratoPDFActual] = useState(null);
 
-  const [datosContratos, setDatosContratos] = useState([
-    {
-      id: 1,
-      // Datos de Contrato
-      representante_empresa: "PEDRO HERNÁNDEZ RUÍZ",
-      domicilio: "Calle Independencia 123, Centro, Oaxaca",
+  const [datosContratos, setDatosContratos] = useState([]);
 
-      // Datos del Servicio
-      nombre_cliente: "Juan Pérez García",
-      nacionalidad: "Mexicana",
-      rfc: "GOLJ880915H80",
-      telefono_cliente: "9511234567",
-      ciudad_origen: "Oaxaca Centro",
-      punto_intermedio: "Tlacolula",
-      destino: "Puerto Escondido",
-      tipo_pasaje: "Otro",
-      otro_tipo_pasaje_especificacion: "Transporte para evento corporativo",
-      n_unidades_contratadas: 1,
-      numero_pasajeros: 15,
-      fecha_inicio_servicio: "2025-10-20",
-      horario_inicio_servicio: "08:00",
-      fecha_final_servicio: "2025-10-22",
-      horario_final_servicio: "18:00",
-      itinerario_detallado:
-        "Salida de Oaxaca, parada en Tlacolula para desayuno, llegada a Puerto Escondido.",
+  useEffect(() => {
+    cargarContratos();
+  }, []);
 
-      // Costo Extra
-      importe_servicio: 8500.0,
-      anticipo: 3000.0,
-      fecha_liquidacion: "2025-10-15",
-      costos_cubiertos: [
-        "Actividades no especificadas",
-        "Peaje de Casetas necesarias durante todo el trayecto",
-        "Viáticos del conductor",
-      ],
-      otro_costo_especificacion: "",
+  // ⭐ AGREGAR: Función para cargar contratos
+  const cargarContratos = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://127.0.0.1:8000/api/contratos", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
 
-      // Datos Vehículo
-      marca_vehiculo: "Toyota",
-      modelo_vehiculo: "Hiace",
-      placa_vehiculo: "ABC-123-D",
-      capacidad_vehiculo: 15,
-      aire_acondicionado: true,
-      asientos_reclinables: true,
-
-      fecha_registro: "02/09/2025",
-      activo: true,
-    },
-    {
-      id: 2,
-      representante_empresa: "PEDRO HERNÁNDEZ RUÍZ",
-      domicilio: "Calle Independencia 123, Centro, Oaxaca",
-
-      nombre_cliente: "María López Sánchez",
-      nacionalidad: "Estadounidense",
-      rfc: "MARA750101QW3",
-      telefono_cliente: "9512345678",
-      ciudad_origen: "Oaxaca Aeropuerto",
-      punto_intermedio: "Ocotlán",
-      destino: "Huatulco",
-      tipo_pasaje: "Turismo Internacional",
-      n_unidades_contratadas: 1,
-      numero_pasajeros: 20,
-      fecha_inicio_servicio: "2025-10-25",
-      horario_inicio_servicio: "09:00",
-      fecha_final_servicio: "2025-10-27",
-      horario_final_servicio: "19:00",
-      itinerario_detallado:
-        "Recogida en aeropuerto, tour por Ocotlán, destino final Huatulco.",
-
-      importe_servicio: 12000.0,
-      anticipo: 5000.0,
-      fecha_liquidacion: "2025-10-20",
-      costos_cubiertos: [
-        "Servicio a disposición en el destino por máximo 30km a la redonda",
-        "Seguro de Viajero en accidente automovilístico siempre y cuando el pasajero esté dentro de la unidad",
-        "Piso en Aeropuerto",
-      ],
-      otro_costo_especificacion: "",
-
-      marca_vehiculo: "Mercedes",
-      modelo_vehiculo: "Sprinter",
-      placa_vehiculo: "XYZ-456-E",
-      capacidad_vehiculo: 20,
-      aire_acondicionado: true,
-      asientos_reclinables: true,
-
-      fecha_registro: "02/09/2025",
-      activo: true,
-    },
-    {
-      id: 3,
-      representante_empresa: "PEDRO HERNÁNDEZ RUÍZ",
-      domicilio: "Calle Independencia 123, Centro, Oaxaca",
-
-      nombre_cliente: "Carlos Ramírez Torres",
-      nacionalidad: "Mexicana",
-      rfc: "SOUF921225L94",
-      telefono_cliente: "9513456789",
-      ciudad_origen: "Oaxaca Centro",
-      punto_intermedio: "",
-      destino: "Hierve el Agua",
-      tipo_pasaje: "Nacional",
-      n_unidades_contratadas: 1,
-      numero_pasajeros: 12,
-      fecha_inicio_servicio: "2025-10-28",
-      horario_inicio_servicio: "07:30",
-      fecha_final_servicio: "2025-10-30",
-      horario_final_servicio: "17:30",
-      itinerario_detallado:
-        "Viaje directo a Hierve el Agua, visita guiada incluida.",
-
-      importe_servicio: 6500.0,
-      anticipo: 2000.0,
-      fecha_liquidacion: "2025-10-25",
-      costos_cubiertos: [
-        "Servicio a disposición en el destino por máximo 10 horas al día",
-        "Viáticos del conductor",
-      ],
-      otro_costo_especificacion: "",
-
-      marca_vehiculo: "Nissan",
-      modelo_vehiculo: "Urvan",
-      placa_vehiculo: "DEF-789-G",
-      capacidad_vehiculo: 12,
-      aire_acondicionado: false,
-      asientos_reclinables: true,
-
-      fecha_registro: "02/09/2025",
-      activo: false,
-    },
-    {
-      id: 4,
-      representante_empresa: "PEDRO HERNÁNDEZ RUÍZ",
-      domicilio: "Calle Independencia 123, Centro, Oaxaca",
-
-      nombre_cliente: "Ana Martínez Flores",
-      nacionalidad: "Mexicana",
-      rfc: "REMA800305TR2",
-      telefono_cliente: "9514567890",
-      ciudad_origen: "Hotel Casa Oaxaca",
-      punto_intermedio: "Teotitlán del Valle",
-      destino: "Monte Albán",
-      tipo_pasaje: "Turismo Estatal",
-      n_unidades_contratadas: 1,
-      numero_pasajeros: 18,
-      fecha_inicio_servicio: "2025-11-01",
-      horario_inicio_servicio: "10:00",
-      fecha_final_servicio: "2025-11-03",
-      horario_final_servicio: "20:00",
-      itinerario_detallado:
-        "Salida del hotel, visita a Teotitlán del Valle, tour en Monte Albán.",
-
-      importe_servicio: 9500.0,
-      anticipo: 4000.0,
-      fecha_liquidacion: "2025-10-28",
-      costos_cubiertos: [
-        "Combustible a consumir durante todo el trayecto",
-        "Peaje de Casetas necesarias durante todo el trayecto",
-        "Servicio a disposición en el destino por máximo 30km a la redonda",
-      ],
-      otro_costo_especificacion: "",
-
-      marca_vehiculo: "Ford",
-      modelo_vehiculo: "Transit",
-      placa_vehiculo: "GHI-012-J",
-      capacidad_vehiculo: 18,
-      aire_acondicionado: true,
-      asientos_reclinables: false,
-
-      fecha_registro: "02/09/2025",
-      activo: true,
-    },
-    {
-      id: 5,
-      representante_empresa: "PEDRO HERNÁNDEZ RUÍZ",
-      domicilio: "Calle Independencia 123, Centro, Oaxaca",
-
-      nombre_cliente: "Roberto Gómez Luna",
-      nacionalidad: "Mexicana",
-      rfc: "DIPJ660718AZ5",
-      telefono_cliente: "9515678901",
-      ciudad_origen: "Oaxaca Terminal ADO",
-      punto_intermedio: "Mitla",
-      destino: "Zipolite",
-      tipo_pasaje: "Escolar",
-      n_unidades_contratadas: 2,
-      numero_pasajeros: 25,
-      fecha_inicio_servicio: "2025-11-05",
-      horario_inicio_servicio: "08:30",
-      fecha_final_servicio: "2025-11-07",
-      horario_final_servicio: "18:30",
-      itinerario_detallado:
-        "Excursión escolar con parada en Mitla para actividades educativas.",
-
-      importe_servicio: 15000.0,
-      anticipo: 7000.0,
-      fecha_liquidacion: "2025-11-01",
-      costos_cubiertos: [
-        "Combustible a consumir durante todo el trayecto",
-        "Peaje de Casetas necesarias durante todo el trayecto",
-        "Viáticos del conductor",
-        "Alimentos no especificados",
-      ],
-      otro_costo_especificacion: "",
-
-      marca_vehiculo: "Chevrolet",
-      modelo_vehiculo: "Express",
-      placa_vehiculo: "JKL-345-M",
-      capacidad_vehiculo: 15,
-      aire_acondicionado: true,
-      asientos_reclinables: true,
-
-      fecha_registro: "03/09/2025",
-      activo: false,
-    },
-  ]);
+      setDatosContratos(response.data);
+      console.log('✅ Contratos cargados:', response.data.length);
+    } catch (error) {
+      console.error('❌ Error al cargar contratos:', error);
+    }
+  };
 
   const contratosFiltrados = datosContratos.filter((contrato) => {
-    if (!esAdministrador && !contrato.activo) {
-      return false;
+    if (rolUsuario === 'admin' && !contrato.activo) {
+      return true;
     }
 
     const busqueda = terminoBusqueda.toLowerCase();
@@ -317,7 +124,7 @@ const TablaContratos = () => {
         visualizarPDF(contrato);
         break;
       case "eliminar":
-        if (esAdministrador && !contrato.activo) {
+        if (rolUsuario === 'admin' && !contrato.activo) {
           setContratoAEliminarDefinitivo(contrato);
         } else {
           setContratoAEliminar(contrato);
@@ -515,18 +322,97 @@ const TablaContratos = () => {
     }
   };
 
+  const fixHora = (h) => {
+    if (!h || typeof h !== "string") return null;
+    if (h.includes("AM") || h.includes("PM")) {
+      // Convertir AM/PM a 24h
+      const [time, modifier] = h.split(" ");
+      let [hours, minutes] = time.split(":");
+
+      if (modifier === "PM" && hours !== "12") {
+        hours = String(parseInt(hours, 10) + 12);
+      }
+      if (modifier === "AM" && hours === "12") {
+        hours = "00";
+      }
+
+      return `${hours}:${minutes}`;
+    }
+    return h.length >= 4 ? h : null;
+  };
+
+  const fixArray = (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    return value.split(",").map(v => v.trim());
+  };
+
   const manejarGuardarContrato = async (datosActualizados) => {
     try {
-      setDatosContratos(
-        datosContratos.map((contrato) =>
-          contrato.id === datosActualizados.id ? datosActualizados : contrato
-        )
+      const token = localStorage.getItem("token");
+
+      // Crear objeto con los datos para el backend
+      const datosContrato = {
+        representante_empresa: datosActualizados.representante_empresa,
+        domicilio: datosActualizados.domicilio,
+
+        // Datos del cliente
+        nombre_cliente: datosActualizados.nombre_cliente,
+        nacionalidad: datosActualizados.nacionalidad,
+        rfc: datosActualizados.rfc,
+        telefono_cliente: datosActualizados.telefono_cliente,
+
+        // Servicio
+        ciudad_origen: datosActualizados.ciudad_origen,
+        punto_intermedio: datosActualizados.punto_intermedio,
+        destino: datosActualizados.destino,
+        tipo_pasaje: datosActualizados.tipo_pasaje,
+        otro_tipo_pasaje_especificacion: datosActualizados.otro_tipo_pasaje_especificacion,
+        n_unidades_contratadas: datosActualizados.n_unidades_contratadas,
+        numero_pasajeros: datosActualizados.numero_pasajeros,
+        fecha_inicio_servicio: datosActualizados.fecha_inicio_servicio,
+        horario_inicio_servicio: fixHora(datosActualizados.horario_inicio_servicio),
+        fecha_final_servicio: datosActualizados.fecha_final_servicio,
+        horario_final_servicio: fixHora(datosActualizados.horario_final_servicio),
+        itinerario_detallado: datosActualizados.itinerario_detallado,
+
+        // Costos
+        importe_servicio: datosActualizados.importe_servicio,
+        anticipo: datosActualizados.anticipo,
+        fecha_liquidacion: datosActualizados.fecha_liquidacion,
+        costos_cubiertos: fixArray(datosActualizados.costos_cubiertos),
+
+        otro_costo_especificacion: datosActualizados.otro_costo_especificacion,
+
+        // Vehículo
+        marca_vehiculo: datosActualizados.marca_vehiculo,
+        modelo_vehiculo: datosActualizados.modelo_vehiculo,
+        placa_vehiculo: datosActualizados.placa_vehiculo,
+        capacidad_vehiculo: datosActualizados.capacidad_vehiculo,
+        aire_acondicionado: datosActualizados.aire_acondicionado,
+        asientos_reclinables: datosActualizados.asientos_reclinables,
+      };
+
+      // ⭐ AGREGAR: Actualizar en backend
+      await axios.put(
+        `http://127.0.0.1:8000/api/contratos/${datosActualizados.id}`,
+        datosContrato,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            'Content-Type': 'application/json',
+          }
+        }
       );
 
-      console.log("Contrato actualizado:", datosActualizados);
+      // ⭐ AGREGAR: Recargar datos
+      await cargarContratos();
+
+      console.log("✅ Contrato actualizado en backend");
       return Promise.resolve();
     } catch (error) {
-      console.error("Error al actualizar contrato:", error);
+      console.error("❌ Error al actualizar contrato:", error);
       throw error;
     }
   };
@@ -538,17 +424,24 @@ const TablaContratos = () => {
     }
 
     try {
-      setDatosContratos(
-        datosContratos.map((c) =>
-          c.id === contrato.id ? { ...c, activo: false } : c
-        )
-      );
+      const token = localStorage.getItem("token");
+
+      // ⭐ AGREGAR: Eliminar en backend
+      await axios.delete(`http://127.0.0.1:8000/api/contratos/${contrato.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
+
+      // ⭐ AGREGAR: Recargar datos
+      await cargarContratos();
 
       setContratoAEliminar(null);
-      console.log("Contrato DESACTIVADO:", contrato);
+      console.log("✅ Contrato eliminado del backend");
       return Promise.resolve();
     } catch (error) {
-      console.error("Error al desactivar contrato:", error);
+      console.error("❌ Error al eliminar contrato:", error);
       setContratoAEliminar(null);
       throw error;
     }
@@ -556,27 +449,52 @@ const TablaContratos = () => {
 
   const manejarRestaurar = async (contrato) => {
     try {
-      setDatosContratos(
-        datosContratos.map((c) =>
-          c.id === contrato.id ? { ...c, activo: true } : c
-        )
+      const token = localStorage.getItem("token");
+
+      // ⭐ AGREGAR: Restaurar en backend
+      await axios.post(
+        `http://127.0.0.1:8000/api/contratos/${contrato.id}/restore`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
       );
 
+      // ⭐ AGREGAR: Recargar datos
+      await cargarContratos();
+
       setContratoARestaurar(null);
-      console.log("Contrato RESTAURADO:", contrato);
+      console.log("✅ Contrato restaurado en backend");
     } catch (error) {
-      console.error("Error al restaurar contrato:", error);
+      console.error("❌ Error al restaurar contrato:", error);
     }
   };
 
   const manejarEliminarDefinitivo = async (contrato) => {
     try {
-      setDatosContratos(datosContratos.filter((c) => c.id !== contrato.id));
+      const token = localStorage.getItem("token");
+
+      // ⭐ AGREGAR: Forzar eliminación permanente
+      await axios.delete(
+        `http://127.0.0.1:8000/api/contratos/${contrato.id}/force`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
+      );
+
+      // ⭐ AGREGAR: Recargar datos
+      await cargarContratos();
 
       setContratoAEliminarDefinitivo(null);
-      console.log("Contrato eliminado DEFINITIVAMENTE:", contrato);
+      console.log("✅ Contrato eliminado DEFINITIVAMENTE del backend");
     } catch (error) {
-      console.error("Error al eliminar definitivamente contrato:", error);
+      console.error("❌ Error al eliminar definitivamente contrato:", error);
     }
   };
 
@@ -628,19 +546,6 @@ const TablaContratos = () => {
             <div className="Contratos-linea Contratos-amarilla"></div>
           </div>
           <h1 className="Contratos-titulo">Gestión de Contratos</h1>
-          <span
-            style={{
-              padding: "0.25rem 0.75rem",
-              borderRadius: "12px",
-              fontSize: "0.85rem",
-              fontWeight: "600",
-              background: "rgba(255, 255, 255, 0.2)",
-              color: "white",
-              marginLeft: "1rem",
-            }}
-          >
-            {esAdministrador ? "ADMINISTRADOR" : "USUARIO"}
-          </span>
         </div>
 
         <div className="Contratos-contenedor-estadisticas">
@@ -655,7 +560,7 @@ const TablaContratos = () => {
             </div>
           </div>
 
-          {esAdministrador && (
+          {rolUsuario === 'admin' && (
             <div className="Contratos-estadistica">
               <div className="Contratos-icono-estadistica-cuadrado">
                 <BarChart3 size={20} />
@@ -672,22 +577,6 @@ const TablaContratos = () => {
 
       <div className="Contratos-controles">
         <div className="Contratos-control-registros">
-          <button
-            onClick={() => setEsAdministrador(!esAdministrador)}
-            style={{
-              padding: "0.5rem 1rem",
-              background: "linear-gradient(135deg, #17a2b8, #138496)",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontWeight: "600",
-              marginRight: "1rem",
-            }}
-          >
-            Cambiar a {esAdministrador ? "Usuario" : "Admin"}
-          </button>
-
           <label htmlFor="registros">Mostrar</label>
           <select
             id="registros"
@@ -811,7 +700,7 @@ const TablaContratos = () => {
                       <Edit size={16} />
                     </button>
 
-                    {esAdministrador && !contrato.activo && (
+                    {rolUsuario === 'admin' && !contrato.activo && (
                       <button
                         className="Contratos-boton-accion Contratos-restaurar"
                         onClick={() => manejarAccion("restaurar", contrato)}
@@ -830,7 +719,7 @@ const TablaContratos = () => {
                       className="Contratos-boton-accion Contratos-eliminar"
                       onClick={() => manejarAccion("eliminar", contrato)}
                       title={
-                        esAdministrador && !contrato.activo
+                        rolUsuario === 'admin' && !contrato.activo
                           ? "Eliminar definitivamente"
                           : "Desactivar contrato"
                       }
@@ -872,9 +761,8 @@ const TablaContratos = () => {
               (numero) => (
                 <button
                   key={numero}
-                  className={`Contratos-numero-pagina ${
-                    paginaActual === numero ? "Contratos-activo" : ""
-                  }`}
+                  className={`Contratos-numero-pagina ${paginaActual === numero ? "Contratos-activo" : ""
+                    }`}
                   onClick={() => cambiarPagina(numero)}
                 >
                   {numero}
@@ -919,7 +807,6 @@ const TablaContratos = () => {
         <ModalEliminarContrato
           contrato={contratoAEliminar}
           alConfirmar={manejarEliminarContrato}
-          esAdministrador={esAdministrador}
         />
       )}
 

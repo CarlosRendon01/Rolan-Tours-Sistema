@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import {
   Search,
   Edit,
@@ -21,7 +22,7 @@ import ModalVisualizarPDF from "./Modales/ModalVisualizarPDF";
 import "./TablaOrdenes.css";
 
 const TablaOrdenes = () => {
-  const [esAdministrador, setEsAdministrador] = useState(false);
+  const [rolUsuario, setRolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
   const [vehiculosDisponibles, setVehiculosDisponibles] = useState([]);
   const [conductoresDisponibles, setConductoresDisponibles] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
@@ -41,237 +42,46 @@ const TablaOrdenes = () => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [ordenPDFActual, setOrdenPDFActual] = useState(null);
 
-  const [datosOrdenes, setDatosOrdenes] = useState([
-    {
-      id: 1,
-      folio: 101,
-      fecha_orden_servicio: "2025-10-15",
-      nombre_prestador: "Antonio Alonso Meza",
-      nombre_conductor: "Juan",
-      apellido_paterno_conductor: "Pérez",
-      apellido_materno_conductor: "García",
-      telefono_conductor: "9511234567",
-      licencia_conductor: "LIC123456",
-      nombre_cliente: "Hotel Posada Real",
-      telefono_cliente: "9517654321",
-      ciudad_origen: "Oaxaca Centro",
-      punto_intermedio: "Tlacolula",
-      destino: "Puerto Escondido",
-      numero_pasajeros: 15,
-      fecha_inicio_servicio: "2025-10-20",
-      horario_inicio_servicio: "08:00",
-      fecha_final_servicio: "2025-10-22",
-      horario_final_servicio: "18:00",
-      horario_final_real: "18:30",
-      itinerario_detallado:
-        "Salida desde centro, parada en Tlacolula por 30 min, continuar a Puerto Escondido",
-      direccion_retorno: "Av. Juárez 123, Centro, Oaxaca",
-      marca: "Toyota",
-      modelo: "Hiace",
-      placa: "ABC-123-D",
-      km_inicial: 10000,
-      km_final: 10850,
-      litros_consumidos: 85,
-      rendimiento: "10 km/L",
-      activo: true,
-    },
-    {
-      id: 2,
-      folio: 102,
-      fecha_orden_servicio: "2025-10-18",
-      nombre_prestador: "Antonio Alonso Meza",
-      nombre_conductor: "María",
-      apellido_paterno_conductor: "López",
-      apellido_materno_conductor: "Martínez",
-      telefono_conductor: "9512345678",
-      licencia_conductor: "LIC234567",
-      nombre_cliente: "Grupo Turístico Norte",
-      telefono_cliente: "9518765432",
-      ciudad_origen: "Oaxaca Aeropuerto",
-      punto_intermedio: "Ocotlán",
-      destino: "Huatulco",
-      numero_pasajeros: 20,
-      fecha_inicio_servicio: "2025-10-25",
-      horario_inicio_servicio: "09:00",
-      fecha_final_servicio: "2025-10-27",
-      horario_final_servicio: "19:00",
-      horario_final_real: "19:15",
-      itinerario_detallado:
-        "Recoger en aeropuerto, tour por Ocotlán, destino final Huatulco",
-      direccion_retorno: "Carretera Oaxaca-Xoxocotlán km 5.5",
-      marca: "Mercedes",
-      modelo: "Sprinter",
-      placa: "XYZ-456-E",
-      km_inicial: 25000,
-      km_final: 25950,
-      litros_consumidos: 95,
-      rendimiento: "10 km/L",
-      activo: true,
-    },
-    {
-      id: 3,
-      folio: 103,
-      fecha_orden_servicio: "2025-10-20",
-      nombre_prestador: "Antonio Alonso Meza",
-      nombre_conductor: "Carlos",
-      apellido_paterno_conductor: "Hernández",
-      apellido_materno_conductor: "Ruiz",
-      telefono_conductor: "9513456789",
-      licencia_conductor: "LIC345678",
-      nombre_cliente: "Familia Ramírez",
-      telefono_cliente: "9519876543",
-      ciudad_origen: "Oaxaca Centro",
-      punto_intermedio: "",
-      destino: "Hierve el Agua",
-      numero_pasajeros: 12,
-      fecha_inicio_servicio: "2025-10-28",
-      horario_inicio_servicio: "07:30",
-      fecha_final_servicio: "2025-10-30",
-      horario_final_servicio: "17:30",
-      horario_final_real: "17:45",
-      itinerario_detallado:
-        "Tour directo a Hierve el Agua, recorrido completo y regreso",
-      direccion_retorno: "Calle Alcalá 501, Centro",
-      marca: "Ford",
-      modelo: "Transit",
-      placa: "DEF-789-F",
-      km_inicial: 15000,
-      km_final: 15400,
-      litros_consumidos: 40,
-      rendimiento: "10 km/L",
-      activo: false,
-    },
-    {
-      id: 4,
-      folio: 104,
-      fecha_orden_servicio: "2025-10-22",
-      nombre_prestador: "Antonio Alonso Meza",
-      nombre_conductor: "Ana",
-      apellido_paterno_conductor: "Sánchez",
-      apellido_materno_conductor: "Torres",
-      telefono_conductor: "9514567890",
-      licencia_conductor: "LIC456789",
-      nombre_cliente: "Hotel Casa Oaxaca",
-      telefono_cliente: "9510987654",
-      ciudad_origen: "Hotel Casa Oaxaca",
-      punto_intermedio: "Teotitlán del Valle",
-      destino: "Monte Albán",
-      numero_pasajeros: 18,
-      fecha_inicio_servicio: "2025-11-01",
-      horario_inicio_servicio: "10:00",
-      fecha_final_servicio: "2025-11-03",
-      horario_final_servicio: "20:00",
-      horario_final_real: "20:10",
-      itinerario_detallado:
-        "Visita a talleres de Teotitlán, luego Monte Albán, regreso al hotel",
-      direccion_retorno: "García Vigil 407, Centro",
-      marca: "Chevrolet",
-      modelo: "Express",
-      placa: "GHI-012-G",
-      km_inicial: 30000,
-      km_final: 30600,
-      litros_consumidos: 60,
-      rendimiento: "10 km/L",
-      activo: true,
-    },
-    {
-      id: 5,
-      folio: 105,
-      fecha_orden_servicio: "2025-10-25",
-      nombre_prestador: "Antonio Alonso Meza",
-      nombre_conductor: "Roberto",
-      apellido_paterno_conductor: "Mendoza",
-      apellido_materno_conductor: "Cruz",
-      telefono_conductor: "9515678901",
-      licencia_conductor: "LIC567890",
-      nombre_cliente: "Agencia Viajes Express",
-      telefono_cliente: "9511098765",
-      ciudad_origen: "Oaxaca Terminal ADO",
-      punto_intermedio: "Mitla",
-      destino: "Zipolite",
-      numero_pasajeros: 25,
-      fecha_inicio_servicio: "2025-11-05",
-      horario_inicio_servicio: "08:30",
-      fecha_final_servicio: "2025-11-07",
-      horario_final_servicio: "18:30",
-      horario_final_real: "18:40",
-      itinerario_detallado:
-        "Salida terminal, parada Mitla, destino playa Zipolite",
-      direccion_retorno: "Calzada Héroes de Chapultepec 1036",
-      marca: "Toyota",
-      modelo: "Coaster",
-      placa: "JKL-345-H",
-      km_inicial: 20000,
-      km_final: 21200,
-      litros_consumidos: 120,
-      rendimiento: "10 km/L",
-      activo: false,
-    },
-  ]);
+  const [datosOrdenes, setDatosOrdenes] = useState([]);
 
   useEffect(() => {
-    const vehiculosEjemplo = [
-      {
-        id: 1,
-        nombre: "Sprinter Mercedes-Benz",
-        rendimiento: 12.5,
-        marca: "Mercedes-Benz",
-        modelo: "Sprinter 2024",
-        numero_placa: "ABC-123",
-      },
-      {
-        id: 2,
-        nombre: "Hiace Toyota",
-        rendimiento: 10.8,
-        marca: "Toyota",
-        modelo: "Hiace 2023",
-        numero_placa: "XYZ-456",
-      },
-      {
-        id: 3,
-        nombre: "Urvan Nissan",
-        rendimiento: 9.5,
-        marca: "Nissan",
-        modelo: "Urvan 2023",
-        numero_placa: "DEF-789",
-      },
-    ];
-    setVehiculosDisponibles(vehiculosEjemplo);
+    cargarDatos();
   }, []);
 
-  useEffect(() => {
-    const conductoresEjemplo = [
-      {
-        id: 1,
-        nombre_conductor: "Carlos",
-        apellido_paterno_conductor: "Pérez",
-        apellido_materno_conductor: "Torres",
-        telefono_conductor: "9511244232",
-        licencia_conductor: "CAC123356",
-      },
-      {
-        id: 2,
-        nombre_conductor: "Marco",
-        apellido_paterno_conductor: "Matínez",
-        apellido_materno_conductor: "Antonio",
-        telefono_conductor: "9517879880",
-        licencia_conductor: "MMA123356",
-      },
-      {
-        id: 3,
-        nombre_conductor: "Rafael",
-        apellido_paterno_conductor: "Sanchéz",
-        apellido_materno_conductor: "Clavel",
-        telefono_conductor: "9517564653",
-        licencia_conductor: "RSC123356",
-      },
-    ];
-    setConductoresDisponibles(conductoresEjemplo);
-  }, []);
+  const cargarDatos = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // Cargar órdenes, vehículos y conductores en paralelo
+      const [ordenesRes, vehiculosRes, conductoresRes] = await Promise.all([
+        axios.get("http://127.0.0.1:8000/api/ordenes-servicio", {
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+        }),
+        axios.get("http://127.0.0.1:8000/api/ordenes-servicio/vehiculos/disponibles", {
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+        }),
+        axios.get("http://127.0.0.1:8000/api/ordenes-servicio/conductores/disponibles", {
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+        })
+      ]);
+
+      setDatosOrdenes(ordenesRes.data);
+      setVehiculosDisponibles(vehiculosRes.data);
+      setConductoresDisponibles(conductoresRes.data);
+
+      console.log('✅ Datos cargados:', {
+        ordenes: ordenesRes.data.length,
+        vehiculos: vehiculosRes.data.length,
+        conductores: conductoresRes.data.length
+      });
+    } catch (error) {
+      console.error('❌ Error al cargar datos:', error);
+    }
+  };
 
   const ordenesFiltrados = datosOrdenes.filter((orden) => {
-    if (!esAdministrador && !orden.activo) {
-      return false;
+    if (rolUsuario === 'admin' && !orden.activo) {
+      return true;
     }
 
     const busqueda = terminoBusqueda.toLowerCase();
@@ -329,7 +139,7 @@ const TablaOrdenes = () => {
         visualizarPDF(orden);
         break;
       case "eliminar":
-        if (esAdministrador && !orden.activo) {
+        if (rolUsuario === 'admin' && !orden.activo) {
           setOrdenAEliminarDefinitivo(orden);
         } else {
           setOrdenAEliminar(orden);
@@ -362,18 +172,89 @@ const TablaOrdenes = () => {
     setOrdenPDFActual(null);
   };
 
+  const fixHora = (h) => {
+    if (!h || typeof h !== "string") return null;
+    if (h.includes("AM") || h.includes("PM")) {
+      // Convertir AM/PM a 24h
+      const [time, modifier] = h.split(" ");
+      let [hours, minutes] = time.split(":");
+
+      if (modifier === "PM" && hours !== "12") {
+        hours = String(parseInt(hours, 10) + 12);
+      }
+      if (modifier === "AM" && hours === "12") {
+        hours = "00";
+      }
+
+      return `${hours}:${minutes}`;
+    }
+    return h.length >= 4 ? h : null;
+  };
+
   const manejarGuardarOrden = async (datosActualizados) => {
     try {
-      setDatosOrdenes(
-        datosOrdenes.map((orden) =>
-          orden.id === datosActualizados.id ? datosActualizados : orden
-        )
+      const token = localStorage.getItem("token");
+
+      // Crear objeto con los datos mapeados
+      const datosOrden = {
+        folio: datosActualizados.folio,
+        fecha_orden_servicio: datosActualizados.fecha_orden_servicio,
+        nombre_prestador: datosActualizados.nombre_prestador || 'Antonio Alonso Meza',
+
+        // Conductor
+        conductor_id: datosActualizados.conductor_id,
+        nombre_conductor: datosActualizados.nombre_conductor,
+        apellido_paterno_conductor: datosActualizados.apellido_paterno_conductor,
+        apellido_materno_conductor: datosActualizados.apellido_materno_conductor,
+        telefono_conductor: datosActualizados.telefono_conductor,
+        licencia_conductor: datosActualizados.licencia_conductor,
+
+        // Servicio
+        nombre_cliente: datosActualizados.nombre_cliente,
+        telefono_cliente: datosActualizados.telefono_cliente,
+        ciudad_origen: datosActualizados.ciudad_origen,
+        punto_intermedio: datosActualizados.punto_intermedio,
+        destino: datosActualizados.destino,
+        numero_pasajeros: datosActualizados.numero_pasajeros,
+        fecha_inicio_servicio: datosActualizados.fecha_inicio_servicio,
+        horario_inicio_servicio: fixHora(datosActualizados.horario_inicio_servicio),
+        fecha_final_servicio: datosActualizados.fecha_final_servicio,
+        horario_final_servicio: fixHora(datosActualizados.horario_final_servicio),
+        horario_final_real: fixHora(datosActualizados.horario_final_real),
+        itinerario_detallado: datosActualizados.itinerario_detallado,
+        direccion_retorno: datosActualizados.direccion_retorno,
+
+        // Vehículo
+        vehiculo_id: datosActualizados.vehiculo_id,
+        marca: datosActualizados.marca,
+        modelo: datosActualizados.modelo,
+        placa: datosActualizados.placa,
+        km_inicial: datosActualizados.km_inicial,
+        km_final: datosActualizados.km_final,
+        litros_consumidos: datosActualizados.litros_consumidos,
+        rendimiento: datosActualizados.rendimiento,
+      };
+
+      // ⭐ AGREGAR: Actualizar en backend
+      await axios.put(
+        `http://127.0.0.1:8000/api/ordenes-servicio/${datosActualizados.id}`,
+        datosOrden,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            'Content-Type': 'application/json',
+          }
+        }
       );
 
-      console.log("Orden actualizada:", datosActualizados);
+      // ⭐ AGREGAR: Recargar datos
+      await cargarDatos();
+
+      console.log("✅ Orden actualizada en backend");
       return Promise.resolve();
     } catch (error) {
-      console.error("Error al actualizar orden:", error);
+      console.error("❌ Error al actualizar orden:", error);
       throw error;
     }
   };
@@ -385,17 +266,24 @@ const TablaOrdenes = () => {
     }
 
     try {
-      setDatosOrdenes(
-        datosOrdenes.map((c) =>
-          c.id === orden.id ? { ...c, activo: false } : c
-        )
-      );
+      const token = localStorage.getItem("token");
+
+      // ⭐ AGREGAR: Eliminar en backend
+      await axios.delete(`http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
+
+      // ⭐ AGREGAR: Recargar datos
+      await cargarDatos();
 
       setOrdenAEliminar(null);
-      console.log("Orden DESACTIVADA:", orden);
+      console.log("✅ Orden eliminada del backend");
       return Promise.resolve();
     } catch (error) {
-      console.error("Error al desactivar orden:", error);
+      console.error("❌ Error al eliminar orden:", error);
       setOrdenAEliminar(null);
       throw error;
     }
@@ -403,27 +291,52 @@ const TablaOrdenes = () => {
 
   const manejarRestaurar = async (orden) => {
     try {
-      setDatosOrdenes(
-        datosOrdenes.map((c) =>
-          c.id === orden.id ? { ...c, activo: true } : c
-        )
+      const token = localStorage.getItem("token");
+
+      // ⭐ AGREGAR: Restaurar en backend
+      await axios.post(
+        `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}/restore`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
       );
 
+      // ⭐ AGREGAR: Recargar datos
+      await cargarDatos();
+
       setOrdenARestaurar(null);
-      console.log("Orden RESTAURADA:", orden);
+      console.log("✅ Orden restaurada en backend");
     } catch (error) {
-      console.error("Error al restaurar orden:", error);
+      console.error("❌ Error al restaurar orden:", error);
     }
   };
 
   const manejarEliminarDefinitivo = async (orden) => {
     try {
-      setDatosOrdenes(datosOrdenes.filter((c) => c.id !== orden.id));
+      const token = localStorage.getItem("token");
+
+      // ⭐ AGREGAR: Forzar eliminación permanente
+      await axios.delete(
+        `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}/force`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
+      );
+
+      // ⭐ AGREGAR: Recargar datos
+      await cargarDatos();
 
       setOrdenAEliminarDefinitivo(null);
-      console.log("Orden eliminada DEFINITIVAMENTE:", orden);
+      console.log("✅ Orden eliminada DEFINITIVAMENTE del backend");
     } catch (error) {
-      console.error("Error al eliminar definitivamente orden:", error);
+      console.error("❌ Error al eliminar definitivamente orden:", error);
     }
   };
 
@@ -578,9 +491,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      const nombreCompletoConduct = `${orden.nombre_conductor || ""} ${
-        orden.apellido_paterno_conductor || ""
-      } ${orden.apellido_materno_conductor || ""}`.trim();
+      const nombreCompletoConduct = `${orden.nombre_conductor || ""} ${orden.apellido_paterno_conductor || ""
+        } ${orden.apellido_materno_conductor || ""}`.trim();
 
       firstPage.drawText(nombreCompletoConduct, {
         x: 130,
@@ -694,9 +606,6 @@ const TablaOrdenes = () => {
             <div className="Ordenes-linea Ordenes-amarilla"></div>
           </div>
           <h1 className="Ordenes-titulo">Gestión de Órdenes</h1>
-          <span className="Ordenes-badge-rol">
-            {esAdministrador ? "ADMINISTRADOR" : "USUARIO"}
-          </span>
         </div>
 
         <div className="Ordenes-contenedor-estadisticas">
@@ -711,7 +620,7 @@ const TablaOrdenes = () => {
             </div>
           </div>
 
-          {esAdministrador && (
+          {rolUsuario === 'admin' && (
             <div className="Ordenes-estadistica">
               <div className="Ordenes-icono-estadistica-cuadrado">
                 <BarChart3 size={20} />
@@ -728,13 +637,6 @@ const TablaOrdenes = () => {
 
       <div className="Ordenes-controles">
         <div className="Ordenes-control-registros">
-          <button
-            onClick={() => setEsAdministrador(!esAdministrador)}
-            className="Ordenes-boton-cambiar-rol"
-          >
-            Cambiar a {esAdministrador ? "Usuario" : "Admin"}
-          </button>
-
           <label htmlFor="registros">Mostrar</label>
           <select
             id="registros"
@@ -786,9 +688,8 @@ const TablaOrdenes = () => {
             {ordenesPaginados.map((orden, index) => (
               <tr
                 key={orden.id}
-                className={`Ordenes-fila-orden ${
-                  !orden.activo ? "Ordenes-fila-inactiva" : ""
-                }`}
+                className={`Ordenes-fila-orden ${!orden.activo ? "Ordenes-fila-inactiva" : ""
+                  }`}
               >
                 <td data-label="Folio" className="Ordenes-columna-fecha">
                   <span className="Ordenes-badge-lead">{orden.folio}</span>
@@ -849,7 +750,7 @@ const TablaOrdenes = () => {
                       <Edit size={16} />
                     </button>
 
-                    {esAdministrador && !orden.activo && (
+                    {rolUsuario === 'admin' && !orden.activo && (
                       <button
                         className="Ordenes-boton-accion Ordenes-restaurar"
                         onClick={() => manejarAccion("restaurar", orden)}
@@ -863,7 +764,7 @@ const TablaOrdenes = () => {
                       className="Ordenes-boton-accion Ordenes-eliminar"
                       onClick={() => manejarAccion("eliminar", orden)}
                       title={
-                        esAdministrador && !orden.activo
+                        rolUsuario === 'admin' && !orden.activo
                           ? "Eliminar definitivamente"
                           : "Desactivar orden"
                       }
@@ -905,9 +806,8 @@ const TablaOrdenes = () => {
               (numero) => (
                 <button
                   key={numero}
-                  className={`Ordenes-numero-pagina ${
-                    paginaActual === numero ? "Ordenes-activo" : ""
-                  }`}
+                  className={`Ordenes-numero-pagina ${paginaActual === numero ? "Ordenes-activo" : ""
+                    }`}
                   onClick={() => cambiarPagina(numero)}
                 >
                   {numero}
@@ -954,7 +854,6 @@ const TablaOrdenes = () => {
         <ModalEliminarOrden
           orden={ordenAEliminar}
           alConfirmar={manejarEliminarOrden}
-          esAdministrador={esAdministrador}
         />
       )}
 
