@@ -1,25 +1,25 @@
-import { 
-  X, Home, DollarSign, MapPin, Calendar, Hash, 
-  Building, Users, Package, CheckCircle, XCircle, 
+import {
+  X, Home, DollarSign, MapPin, Calendar, Hash,
+  Building, Users, Package, CheckCircle, XCircle,
   AlertCircle, Image as ImageIcon, Bed, Star, Clock,
   FileText, Info
 } from 'lucide-react';
 import './ModalVerHospedaje.css';
 
 const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
-  
+
   // Función para obtener URL de archivo
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
-    
+
     if (typeof archivo === 'string') {
       return archivo;
     }
-    
+
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
-    
+
     return null;
   };
 
@@ -28,7 +28,7 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
   // Función para formatear precio
   const formatearPrecio = (precio, moneda = 'MXN') => {
     if (!precio) return 'N/A';
-    
+
     const simbolos = {
       'MXN': '$',
       'USD': '$',
@@ -64,7 +64,7 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
   const IconoEstado = obtenerIconoEstado(hospedaje.estado);
 
   // Dividir servicios por comas
-  const serviciosArray = hospedaje.servicios_instalaciones 
+  const serviciosArray = hospedaje.servicios_instalaciones
     ? hospedaje.servicios_instalaciones.split(',').map(s => s.trim()).filter(s => s)
     : [];
 
@@ -124,12 +124,12 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Foto del Hospedaje */}
                 <div className="mvh-hospedaje-imagen-container">
                   {fotoUrl ? (
-                    <img 
-                      src={fotoUrl} 
+                    <img
+                      src={fotoUrl}
                       alt={hospedaje.nombre_servicio}
                       className="mvh-hospedaje-foto"
                       onError={(e) => {

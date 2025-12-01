@@ -10,7 +10,7 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
     tipo_transporte: '',
     capacidad: '',
     descripcion_servicio: '',
-    
+
     // Paquete y precios
     tipo_paquete: '',
     duracion_paquete: '',
@@ -18,18 +18,18 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
     moneda: 'MXN',
     incluye: '',
     restricciones: '',
-    
+
     // Relación con proveedores
     empresa_proveedora_id: '',
     nombre_proveedor: '',
     ubicacion_salida: '',
     ubicacion_destino: '',
     disponibilidad: true,
-    
+
     // Información administrativa
     codigo_servicio: '',
     estado: 'Activo',
-    
+
     // Foto
     foto_servicio: null
   });
@@ -54,7 +54,7 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
 
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -66,7 +66,7 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
       if (proveedorSeleccionado) {
         setFormData(prev => ({
           ...prev,
-          nombre_proveedor: proveedorSeleccionado.nombre
+          nombre_proveedor: proveedorSeleccionado.nombre_razon_social || proveedorSeleccionado.nombre
         }));
       }
     }
@@ -481,7 +481,7 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
           <option value="">Seleccionar proveedor...</option>
           {proveedores.map(proveedor => (
             <option key={proveedor.id} value={proveedor.id}>
-              {proveedor.nombre}
+              {proveedor.nombre_razon_social || proveedor.nombre}
             </option>
           ))}
         </select>

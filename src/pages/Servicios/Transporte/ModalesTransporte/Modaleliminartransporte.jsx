@@ -15,8 +15,8 @@ export const modalEliminarTransporte = async (transporte, onConfirmar) => {
   }
 
   const nombreServicio = transporte.nombre_servicio;
-  const codigoServicio = transporte.codigo_servicio 
-    ? `Código: ${transporte.codigo_servicio}` 
+  const codigoServicio = transporte.codigo_servicio
+    ? `Código: ${transporte.codigo_servicio}`
     : `Servicio #${transporte.id?.toString().padStart(3, '0')}`;
 
   const resultado = await Swal.fire({
