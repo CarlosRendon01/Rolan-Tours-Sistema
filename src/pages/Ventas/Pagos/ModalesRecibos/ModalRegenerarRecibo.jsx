@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { X, RefreshCw, Info } from 'lucide-react';
 import './ModalRegenerarRecibo.css';
 
@@ -18,13 +19,32 @@ const ModalRegenerarRecibo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
   const manejarConfirmacion = async () => {
     setCargando(true);
     try {
+      const token = localStorage.getItem("token");
+
+      // ✅ Llamar al backend para restaurar
+      await axios.post(
+        `http://127.0.0.1:8000/api/abonos/${recibo.id}/restore`,
+        {
+          motivo_regeneracion: motivoRegeneracion
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
+      );
+
       await new Promise(resolve => setTimeout(resolve, 800));
+
       if (onConfirmar) {
         await onConfirmar(recibo, motivoRegeneracion);
       }
+
       onCerrar();
     } catch (error) {
       console.error('Error al regenerar:', error);
+      alert('Error al regenerar el recibo. Intenta nuevamente.');
     } finally {
       setCargando(false);
     }
@@ -52,7 +72,7 @@ const ModalRegenerarRecibo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
             <div>
               <p className="modal-regenerar-alerta-titulo">Acción de administrador</p>
               <p className="modal-regenerar-alerta-texto">
-                Este recibo fue eliminado visualmente por un vendedor. Al regenerarlo, 
+                Este recibo fue eliminado visualmente por un vendedor. Al regenerarlo,
                 volverá a estar visible para todos los usuarios.
               </p>
             </div>
@@ -103,14 +123,14 @@ const ModalRegenerarRecibo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
         </div>
 
         <div className="modal-regenerar-footer">
-          <button 
-            className="modal-regenerar-boton-secundario" 
+          <button
+            className="modal-regenerar-boton-secundario"
             onClick={onCerrar}
             disabled={cargando}
           >
             Cancelar
           </button>
-          <button 
+          <button
             className="modal-regenerar-boton-principal"
             onClick={manejarConfirmacion}
             disabled={cargando}

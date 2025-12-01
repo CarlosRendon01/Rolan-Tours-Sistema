@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import axios from 'axios';
 import './ModalEliminarRecibo.css';
 
 /**
@@ -73,27 +74,28 @@ export const modalEliminarRecibo = async (recibo, onConfirmar) => {
     modalCargando('Eliminando recibo...');
 
     try {
-      if (onConfirmar) {
-        await onConfirmar(recibo.id);
-      }
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://127.0.0.1:8000/api/abonos/${recibo.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
 
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
-
       Swal.close();
 
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminado!',
         html: `
-          <div class="eliminar-recibo-exito-contenido">
-            <p class="eliminar-recibo-exito-texto">El recibo ha sido eliminado exitosamente</p>
-            <p class="eliminar-recibo-exito-detalle">
-              Recibo: <span class="eliminar-recibo-exito-numero">${recibo.numeroRecibo}</span>
-            </p>
-            <p class="eliminar-recibo-exito-detalle">Cliente: ${recibo.cliente}</p>
-          </div>
-        `,
+        <div class="eliminar-recibo-exito-contenido">
+          <p class="eliminar-recibo-exito-texto">El recibo ha sido eliminado exitosamente</p>
+          <p class="eliminar-recibo-exito-detalle">
+            Recibo: <span class="eliminar-recibo-exito-numero">${recibo.numeroRecibo}</span>
+          </p>
+          <p class="eliminar-recibo-exito-detalle">Cliente: ${recibo.cliente}</p>
+        </div>
+      `,
         icon: 'success',
         confirmButtonText: 'Aceptar',
         customClass: {
@@ -107,6 +109,8 @@ export const modalEliminarRecibo = async (recibo, onConfirmar) => {
         timer: 3000,
         timerProgressBar: true
       });
+
+      if (onConfirmar) await onConfirmar();
 
       return true;
     } catch (error) {

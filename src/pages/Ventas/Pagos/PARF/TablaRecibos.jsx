@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import axios from "axios";
 import {
   Search,
   ChevronLeft,
@@ -30,7 +31,6 @@ const TablaRecibos = ({
   onEliminar = null,
   onDescargar = null,
   onImprimir = null,
-  rolUsuario = 'vendedor', // 'vendedor' o 'administrador'
   onRegenerar = null,
   onEliminarDefinitivo = null
 }) => {
@@ -40,120 +40,40 @@ const TablaRecibos = ({
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
-  
+
+  const [rolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
+
   // Estados para modales
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] = useState(false);
   const [reciboSeleccionado, setReciboSeleccionado] = useState(null);
 
-  // Datos de ejemplo mejorados
-  const datosRecibosEjemplo = [
-    {
-      id: 1,
-      numeroRecibo: 'REC-2025-001',
-      cliente: 'Roberto Sánchez Morales',
-      monto: 8000.00,
-      fechaEmision: '2025-09-20',
-      concepto: 'Abono 3/5 - Marketing Digital',
-      metodoPago: 'Transferencia',
-      estado: 'Emitido',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 2,
-      numeroRecibo: 'REC-2025-002',
-      cliente: 'Diana Torres Vega',
-      monto: 4500.00,
-      fechaEmision: '2025-09-18',
-      concepto: 'Abono 2/4 - Análisis de Mercado',
-      metodoPago: 'Efectivo',
-      estado: 'Emitido',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 3,
-      numeroRecibo: 'REC-2025-003',
-      cliente: 'Fernando Ramírez Cruz',
-      monto: 9000.00,
-      fechaEmision: '2025-09-22',
-      concepto: 'Abono 3/5 - Sistema ERP',
-      metodoPago: 'Cheque',
-      estado: 'Emitido',
-      eliminadoVisualmente: true, // Eliminado por vendedor
-      fechaEliminacion: '2025-09-25',
-      eliminadoPor: 'Juan Pérez'
-    },
-    {
-      id: 4,
-      numeroRecibo: 'REC-2025-004',
-      cliente: 'María González López',
-      monto: 5500.00,
-      fechaEmision: '2025-09-15',
-      concepto: 'Abono 1/3 - Consultoría Fiscal',
-      metodoPago: 'Transferencia',
-      estado: 'Emitido',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 5,
-      numeroRecibo: 'REC-2025-005',
-      cliente: 'Carlos Mendoza Ruiz',
-      monto: 12000.00,
-      fechaEmision: '2025-09-10',
-      concepto: 'Pago completo - Desarrollo Web',
-      metodoPago: 'Transferencia',
-      estado: 'Cancelado',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 6,
-      numeroRecibo: 'REC-2025-006',
-      cliente: 'Ana Patricia Flores',
-      monto: 3200.00,
-      fechaEmision: '2025-09-25',
-      concepto: 'Abono 2/2 - Capacitación Personal',
-      metodoPago: 'Efectivo',
-      estado: 'Emitido',
-      eliminadoVisualmente: true,
-      fechaEliminacion: '2025-09-28',
-      eliminadoPor: 'María Rodríguez'
-    },
-    {
-      id: 7,
-      numeroRecibo: 'REC-2025-007',
-      cliente: 'Jorge Luis Martínez',
-      monto: 7800.00,
-      fechaEmision: '2025-09-28',
-      concepto: 'Abono 4/6 - Auditoría Contable',
-      metodoPago: 'Cheque',
-      estado: 'Emitido',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 8,
-      numeroRecibo: 'REC-2025-008',
-      cliente: 'Patricia Hernández Díaz',
-      monto: 6500.00,
-      fechaEmision: '2025-09-30',
-      concepto: 'Abono 1/4 - Diseño Gráfico',
-      metodoPago: 'Transferencia',
-      estado: 'Emitido',
-      eliminadoVisualmente: false
-    },
-    {
-      id: 9,
-      numeroRecibo: 'REC-2025-009',
-      cliente: 'Luis Alberto Castro',
-      monto: 15000.00,
-      fechaEmision: '2025-08-12',
-      concepto: 'Pago único - Asesoría Legal',
-      metodoPago: 'Transferencia',
-      estado: 'Cancelado',
-      eliminadoVisualmente: false
-    }
-  ];
+  const API_URL = "http://127.0.0.1:8000/api/abonos"; // Ajusta al dominio/backend real
 
-  const datosRecibos = datosIniciales.length > 0 ? datosIniciales : datosRecibosEjemplo;
+  // Datos de ejemplo mejorados
+  const [datosRecibos, setdatosRecibos] = useState([]);
+
+  useEffect(() => {
+    cargarRecibos();
+  }, []);
+
+  const cargarRecibos = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(API_URL, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
+
+      const recibos = res.data.data || [];
+      setdatosRecibos(recibos);
+      console.log("Recibos cargadas:", recibos);
+    } catch (error) {
+      console.error("Error al cargar recibos:", error);
+    }
+  };
 
   // Formatear moneda
   const formatearMoneda = useCallback((monto) => {
@@ -182,33 +102,32 @@ const TablaRecibos = ({
 
   // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
-    if (rolUsuario === 'administrador') {
-      // Administrador ve todos los recibos, pero puede filtrar eliminados
+    if (rolUsuario === 'admin') {
       if (mostrarEliminados) {
-        return datosRecibos.filter(r => r.eliminadoVisualmente === true);
+        return datosRecibos.filter(r => r.activo === false);
       }
       return datosRecibos;
     } else {
       // Vendedor solo ve recibos no eliminados
-      return datosRecibos.filter(r => !r.eliminadoVisualmente);
+      return datosRecibos.filter(r => r.activo === true);
     }
   }, [datosRecibos, rolUsuario, mostrarEliminados]);
 
   // Cálculo de estadísticas
   const estadisticas = useMemo(() => {
-    const datos = rolUsuario === 'administrador' ? datosRecibos : datosSegunRol;
+    const datos = rolUsuario === 'admin' ? datosRecibos : datosSegunRol;
     const totalRecibos = datos.length;
-    const emitidos = datos.filter(r => r.estado === 'Emitido' && !r.eliminadoVisualmente).length;
-    const cancelados = datos.filter(r => r.estado === 'Cancelado' && !r.eliminadoVisualmente).length;
-    const eliminados = datos.filter(r => r.eliminadoVisualmente === true).length;
-    
+    const emitidos = datos.filter(r => r.estado === 'Emitido' && r.activo === true).length;
+    const cancelados = datos.filter(r => r.estado === 'Cancelado' && r.activo === true).length;
+    const eliminados = datos.filter(r => r.activo === false).length;
+
     const montoTotal = datos.reduce((total, recibo) => {
       const monto = typeof recibo.monto === 'number' ? recibo.monto : parseFloat(recibo.monto?.replace(/[$,]/g, '') || 0);
       return total + monto;
     }, 0);
 
     const montoEmitidos = datos
-      .filter(r => r.estado === 'Emitido' && !r.eliminadoVisualmente)
+      .filter(r => r.estado === 'Emitido' && r.activo === true)
       .reduce((total, recibo) => {
         const monto = typeof recibo.monto === 'number' ? recibo.monto : parseFloat(recibo.monto?.replace(/[$,]/g, '') || 0);
         return total + monto;
@@ -270,10 +189,10 @@ const TablaRecibos = ({
   const exportarCSV = useCallback(() => {
     try {
       const headers = ['Recibo', 'Cliente', 'Monto', 'Fecha', 'Concepto', 'Método Pago', 'Estado'];
-      if (rolUsuario === 'administrador' && mostrarEliminados) {
+      if (rolUsuario === 'admin' && mostrarEliminados) {
         headers.push('Eliminado Por', 'Fecha Eliminación');
       }
-      
+
       const csv = [
         headers.join(','),
         ...datosFiltrados.map(recibo => {
@@ -286,11 +205,11 @@ const TablaRecibos = ({
             recibo.metodoPago,
             recibo.estado
           ];
-          
-          if (rolUsuario === 'administrador' && mostrarEliminados) {
+
+          if (rolUsuario === 'admin' && mostrarEliminados) {
             row.push(recibo.eliminadoPor || '', recibo.fechaEliminacion || '');
           }
-          
+
           return row.join(',');
         })
       ].join('\n');
@@ -322,18 +241,29 @@ const TablaRecibos = ({
   };
 
   const manejarRegenerar = async (recibo, motivo) => {
-    if (onRegenerar) {
-      await onRegenerar(recibo, motivo);
-    } else {
-      console.log('Recibo regenerado:', recibo.id, 'Motivo:', motivo);
+    try {
+      await cargarRecibos();
+      console.log('✅ Recibo regenerado:', recibo.id);
+
+      if (onRegenerar) {
+        await onRegenerar(recibo, motivo);
+      }
+    } catch (error) {
+      console.error('Error al regenerar:', error);
     }
   };
 
+
   const manejarEliminarDefinitivo = async (recibo) => {
-    if (onEliminarDefinitivo) {
-      await onEliminarDefinitivo(recibo);
-    } else {
-      console.log('Recibo eliminado definitivamente:', recibo.id);
+    try {
+      await cargarRecibos();
+      console.log('✅ Recibo eliminado definitivamente:', recibo.id);
+
+      if (onEliminarDefinitivo) {
+        await onEliminarDefinitivo(recibo);
+      }
+    } catch (error) {
+      console.error('Error al eliminar definitivamente:', error);
     }
   };
 
@@ -346,10 +276,12 @@ const TablaRecibos = ({
 
       switch (accion) {
         case 'eliminar':
-          // Eliminación visual para vendedores
-          const confirmado = await modalEliminarRecibo(recibo, onEliminar);
-          if (confirmado && !onEliminar) {
-            console.log('Recibo eliminado visualmente:', recibo.id);
+          setCargando(false);
+          const confirmado = await modalEliminarRecibo(recibo, async () => {
+            await cargarRecibos();
+          });
+          if (confirmado) {
+            await cargarRecibos();
           }
           break;
         case 'descargar':
@@ -377,8 +309,8 @@ const TablaRecibos = ({
     }
   }, [onEliminar, onDescargar, onImprimir]);
 
-  const obtenerClaseEstado = useCallback((estado, eliminado) => {
-    if (eliminado) {
+  const obtenerClaseEstado = useCallback((estado, activo) => {
+    if (activo === false) {
       return 'recibos-estado-eliminado';
     }
     switch (estado?.toLowerCase()) {
@@ -438,12 +370,6 @@ const TablaRecibos = ({
             <h1 className="recibos-titulo">Gestión de Recibos</h1>
             <p className="recibos-subtitulo">
               Comprobantes de pago generados
-              {rolUsuario === 'administrador' && (
-                <span className="recibos-badge-admin">
-                  <Shield size={14} />
-                  Administrador
-                </span>
-              )}
             </p>
           </div>
         </div>
@@ -464,7 +390,7 @@ const TablaRecibos = ({
             <span className="recibos-valor-estadistica">{estadisticas.cancelados}</span>
             <span className="recibos-etiqueta-estadistica">Cancelados</span>
           </div>
-          {rolUsuario === 'administrador' && (
+          {rolUsuario === 'admin' && (
             <div className="recibos-tarjeta-estadistica eliminados">
               <Trash2 className="recibos-icono-estadistica" size={20} />
               <span className="recibos-valor-estadistica">{estadisticas.eliminados}</span>
@@ -524,8 +450,8 @@ const TablaRecibos = ({
             </select>
           </div>
 
-          {/* Filtro para administrador */}
-          {rolUsuario === 'administrador' && (
+          {/* Filtro para admin */}
+          {rolUsuario === 'admin' && (
             <div className="recibos-filtro-eliminados">
               <label className="recibos-switch">
                 <input
@@ -590,8 +516,8 @@ const TablaRecibos = ({
               {terminoBusqueda
                 ? 'Intenta ajustar los filtros de búsqueda'
                 : mostrarEliminados
-                ? 'No hay recibos eliminados en el sistema'
-                : 'No hay recibos registrados en el sistema'}
+                  ? 'No hay recibos eliminados en el sistema'
+                  : 'No hay recibos registrados en el sistema'}
             </p>
           </div>
         ) : (
@@ -605,7 +531,7 @@ const TablaRecibos = ({
                 <th>Concepto</th>
                 <th>Método Pago</th>
                 <th>Estado</th>
-                {rolUsuario === 'administrador' && mostrarEliminados && (
+                {rolUsuario === 'admin' && mostrarEliminados && (
                   <>
                     <th>Eliminado Por</th>
                     <th>Fecha Eliminación</th>
@@ -616,9 +542,9 @@ const TablaRecibos = ({
             </thead>
             <tbody>
               {datosPaginados.map((recibo, indice) => (
-                <tr 
-                  key={recibo.id} 
-                  className={`recibos-fila-pago ${recibo.eliminadoVisualmente ? 'recibos-fila-eliminada' : ''}`}
+                <tr
+                  key={recibo.id}
+                  className={`recibos-fila-pago ${recibo.activo === false ? 'recibos-fila-eliminada' : ''}`}
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Recibo" className="recibos-columna-factura">{recibo.numeroRecibo}</td>
@@ -632,12 +558,12 @@ const TablaRecibos = ({
                   </td>
                   <td data-label="Método Pago">{recibo.metodoPago}</td>
                   <td data-label="Estado">
-                    <span className={`recibos-badge-estado ${obtenerClaseEstado(recibo.estado, recibo.eliminadoVisualmente)}`}>
+                    <span className={`recibos-badge-estado ${obtenerClaseEstado(recibo.estado, recibo.activo)}`}>
                       <span className="recibos-indicador-estado"></span>
-                      {recibo.eliminadoVisualmente ? 'Eliminado' : recibo.estado}
+                      {recibo.activo === false ? 'Eliminado' : recibo.estado}
                     </span>
                   </td>
-                  {rolUsuario === 'administrador' && mostrarEliminados && (
+                  {rolUsuario === 'admin' && mostrarEliminados && (
                     <>
                       <td data-label="Eliminado Por">{recibo.eliminadoPor || '-'}</td>
                       <td data-label="Fecha Eliminación">{recibo.fechaEliminacion ? formatearFecha(recibo.fechaEliminacion) : '-'}</td>
@@ -645,8 +571,8 @@ const TablaRecibos = ({
                   )}
                   <td data-label="Acciones" className="recibos-columna-acciones">
                     <div className="recibos-botones-accion">
-                      {recibo.eliminadoVisualmente && rolUsuario === 'administrador' ? (
-                        // Botones para recibos eliminados (solo administrador)
+                      {recibo.activo === false && rolUsuario === 'admin' ? (
+                        // Botones para recibos eliminados (solo admin)
                         <>
                           <button
                             className="recibos-boton-accion recibos-regenerar"
@@ -691,7 +617,7 @@ const TablaRecibos = ({
                           <button
                             className="recibos-boton-accion recibos-eliminar"
                             onClick={() => manejarAccion('eliminar', recibo)}
-                            title={rolUsuario === 'administrador' ? 'Eliminar definitivamente' : 'Eliminar recibo'}
+                            title={rolUsuario === 'admin' ? 'Eliminar de vista' : 'Eliminar recibo'}
                             aria-label={`Eliminar recibo ${recibo.numeroRecibo}`}
                             disabled={cargando}
                           >

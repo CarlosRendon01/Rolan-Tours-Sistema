@@ -16,13 +16,13 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
     alCerrar();
   }, [alCerrar, restaurarScroll]);
 
-  if (!estaAbierto || !pago) {
-    // Restaurar scroll cuando el modal no está visible
-    React.useEffect(() => {
+  React.useEffect(() => {
+    if (estaAbierto) {
+      document.body.style.overflow = 'hidden';
+    } else {
       restaurarScroll();
-    });
-    return null;
-  }
+    }
+  }, [estaAbierto, restaurarScroll]);
 
   // Función para obtener color del estado
   const obtenerColorEstado = (estado) => {
@@ -55,13 +55,17 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
     };
   }, [estaAbierto, manejarCierre, restaurarScroll]);
 
+  if (!estaAbierto || !pago) {
+    return null;
+  }
+  
   return (
     <div className="superposicion-modal-pago" onClick={manejarCierre}>
       <div className="contenido-modal-pago" onClick={(e) => e.stopPropagation()}>
         <div className="encabezado-modal-pago">
-          <button 
-            className="boton-cerrar-modal-pago" 
-            onClick={manejarCierre} 
+          <button
+            className="boton-cerrar-modal-pago"
+            onClick={manejarCierre}
             aria-label="Cerrar modal"
             type="button"
           >
@@ -72,20 +76,20 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
             Detalles del Pago
           </h2>
         </div>
-        
+
         <div className="cuerpo-modal-pago">
           {/* Insignia de Estado */}
           <div className="contenedor-insignia-estado-pago">
-            <div 
-              className="insignia-estado-pago" 
-              style={{ 
+            <div
+              className="insignia-estado-pago"
+              style={{
                 backgroundColor: `${obtenerColorEstado(pago.estado)}15`,
                 borderColor: obtenerColorEstado(pago.estado),
                 color: obtenerColorEstado(pago.estado)
               }}
             >
-              <span 
-                className="punto-estado-pago" 
+              <span
+                className="punto-estado-pago"
                 style={{ backgroundColor: obtenerColorEstado(pago.estado) }}
               ></span>
               {pago.estado}
@@ -103,7 +107,7 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
                 #{pago.id?.toString().padStart(3, '0')}
               </div>
             </div>
-            
+
             {/* Cliente */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
@@ -111,10 +115,10 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
                 Cliente
               </div>
               <div className="valor-informacion-pago">
-                {pago.cliente}
+                {pago.cliente?.nombre || pago.cliente || 'Sin cliente'}
               </div>
             </div>
-            
+
             {/* Monto */}
             <div className="elemento-informacion-pago elemento-destacado-pago">
               <div className="etiqueta-informacion-pago">
@@ -122,23 +126,10 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
                 Monto
               </div>
               <div className="valor-informacion-pago valor-monto-pago">
-                {pago.monto}
+                {pago.planPago?.montoTotal}
               </div>
             </div>
-            
-            {/* Número de Factura */}
-            <div className="elemento-informacion-pago">
-              <div className="etiqueta-informacion-pago">
-                <FileText size={16} />
-                Número de Factura
-              </div>
-              <div className="valor-informacion-pago">
-                <span className="codigo-factura-pago">
-                  {pago.numeroFactura}
-                </span>
-              </div>
-            </div>
-            
+
             {/* Fecha de Pago */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
@@ -146,10 +137,10 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
                 Fecha de Pago
               </div>
               <div className="valor-informacion-pago">
-                {pago.fechaPago || <span className="texto-vacio-pago">No registrada</span>}
+                {pago.fechaInicio || <span className="texto-vacio-pago">No registrada</span>}
               </div>
             </div>
-            
+
             {/* Fecha de Vencimiento */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
@@ -157,10 +148,10 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
                 Fecha de Vencimiento
               </div>
               <div className="valor-informacion-pago">
-                {pago.fechaVencimiento || <span className="texto-vacio-pago">No especificada</span>}
+                {pago.proximoVencimiento || <span className="texto-vacio-pago">No especificada</span>}
               </div>
             </div>
-            
+
             {/* Método de Pago */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
@@ -171,25 +162,25 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
                 {pago.metodoPago || <span className="texto-vacio-pago">No especificado</span>}
               </div>
             </div>
-            
+
             {/* Concepto */}
-            {pago.concepto && (
+            {pago.observaciones && (
               <div className="elemento-informacion-pago">
                 <div className="etiqueta-informacion-pago">
                   <FileText size={16} />
-                  Concepto
+                  Observaciones
                 </div>
                 <div className="valor-informacion-pago">
-                  {pago.concepto}
+                  {pago.observaciones}
                 </div>
               </div>
             )}
           </div>
-          
+
           {/* Botón de cerrar en la parte inferior */}
           <div className="contenedor-boton-inferior-pago">
-            <button 
-              className="boton-cerrar-inferior-pago" 
+            <button
+              className="boton-cerrar-inferior-pago"
               onClick={manejarCierre}
               type="button"
             >

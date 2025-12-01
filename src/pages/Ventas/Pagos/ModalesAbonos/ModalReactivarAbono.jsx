@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import { RotateCcw, X, AlertCircle, CheckCircle } from 'lucide-react';
 
 const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
@@ -17,7 +18,22 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
     try {
       // Simular llamada a API
       await new Promise(resolve => setTimeout(resolve, 800));
-      await alReactivar(abono);
+
+      const token = localStorage.getItem("token");
+      await axios.post(`http://127.0.0.1:8000/api/abonos/${abono.id}/restore`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
+      );
+
+      if (alReactivar) {
+        await alReactivar(abono);
+      }
+
       setMotivoReactivacion('');
       alCerrar();
     } catch (error) {
@@ -36,7 +52,7 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
   };
 
   return (
-    <div 
+    <div
       style={{
         position: 'fixed',
         inset: 0,
@@ -50,7 +66,7 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
       }}
       onClick={manejarCerrar}
     >
-      <div 
+      <div
         style={{
           background: 'white',
           borderRadius: '16px',
@@ -85,16 +101,16 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
               <RotateCcw size={20} color="white" />
             </div>
             <div>
-              <h2 style={{ 
-                margin: 0, 
-                fontSize: '1.25rem', 
+              <h2 style={{
+                margin: 0,
+                fontSize: '1.25rem',
                 fontWeight: '700',
                 color: 'white'
               }}>
                 Reactivar Abono
               </h2>
-              <p style={{ 
-                margin: '0.25rem 0 0 0', 
+              <p style={{
+                margin: '0.25rem 0 0 0',
                 fontSize: '0.875rem',
                 color: 'rgba(255, 255, 255, 0.9)'
               }}>
@@ -139,16 +155,16 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
           }}>
             <AlertCircle size={20} color="#059669" style={{ flexShrink: 0, marginTop: '2px' }} />
             <div>
-              <p style={{ 
-                margin: 0, 
+              <p style={{
+                margin: 0,
                 fontSize: '0.875rem',
                 color: '#065f46',
                 fontWeight: '600'
               }}>
                 Esta acción reactivará el abono
               </p>
-              <p style={{ 
-                margin: '0.25rem 0 0 0', 
+              <p style={{
+                margin: '0.25rem 0 0 0',
                 fontSize: '0.8125rem',
                 color: '#047857',
                 lineHeight: '1.4'
@@ -166,8 +182,8 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
             marginBottom: '1.5rem',
             border: '1px solid #e5e7eb'
           }}>
-            <h3 style={{ 
-              margin: '0 0 1rem 0', 
+            <h3 style={{
+              margin: '0 0 1rem 0',
               fontSize: '0.875rem',
               fontWeight: '600',
               color: '#374151',
@@ -176,7 +192,7 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
             }}>
               Detalles del Abono
             </h3>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>ID:</span>
@@ -184,28 +200,28 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
                   #{abono.id.toString().padStart(3, '0')}
                 </span>
               </div>
-              
+
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Cliente:</span>
                 <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
                   {abono.cliente.nombre}
                 </span>
               </div>
-              
+
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Servicio:</span>
                 <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
                   {abono.servicio.tipo}
                 </span>
               </div>
-              
+
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Monto Total:</span>
                 <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#059669' }}>
                   ${abono.planPago.montoTotal.toLocaleString()}
                 </span>
               </div>
-              
+
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Progreso:</span>
                 <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
@@ -217,9 +233,9 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
 
           {/* Motivo de reactivación */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <label 
+            <label
               htmlFor="motivo-reactivacion"
-              style={{ 
+              style={{
                 display: 'block',
                 fontSize: '0.875rem',
                 fontWeight: '600',
@@ -251,8 +267,8 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
               onFocus={(e) => e.target.style.borderColor = '#10b981'}
               onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
             />
-            <div style={{ 
-              display: 'flex', 
+            <div style={{
+              display: 'flex',
               justifyContent: 'space-between',
               marginTop: '0.5rem',
               fontSize: '0.75rem',
@@ -275,16 +291,16 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
           }}>
             <CheckCircle size={20} color="#d97706" style={{ flexShrink: 0, marginTop: '2px' }} />
             <div>
-              <p style={{ 
-                margin: 0, 
+              <p style={{
+                margin: 0,
                 fontSize: '0.875rem',
                 color: '#92400e',
                 fontWeight: '600'
               }}>
                 ¿Estás seguro de reactivar este abono?
               </p>
-              <p style={{ 
-                margin: '0.25rem 0 0 0', 
+              <p style={{
+                margin: '0.25rem 0 0 0',
                 fontSize: '0.8125rem',
                 color: '#b45309',
                 lineHeight: '1.4'
