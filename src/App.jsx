@@ -19,7 +19,7 @@ import ToursPrincipal from "./pages/Servicios/Tours/ToursPrincipal.jsx";
 import RestaurantePrincipal from "./pages/Servicios/Restaurante/RestaurantePrincipal.jsx";
 import HospedajePrincipal from "./pages/Servicios/Hospedaje/HospedajePrincipal.jsx";
 import MantenimientoPrincipal from "./pages/Mantenimiento/MantenimientoPrincipal.jsx";
-import PrincipalRol from "./pages/Usuario/Roles/PrincipalRol.jsx";
+//import PrincipalRol from "./pages/Usuario/Roles/PrincipalRol.jsx";
 // Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
   return (
@@ -58,28 +58,28 @@ function App() {
             <Route path="/cotizaciones" element={<PrincipalCotizacion />} />
             <Route path="/pagos" element={<PrincipalPago />} />
 
-            {/* Rutas de Documentos 
+            { 
             <Route
               path="/contratos"
               element={<PrincipalContrato titulo="Contratos" />}
             />
 
-            */}
+            }
 
-            {/*
+            {
             <Route
               path="/orden-servicio"
               element={<PrincipalOrden titulo="Órdenes de Servicio" />}
             />
-            */}
+            }
 
-            {/*
+            {
 
             <Route
               path="/reservas"
               element={<ReservasPrincipal titulo="Reservas" />}
             />
-          */}
+          }
 
             {/* Rutas de Operaciones */}
             <Route path="/operadores" element={<OperadoresPrincipal />} />
@@ -123,7 +123,7 @@ function App() {
               element={<PaginaTemporal titulo="Administración" />}
             />
 
-            <Route path="/roles" element={<PrincipalRol titulo="Roles" />} />
+            {/* <Route path="/roles" element={<PrincipalRol titulo="Roles" />} /> */}
           </Routes>
         </VehiculosProvider>
       )}

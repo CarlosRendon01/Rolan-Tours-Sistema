@@ -354,9 +354,8 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
 
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "orden" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "orden" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("orden")}
             type="button"
           >
@@ -364,9 +363,8 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
             Datos Orden de Servicio
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "conductor" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "conductor" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("conductor")}
             type="button"
           >
@@ -374,9 +372,8 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
             Datos Conductor
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "servicio" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "servicio" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
@@ -384,9 +381,8 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
             Datos Servicio
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "vehiculo" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "vehiculo" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >

@@ -257,6 +257,9 @@ const ModalEditarContrato = ({
     }
   };
 
+  const limpiarHora = (h) =>
+    h && typeof h === "string" ? h.substring(0, 5) : null;
+
   const manejarEnvio = async (evento) => {
     evento.preventDefault();
 
@@ -320,12 +323,24 @@ const ModalEditarContrato = ({
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const datosActualizados = {
-        ...contrato,
         ...datosFormulario,
         fecha_actualizacion: new Date().toISOString(),
       };
 
-      await alGuardar(datosActualizados);
+      const datosLimpios = {
+        ...datosFormulario,
+        horario_inicio_servicio: limpiarHora(datosFormulario.horario_inicio_servicio),
+        horario_final_servicio: limpiarHora(datosFormulario.horario_final_servicio),
+        costos_cubiertos: Array.isArray(datosFormulario.costos_cubiertos)
+          ? datosFormulario.costos_cubiertos
+          : [],
+      };
+
+      await alGuardar({
+        id: contrato.id,
+        ...datosLimpios,
+        fecha_actualizacion: new Date().toISOString(),
+      });
 
       mostrarNotificacionExito();
 
@@ -905,9 +920,8 @@ const ModalEditarContrato = ({
 
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "contrato" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "contrato" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("contrato")}
             type="button"
           >
@@ -915,9 +929,8 @@ const ModalEditarContrato = ({
             Datos de Contrato
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "servicio" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "servicio" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
@@ -925,9 +938,8 @@ const ModalEditarContrato = ({
             Datos del Servicio
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "costo" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "costo" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("costo")}
             type="button"
           >
@@ -935,9 +947,8 @@ const ModalEditarContrato = ({
             Costo Extra
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "vehiculo" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "vehiculo" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >
