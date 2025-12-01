@@ -37,7 +37,7 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Si selecciona "Otro", mostrar campo de texto
     if (name === 'tipo' && value === 'Otro') {
       setMostrarCampoNuevoTipo(true);
@@ -63,7 +63,7 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
 
   const handleAgregarNuevoTipo = () => {
     const tipoLimpio = nuevoTipo.trim();
-    
+
     if (!tipoLimpio) {
       Swal.fire({
         icon: 'warning',
@@ -401,15 +401,15 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
 
         {/* Footer */}
         <div className="modal-reg-mant-footer">
-          <button 
-            type="button" 
-            className="modal-reg-mant-btn-cancelar" 
+          <button
+            type="button"
+            className="modal-reg-mant-btn-cancelar"
             onClick={onCerrar}
             disabled={guardando}
           >
             Cancelar
           </button>
-          <button 
+          <button
             type="button"
             className={`modal-reg-mant-btn-guardar ${guardando ? 'loading' : ''}`}
             onClick={handleSubmit}
