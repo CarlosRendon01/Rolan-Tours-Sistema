@@ -56,7 +56,7 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
   };
 
   return (
-    <div 
+    <div
       className={`card-vehiculo ${mantenimiento.estado}`}
       onClick={onClick}
     >
@@ -67,8 +67,8 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
       <div className="card-header">
         <div className="card-foto">
           {vehiculo.documentos?.foto_vehiculo ? (
-            <img 
-              src={vehiculo.documentos.foto_vehiculo} 
+            <img
+              src={vehiculo.documentos.foto_vehiculo}
               alt={vehiculo.nombre}
               className="card-imagen-vehiculo"
             />

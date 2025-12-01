@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { 
-  X, 
-  Truck, 
-  Gauge, 
-  Calendar, 
-  Wrench, 
-  Plus, 
+import React, { useState, useEffect } from 'react';
+import {
+  X,
+  Truck,
+  Gauge,
+  Calendar,
+  Wrench,
+  Plus,
   FileText,
   AlertCircle,
   CheckCircle,
@@ -15,16 +15,20 @@ import {
 } from 'lucide-react';
 import './ModalMantenimiento.css';
 
-const ModalMantenimiento = ({ 
-  vehiculo, 
-  mantenimiento, 
-  onCerrar, 
+const ModalMantenimiento = ({
+  vehiculo,
+  mantenimiento,
+  onCerrar,
   onRegistrarMantenimiento,
-  onActualizarKilometraje 
+  onActualizarKilometraje
 }) => {
   const [seccionActiva, setSeccionActiva] = useState('info');
   const [editandoKm, setEditandoKm] = useState(false);
   const [nuevoKm, setNuevoKm] = useState(mantenimiento.kilometraje_actual);
+
+  useEffect(() => {
+    setNuevoKm(mantenimiento.kilometraje_actual);
+  }, [mantenimiento.kilometraje_actual]);
 
   // Formatear fecha
   const formatearFecha = (fecha) => {
@@ -111,7 +115,7 @@ const ModalMantenimiento = ({
             <div className="modal-mant-estado-texto">
               <h3>{getEstadoTexto()}</h3>
               <p>
-                {mantenimiento.ultimo_mantenimiento 
+                {mantenimiento.ultimo_mantenimiento
                   ? `Último mantenimiento: ${formatearFecha(mantenimiento.ultimo_mantenimiento.fecha)}`
                   : 'Sin mantenimiento previo registrado'}
               </p>
@@ -148,7 +152,7 @@ const ModalMantenimiento = ({
                     <Gauge size={20} />
                     Kilometraje Actual
                   </h4>
-                  <button 
+                  <button
                     className="modal-mant-btn-editar"
                     onClick={() => setEditandoKm(!editandoKm)}
                   >
@@ -164,13 +168,13 @@ const ModalMantenimiento = ({
                       min={mantenimiento.kilometraje_actual}
                       className="modal-mant-input"
                     />
-                    <button 
+                    <button
                       onClick={handleActualizarKm}
                       className="modal-mant-btn-guardar-km"
                     >
                       Actualizar
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         setEditandoKm(false);
                         setNuevoKm(mantenimiento.kilometraje_actual);
@@ -195,7 +199,7 @@ const ModalMantenimiento = ({
                 </h4>
                 <div className="modal-mant-progreso-info">
                   <span>
-                    {mantenimiento.ultimo_mantenimiento 
+                    {mantenimiento.ultimo_mantenimiento
                       ? `${(mantenimiento.kilometraje_actual - mantenimiento.ultimo_mantenimiento.kilometraje).toLocaleString('es-MX')} km`
                       : `${mantenimiento.kilometraje_actual.toLocaleString('es-MX')} km`
                     } recorridos
@@ -203,7 +207,7 @@ const ModalMantenimiento = ({
                   <span>{porcentajeUso.toFixed(0)}%</span>
                 </div>
                 <div className="modal-mant-barra-progreso">
-                  <div 
+                  <div
                     className={`modal-mant-progreso-fill ${mantenimiento.estado}`}
                     style={{ width: `${porcentajeUso}%` }}
                   ></div>
@@ -327,7 +331,7 @@ const ModalMantenimiento = ({
           <button className="modal-mant-btn-secundario" onClick={onCerrar}>
             Cerrar
           </button>
-          <button 
+          <button
             className="modal-mant-btn-primario"
             onClick={() => onRegistrarMantenimiento(vehiculo.id)}
           >
