@@ -1,6 +1,6 @@
-import {
-  X, Car, Gauge, Fuel, TrendingDown, CreditCard,
-  UserCircle, FileText, Calendar, Hash, Tag,
+import { 
+  X, Car, Gauge, Fuel, TrendingDown, CreditCard, 
+  UserCircle, FileText, Calendar, Hash, Tag, 
   Image as ImageIcon, Download, DollarSign, Activity, Eye  // ✅ Agregado Eye
 } from 'lucide-react';
 import './ModalVerVehiculo.css';
@@ -39,7 +39,7 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
   // ✅ Función para descargar documento
   const handleDescargar = (url, nombreDocumento) => {
     if (!url) return;
-
+    
     const link = document.createElement('a');
     link.href = url;
     link.download = `${vehiculo.nombre}_${nombreDocumento}`;
@@ -56,7 +56,7 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
     { key: 'foto_folio_antt', label: 'Folio ANTT', icono: FileText }
   ];
 
-  const tieneDocumentos = vehiculo.documentos &&
+  const tieneDocumentos = vehiculo.documentos && 
     documentos.some(doc => vehiculo.documentos[doc.key]);
 
   return (
@@ -68,7 +68,7 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
             <div>
               <h2>{vehiculo.nombre || 'Vehículo Sin Nombre'}</h2>
               <p className="mvv-subtitulo">
-                {vehiculo.marca} {vehiculo.modelo} - {vehiculo.anio}
+                {vehiculo.marca} {vehiculo.modelo} - {vehiculo.año}
               </p>
             </div>
           </div>
@@ -97,7 +97,7 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                     </div>
                     <div className="mvv-spec-item">
                       <span className="mvv-spec-label">Año</span>
-                      <span className="mvv-spec-valor">{vehiculo.anio || 'N/A'}</span>
+                      <span className="mvv-spec-valor">{vehiculo.año || 'N/A'}</span>
                     </div>
                     <div className="mvv-spec-item">
                       <span className="mvv-spec-label">Disponibles</span>
@@ -107,12 +107,12 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                     </div>
                   </div>
                 </div>
-
+                
                 {/* Imagen del Vehículo */}
                 <div className="mvv-vehiculo-imagen-container">
                   {vehiculo.documentos?.foto_vehiculo ? (
-                    <img
-                      src={vehiculo.documentos.foto_vehiculo}
+                    <img 
+                      src={vehiculo.documentos.foto_vehiculo} 
                       alt={vehiculo.nombre}
                       className="mvv-vehiculo-imagen"
                       onError={(e) => {
@@ -171,7 +171,7 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                       </div>
                       <span className="mvv-detalle-label">Año</span>
                     </div>
-                    <span className="mvv-detalle-valor">{vehiculo.anio || 'N/A'}</span>
+                    <span className="mvv-detalle-valor">{vehiculo.año || 'N/A'}</span>
                   </div>
 
                   <div className="mvv-detalle-item">
@@ -326,13 +326,13 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                       if (vehiculo.documentos && vehiculo.documentos[doc.key]) {
                         const Icono = doc.icono;
                         const urlDocumento = vehiculo.documentos[doc.key];
-
+                        
                         return (
                           <div key={doc.key} className="mvv-documento-item">
                             <Icono size={32} />
                             <span>{doc.label}</span>
                             <div className="mvv-botones-documento">
-                              <button
+                              <button 
                                 className="mvv-btn-descargar mvv-btn-ver"
                                 onClick={() => handleVerDocumento(urlDocumento)}
                                 title="Ver documento en nueva pestaña"
@@ -340,7 +340,7 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                                 <Eye size={16} />
                                 Ver
                               </button>
-                              <button
+                              <button 
                                 className="mvv-btn-descargar mvv-btn-download"
                                 onClick={() => handleDescargar(urlDocumento, doc.key)}
                                 title="Descargar documento"
@@ -405,8 +405,8 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                     </span>
                   </div>
                   <div className="mvv-stat-bar">
-                    <div
-                      className="mvv-stat-bar-fill"
+                    <div 
+                      className="mvv-stat-bar-fill" 
                       style={{ width: `${Math.min((vehiculo.rendimiento / 20) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -420,12 +420,12 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                     </span>
                   </div>
                   <div className="mvv-stat-bar">
-                    <div
-                      className="mvv-stat-bar-fill"
-                      style={{
+                    <div 
+                      className="mvv-stat-bar-fill" 
+                      style={{ 
                         width: `${calcularPorcentajeDesgaste()}%`,
-                        background: calcularPorcentajeDesgaste() > 70
-                          ? 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)'
+                        background: calcularPorcentajeDesgaste() > 70 
+                          ? 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)' 
                           : 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)'
                       }}
                     ></div>
@@ -447,9 +447,9 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                     </span>
                   </div>
                   <div className="mvv-stat-bar">
-                    <div
-                      className="mvv-stat-bar-fill"
-                      style={{
+                    <div 
+                      className="mvv-stat-bar-fill" 
+                      style={{ 
                         width: `${Math.min((vehiculo.vehiculos_disponibles / 10) * 100, 100)}%`,
                         background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)'
                       }}

@@ -18,7 +18,7 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
     institucion_seguro: '',
     contacto_emergencia: '',
     telefono_emergencia: '',
-
+    
     // 💼 Información Profesional
     costo_dia: '',
     idiomas: '',
@@ -27,7 +27,7 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
     certificacion_oficial: '',
     zona_servicio: '',
     estado_operativo: 'activo',
-
+    
     // 📄 Documentos
     foto_guia: null,
     foto_ine: null,
@@ -44,8 +44,8 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   useEffect(() => {
     if (guia) {
       // Convertir idiomas de array a string si es necesario
-      const idiomasString = Array.isArray(guia.idiomas)
-        ? guia.idiomas.join(', ')
+      const idiomasString = Array.isArray(guia.idiomas) 
+        ? guia.idiomas.join(', ') 
         : guia.idiomas || '';
 
       setFormData({
@@ -62,7 +62,7 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         institucion_seguro: guia.institucion_seguro || '',
         contacto_emergencia: guia.contacto_emergencia || '',
         telefono_emergencia: guia.telefono_emergencia || '',
-
+        
         // 💼 Info Profesional
         costo_dia: guia.costo_dia || '',
         idiomas: idiomasString,
@@ -242,7 +242,7 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         institucion_seguro: formData.institucion_seguro,
         contacto_emergencia: formData.contacto_emergencia,
         telefono_emergencia: formData.telefono_emergencia,
-
+        
         // 💼 Info Profesional
         costo_dia: parseFloat(formData.costo_dia),
         idiomas: formData.idiomas,
@@ -251,7 +251,7 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         certificacion_oficial: formData.certificacion_oficial,
         zona_servicio: formData.zona_servicio,
         estado_operativo: formData.estado_operativo,
-
+        
         // 📄 Documentos
         documentos: {
           foto_guia: formData.foto_guia,

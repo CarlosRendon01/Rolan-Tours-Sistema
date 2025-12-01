@@ -18,7 +18,7 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
     institucion_seguro: '',
     contacto_emergencia: '',
     telefono_emergencia: '',
-
+    
     // 💼 Información Profesional
     costo_dia: '',
     idiomas: '',
@@ -27,7 +27,7 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
     certificacion_oficial: '',
     zona_servicio: '',
     estado_operativo: 'activo',
-
+    
     // 📄 Documentos
     foto_guia: null,
     foto_ine: null,

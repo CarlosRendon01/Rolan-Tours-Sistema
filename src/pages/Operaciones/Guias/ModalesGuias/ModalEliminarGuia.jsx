@@ -1,5 +1,4 @@
 import Swal from 'sweetalert2';
-import axios from 'axios';
 import './ModalEliminarGuia.css';
 
 /**
@@ -58,22 +57,15 @@ export const modalEliminarGuia = async (guia, onConfirmar) => {
     modalCargando('Eliminando guía...');
 
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/guias/${guia.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        }
+      if (onConfirmar) {
+        // ✅ Pasar el ID del guía, no el objeto completo
+        await onConfirmar(guia.id);
+      }
 
-      });
       // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
 
       Swal.close();
-
-      if (onConfirmar) {
-        await onConfirmar(guia.id);
-      }
 
       // Mostrar éxito
       await Swal.fire({

@@ -1,7 +1,12 @@
 import Swal from 'sweetalert2';
-import axios from 'axios';
 import './ModalEliminarCoordinador.css';
 
+/**
+ * Modal de confirmación para eliminar un coordinador usando SweetAlert2
+ * @param {Object} coordinador - Objeto con información del coordinador a eliminar
+ * @param {Function} onConfirmar - Callback cuando se confirma la eliminación
+ * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
+ */
 export const modalEliminarCoordinador = async (coordinador, onConfirmar) => {
   // Validar datos del coordinador
   if (!coordinador?.nombre || !coordinador?.apellido_paterno) {
@@ -49,22 +54,14 @@ export const modalEliminarCoordinador = async (coordinador, onConfirmar) => {
     modalCargando('Eliminando coordinador...');
 
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/coordinadores/${coordinador.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        }
-      });
+      if (onConfirmar) {
+        await onConfirmar(coordinador);
+      }
 
       // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
 
       Swal.close();
-
-      if (onConfirmar) {
-        await onConfirmar(coordinador);
-      }
 
       // Mostrar éxito
       await Swal.fire({

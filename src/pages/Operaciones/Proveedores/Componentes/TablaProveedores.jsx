@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Building2, Store, Plus, Phone, CreditCard } from 'lucide-react';
 import './TablaProveedores.css';
 
-const TablaProveedores = ({
+const TablaProveedores = ({ 
   proveedores = [],
   setProveedores,
-  onVer,
-  onEditar,
+  onVer, 
+  onEditar, 
   onEliminar,
-  onAgregar
+  onAgregar 
 }) => {
   // Estados locales para UI (paginación, búsqueda)
   const [paginaActual, setPaginaActual] = useState(1);
@@ -35,7 +35,7 @@ const TablaProveedores = ({
 
   // Calcular estadísticas
   const totalProveedores = proveedores.length;
-  const proveedoresActivos = proveedores.filter(p => p.activo === true).length;
+  const proveedoresActivos = proveedores.filter(p => p.estado === 'activo' || !p.estado).length;
 
   // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
@@ -63,7 +63,6 @@ const TablaProveedores = ({
       'Transporte': { bg: '#dbeafe', color: '#1e40af', border: '#93c5fd' },
       'Hospedaje': { bg: '#fef3c7', color: '#92400e', border: '#fde68a' },
       'Restaurante': { bg: '#dcfce7', color: '#166534', border: '#bbf7d0' },
-      'Tour': { bg: '#dcfce7', color: '#098a8fff', border: '#49d87bff' },
       'Otro': { bg: '#f3e8ff', color: '#6b21a8', border: '#e9d5ff' }
     };
     return colores[tipo] || colores['Otro'];
@@ -124,7 +123,7 @@ const TablaProveedores = ({
           </div>
           <h1 className="proveedores-titulo">Gestión de Proveedores</h1>
         </div>
-
+        
         {/* Estadísticas */}
         <div className="proveedores-contenedor-estadisticas">
           <div className="proveedores-estadistica">
@@ -135,7 +134,7 @@ const TablaProveedores = ({
               <span className="proveedores-label-estadistica">TOTAL: {totalProveedores}</span>
             </div>
           </div>
-
+          
           <div className="proveedores-estadistica">
             <div className="proveedores-icono-estadistica-cuadrado">
               <Building2 size={20} />
@@ -151,9 +150,9 @@ const TablaProveedores = ({
       <div className="proveedores-controles">
         <div className="proveedores-control-registros">
           <label htmlFor="proveedores-registros">Mostrar</label>
-          <select
+          <select 
             id="proveedores-registros"
-            value={registrosPorPagina}
+            value={registrosPorPagina} 
             onChange={manejarCambioRegistros}
             className="proveedores-selector-registros"
           >
@@ -166,7 +165,7 @@ const TablaProveedores = ({
         </div>
 
         <div className="proveedores-controles-derecha">
-          <button
+          <button 
             className="proveedores-boton-agregar"
             onClick={onAgregar}
             title="Agregar nuevo proveedor"
@@ -200,8 +199,8 @@ const TablaProveedores = ({
           </div>
           <p className="proveedores-mensaje-vacio">No se encontraron proveedores</p>
           <p className="proveedores-submensaje-vacio">
-            {terminoBusqueda
-              ? 'Intenta ajustar los filtros de búsqueda'
+            {terminoBusqueda 
+              ? 'Intenta ajustar los filtros de búsqueda' 
               : 'Comienza agregando un proveedor'}
           </p>
         </div>
@@ -224,25 +223,25 @@ const TablaProveedores = ({
                 {proveedoresPaginados.map((proveedor, index) => {
                   const colorTipo = obtenerColorTipo(proveedor.tipo_proveedor);
                   const colorMetodoPago = obtenerColorMetodoPago(proveedor.metodo_pago);
-
+                  
                   return (
-                    <tr
-                      key={proveedor.id}
+                    <tr 
+                      key={proveedor.id_proveedor} 
                       className="proveedores-fila-proveedor"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
                       <td data-label="ID" className="proveedores-columna-id">
                         <span className="proveedores-badge-id">
-                          #{proveedor.id?.toString().padStart(3, '0')}
+                          #{proveedor.id_proveedor?.toString().padStart(3, '0')}
                         </span>
                       </td>
-
+                      
                       <td data-label="Razón Social" className="proveedores-columna-nombre">
                         <div className="proveedores-info-proveedor">
                           <div className="proveedores-logo">
                             {proveedor.foto_proveedor ? (
-                              <img
-                                src={proveedor.foto_proveedor}
+                              <img 
+                                src={proveedor.foto_proveedor} 
                                 alt={proveedor.nombre_razon_social}
                                 className="proveedores-imagen-logo"
                               />
@@ -260,9 +259,9 @@ const TablaProveedores = ({
                           </div>
                         </div>
                       </td>
-
+                      
                       <td data-label="Tipo" className="proveedores-columna-tipo">
-                        <span
+                        <span 
                           className="proveedores-badge-tipo"
                           style={{
                             background: colorTipo.bg,
@@ -273,22 +272,22 @@ const TablaProveedores = ({
                           {proveedor.tipo_proveedor || 'N/A'}
                         </span>
                       </td>
-
+                      
                       <td data-label="RFC" className="proveedores-columna-rfc">
                         <span className="proveedores-valor-rfc">
                           {proveedor.rfc || 'N/A'}
                         </span>
                       </td>
-
+                      
                       <td data-label="Teléfono" className="proveedores-columna-telefono">
                         <span className="proveedores-valor-telefono">
                           <Phone size={14} />
                           {formatearTelefono(proveedor.telefono)}
                         </span>
                       </td>
-
+                      
                       <td data-label="Método de Pago" className="proveedores-columna-pago">
-                        <span
+                        <span 
                           className="proveedores-badge-pago"
                           style={{
                             background: colorMetodoPago.bg,
@@ -299,24 +298,24 @@ const TablaProveedores = ({
                           {proveedor.metodo_pago || 'N/A'}
                         </span>
                       </td>
-
+                      
                       <td data-label="Acciones" className="proveedores-columna-acciones">
                         <div className="proveedores-botones-accion">
-                          <button
+                          <button 
                             className="proveedores-boton-accion proveedores-ver"
                             onClick={() => manejarAccion('ver', proveedor)}
                             title="Ver proveedor"
                           >
                             <Eye size={16} />
                           </button>
-                          <button
+                          <button 
                             className="proveedores-boton-accion proveedores-editar"
                             onClick={() => manejarAccion('editar', proveedor)}
                             title="Editar proveedor"
                           >
                             <Edit size={16} />
                           </button>
-                          <button
+                          <button 
                             className="proveedores-boton-accion proveedores-eliminar"
                             onClick={() => manejarAccion('eliminar', proveedor)}
                             title="Eliminar proveedor"
@@ -337,14 +336,14 @@ const TablaProveedores = ({
             <div className="proveedores-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
               {terminoBusqueda && (
-                <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
+                <span style={{color: '#6c757d', marginLeft: '0.5rem'}}>
                   (filtrado de {proveedores.length} registros totales)
                 </span>
               )}
             </div>
-
+            
             <div className="proveedores-controles-paginacion">
-              <button
+              <button 
                 className="proveedores-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual - 1)}
                 disabled={paginaActual === 1}
@@ -352,7 +351,7 @@ const TablaProveedores = ({
                 <ChevronLeft size={18} />
                 Anterior
               </button>
-
+              
               <div className="proveedores-numeros-paginacion">
                 {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
                   <button
@@ -364,8 +363,8 @@ const TablaProveedores = ({
                   </button>
                 ))}
               </div>
-
-              <button
+              
+              <button 
                 className="proveedores-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual + 1)}
                 disabled={paginaActual === totalPaginas}

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import TablaCoordinadores from './Componentes/TablaCoordinadores';
 import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
 import ModalAgregarCoordinador from './ModalesCoordinadores/ModalAgregarCoordinador';
@@ -7,10 +6,145 @@ import ModalVerCoordinador from './ModalesCoordinadores/ModalVerCoordinador';
 import ModalEditarCoordinador from './ModalesCoordinadores/ModalEditarCoordinador';
 import { modalEliminarCoordinador } from './ModalesCoordinadores/Modaleliminarcoordinador';
 import './CoordinadoresPrincipal.css';
+// import ModalAgregarCoordinador from './ModalesCoordinadores/ModalAgregarCoordinador';
+// import ModalVerCoordinador from './ModalesCoordinadores/ModalVerCoordinador';
+// import ModalEditarCoordinador from './ModalesCoordinadores/ModalEditarCoordinador';
+// import { modalEliminarCoordinador } from './ModalesCoordinadores/ModalEliminarCoordinador';
 
 const CoordinadoresPrincipal = () => {
     // Estado para almacenar los coordinadores
-    const [coordinadores, setCoordinadores] = useState([]);
+    const [coordinadores, setCoordinadores] = useState([
+        {
+            id: 1,
+            nombre: 'Pedro',
+            apellido_paterno: 'Martínez',
+            apellido_materno: 'Flores',
+            fecha_nacimiento: '1985-06-15',
+            telefono: '5551112222',
+            email: 'pedro.martinez@email.com',
+            ciudad: 'Ciudad de México',
+            estado: 'CDMX',
+            nss: '12345678901',
+            institucion_seguro: 'IMSS',
+            contacto_emergencia: 'María Flores',
+            telefono_emergencia: '5553334444',
+            costo_dia: 1200,
+            idiomas: 'Español, Inglés',
+            experiencia_anos: 5,
+            especialidades: 'Logística, Gestión de equipos',
+            certificacion_oficial: true,
+            comentarios: 'Coordinador con excelente organización',
+            foto_coordinador: null,
+            foto_ine: null,
+            foto_certificaciones: null,
+            foto_comprobante_domicilio: null,
+            contrato_laboral: null
+        },
+        {
+            id: 2,
+            nombre: 'Laura',
+            apellido_paterno: 'Gómez',
+            apellido_materno: 'Reyes',
+            fecha_nacimiento: '1992-03-22',
+            telefono: '5552223333',
+            email: 'laura.gomez@email.com',
+            ciudad: 'Guadalajara',
+            estado: 'Jalisco',
+            nss: '23456789012',
+            institucion_seguro: 'ISSSTE',
+            contacto_emergencia: 'Roberto Gómez',
+            telefono_emergencia: '5554445555',
+            costo_dia: 1000,
+            idiomas: 'Español',
+            experiencia_anos: 3,
+            especialidades: 'Coordinación de rutas',
+            certificacion_oficial: true,
+            comentarios: 'Especialista en logística',
+            foto_coordinador: null,
+            foto_ine: null,
+            foto_certificaciones: null,
+            foto_comprobante_domicilio: null,
+            contrato_laboral: null
+        },
+        {
+            id: 3,
+            nombre: 'Roberto',
+            apellido_paterno: 'Díaz',
+            apellido_materno: 'Castro',
+            fecha_nacimiento: '1978-11-08',
+            telefono: '5553334444',
+            email: 'roberto.diaz@email.com',
+            ciudad: 'Monterrey',
+            estado: 'Nuevo León',
+            nss: '34567890123',
+            institucion_seguro: 'IMSS',
+            contacto_emergencia: 'Ana Castro',
+            telefono_emergencia: '5556667777',
+            costo_dia: 1500,
+            idiomas: 'Español, Inglés, Francés',
+            experiencia_anos: 8,
+            especialidades: 'Gestión operativa, Planificación',
+            certificacion_oficial: true,
+            comentarios: 'Amplia experiencia en coordinación',
+            foto_coordinador: null,
+            foto_ine: null,
+            foto_certificaciones: null,
+            foto_comprobante_domicilio: null,
+            contrato_laboral: null
+        },
+        {
+            id: 4,
+            nombre: 'Sofía',
+            apellido_paterno: 'Morales',
+            apellido_materno: 'Vega',
+            fecha_nacimiento: '1995-09-14',
+            telefono: '5554445555',
+            email: 'sofia.morales@email.com',
+            ciudad: 'Puebla',
+            estado: 'Puebla',
+            nss: '45678901234',
+            institucion_seguro: 'IMSS',
+            contacto_emergencia: 'Luis Morales',
+            telefono_emergencia: '5558889999',
+            costo_dia: 900,
+            idiomas: 'Español, Inglés',
+            experiencia_anos: 2,
+            especialidades: 'Atención al cliente',
+            certificacion_oficial: false,
+            comentarios: 'Proactiva y con buen manejo de personal',
+            foto_coordinador: null,
+            foto_ine: null,
+            foto_certificaciones: null,
+            foto_comprobante_domicilio: null,
+            contrato_laboral: null
+        },
+        {
+            id: 5,
+            nombre: 'Fernando',
+            apellido_paterno: 'López',
+            apellido_materno: 'Hernández',
+            fecha_nacimiento: '1988-01-30',
+            telefono: '5555556666',
+            email: 'fernando.lopez@email.com',
+            ciudad: 'Querétaro',
+            estado: 'Querétaro',
+            nss: '56789012345',
+            institucion_seguro: 'ISSSTE',
+            contacto_emergencia: 'Carmen Hernández',
+            telefono_emergencia: '5559990000',
+            costo_dia: 1100,
+            idiomas: 'Español',
+            experiencia_anos: 4,
+            especialidades: 'Control de calidad, Supervisión',
+            certificacion_oficial: true,
+            comentarios: 'Excelente supervisor de operaciones',
+            foto_coordinador: null,
+            foto_ine: null,
+            foto_certificaciones: null,
+            foto_comprobante_domicilio: null,
+            contrato_laboral: null
+        }
+    ]);
 
     // Estados para controlar los modales
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
@@ -18,22 +152,6 @@ const CoordinadoresPrincipal = () => {
     const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
     const [coordinadorSeleccionado, setCoordinadorSeleccionado] = useState(null);
-
-    const recargarCoordinadores = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const response = await axios.get("http://127.0.0.1:8000/api/coordinadores", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                }
-            });
-            setCoordinadores(response.data);
-            console.log('✅ Coordinadores recargados');
-        } catch (error) {
-            console.error('❌ Error al recargar coordinadores:', error);
-        }
-    };
 
     // Funciones para manejar los modales
     const manejarVer = (coordinador) => {
@@ -49,12 +167,14 @@ const CoordinadoresPrincipal = () => {
     };
 
     const manejarEliminar = async (coordinador) => {
-        const confirmado = await modalEliminarCoordinador(coordinador, recargarCoordinadores);
+        const confirmado = await modalEliminarCoordinador(coordinador, async () => {
+            eliminarCoordinador(coordinador.id);
+        });
+
         if (confirmado) {
-            console.log('✅ Coordinador eliminado y lista actualizada');
+            console.log('✅ Coordinador eliminado');
         }
     };
-
     const manejarAgregar = () => {
         setModalAgregarAbierto(true);
         console.log('Agregar nuevo coordinador');
@@ -70,95 +190,48 @@ const CoordinadoresPrincipal = () => {
     };
 
     // Función para agregar coordinador
-    const agregarCoordinador = async (nuevoCoordinador) => {
-        try {
-            const token = localStorage.getItem("token");
+    const agregarCoordinador = (nuevoCoordinador) => {
+        const coordinadorConId = {
+            ...nuevoCoordinador,
+            id: coordinadores.length > 0 ? Math.max(...coordinadores.map(c => c.id)) + 1 : 1,
 
-            // Preparar datos para enviar al backend
-            const coordinadorData = {
-                nombre: nuevoCoordinador.nombre,
-                apellido_paterno: nuevoCoordinador.apellido_paterno,
-                apellido_materno: nuevoCoordinador.apellido_materno,
-                fecha_nacimiento: nuevoCoordinador.fecha_nacimiento,
-                email: nuevoCoordinador.email,
-                telefono: nuevoCoordinador.telefono,
-                telefono_emergencia: nuevoCoordinador.telefono_emergencia,
-                contacto_emergencia: nuevoCoordinador.contacto_emergencia,
-                ciudad: nuevoCoordinador.ciudad,
-                estado: nuevoCoordinador.estado,
-                nss: nuevoCoordinador.nss || null,
-                institucion_seguro: nuevoCoordinador.institucion_seguro || null,
-                costo_dia: parseFloat(nuevoCoordinador.costo_dia) || 0,
-                experiencia_anos: parseInt(nuevoCoordinador.experiencia_anos) || 0,
-                idiomas: nuevoCoordinador.idiomas || null,
-                especialidades: nuevoCoordinador.especialidades,
-                certificacion_oficial: nuevoCoordinador.certificacion_oficial || false,
-                comentarios: nuevoCoordinador.comentarios || null,
-            };
+            apellido_paterno: nuevoCoordinador.apellidoPaterno,
+            apellido_materno: nuevoCoordinador.apellidoMaterno,
+            fecha_nacimiento: '', // Calcular desde edad si lo necesitas
+            telefono: nuevoCoordinador.telefonoPersonal,
+            email: nuevoCoordinador.correoElectronico,
+            telefono_emergencia: nuevoCoordinador.telefonoEmergencia,
 
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/coordinadores",
-                coordinadorData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json",
-                    }
-                }
-            );
-
-            console.log("✅ Coordinador creado:", response.data);
-            cerrarModales();
-            await recargarCoordinadores();
-        } catch (error) {
-            console.error("❌ Error al crear coordinador:", error);
-            alert("Error al crear coordinador: " + (error.response?.data?.error || error.message));
-        }
+            ciudad: '',
+            estado: '',
+            nss: '',
+            institucion_seguro: '',
+            contacto_emergencia: '',
+            costo_dia: 0,
+            idiomas: '',
+            experiencia_anos: nuevoCoordinador.antiguedad || 0,
+            especialidades: nuevoCoordinador.areaAsignada || '',
+            certificacion_oficial: false,
+            comentarios: nuevoCoordinador.comentarios || '',
+            foto_coordinador: nuevoCoordinador.foto,
+            foto_ine: nuevoCoordinador.ine
+        };
+        setCoordinadores([...coordinadores, coordinadorConId]);
+        cerrarModales();
     };
 
-    const actualizarCoordinador = async (coordinadorActualizado) => {
-        try {
-            const token = localStorage.getItem("token");
+    // Función para actualizar coordinador
+    const actualizarCoordinador = (coordinadorActualizado) => {
+        setCoordinadores(coordinadores.map(coord =>
+            coord.id === coordinadorActualizado.id ? coordinadorActualizado : coord
+        ));
+        cerrarModales();
+    };
 
-            const coordinadorData = {
-                nombre: coordinadorActualizado.nombre,
-                apellido_paterno: coordinadorActualizado.apellido_paterno,
-                apellido_materno: coordinadorActualizado.apellido_materno,
-                fecha_nacimiento: coordinadorActualizado.fecha_nacimiento,
-                email: coordinadorActualizado.email,
-                telefono: coordinadorActualizado.telefono,
-                telefono_emergencia: coordinadorActualizado.telefono_emergencia,
-                contacto_emergencia: coordinadorActualizado.contacto_emergencia,
-                ciudad: coordinadorActualizado.ciudad,
-                estado: coordinadorActualizado.estado,
-                nss: coordinadorActualizado.nss || null,
-                institucion_seguro: coordinadorActualizado.institucion_seguro || null,
-                costo_dia: parseFloat(coordinadorActualizado.costo_dia) || 0,
-                experiencia_anos: parseInt(coordinadorActualizado.experiencia_anos) || 0,
-                idiomas: coordinadorActualizado.idiomas || null,
-                especialidades: coordinadorActualizado.especialidades,
-                certificacion_oficial: coordinadorActualizado.certificacion_oficial || false,
-                comentarios: coordinadorActualizado.comentarios || null,
-            };
-
-            const response = await axios.put(
-                `http://127.0.0.1:8000/api/coordinadores/${coordinadorActualizado.id}`,
-                coordinadorData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json",
-                    }
-                }
-            );
-
-            console.log("✅ Coordinador actualizado:", response.data);
-            cerrarModales();
-            await recargarCoordinadores();
-        } catch (error) {
-            console.error("❌ Error al actualizar coordinador:", error);
-            alert("Error al actualizar coordinador: " + (error.response?.data?.error || error.message));
-        }
+    // Función para eliminar coordinador
+    const eliminarCoordinador = (id) => {
+        setCoordinadores(coordinadores.filter(coord => coord.id !== id));
+        cerrarModales();
     };
 
     return (

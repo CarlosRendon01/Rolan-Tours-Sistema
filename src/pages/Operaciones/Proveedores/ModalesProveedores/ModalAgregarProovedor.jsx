@@ -10,21 +10,21 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
     tipo_proveedor: '',
     rfc: '',
     descripcion_servicio: '',
-
+    
     // Contacto
     nombre_contacto: '',
     telefono: '',
     correo: '',
-
+    
     // Ubicación
     direccion: '',
     ciudad: '',
     entidad_federativa: '',
     pais: 'México',
-
+    
     // Pago
     metodo_pago: '',
-
+    
     // Documentos
     foto_proveedor: null,
     documento_rfc: null,
@@ -204,6 +204,7 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
         foto_proveedor: formData.foto_proveedor,
         documento_rfc: formData.documento_rfc,
         identificacion: formData.identificacion,
+        estado: 'activo'
       };
 
       console.log('📦 Datos a guardar:', proveedorData);
@@ -321,7 +322,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
           <option value="Transporte">Transporte</option>
           <option value="Hospedaje">Hospedaje</option>
           <option value="Restaurante">Restaurante</option>
-          <option value="Tour">Tour</option>
           <option value="Otro">Otro</option>
         </select>
         <MensajeError nombreCampo="tipo_proveedor" />

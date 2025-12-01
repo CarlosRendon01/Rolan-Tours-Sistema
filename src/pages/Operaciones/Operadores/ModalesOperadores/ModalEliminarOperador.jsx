@@ -1,5 +1,4 @@
 import Swal from 'sweetalert2';
-import axios from 'axios';
 import './ModalEliminarOperador.css';
 
 /**
@@ -55,22 +54,14 @@ export const modalEliminarOperador = async (operador, onConfirmar) => {
     modalCargando('Eliminando operador...');
 
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/operadores/${operador.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        }
-      });
+      if (onConfirmar) {
+        await onConfirmar(operador);
+      }
 
       // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
 
       Swal.close();
-
-      if (onConfirmar) {
-        await onConfirmar(operador);
-      }
 
       // Mostrar éxito
       await Swal.fire({

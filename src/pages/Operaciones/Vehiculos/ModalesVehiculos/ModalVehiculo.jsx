@@ -21,7 +21,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
     marca: '',
     modelo: '',
     color: '',
-    anio: '',
+    año: '',
     numero_placa: '',
     numero_pasajeros: '',
     comentarios: '',
@@ -111,8 +111,8 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
     }
 
     const añoActual = new Date().getFullYear();
-    if (!formData.anio || parseInt(formData.anio) < 1900 || parseInt(formData.anio) > añoActual + 1) {
-      nuevosErrores.anio = 'Año inválido';
+    if (!formData.año || parseInt(formData.año) < 1900 || parseInt(formData.año) > añoActual + 1) {
+      nuevosErrores.año = 'Año inválido';
     }
 
     if (!formData.numero_placa.trim()) {
@@ -142,7 +142,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
       console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposBasicos = ['nombre', 'rendimiento', 'precio_combustible', 'desgaste', 'costo_renta', 'costo_chofer_dia'];
-      const camposAdicionales = ['marca', 'modelo', 'anio', 'numero_placa', 'numero_pasajeros', 'vehiculos_disponibles'];
+      const camposAdicionales = ['marca', 'modelo', 'año', 'numero_placa', 'numero_pasajeros', 'vehiculos_disponibles'];
 
       const erroresEnBasicos = Object.keys(nuevosErrores).some(key => camposBasicos.includes(key));
       const erroresEnAdicionales = Object.keys(nuevosErrores).some(key => camposAdicionales.includes(key));
@@ -183,7 +183,7 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         marca: formData.marca,
         modelo: formData.modelo,
         color: formData.color,
-        anio: parseInt(formData.anio),
+        año: parseInt(formData.año),
         numero_placa: formData.numero_placa,
         numero_pasajeros: parseInt(formData.numero_pasajeros),
         comentarios: formData.comentarios,
@@ -419,19 +419,19 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
       </div>
 
       <div className="modal-agregar-form-group">
-        <label htmlFor="anio">
+        <label htmlFor="año">
           Año <span className="modal-agregar-required">*</span>
         </label>
         <input
           type="number"
-          id="anio"
-          name="anio"
-          value={formData.anio}
+          id="año"
+          name="año"
+          value={formData.año}
           onChange={handleChange}
-          className={errores.anio ? 'modal-agregar-input-error' : ''}
+          className={errores.año ? 'modal-agregar-input-error' : ''}
           placeholder="2024"
         />
-        <MensajeError nombreCampo="anio" />
+        <MensajeError nombreCampo="año" />
       </div>
 
       <div className="modal-agregar-form-group">

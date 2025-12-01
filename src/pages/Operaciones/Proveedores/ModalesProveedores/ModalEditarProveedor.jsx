@@ -335,7 +335,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
           <option value="Transporte">🚚 Transporte</option>
           <option value="Hospedaje">🏨 Hospedaje</option>
           <option value="Restaurante">🍽️ Restaurante</option>
-          <option value="Tour">📦 Tour</option>
           <option value="Otro">📦 Otro</option>
         </select>
         <MensajeError nombreCampo="tipo_proveedor" />
