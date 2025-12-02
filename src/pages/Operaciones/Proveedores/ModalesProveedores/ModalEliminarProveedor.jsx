@@ -1,12 +1,7 @@
 import Swal from 'sweetalert2';
+import axios from 'axios';
 import './ModalEliminarProveedor.css';
 
-/**
- * Modal de confirmación para eliminar un proveedor usando SweetAlert2
- * @param {Object} proveedor - Objeto con información del proveedor a eliminar
- * @param {Function} onConfirmar - Callback cuando se confirma la eliminación
- * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
- */
 export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
   // Validar datos del proveedor
   if (!proveedor?.nombre_razon_social) {
@@ -20,6 +15,7 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
       'Transporte': 'transporte',
       'Hospedaje': 'hospedaje',
       'Restaurante': 'restaurante',
+      'Tour': 'tour',
       'Otro': 'otro'
     };
     return tipos[tipo] || 'otro';
@@ -27,13 +23,15 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
 
   // Función para obtener icono de tipo
   const obtenerIconoTipo = (tipo) => {
-    switch(tipo) {
+    switch (tipo) {
       case 'Transporte':
         return '🚚';
       case 'Hospedaje':
         return '🏨';
       case 'Restaurante':
         return '🍽️';
+      case 'Tour':
+        return '📦';
       default:
         return '📦';
     }
@@ -83,14 +81,22 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
     modalCargando('Eliminando proveedor...');
 
     try {
-      if (onConfirmar) {
-        await onConfirmar(proveedor);
-      }
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://127.0.0.1:8000/api/proveedores/${proveedor.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
 
       // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
 
       Swal.close();
+
+      if (onConfirmar) {
+        await onConfirmar(proveedor);
+      }
 
       // Mostrar éxito
       await Swal.fire({
@@ -127,10 +133,6 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
   return false;
 };
 
-/**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
- */
 export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
     title: 'Error',
@@ -147,10 +149,6 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
   });
 };
 
-/**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
- */
 export const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
     title: mensaje,
@@ -168,9 +166,6 @@ export const modalCargando = (mensaje = 'Procesando...') => {
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
 export const cerrarModalCargando = () => {
   Swal.close();
 };
