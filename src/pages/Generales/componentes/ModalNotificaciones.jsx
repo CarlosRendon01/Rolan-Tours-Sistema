@@ -14,15 +14,15 @@ import {
 } from "lucide-react";
 import "./ModalNotificaciones.css";
 
-const ModalNotificaciones = ({
-  isOpen,
-  onClose,
-  notificaciones = [],
-  onMarcarComoLeida,
-  onEliminarNotificacion,
+const ModalNotificaciones = ({ 
+  isOpen, 
+  onClose, 
+  notificaciones = [], 
+  onMarcarComoLeida, 
+  onEliminarNotificacion, 
   onMarcarTodasComoLeidas,
   onEliminarTodas,
-  responsive
+  responsive 
 }) => {
   const [filtroActivo, setFiltroActivo] = useState('todas');
   const [menuAbierto, setMenuAbierto] = useState(null);
@@ -45,6 +45,13 @@ const ModalNotificaciones = ({
       borderColor: '#e53e3e',
       nombre: 'Alerta'
     },
+    sistema: {
+      icono: Activity,
+      color: '#38a169',
+      bgColor: 'rgba(56, 161, 105, 0.1)',
+      borderColor: '#38a169',
+      nombre: 'Sistema'
+    },
     usuario: {
       icono: User,
       color: '#805ad5',
@@ -61,24 +68,19 @@ const ModalNotificaciones = ({
     }
   }), []);
 
-
   // Filtros disponibles
   const filtros = useMemo(() => [
     { id: 'todas', nombre: 'Todas', icono: Bell },
     { id: 'mensaje', nombre: 'Mensajes', icono: MessageCircle },
-    { id: 'alerta', nombre: 'Alertas', icono: AlertTriangle }
+    { id: 'alerta', nombre: 'Alertas', icono: AlertTriangle },
+    { id: 'sistema', nombre: 'Sistema', icono: Activity }
   ], []);
-
 
   // Filtrar notificaciones según el filtro activo
   const notificacionesFiltradas = useMemo(() => {
-    const sinSistema = notificaciones.filter(n => n.tipo !== 'sistema');
-
-    if (filtroActivo === 'todas') return sinSistema;
-
-    return sinSistema.filter(n => n.tipo === filtroActivo);
+    if (filtroActivo === 'todas') return notificaciones;
+    return notificaciones.filter(notif => notif.tipo === filtroActivo);
   }, [notificaciones, filtroActivo]);
-
 
   // Contar notificaciones no leídas
   const noLeidas = useMemo(() => {
@@ -99,7 +101,7 @@ const ModalNotificaciones = ({
     if (minutos < 60) return `Hace ${minutos} min`;
     if (horas < 24) return `Hace ${horas}h`;
     if (dias < 7) return `Hace ${dias}d`;
-
+    
     return fechaNotif.toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
@@ -132,7 +134,7 @@ const ModalNotificaciones = ({
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
-
+      
       // Enfocar modal para accesibilidad
       setTimeout(() => {
         if (modalRef.current) {
@@ -165,14 +167,14 @@ const ModalNotificaciones = ({
   if (!isOpen) return null;
 
   return (
-    <div
+    <div 
       className="modal-notificaciones-overlay"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-notificaciones-titulo"
     >
-      <div
+      <div 
         ref={modalRef}
         className="modal-notificaciones-content"
         onClick={(e) => e.stopPropagation()}
@@ -191,7 +193,7 @@ const ModalNotificaciones = ({
               )}
             </div>
           </div>
-
+          
           <div className="header-acciones">
             {noLeidas > 0 && (
               <button
@@ -203,7 +205,7 @@ const ModalNotificaciones = ({
                 {!responsive?.esMovil && <span>Marcar todas</span>}
               </button>
             )}
-
+            
             <button
               onClick={onClose}
               className="btn-cerrar-modal"
@@ -218,8 +220,8 @@ const ModalNotificaciones = ({
         <div className="modal-notificaciones-filtros">
           {filtros.map(filtro => {
             const IconoFiltro = filtro.icono;
-            const count = filtro.id === 'todas'
-              ? notificaciones.length
+            const count = filtro.id === 'todas' 
+              ? notificaciones.length 
               : notificaciones.filter(n => n.tipo === filtro.id).length;
 
             return (
@@ -244,7 +246,7 @@ const ModalNotificaciones = ({
               <Bell size={48} className="icono-vacio" />
               <h3>No hay notificaciones</h3>
               <p>
-                {filtroActivo === 'todas'
+                {filtroActivo === 'todas' 
                   ? 'No tienes notificaciones en este momento'
                   : `No hay notificaciones de tipo "${filtros.find(f => f.id === filtroActivo)?.nombre}"`
                 }
@@ -252,7 +254,7 @@ const ModalNotificaciones = ({
             </div>
           ) : (
             notificacionesFiltradas.map(notificacion => {
-              const config = tiposNotificacion[notificacion.tipo] || tiposNotificacion.alerta;
+              const config = tiposNotificacion[notificacion.tipo] || tiposNotificacion.sistema;
               const IconoTipo = config.icono;
 
               return (
@@ -270,15 +272,15 @@ const ModalNotificaciones = ({
                   }}
                 >
                   <div className="notificacion-contenido">
-                    <div
+                    <div 
                       className="notificacion-icono"
-                      style={{
+                      style={{ 
                         backgroundColor: config.bgColor,
-                        borderColor: config.borderColor
+                        borderColor: config.borderColor 
                       }}
                     >
-                      <IconoTipo
-                        size={18}
+                      <IconoTipo 
+                        size={18} 
                         style={{ color: config.color }}
                       />
                     </div>
@@ -298,7 +300,7 @@ const ModalNotificaciones = ({
                           </span>
                         </div>
                       </div>
-
+                      
                       <p className="notificacion-mensaje">
                         {notificacion.mensaje}
                       </p>
@@ -339,7 +341,7 @@ const ModalNotificaciones = ({
                               Marcar como leída
                             </button>
                           )}
-
+                          
                           {onEliminarNotificacion && (
                             <button
                               onClick={(e) => {
@@ -378,7 +380,7 @@ const ModalNotificaciones = ({
               <Trash2 size={16} />
               Eliminar todas
             </button>
-
+            
             <span className="total-notificaciones">
               Total: {notificaciones.length}
             </span>
