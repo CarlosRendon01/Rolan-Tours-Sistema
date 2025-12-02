@@ -4,6 +4,7 @@ import {
   UserCircle, CheckCircle, AlertCircle, XCircle
 } from 'lucide-react';
 import './ModalVerOperador.css';
+import CredencialOperador from '../Credenciales/CredencialOperador';
 
 const ModalVerOperador = ({ operador, onCerrar }) => {
   
@@ -181,33 +182,9 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                   </div>
                 </div>
                 
-                {/* Foto del Operador */}
+                {/* Credencial del Operador */}
                 <div className="mvo-operador-imagen-container">
-                  {fotoUrl ? (
-                    <img 
-                      src={fotoUrl} 
-                      alt={`${operador.nombre} ${operador.apellidoPaterno}`}
-                      className="mvo-operador-foto"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        const container = e.target.parentElement;
-                        container.innerHTML = `
-                          <div class="mvo-operador-sin-foto">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                              <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            <span>Error al cargar foto</span>
-                          </div>
-                        `;
-                      }}
-                    />
-                  ) : (
-                    <div className="mvo-operador-sin-foto">
-                      <User size={48} />
-                      <span>Sin fotografía</span>
-                    </div>
-                  )}
+                  <CredencialOperador operador={operador} />
                 </div>
               </div>
 

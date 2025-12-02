@@ -14,7 +14,7 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
     email: '',
     ciudad: '',
     estado: '',
-    
+
     // Información Laboral y Profesional
     nss: '',
     institucion_seguro: '',
@@ -26,7 +26,7 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
     especialidades: '',
     certificacion_oficial: false,
     comentarios: '',
-    
+
     // Documentos
     foto_coordinador: null,
     foto_ine: null,

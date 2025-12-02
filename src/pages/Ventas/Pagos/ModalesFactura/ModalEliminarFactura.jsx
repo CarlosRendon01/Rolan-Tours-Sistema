@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import axios from 'axios';
 import './ModalEliminarFactura.css';
 
 /**
@@ -41,7 +42,6 @@ const truncarUUID = (uuid, length = 20) => {
  * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
  */
 export const modalEliminarFactura = async (factura, onConfirmar) => {
-  // Validar datos de la factura
   if (!factura?.numeroFactura || !factura?.cliente || !factura?.monto) {
     await modalError('Información de la factura incompleta');
     return false;
@@ -90,27 +90,28 @@ export const modalEliminarFactura = async (factura, onConfirmar) => {
     modalCargando('Eliminando factura...');
 
     try {
-      if (onConfirmar) {
-        await onConfirmar(factura.id);
-      }
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://127.0.0.1:8000/api/facturas/${factura.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
 
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
-
       Swal.close();
 
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminada!',
         html: `
-          <div class="eliminar-factura-exito-contenido">
-            <p class="eliminar-factura-exito-texto">La factura ha sido eliminada exitosamente</p>
-            <p class="eliminar-factura-exito-detalle">
-              Factura: <span class="eliminar-factura-exito-numero">${factura.numeroFactura}</span>
-            </p>
-            <p class="eliminar-factura-exito-detalle">Cliente: ${factura.cliente}</p>
-          </div>
-        `,
+        <div class="eliminar-factura-exito-contenido">
+          <p class="eliminar-factura-exito-texto">La factura ha sido eliminada exitosamente</p>
+          <p class="eliminar-factura-exito-detalle">
+            Factura: <span class="eliminar-factura-exito-numero">${factura.numeroFactura}</span>
+          </p>
+          <p class="eliminar-factura-exito-detalle">Cliente: ${factura.cliente}</p>
+        </div>
+      `,
         icon: 'success',
         confirmButtonText: 'Aceptar',
         customClass: {
@@ -124,6 +125,8 @@ export const modalEliminarFactura = async (factura, onConfirmar) => {
         timer: 3000,
         timerProgressBar: true
       });
+
+      if (onConfirmar) await onConfirmar();
 
       return true;
     } catch (error) {

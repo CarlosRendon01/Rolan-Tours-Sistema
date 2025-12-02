@@ -56,6 +56,15 @@
   align-items: center;
 }
 
+.cotizaciones-boton-accion.cotizaciones-descargar {
+  background-color: #16a34a;
+  color: white;
+}
+
+.cotizaciones-boton-accion.cotizaciones-descargar:hover {
+  background-color: #15803d;
+}
+
 .modal-visualizar-pdf-boton-descargar {
   display: flex;
   align-items: center;

@@ -1,0 +1,192 @@
+/* ========================================
+   CREDENCIAL OPERADOR - ESTILOS
+   ======================================== */
+
+.credencial-container {
+  display: inline-block;
+  padding: 1rem;
+}
+
+/* Tarjeta de la credencial */
+.credencial-card {
+  width: 290px;
+  height: 414px;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background: white;
+}
+
+/* Fondo decorativo con el patrón de escudos */
+.credencial-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('plantilla_credencial.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* Contenido sobre el fondo */
+.credencial-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px 20px;
+}
+
+/* Foto del operador */
+.credencial-foto-container {
+  width: 120px;
+  height: 140px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 3px solid #1e3a8a;
+  background: white;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.credencial-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.credencial-foto-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+/* Nombre del operador */
+.credencial-nombre {
+  font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #8b1538;
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Cargo/Puesto */
+.credencial-cargo {
+  font-family: 'Satisfy', cursive;
+  font-size: 18px;
+  color: #1e3a8a;
+  text-align: center;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+/* Teléfono */
+.credencial-telefono {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: auto;
+}
+
+.credencial-icono-telefono {
+  color: #8b1538;
+  width: 18px;
+  height: 18px;
+}
+
+/* Logo CORPORATIVO ROLAN */
+.credencial-logo {
+  text-align: center;
+  margin-top: auto;
+}
+
+.credencial-logo-texto {
+  font-family: 'Arial', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  color: #1e3a8a;
+  letter-spacing: 1.5px;
+  margin-bottom: 2px;
+}
+
+.credencial-logo-nombre {
+  font-family: 'Arial Black', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #1e3a8a;
+  letter-spacing: 1px;
+}
+
+@media print {
+  .credencial-container {
+    page-break-inside: avoid;
+  }
+
+  .credencial-card {
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+
+  .credencial-background {
+    background-image: url('plantilla_credencial_hires.png');
+  }
+}
+
+
+
+/* Para pantallas pequeñas */
+@media (max-width: 480px) {
+  .credencial-card {
+    transform: scale(0.85);
+  }
+}
+
+.credencial-card.credencial-preview {
+  transform: scale(1.8);
+  margin: 3rem;
+}
+
+
+
+.credencial-card {
+  transition: all 0.3s ease;
+}
+
+.credencial-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto de aparición */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.credencial-card {
+  animation: fadeInUp 0.5s ease-out;
+}

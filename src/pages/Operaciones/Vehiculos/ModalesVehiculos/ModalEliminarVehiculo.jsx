@@ -1,12 +1,7 @@
 import Swal from 'sweetalert2';
+import axios from 'axios';
 import './ModalEliminarVehiculo.css';
 
-/**
- * Modal de confirmación para eliminar un vehículo usando SweetAlert2
- * @param {Object} vehiculo - Objeto con información del vehículo a eliminar
- * @param {Function} onConfirmar - Callback cuando se confirma la eliminación
- * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
- */
 export const modalEliminarVehiculo = async (vehiculo, onConfirmar) => {
   // Validar datos del vehículo
   if (!vehiculo?.nombre) {
@@ -52,14 +47,22 @@ export const modalEliminarVehiculo = async (vehiculo, onConfirmar) => {
     modalCargando('Eliminando vehículo...');
 
     try {
-      if (onConfirmar) {
-        await onConfirmar(vehiculo);
-      }
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://127.0.0.1:8000/api/vehiculos/${vehiculo.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
 
       // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
 
       Swal.close();
+
+      if (onConfirmar) {
+        await onConfirmar(vehiculo);
+      }
 
       // Mostrar éxito
       await Swal.fire({
