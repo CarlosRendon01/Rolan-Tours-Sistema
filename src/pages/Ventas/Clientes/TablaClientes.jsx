@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw } from 'lucide-react';
 import ModalVerCliente from './Modales/ModalVerCliente';
 import ModalEditarCliente from './Modales/ModalEditarCliente';
@@ -8,14 +9,14 @@ import ModalEliminarDefinitivo from './Modales/ModalEliminarDefinitivo';
 import './TablaClientes.css';
 
 const TablaClientes = () => {
-  // CAMBIAR ESTO SEGÚN EL ROL DEL USUARIO LOGUEADO
-  // true = Administrador, false = Cliente
-  const [esAdministrador, setEsAdministrador] = useState(false);
-  
+  const [permisos, setPermisos] = useState([]);
+  const [roles, setRoles] = useState([]);
+
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
-  
+  const [cargando, setCargando] = useState(true);
+
   // Estados para los modales
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
@@ -23,146 +24,189 @@ const TablaClientes = () => {
   const [clienteARestaurar, setClienteARestaurar] = useState(null);
   const [clienteAEliminarDefinitivo, setClienteAEliminarDefinitivo] = useState(null);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-  
+
   // Estado para los datos de clientes - AHORA CON CAMPO "activo"
-  const [datosClientes, setDatosClientes] = useState([
-    {
-      id: 1,
-      nombre: 'Angel Rafael Hernández',
-      email: 'angel.rafael@email.com',
-      telefono: '951 363 56 90',
-      numero_lead: 'LEAD-001',
-      canal_contacto: 'WhatsApp',
-      rfc: 'ANRA850102XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '02/09/2025',
-      activo: true
-    },
-    {
-      id: 2,
-      nombre: 'Marco Antonio Silva',
-      email: 'marco.antonio@email.com',
-      telefono: '951 343 77 78',
-      numero_lead: 'LEAD-002',
-      canal_contacto: 'Facebook',
-      rfc: 'MAAN900315XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '02/09/2025',
-      activo: true
-    },
-    {
-      id: 3,
-      nombre: 'Carlos Eduardo López',
-      email: 'carlos.eduardo@email.com',
-      telefono: '951 569 23 01',
-      numero_lead: 'LEAD-003',
-      canal_contacto: 'Instagram',
-      rfc: 'CAED920520XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '02/09/2025',
-      activo: false
-    },
-    {
-      id: 4,
-      nombre: 'Elías Abisaí González',
-      email: 'elias.abisai@email.com',
-      telefono: '951 638 13 80',
-      numero_lead: 'LEAD-004',
-      canal_contacto: 'Sitio Web',
-      rfc: 'ELAB880710XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '02/09/2025',
-      activo: true
-    },
-    {
-      id: 5,
-      nombre: 'María González Ruiz',
-      email: 'maria.gonzalez@email.com',
-      telefono: '951 789 45 23',
-      numero_lead: 'LEAD-005',
-      canal_contacto: 'WhatsApp',
-      rfc: 'MAGO850220XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '03/09/2025',
-      activo: false
-    },
-    {
-      id: 6,
-      nombre: 'José Luis Martínez',
-      email: 'jose.martinez@email.com',
-      telefono: '951 456 78 90',
-      numero_lead: 'LEAD-006',
-      canal_contacto: 'Facebook',
-      rfc: 'JOMA901105XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '03/09/2025',
-      activo: true
-    },
-    {
-      id: 7,
-      nombre: 'Ana Patricia López',
-      email: 'ana.lopez@email.com',
-      telefono: '951 321 65 47',
-      numero_lead: 'LEAD-007',
-      canal_contacto: 'Instagram',
-      rfc: 'ANLO930415XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '04/09/2025',
-      activo: true
-    },
-    {
-      id: 8,
-      nombre: 'Roberto Sánchez Morales',
-      email: 'roberto.sanchez@email.com',
-      telefono: '951 987 12 34',
-      numero_lead: 'LEAD-008',
-      canal_contacto: 'Sitio Web',
-      rfc: 'ROSA870825XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '04/09/2025',
-      activo: true
-    },
-    {
-      id: 9,
-      nombre: 'Diana Torres Vega',
-      email: 'diana.torres@email.com',
-      telefono: '951 654 32 10',
-      numero_lead: 'LEAD-009',
-      canal_contacto: 'WhatsApp',
-      rfc: 'DITV910618XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '05/09/2025',
-      activo: true
-    },
-    {
-      id: 10,
-      nombre: 'Fernando Ramírez Cruz',
-      email: 'fernando.ramirez@email.com',
-      telefono: '951 147 85 29',
-      numero_lead: 'LEAD-010',
-      canal_contacto: 'Facebook',
-      rfc: 'FERC890930XXX',
-      direccion: 'Oaxaca, Oaxaca',
-      fecha_registro: '05/09/2025',
-      activo: true
+  const [datosClientes, setDatosClientes] = useState([]);
+
+  // ✅ Cargar permisos y roles del usuario al montar el componente
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No hay token, redirigir al login');
+      setCargando(false);
+      return;
     }
-  ]);
+
+    try {
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      console.log('Datos del usuario:', userData); // ✅ Para debugging
+      setPermisos(userData.permisos || []);
+      setRoles(userData.roles || []);
+      cargarClientes();
+    } catch (error) {
+      console.error('Error al parsear usuario de localStorage:', error);
+      setCargando(false);
+    }
+  }, []);
+
+  // ✅ Función para verificar si el usuario tiene un permiso
+  const tienePermiso = (permiso) => {
+    return permisos.includes(permiso);
+  };
+
+  // ✅ Verificar si el usuario es administrador
+  const esAdministrador = roles.includes('admin');
+
+  // ✅ Cargar clientes desde el backend
+  const cargarClientes = async () => {
+    try {
+      setCargando(true);
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        console.error('No hay token disponible');
+        setCargando(false);
+        return;
+      }
+
+      const response = await axios.get('http://127.0.0.1:8000/api/clientes', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log('Clientes cargados:', response.data);
+      setDatosClientes(response.data);
+    } catch (error) {
+      console.error('Error al cargar clientes:', error);
+      if (error.response?.status === 401) {
+        // Token inválido o expirado
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login'; // Redirigir al login
+      } else {
+        alert('Error al cargar clientes: ' + (error.response?.data?.error || error.message));
+      }
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const manejarGuardarCliente = async (datosActualizados) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      await axios.put(
+        `http://127.0.0.1:8000/api/clientes/${datosActualizados.id}`,
+        datosActualizados,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      // Recargar clientes después de actualizar
+      await cargarClientes();
+      cerrarModalEditar();
+    } catch (error) {
+      console.error('Error al actualizar cliente:', error);
+      alert(error.response?.data?.error || 'Error al actualizar cliente');
+      throw error;
+    }
+  };
+
+  // ✅ Desactivar cliente (Soft Delete)
+  const manejarEliminarCliente = async (cliente) => {
+    if (!cliente) {
+      setClienteAEliminar(null);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+
+      await axios.delete(
+        `http://127.0.0.1:8000/api/clientes/${cliente.id}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      setClienteAEliminar(null);
+      await cargarClientes();
+    } catch (error) {
+      console.error('Error al desactivar cliente:', error);
+      alert(error.response?.data?.error || 'Error al desactivar cliente');
+      setClienteAEliminar(null);
+      throw error;
+    }
+  };
+
+  // ✅ Restaurar cliente
+  const manejarRestaurar = async (cliente) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      await axios.post(
+        `http://127.0.0.1:8000/api/clientes/${cliente.id}/restore`,
+        {},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      setClienteARestaurar(null);
+      await cargarClientes();
+    } catch (error) {
+      console.error('Error al restaurar cliente:', error);
+      alert(error.response?.data?.error || 'Error al restaurar cliente');
+    }
+  };
+
+  // ✅ Eliminar definitivamente
+  const manejarEliminarDefinitivo = async (cliente) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      await axios.delete(
+        `http://127.0.0.1:8000/api/clientes/${cliente.id}/force`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      setClienteAEliminarDefinitivo(null);
+      await cargarClientes();
+    } catch (error) {
+      console.error('Error al eliminar definitivamente cliente:', error);
+      alert(error.response?.data?.error || 'Error al eliminar definitivamente cliente');
+    }
+  };
 
   // Filtrar clientes según rol y búsqueda
   const clientesFiltrados = datosClientes.filter(cliente => {
+    if (!cliente || !cliente.nombre) return false;
     // FILTRO POR ROL
     if (!esAdministrador && !cliente.activo) {
       // Los clientes normales NO ven los inactivos
       return false;
     }
     // Si es admin, ve TODOS (activos e inactivos juntos)
-    
+
     // FILTRO DE BÚSQUEDA
     const busqueda = terminoBusqueda.toLowerCase();
     return (
       cliente.nombre.toLowerCase().includes(busqueda) ||
       cliente.id.toString().includes(busqueda) ||
-      cliente.telefono.includes(busqueda) ||
+      (cliente.telefono && cliente.telefono.toLowerCase().includes(busqueda)) ||
       (cliente.email && cliente.email.toLowerCase().includes(busqueda)) ||
       (cliente.numero_lead && cliente.numero_lead.toLowerCase().includes(busqueda)) ||
       (cliente.canal_contacto && cliente.canal_contacto.toLowerCase().includes(busqueda))
@@ -233,69 +277,25 @@ const TablaClientes = () => {
     setClienteSeleccionado(null);
   };
 
-  const manejarGuardarCliente = async (datosActualizados) => {
-    try {
-      // Actualizar el cliente en el estado
-      setDatosClientes(datosClientes.map(cliente => 
-        cliente.id === datosActualizados.id ? datosActualizados : cliente
-      ));
-      
-      console.log('Cliente actualizado:', datosActualizados);
-      return Promise.resolve();
-    } catch (error) {
-      console.error('Error al actualizar cliente:', error);
-      throw error;
-    }
-  };
 
-  const manejarEliminarCliente = async (cliente) => {
-    if (!cliente) {
-      // Cancelar eliminación
-      setClienteAEliminar(null);
-      return;
-    }
-
-    try {
-      // SOFT DELETE: Marcar como inactivo
-      setDatosClientes(datosClientes.map(c => 
-        c.id === cliente.id ? { ...c, activo: false } : c
-      ));
-      
-      setClienteAEliminar(null);
-      console.log('Cliente DESACTIVADO:', cliente);
-      return Promise.resolve();
-    } catch (error) {
-      console.error('Error al desactivar cliente:', error);
-      setClienteAEliminar(null);
-      throw error;
-    }
-  };
-
-  const manejarRestaurar = async (cliente) => {
-    try {
-      // Restaurar cliente (marcarlo como activo)
-      setDatosClientes(datosClientes.map(c => 
-        c.id === cliente.id ? { ...c, activo: true } : c
-      ));
-      
-      setClienteARestaurar(null);
-      console.log('Cliente RESTAURADO:', cliente);
-    } catch (error) {
-      console.error('Error al restaurar cliente:', error);
-    }
-  };
-
-  const manejarEliminarDefinitivo = async (cliente) => {
-    try {
-      // Eliminar definitivamente del sistema
-      setDatosClientes(datosClientes.filter(c => c.id !== cliente.id));
-      
-      setClienteAEliminarDefinitivo(null);
-      console.log('Cliente eliminado DEFINITIVAMENTE:', cliente);
-    } catch (error) {
-      console.error('Error al eliminar definitivamente cliente:', error);
-    }
-  };
+  // ✅ Si no hay token, mostrar mensaje
+  if (!localStorage.getItem('token')) {
+    return (
+      <div style={{
+        padding: '2rem',
+        textAlign: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh'
+      }}>
+        <div>
+          <h2>Por favor, inicia sesión</h2>
+          <p>Debes iniciar sesión para acceder a esta página</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="clientes-contenedor-principal">
@@ -309,20 +309,8 @@ const TablaClientes = () => {
             <div className="clientes-linea clientes-amarilla"></div>
           </div>
           <h1 className="clientes-titulo">Gestión de Clientes</h1>
-          {/* Badge de rol */}
-          <span style={{
-            padding: '0.25rem 0.75rem',
-            borderRadius: '12px',
-            fontSize: '0.85rem',
-            fontWeight: '600',
-            background: 'rgba(255, 255, 255, 0.2)',
-            color: 'white',
-            marginLeft: '1rem'
-          }}>
-            {esAdministrador ? 'ADMINISTRADOR' : 'CLIENTE'}
-          </span>
         </div>
-        
+
         {/* Estadísticas */}
         <div className="clientes-contenedor-estadisticas">
           <div className="clientes-estadistica">
@@ -333,7 +321,6 @@ const TablaClientes = () => {
               <span className="clientes-label-estadistica">ACTIVOS: {clientesActivos}</span>
             </div>
           </div>
-          
           {esAdministrador && (
             <div className="clientes-estadistica">
               <div className="clientes-icono-estadistica-cuadrado">
@@ -351,26 +338,10 @@ const TablaClientes = () => {
       <div className="clientes-controles">
         <div className="clientes-control-registros">
           {/* BOTÓN PARA CAMBIAR DE ROL (SOLO PARA PRUEBAS - ELIMINAR EN PRODUCCIÓN) */}
-          <button
-            onClick={() => setEsAdministrador(!esAdministrador)}
-            style={{
-              padding: '0.5rem 1rem',
-              background: 'linear-gradient(135deg, #17a2b8, #138496)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: '600',
-              marginRight: '1rem'
-            }}
-          >
-            Cambiar a {esAdministrador ? 'Cliente' : 'Admin'}
-          </button>
-          
           <label htmlFor="registros">Mostrar</label>
-          <select 
+          <select
             id="registros"
-            value={registrosPorPagina} 
+            value={registrosPorPagina}
             onChange={manejarCambioRegistros}
             className="clientes-selector-registros"
           >
@@ -407,7 +378,7 @@ const TablaClientes = () => {
             <tr className="clientes-fila-encabezado">
               <th>ID</th>
               <th>NOMBRE</th>
-              <th>EMAIL</th>
+              {/* <th>EMAIL</th> */}
               <th>TELÉFONO</th>
               <th>NÚMERO LEAD</th>
               <th>CANAL CONTACTO</th>
@@ -417,9 +388,9 @@ const TablaClientes = () => {
           </thead>
           <tbody>
             {clientesPaginados.map((cliente, index) => (
-              <tr 
-                key={cliente.id} 
-                className="clientes-fila-cliente" 
+              <tr
+                key={cliente.id}
+                className="clientes-fila-cliente"
                 style={{
                   animationDelay: `${index * 0.1}s`,
                   background: cliente.activo ? 'white' : '#f8d7da'
@@ -441,11 +412,11 @@ const TablaClientes = () => {
                     </div>
                   </div>
                 </td>
-                <td data-label="Email" className="clientes-columna-email">
+                {/* <td data-label="Email" className="clientes-columna-email">
                   <a href={`mailto:${cliente.email}`} className="clientes-enlace-email">
                     {cliente.email}
                   </a>
-                </td>
+                </td> */}
                 <td data-label="Teléfono" className="clientes-columna-telefono">
                   <span className="clientes-telefono">{cliente.telefono}</span>
                 </td>
@@ -453,8 +424,8 @@ const TablaClientes = () => {
                   <span className="clientes-badge-lead">{cliente.numero_lead}</span>
                 </td>
                 <td data-label="Canal Contacto" className="clientes-columna-canal">
-                  <span className={`clientes-badge-canal clientes-canal-${cliente.canal_contacto.toLowerCase().replace(' ', '-')}`}>
-                    {cliente.canal_contacto}
+                  <span className={`clientes-badge-canal ${cliente.canal_contacto ? `clientes-canal-${cliente.canal_contacto.toLowerCase().replace(' ', '-')}` : 'clientes-canal-sin-datos'}`}>
+                    {cliente.canal_contacto || 'Sin canal'}
                   </span>
                 </td>
                 <td data-label="Fecha Registro" className="clientes-columna-fecha">
@@ -462,24 +433,24 @@ const TablaClientes = () => {
                 </td>
                 <td data-label="Acciones" className="clientes-columna-acciones">
                   <div className="clientes-botones-accion">
-                    <button 
+                    <button
                       className="clientes-boton-accion clientes-ver"
                       onClick={() => manejarAccion('ver', cliente)}
                       title="Ver cliente"
                     >
                       <Eye size={16} />
                     </button>
-                    <button 
+                    <button
                       className="clientes-boton-accion clientes-editar"
                       onClick={() => manejarAccion('editar', cliente)}
                       title="Editar cliente"
                     >
                       <Edit size={16} />
                     </button>
-                    
+
                     {/* Botón RESTAURAR solo para admin con clientes inactivos */}
                     {esAdministrador && !cliente.activo && (
-                      <button 
+                      <button
                         className="clientes-boton-accion clientes-restaurar"
                         onClick={() => manejarAccion('restaurar', cliente)}
                         title="Restaurar cliente"
@@ -491,8 +462,8 @@ const TablaClientes = () => {
                         <RotateCcw size={16} />
                       </button>
                     )}
-                    
-                    <button 
+
+                    <button
                       className="clientes-boton-accion clientes-eliminar"
                       onClick={() => manejarAccion('eliminar', cliente)}
                       title={esAdministrador && !cliente.activo ? 'Eliminar definitivamente' : 'Desactivar cliente'}
@@ -512,14 +483,14 @@ const TablaClientes = () => {
         <div className="clientes-informacion-registros">
           Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
           {terminoBusqueda && (
-            <span style={{color: '#6c757d', marginLeft: '0.5rem'}}>
+            <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
               (filtrado de {datosClientes.length} registros totales)
             </span>
           )}
         </div>
-        
+
         <div className="clientes-controles-paginacion">
-          <button 
+          <button
             className="clientes-boton-paginacion"
             onClick={() => cambiarPagina(paginaActual - 1)}
             disabled={paginaActual === 1}
@@ -527,20 +498,54 @@ const TablaClientes = () => {
             <ChevronLeft size={18} />
             Anterior
           </button>
-          
+
           <div className="clientes-numeros-paginacion">
-            {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
-              <button
-                key={numero}
-                className={`clientes-numero-pagina ${paginaActual === numero ? 'clientes-activo' : ''}`}
-                onClick={() => cambiarPagina(numero)}
-              >
-                {numero}
-              </button>
-            ))}
+            {(() => {
+              const botonesPorBloque = 5;
+              const bloqueActual = Math.floor((paginaActual - 1) / botonesPorBloque);
+              const inicio = bloqueActual * botonesPorBloque + 1;
+              const fin = Math.min(inicio + botonesPorBloque - 1, totalPaginas);
+
+              const paginasVisibles = Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
+
+              return (
+                <>
+                  {/* Botón para retroceder bloques */}
+                  {inicio > 1 && (
+                    <button
+                      className="clientes-numero-pagina"
+                      onClick={() => cambiarPagina(inicio - 1)}
+                    >
+                      ...
+                    </button>
+                  )}
+
+                  {/* Botones de las páginas visibles */}
+                  {paginasVisibles.map((numero) => (
+                    <button
+                      key={numero}
+                      className={`clientes-numero-pagina ${paginaActual === numero ? 'clientes-activo' : ''}`}
+                      onClick={() => cambiarPagina(numero)}
+                    >
+                      {numero}
+                    </button>
+                  ))}
+
+                  {/* Botón para avanzar bloques */}
+                  {fin < totalPaginas && (
+                    <button
+                      className="clientes-numero-pagina"
+                      onClick={() => cambiarPagina(fin + 1)}
+                    >
+                      ...
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
-          
-          <button 
+
+          <button
             className="clientes-boton-paginacion"
             onClick={() => cambiarPagina(paginaActual + 1)}
             disabled={paginaActual === totalPaginas}
@@ -552,14 +557,14 @@ const TablaClientes = () => {
       </div>
 
       {/* Modal Ver Cliente */}
-      <ModalVerCliente 
+      <ModalVerCliente
         estaAbierto={modalVerAbierto}
         cliente={clienteSeleccionado}
         alCerrar={cerrarModalVer}
       />
 
       {/* Modal Editar Cliente */}
-      <ModalEditarCliente 
+      <ModalEditarCliente
         estaAbierto={modalEditarAbierto}
         cliente={clienteSeleccionado}
         alCerrar={cerrarModalEditar}
@@ -568,7 +573,7 @@ const TablaClientes = () => {
 
       {/* Modal Eliminar Cliente (Desactivar) */}
       {clienteAEliminar && (
-        <ModalEliminarCliente 
+        <ModalEliminarCliente
           cliente={clienteAEliminar}
           alConfirmar={manejarEliminarCliente}
           esAdministrador={esAdministrador}
@@ -577,7 +582,7 @@ const TablaClientes = () => {
 
       {/* Modal Restaurar Cliente */}
       {clienteARestaurar && (
-        <ModalRestaurarCliente 
+        <ModalRestaurarCliente
           cliente={clienteARestaurar}
           alConfirmar={manejarRestaurar}
           alCancelar={() => setClienteARestaurar(null)}
@@ -586,7 +591,7 @@ const TablaClientes = () => {
 
       {/* Modal Eliminar Definitivamente */}
       {clienteAEliminarDefinitivo && (
-        <ModalEliminarDefinitivo 
+        <ModalEliminarDefinitivo
           cliente={clienteAEliminarDefinitivo}
           alConfirmar={manejarEliminarDefinitivo}
           alCancelar={() => setClienteAEliminarDefinitivo(null)}
