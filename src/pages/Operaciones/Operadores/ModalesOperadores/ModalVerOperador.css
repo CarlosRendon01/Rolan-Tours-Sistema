@@ -635,3 +635,79 @@
     grid-template-columns: 1fr;
   }
 }
+/* ========================================
+   CREDENCIAL EN HERO CARD
+   ======================================== */
+
+/* Ajustar el contenedor para la credencial */
+.mvo-operador-imagen-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: transparent;
+}
+
+/* La credencial dentro del hero card */
+.mvo-operador-imagen-container .credencial-card {
+  transform: scale(0.85);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.mvo-operador-imagen-container .credencial-card:hover {
+  transform: scale(0.9);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+/* Ajustar el contenedor de la credencial */
+.mvo-operador-imagen-container .credencial-container {
+  padding: 0;
+  margin: 0;
+}
+
+/* Responsive - hacer más pequeña en tablets */
+@media (max-width: 1024px) {
+  .mvo-operador-imagen-container .credencial-card {
+    transform: scale(0.75);
+  }
+  
+  .mvo-operador-imagen-container .credencial-card:hover {
+    transform: scale(0.8);
+  }
+}
+
+/* Responsive - hacer más pequeña en móvil */
+@media (max-width: 768px) {
+  .mvo-operador-imagen-container .credencial-card {
+    transform: scale(0.65);
+  }
+  
+  .mvo-operador-imagen-container .credencial-card:hover {
+    transform: scale(0.7);
+  }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .mvo-operador-imagen-container .credencial-card {
+    transform: scale(0.55);
+  }
+  
+  .mvo-operador-imagen-container .credencial-card:hover {
+    transform: scale(0.6);
+  }
+}
+
+/* Asegurar que el hero card tenga el espacio adecuado */
+.mvo-operador-hero {
+  min-height: 400px;
+}
+
+/* Para impresión */
+@media print {
+  .mvo-operador-imagen-container .credencial-card {
+    transform: scale(1);
+    page-break-inside: avoid;
+  }
+}

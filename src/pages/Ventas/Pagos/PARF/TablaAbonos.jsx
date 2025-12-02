@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useReducer } from 'react';
+import React, { useState, useMemo, useReducer, useEffect } from 'react';
+import axios from "axios";
 import {
   Search,
   Edit,
@@ -24,9 +25,6 @@ import ModalVerAbono from '../ModalesAbonos/ModalVerAbono';
 import ModalEditarAbono from '../ModalesAbonos/ModalEditarAbono';
 import ModalReciboAbono from '../ModalesAbonos/ModalReciboAbono';
 import ModalFacturaAbono from '../ModalesAbonos/ModalFacturaAbono';
-import ModalReactivarAbono from '../ModalesAbonos/ModalReactivarAbono';
-import ModalEliminarDefinitivoAbono from '../ModalesAbonos/ModalEliminarDefinitivoAbono';
-import { modalEliminarPago } from '../ModalesAbonos/ModalEliminarAbono';
 
 // ===== REDUCER PARA MANEJO DE ESTADO =====
 const estadoInicial = {
@@ -55,12 +53,11 @@ const reductor = (estado, accion) => {
 };
 
 const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
+  const API_URL = "http://127.0.0.1:8000/api/pagos"; // Ajusta al dominio/backend real
   const [estado, despachar] = useReducer(reductor, estadoInicial);
   const { paginaActual, registrosPorPagina, terminoBusqueda, filtroVisibilidad, cargando } = estado;
 
-  // ===== ROL DE USUARIO =====
-  // Cambiar entre 'vendedor' y 'administrador' según el rol del usuario autenticado
-  const [rolUsuario, setRolUsuario] = useState('vendedor');
+  const [rolUsuario, setRolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
 
   // ===== ESTADOS PARA MODALES =====
   const [modalNuevoPagoAbierto, setModalNuevoPagoAbierto] = useState(false);
@@ -69,172 +66,47 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
   const [modalEditarPagoAbierto, setModalEditarPagoAbierto] = useState(false);
   const [modalReciboAbierto, setModalReciboAbierto] = useState(false);
   const [modalFacturaAbierto, setModalFacturaAbierto] = useState(false);
-  const [modalReactivarAbierto, setModalReactivarAbierto] = useState(false);
-  const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] = useState(false);
   const [pagoSeleccionado, setPagoSeleccionado] = useState(null);
 
   // ===== DATOS DE ABONOS CON CAMPO "activo" =====
-  const [datosAbonos, setDatosAbonos] = useState([
-    {
-      id: 1,
-      activo: true, // ✅ Campo para soft delete
-      cliente: {
-        id: 123,
-        nombre: 'Roberto Sánchez Morales',
-        email: 'roberto@example.com',
-        rfc: 'SAMR850615ABC',
-        telefono: '951-123-4567',
-        regimen: '605 - Sueldos y Salarios',
-        codigoPostal: '68000'
-      },
-      servicio: {
-        tipo: 'Tour Arqueológico',
-        descripcion: 'Monte Albán + Hierve el Agua',
-        fechaTour: '2025-11-15'
-      },
-      planPago: {
-        montoTotal: 30000,
-        abonosPlaneados: 5,
-        abonoMinimo: 6000,
-        montoPagado: 18000,
-        saldoPendiente: 12000,
-        abonosRealizados: 3
-      },
-      historialAbonos: [
-        { numeroAbono: 1, monto: 6000, fecha: '2025-09-15', metodoPago: 'Transferencia', referencia: 'REF-001', facturaGenerada: true, numeroFactura: 'FAC-0001-1', uuid: 'A1B2C3D4-E5F6-1234-5678-ABCDEF123456', fechaFacturacion: '2025-09-15' },
-        { numeroAbono: 2, monto: 6000, fecha: '2025-09-22', metodoPago: 'Efectivo', referencia: 'REF-002', facturaGenerada: false },
-        { numeroAbono: 3, monto: 6000, fecha: '2025-09-29', metodoPago: 'Tarjeta', referencia: 'REF-003', facturaGenerada: false }
-      ],
-      estado: 'EN_PROCESO',
-      proximoVencimiento: '2025-10-25',
-      numeroContrato: 'CONT-001',
-      fechaCreacion: '2025-09-15',
-      usoCFDI: 'G03',
-      metodoPago: 'Mixto'
-    },
-    {
-      id: 2,
-      activo: false, // ✅ Eliminado por vendedor
-      cliente: {
-        id: 124,
-        nombre: 'Diana Torres Vega',
-        email: 'diana@example.com',
-        rfc: 'TOVD900320XYZ',
-        telefono: '951-234-5678',
-        regimen: '612 - Personas Físicas',
-        codigoPostal: '68050'
-      },
-      servicio: {
-        tipo: 'Tour Gastronómico',
-        descripcion: 'Ruta del Mezcal',
-        fechaTour: '2025-10-20'
-      },
-      planPago: {
-        montoTotal: 15000,
-        abonosPlaneados: 4,
-        abonoMinimo: 3750,
-        montoPagado: 9000,
-        saldoPendiente: 6000,
-        abonosRealizados: 2
-      },
-      historialAbonos: [
-        { numeroAbono: 1, monto: 4500, fecha: '2025-09-10', metodoPago: 'Tarjeta', referencia: 'REF-004', facturaGenerada: false },
-        { numeroAbono: 2, monto: 4500, fecha: '2025-09-18', metodoPago: 'Transferencia', referencia: 'REF-005', facturaGenerada: false }
-      ],
-      estado: 'EN_PROCESO',
-      proximoVencimiento: '2025-10-18',
-      numeroContrato: 'CONT-002',
-      fechaCreacion: '2025-09-10',
-      usoCFDI: 'G03',
-      metodoPago: 'Mixto'
-    },
-    {
-      id: 3,
-      activo: true,
-      cliente: {
-        id: 125,
-        nombre: 'Fernando Ramírez Cruz',
-        email: 'fernando@example.com',
-        rfc: 'RACF880525DEF',
-        telefono: '951-345-6789',
-        regimen: '605 - Sueldos y Salarios',
-        codigoPostal: '68020'
-      },
-      servicio: {
-        tipo: 'Tour Ecoturístico',
-        descripcion: 'Pueblos Mancomunados',
-        fechaTour: '2025-11-30'
-      },
-      planPago: {
-        montoTotal: 45000,
-        abonosPlaneados: 5,
-        abonoMinimo: 9000,
-        montoPagado: 27000,
-        saldoPendiente: 18000,
-        abonosRealizados: 3
-      },
-      historialAbonos: [
-        { numeroAbono: 1, monto: 9000, fecha: '2025-09-12', metodoPago: 'Efectivo', referencia: 'REF-006', facturaGenerada: true, numeroFactura: 'FAC-0003-1', uuid: 'X9Y8Z7W6-V5U4-3210-ABCD-EFGH12345678', fechaFacturacion: '2025-09-13' },
-        { numeroAbono: 2, monto: 9000, fecha: '2025-09-22', metodoPago: 'Transferencia', referencia: 'REF-007', facturaGenerada: true, numeroFactura: 'FAC-0003-2', uuid: 'M1N2O3P4-Q5R6-7890-STUV-WXYZ98765432', fechaFacturacion: '2025-09-23' },
-        { numeroAbono: 3, monto: 9000, fecha: '2025-09-29', metodoPago: 'Tarjeta', referencia: 'REF-008', facturaGenerada: false }
-      ],
-      estado: 'EN_PROCESO',
-      proximoVencimiento: '2025-11-22',
-      numeroContrato: 'CONT-003',
-      fechaCreacion: '2025-09-12',
-      usoCFDI: 'G03',
-      metodoPago: 'Mixto'
-    },
-    {
-      id: 4,
-      activo: false, // ✅ Eliminado por vendedor
-      cliente: {
-        id: 126,
-        nombre: 'Andrea Jiménez López',
-        email: 'andrea@example.com',
-        rfc: 'JILA920815GHI',
-        telefono: '951-456-7890',
-        regimen: '605 - Sueldos y Salarios',
-        codigoPostal: '68030'
-      },
-      servicio: {
-        tipo: 'Tour Cultural',
-        descripcion: 'Artesanías de Oaxaca',
-        fechaTour: '2025-10-15'
-      },
-      planPago: {
-        montoTotal: 20000,
-        abonosPlaneados: 4,
-        abonoMinimo: 5000,
-        montoPagado: 20000,
-        saldoPendiente: 0,
-        abonosRealizados: 4
-      },
-      historialAbonos: [
-        { numeroAbono: 1, monto: 5000, fecha: '2025-09-05', metodoPago: 'Transferencia', referencia: 'REF-009', facturaGenerada: true, numeroFactura: 'FAC-0004-1', uuid: 'AAAA1111-BBBB-2222-CCCC-DDDD33334444', fechaFacturacion: '2025-09-05' },
-        { numeroAbono: 2, monto: 5000, fecha: '2025-09-15', metodoPago: 'Efectivo', referencia: 'REF-010', facturaGenerada: true, numeroFactura: 'FAC-0004-2', uuid: 'EEEE5555-FFFF-6666-GGGG-HHHH77778888', fechaFacturacion: '2025-09-15' },
-        { numeroAbono: 3, monto: 5000, fecha: '2025-09-20', metodoPago: 'Tarjeta', referencia: 'REF-011', facturaGenerada: true, numeroFactura: 'FAC-0004-3', uuid: 'IIII9999-JJJJ-0000-KKKK-LLLL11112222', fechaFacturacion: '2025-09-20' },
-        { numeroAbono: 4, monto: 5000, fecha: '2025-09-25', metodoPago: 'Transferencia', referencia: 'REF-012', facturaGenerada: true, numeroFactura: 'FAC-0004-4', uuid: 'MMMM3333-NNNN-4444-OOOO-PPPP55556666', fechaFacturacion: '2025-09-25' }
-      ],
-      estado: 'FINALIZADO',
-      proximoVencimiento: 'Finalizado',
-      numeroContrato: 'CONT-004',
-      fechaCreacion: '2025-09-05',
-      fechaFinalizacion: '2025-09-25',
-      usoCFDI: 'G03',
-      metodoPago: 'Mixto'
-    }
-  ]);
+  const [datosAbonos, setDatosAbonos] = useState([]);
 
-  // ===== ESTADÍSTICAS FILTRADAS POR ROL =====
+  useEffect(() => {
+    cargarAbonos();
+  }, []);
+
+  const cargarAbonos = async () => {
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(API_URL, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
+
+      const abonos = res.data.data || [];
+      setDatosAbonos(abonos);
+      if (pagoSeleccionado && modalVerPagoAbierto) {
+        const pagoActualizado = abonos.find(p => p.id === pagoSeleccionado.id);
+        if (pagoActualizado) {
+          setPagoSeleccionado(pagoActualizado);
+        }
+      }
+    } catch (error) {
+      console.error("Error al cargar abonos:", error);
+    }
+  };
+
   const estadisticas = useMemo(() => {
     const abonosVisibles = rolUsuario === 'vendedor'
       ? datosAbonos.filter(a => a.activo)
       : datosAbonos.filter(a => {
-          if (filtroVisibilidad === 'activos') return a.activo;
-          if (filtroVisibilidad === 'eliminados') return !a.activo;
-          return true;
-        });
+        if (filtroVisibilidad === 'activos') return a.activo;
+        if (filtroVisibilidad === 'eliminados') return !a.activo;
+        return true;
+      });
 
     const totalClientes = abonosVisibles.length;
     const proximosVencer = abonosVisibles.filter(abono => {
@@ -255,7 +127,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     return datosAbonos.filter(abono => {
       // Filtro por rol
       if (rolUsuario === 'vendedor' && !abono.activo) return false;
-      if (rolUsuario === 'administrador') {
+      if (rolUsuario === 'admin') {
         if (filtroVisibilidad === 'activos' && !abono.activo) return false;
         if (filtroVisibilidad === 'eliminados' && abono.activo) return false;
       }
@@ -296,180 +168,28 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     despachar({ tipo: 'ESTABLECER_FILTRO_VISIBILIDAD', valor: evento.target.value });
   };
 
-  // ===== FUNCIONES DE CALLBACK PARA MODALES =====
-  const manejarReactivarAbono = async (abono) => {
-    setDatosAbonos(prevDatos =>
-      prevDatos.map(a => a.id === abono.id ? { ...a, activo: true } : a)
-    );
-    console.log('✅ Abono reactivado:', abono);
-  };
-
-  const manejarEliminarDefinitivo = async (abono) => {
-    setDatosAbonos(prevDatos =>
-      prevDatos.filter(a => a.id !== abono.id)
-    );
-    console.log('✅ Abono eliminado definitivamente:', abono);
-  };
-
   // ===== FUNCIÓN PARA FACTURAR ABONO INDIVIDUAL =====
-  const facturarAbono = (pagoId, numeroAbono, datosFactura) => {
-    setDatosAbonos(prevDatos => {
-      return prevDatos.map(pago => {
-        if (pago.id === pagoId) {
-          return {
-            ...pago,
-            historialAbonos: pago.historialAbonos.map(abono => {
-              if (abono.numeroAbono === numeroAbono) {
-                return {
-                  ...abono,
-                  facturaGenerada: true,
-                  numeroFactura: datosFactura.numeroFactura,
-                  uuid: datosFactura.uuid,
-                  fechaFacturacion: datosFactura.fechaFacturacion
-                };
-              }
-              return abono;
-            })
-          };
-        }
-        return pago;
-      });
-    });
-    console.log('✅ Factura generada para abono #' + numeroAbono);
+  const facturarAbono = async () => {
+    await cargarAbonos();
+    console.log('✅ Facturas recargadas');
   };
 
   // ===== FUNCIÓN PARA GUARDAR NUEVO PAGO =====
-  const guardarNuevoPago = (datosPago) => {
-    const nuevoId = datosAbonos.length > 0 ? Math.max(...datosAbonos.map(p => p.id)) + 1 : 1;
-
-    const nuevoPago = {
-      id: nuevoId,
-      activo: true, // ✅ Por defecto activo
-      cliente: {
-        id: Date.now(),
-        nombre: datosPago.nombreCliente,
-        email: datosPago.emailCliente,
-        telefono: datosPago.telefonoCliente,
-        rfc: datosPago.rfcCliente || 'XAXX010101000',
-        regimen: datosPago.regimenCliente || '605 - Sueldos y Salarios',
-        codigoPostal: datosPago.codigoPostal || '68000'
-      },
-      servicio: {
-        tipo: datosPago.tipoServicio,
-        descripcion: datosPago.descripcionServicio,
-        fechaTour: datosPago.fechaTour
-      },
-      planPago: {
-        montoTotal: parseFloat(datosPago.montoTotal),
-        abonosPlaneados: parseInt(datosPago.numeroAbonos),
-        abonoMinimo: parseFloat(datosPago.abonoMinimo),
-        montoPagado: 0,
-        saldoPendiente: parseFloat(datosPago.montoTotal),
-        abonosRealizados: 0
-      },
-      historialAbonos: [],
-      estado: 'EN_PROCESO',
-      proximoVencimiento: datosPago.fechaPrimerAbono,
-      numeroContrato: datosPago.numeroContrato || `CONT-${String(nuevoId).padStart(3, '0')}`,
-      fechaCreacion: new Date().toISOString().split('T')[0],
-      frecuenciaPago: datosPago.frecuenciaPago,
-      observaciones: datosPago.observaciones,
-      usoCFDI: datosPago.usoCFDI || 'G03',
-      metodoPago: datosPago.metodoPago || 'Mixto'
-    };
-
-    setDatosAbonos(prevDatos => [...prevDatos, nuevoPago]);
-    console.log('✅ Nuevo pago agregado:', nuevoPago);
+  const guardarNuevoPago = async () => {
+    await cargarAbonos();
+    console.log('✅ Pagos recargados después de crear');
   };
 
   // ===== FUNCIÓN PARA AGREGAR ABONO =====
-  const guardarAbono = (datosAbono) => {
-    setDatosAbonos(prevDatos => {
-      return prevDatos.map(pago => {
-        if (pago.id === datosAbono.pagoId) {
-          const nuevoMontoPagado = pago.planPago.montoPagado + datosAbono.montoAbono;
-          const nuevoSaldoPendiente = pago.planPago.montoTotal - nuevoMontoPagado;
-          const nuevosAbonosRealizados = pago.planPago.abonosRealizados + 1;
-          const pagoCompletado = nuevoSaldoPendiente === 0;
-
-          const nuevoAbono = {
-            numeroAbono: datosAbono.numeroAbono,
-            monto: datosAbono.montoAbono,
-            fecha: datosAbono.fechaAbono,
-            metodoPago: datosAbono.metodoPago,
-            referencia: datosAbono.referencia,
-            observaciones: datosAbono.observaciones,
-            facturaGenerada: false
-          };
-
-          let proximoVencimiento = pago.proximoVencimiento;
-          if (!pagoCompletado && pago.frecuenciaPago) {
-            const fechaActual = new Date(datosAbono.fechaAbono);
-            const diasASumar = pago.frecuenciaPago === 'semanal' ? 7 : pago.frecuenciaPago === 'quincenal' ? 15 : 30;
-            fechaActual.setDate(fechaActual.getDate() + diasASumar);
-            proximoVencimiento = fechaActual.toISOString().split('T')[0];
-          }
-
-          return {
-            ...pago,
-            planPago: {
-              ...pago.planPago,
-              montoPagado: nuevoMontoPagado,
-              saldoPendiente: nuevoSaldoPendiente,
-              abonosRealizados: nuevosAbonosRealizados
-            },
-            historialAbonos: [...pago.historialAbonos, nuevoAbono],
-            estado: pagoCompletado ? 'FINALIZADO' : 'EN_PROCESO',
-            proximoVencimiento: pagoCompletado ? 'Finalizado' : proximoVencimiento,
-            ...(pagoCompletado && { fechaFinalizacion: datosAbono.fechaAbono })
-          };
-        }
-        return pago;
-      });
-    });
-    console.log('✅ Abono agregado exitosamente');
+  const guardarAbono = async () => {
+    await cargarAbonos();
+    console.log('✅ Abonos recargados después de agregar');
   };
 
   // ===== FUNCIÓN PARA EDITAR PAGO =====
-  const guardarEdicionPago = (datosActualizados) => {
-    setDatosAbonos(prevDatos => {
-      return prevDatos.map(pago => {
-        if (pago.id === datosActualizados.id) {
-          const nuevoMontoTotal = parseFloat(datosActualizados.montoTotal);
-          const montoPagado = pago.planPago.montoPagado;
-          const nuevoSaldoPendiente = nuevoMontoTotal - montoPagado;
-
-          return {
-            ...pago,
-            cliente: {
-              ...pago.cliente,
-              nombre: datosActualizados.nombreCliente,
-              email: datosActualizados.emailCliente,
-              telefono: datosActualizados.telefonoCliente
-            },
-            servicio: {
-              ...pago.servicio,
-              tipo: datosActualizados.tipoServicio,
-              descripcion: datosActualizados.descripcionServicio,
-              fechaTour: datosActualizados.fechaTour
-            },
-            planPago: {
-              ...pago.planPago,
-              montoTotal: nuevoMontoTotal,
-              abonosPlaneados: parseInt(datosActualizados.numeroAbonos),
-              abonoMinimo: parseFloat(datosActualizados.abonoMinimo),
-              saldoPendiente: nuevoSaldoPendiente
-            },
-            proximoVencimiento: datosActualizados.fechaPrimerAbono || pago.proximoVencimiento,
-            numeroContrato: datosActualizados.numeroContrato,
-            frecuenciaPago: datosActualizados.frecuenciaPago,
-            observaciones: datosActualizados.observaciones
-          };
-        }
-        return pago;
-      });
-    });
-    console.log('✅ Pago editado exitosamente');
+  const guardarEdicionPago = async () => {
+    await cargarAbonos();
+    console.log('✅ Pagos recargados después de editar');
   };
 
   // ===== MANEJO DE ACCIONES =====
@@ -495,22 +215,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         case 'generarFactura':
           setPagoSeleccionado(pago);
           setModalFacturaAbierto(true);
-          break;
-        case 'eliminar':
-          modalEliminarPago(pago, async () => {
-            setDatosAbonos(prevDatos =>
-              prevDatos.map(a => a.id === pago.id ? { ...a, activo: false } : a)
-            );
-            console.log('✅ Abono eliminado visualmente:', pago);
-          });
-          break;
-        case 'regenerar':
-          setPagoSeleccionado(pago);
-          setModalReactivarAbierto(true);
-          break;
-        case 'eliminarDefinitivo':
-          setPagoSeleccionado(pago);
-          setModalEliminarDefinitivoAbierto(true);
           break;
         default:
           break;
@@ -572,50 +276,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
   return (
     <>
-      {/* ===== SELECTOR DE ROL (DEMO) ===== */}
-      <div style={{
-        margin: '1rem',
-        padding: '1rem',
-        background: 'white',
-        borderRadius: '12px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1rem'
-      }}>
-        <span style={{fontWeight: '600', color: '#374151'}}>Modo de Vista (Demo):</span>
-        <button
-          onClick={() => setRolUsuario('vendedor')}
-          style={{
-            padding: '0.5rem 1rem',
-            borderRadius: '8px',
-            border: 'none',
-            fontWeight: '600',
-            cursor: 'pointer',
-            background: rolUsuario === 'vendedor' ? '#3b82f6' : '#f3f4f6',
-            color: rolUsuario === 'vendedor' ? 'white' : '#6b7280',
-            transition: 'all 0.2s'
-          }}
-        >
-          👤 Vendedor
-        </button>
-        <button
-          onClick={() => setRolUsuario('administrador')}
-          style={{
-            padding: '0.5rem 1rem',
-            borderRadius: '8px',
-            border: 'none',
-            fontWeight: '600',
-            cursor: 'pointer',
-            background: rolUsuario === 'administrador' ? '#9333ea' : '#f3f4f6',
-            color: rolUsuario === 'administrador' ? 'white' : '#6b7280',
-            transition: 'all 0.2s'
-          }}
-        >
-          🛡️ Administrador
-        </button>
-      </div>
-
       <div className={`abonos-contenedor-principal ${cargando ? 'abonos-cargando' : ''}`}>
         {/* ===== HEADER ===== */}
         <div className="abonos-encabezado">
@@ -689,8 +349,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
               </select>
             </div>
 
-            {/* ✅ FILTRO DE VISIBILIDAD SOLO PARA ADMINISTRADOR */}
-            {rolUsuario === 'administrador' && (
+            {/* ✅ FILTRO DE VISIBILIDAD SOLO PARA admin */}
+            {rolUsuario === 'admin' && (
               <div className="abonos-filtro-estado">
                 <Eye size={16} />
                 <label htmlFor="filtro-visibilidad">Estado:</label>
@@ -758,8 +418,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                   <th>Próximo Venc.</th>
                   <th>Contrato</th>
                   <th>Estado</th>
-                  {/* ✅ COLUMNA "VISIBLE" SOLO PARA ADMINISTRADOR */}
-                  {rolUsuario === 'administrador' && <th>Visible</th>}
+                  {/* ✅ COLUMNA "VISIBLE" SOLO PARA admin */}
+                  {rolUsuario === 'admin' && <th>Visible</th>}
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -767,13 +427,13 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                 {datosPaginados.map((pago, indice) => {
                   const progreso = calcularProgreso(pago.planPago.montoPagado, pago.planPago.montoTotal);
                   const estadoContrato = obtenerEstadoContrato(pago);
-                  const ultimoAbono = pago.historialAbonos[pago.historialAbonos.length - 1];
+                  const ultimoAbono = pago.historialAbonos?.[pago.historialAbonos.length - 1] || null;
 
                   return (
-                    <tr 
-                      key={pago.id} 
-                      className="abonos-fila-pago" 
-                      style={{ 
+                    <tr
+                      key={pago.id}
+                      className="abonos-fila-pago"
+                      style={{
                         animationDelay: `${indice * 0.05}s`,
                         background: !pago.activo ? '#fee2e2' : 'white' // ✅ Fondo rojo si está eliminado
                       }}
@@ -837,8 +497,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                           {estadoContrato.texto}
                         </span>
                       </td>
-                      {/* ✅ COLUMNA "VISIBLE" SOLO PARA ADMINISTRADOR */}
-                      {rolUsuario === 'administrador' && (
+                      {/* ✅ COLUMNA "VISIBLE" SOLO PARA admin */}
+                      {rolUsuario === 'admin' && (
                         <td data-label="Visible">
                           <span style={{
                             display: 'inline-flex',
@@ -866,7 +526,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                           >
                             <Eye size={14} />
                           </button>
-                          
                           {/* ✅ BOTÓN AGREGAR ABONO (SOLO SI ACTIVO Y NO FINALIZADO) */}
                           {pago.estado !== 'FINALIZADO' && pago.activo && (
                             <button
@@ -907,49 +566,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                                 disabled={cargando}
                               >
                                 <FileText size={14} />
-                              </button>
-                            </>
-                          )}
-
-                          {/* ✅ BOTÓN ELIMINAR DE VISTA (SOLO VENDEDOR Y ACTIVO) */}
-                          {rolUsuario === 'vendedor' && pago.activo && (
-                            <button
-                              className="abonos-boton-accion abonos-eliminar"
-                              onClick={() => manejarAccion('eliminar', pago)}
-                              title="Eliminar de mi vista"
-                              disabled={cargando}
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          )}
-
-                          {/* ✅ BOTONES DE ADMINISTRADOR */}
-                          {rolUsuario === 'administrador' && (
-                            <>
-                              {/* BOTÓN REACTIVAR (SOLO SI INACTIVO) */}
-                              {!pago.activo && (
-                                <button
-                                  className="abonos-boton-accion"
-                                  onClick={() => manejarAccion('regenerar', pago)}
-                                  title="Reactivar pago"
-                                  disabled={cargando}
-                                  style={{
-                                    background: '#10b981',
-                                    color: 'white',
-                                    border: '1px solid #a7f3d0'
-                                  }}
-                                >
-                                  <RotateCcw size={14} />
-                                </button>
-                              )}
-                              {/* BOTÓN ELIMINAR DEFINITIVO (SIEMPRE) */}
-                              <button
-                                className="abonos-boton-accion abonos-eliminar"
-                                onClick={() => manejarAccion('eliminarDefinitivo', pago)}
-                                title={pago.activo ? "Eliminar definitivamente" : "Eliminar de raíz"}
-                                disabled={cargando}
-                              >
-                                <XCircle size={14} />
                               </button>
                             </>
                           )}
@@ -1035,6 +651,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         abierto={modalVerPagoAbierto}
         onCerrar={() => setModalVerPagoAbierto(false)}
         pagoSeleccionado={pagoSeleccionado}
+        onActualizar={cargarAbonos}
       />
 
       <ModalEditarAbono
@@ -1055,20 +672,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         onCerrar={() => setModalFacturaAbierto(false)}
         pagoSeleccionado={pagoSeleccionado}
         onFacturar={facturarAbono}
-      />
-
-      <ModalReactivarAbono
-        estaAbierto={modalReactivarAbierto}
-        alCerrar={() => setModalReactivarAbierto(false)}
-        abono={pagoSeleccionado}
-        alReactivar={manejarReactivarAbono}
-      />
-
-      <ModalEliminarDefinitivoAbono
-        estaAbierto={modalEliminarDefinitivoAbierto}
-        alCerrar={() => setModalEliminarDefinitivoAbierto(false)}
-        abono={pagoSeleccionado}
-        alEliminar={manejarEliminarDefinitivo}
       />
     </>
   );

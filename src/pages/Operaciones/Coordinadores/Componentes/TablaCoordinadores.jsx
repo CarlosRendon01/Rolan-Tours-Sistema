@@ -1,19 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, UserCheck, Users, Plus, Phone, MapPin } from 'lucide-react';
 import './TablaCoordinadores.css';
 
-const TablaCoordinadores = ({ 
+const TablaCoordinadores = ({
   coordinadores,
   setCoordinadores,
-  onVer, 
-  onEditar, 
+  onVer,
+  onEditar,
   onEliminar,
-  onAgregar 
+  onAgregar
 }) => {
   // Estados locales para UI
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState(null);
+
+  const cargarCoordinadores = async () => {
+    try {
+      setCargando(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://127.0.0.1:8000/api/coordinadores", {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+      });
+      setCoordinadores(response.data);
+    } catch (error) {
+      console.error("❌ Error al cargar coordinadores:", error);
+      setError("Error al cargar coordinadores");
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarCoordinadores();
+  }, []);
 
   // Filtrar coordinadores por búsqueda
   const coordinadoresFiltrados = coordinadores.filter(coordinador => {
@@ -36,7 +60,7 @@ const TablaCoordinadores = ({
 
   // Calcular estadísticas
   const totalCoordinadores = coordinadores.length;
-  const coordinadoresActivos = coordinadores.filter(coord => 
+  const coordinadoresActivos = coordinadores.filter(coord =>
     coord.certificacion_oficial === true || coord.certificacion_oficial === 'Sí'
   ).length;
 
@@ -120,7 +144,7 @@ const TablaCoordinadores = ({
           </div>
           <h1 className="coord-titulo">Gestión de Coordinadores</h1>
         </div>
-        
+
         {/* Estadísticas */}
         <div className="coord-contenedor-estadisticas">
           <div className="coord-estadistica">
@@ -131,7 +155,7 @@ const TablaCoordinadores = ({
               <span className="coord-label-estadistica">TOTAL: {totalCoordinadores}</span>
             </div>
           </div>
-          
+
           <div className="coord-estadistica">
             <div className="coord-icono-estadistica-cuadrado">
               <UserCheck size={20} />
@@ -147,9 +171,9 @@ const TablaCoordinadores = ({
       <div className="coord-controles">
         <div className="coord-control-registros">
           <label htmlFor="coord-registros">Mostrar</label>
-          <select 
+          <select
             id="coord-registros"
-            value={registrosPorPagina} 
+            value={registrosPorPagina}
             onChange={manejarCambioRegistros}
             className="coord-selector-registros"
           >
@@ -162,7 +186,7 @@ const TablaCoordinadores = ({
         </div>
 
         <div className="coord-controles-derecha">
-          <button 
+          <button
             className="coord-boton-agregar"
             onClick={onAgregar}
             title="Agregar nuevo coordinador"
@@ -196,8 +220,8 @@ const TablaCoordinadores = ({
           </div>
           <p className="coord-mensaje-vacio">No se encontraron coordinadores</p>
           <p className="coord-submensaje-vacio">
-            {terminoBusqueda 
-              ? 'Intenta ajustar los filtros de búsqueda' 
+            {terminoBusqueda
+              ? 'Intenta ajustar los filtros de búsqueda'
               : 'Comienza agregando un coordinador a tu equipo'}
           </p>
         </div>
@@ -220,10 +244,10 @@ const TablaCoordinadores = ({
                 {coordinadoresPaginados.map((coordinador, index) => {
                   const badgeExperiencia = obtenerBadgeExperiencia(coordinador.experiencia_anos);
                   const edad = calcularEdad(coordinador.fecha_nacimiento);
-                  
+
                   return (
-                    <tr 
-                      key={coordinador.id} 
+                    <tr
+                      key={coordinador.id}
                       className="coord-fila-coordinador"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
@@ -232,7 +256,7 @@ const TablaCoordinadores = ({
                           #{coordinador.id.toString().padStart(3, '0')}
                         </span>
                       </td>
-                      
+
                       <td data-label="Nombre Completo" className="coord-columna-nombre">
                         <div className="coord-info-coordinador">
                           <div className="coord-avatar">
@@ -246,27 +270,27 @@ const TablaCoordinadores = ({
                           </div>
                         </div>
                       </td>
-                      
+
                       <td data-label="Edad" className="coord-columna-edad">
                         <span className="coord-badge-edad">
                           {edad} años
                         </span>
                       </td>
-                      
+
                       <td data-label="Teléfono" className="coord-columna-telefono">
                         <span className="coord-valor-telefono">
                           <Phone size={14} />
                           {formatearTelefono(coordinador.telefono)}
                         </span>
                       </td>
-                      
+
                       <td data-label="Ubicación" className="coord-columna-ubicacion">
                         <span className="coord-valor-ubicacion">
                           <MapPin size={14} />
                           {coordinador.ciudad || 'N/A'}, {coordinador.estado || 'N/A'}
                         </span>
                       </td>
-                      
+
                       <td data-label="Experiencia" className="coord-columna-experiencia">
                         <span className={`coord-badge-experiencia ${badgeExperiencia.clase}`}>
                           {badgeExperiencia.texto}
@@ -275,24 +299,24 @@ const TablaCoordinadores = ({
                           {coordinador.experiencia_anos || 0} años
                         </div>
                       </td>
-                      
+
                       <td data-label="Acciones" className="coord-columna-acciones">
                         <div className="coord-botones-accion">
-                          <button 
+                          <button
                             className="coord-boton-accion coord-ver"
                             onClick={() => manejarAccion('ver', coordinador)}
                             title="Ver coordinador"
                           >
                             <Eye size={16} />
                           </button>
-                          <button 
+                          <button
                             className="coord-boton-accion coord-editar"
                             onClick={() => manejarAccion('editar', coordinador)}
                             title="Editar coordinador"
                           >
                             <Edit size={16} />
                           </button>
-                          <button 
+                          <button
                             className="coord-boton-accion coord-eliminar"
                             onClick={() => manejarAccion('eliminar', coordinador)}
                             title="Eliminar coordinador"
@@ -313,14 +337,14 @@ const TablaCoordinadores = ({
             <div className="coord-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
               {terminoBusqueda && (
-                <span style={{color: '#6c757d', marginLeft: '0.5rem'}}>
+                <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
                   (filtrado de {coordinadores.length} registros totales)
                 </span>
               )}
             </div>
-            
+
             <div className="coord-controles-paginacion">
-              <button 
+              <button
                 className="coord-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual - 1)}
                 disabled={paginaActual === 1}
@@ -328,7 +352,7 @@ const TablaCoordinadores = ({
                 <ChevronLeft size={18} />
                 Anterior
               </button>
-              
+
               <div className="coord-numeros-paginacion">
                 {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
                   <button
@@ -340,8 +364,8 @@ const TablaCoordinadores = ({
                   </button>
                 ))}
               </div>
-              
-              <button 
+
+              <button
                 className="coord-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual + 1)}
                 disabled={paginaActual === totalPaginas}

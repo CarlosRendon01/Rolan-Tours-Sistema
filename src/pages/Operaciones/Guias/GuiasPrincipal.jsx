@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import TablaGuias from './Componentes/TablaGuias';
 import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
 import './GuiasPrincipal.css';
@@ -9,153 +10,7 @@ import { modalEliminarGuia } from './ModalesGuias/ModalEliminarGuia';
 
 const GuiasPrincipal = () => {
     // Estado para almacenar los guías
-    const [guias, setGuias] = useState([
-        {
-            id: 1,
-            nombre: 'María',
-            apellido_paterno: 'González',
-            apellido_materno: 'Ramírez',
-            fecha_nacimiento: '1992-03-15',
-            telefono: '9511234567',
-            email: 'maria.gonzalez@email.com',
-            ciudad: 'Oaxaca de Juárez',
-            estado: 'Oaxaca',
-            nss: '12345678901',
-            institucion_seguro: 'IMSS',
-            contacto_emergencia: 'Pedro González',
-            telefono_emergencia: '9519876543',
-            costo_dia: 850.00,
-            idiomas: 'Español, Inglés, Francés',
-            experiencia_anos: 8,
-            especialidades: 'Guía certificada con experiencia en turismo cultural y arqueológico',
-            certificacion_oficial: 'SECTUR-OAX-2016-045',
-            zona_servicio: 'Oaxaca Centro, Monte Albán, Mitla',
-            estado_operativo: 'activo',
-            documentos: {
-                foto_guia: null,
-                foto_ine: null,
-                foto_certificaciones: null,
-                foto_licencia: null,
-                foto_comprobante_domicilio: null
-            }
-        },
-        {
-            id: 2,
-            nombre: 'Carlos',
-            apellido_paterno: 'Hernández',
-            apellido_materno: 'López',
-            fecha_nacimiento: '1996-07-22',
-            telefono: '9512345678',
-            email: 'carlos.hernandez@email.com',
-            ciudad: 'Oaxaca de Juárez',
-            estado: 'Oaxaca',
-            nss: '23456789012',
-            institucion_seguro: 'Privado',
-            contacto_emergencia: 'Ana López',
-            telefono_emergencia: '9518765432',
-            costo_dia: 750.00,
-            idiomas: 'Español, Inglés, Alemán',
-            experiencia_anos: 5,
-            especialidades: 'Especialista en turismo cultural y gastronomía oaxaqueña',
-            certificacion_oficial: 'SECTUR-OAX-2019-087',
-            zona_servicio: 'Centro Histórico, Valles Centrales',
-            estado_operativo: 'activo',
-            documentos: {
-                foto_guia: null,
-                foto_ine: null,
-                foto_certificaciones: null,
-                foto_licencia: null,
-                foto_comprobante_domicilio: null
-            }
-        },
-        {
-            id: 3,
-            nombre: 'Ana',
-            apellido_paterno: 'Martínez',
-            apellido_materno: 'Pérez',
-            fecha_nacimiento: '1989-11-08',
-            telefono: '9513456789',
-            email: 'ana.martinez@email.com',
-            ciudad: 'Oaxaca de Juárez',
-            estado: 'Oaxaca',
-            nss: '34567890123',
-            institucion_seguro: 'IMSS',
-            contacto_emergencia: 'Roberto Pérez',
-            telefono_emergencia: '9517654321',
-            costo_dia: 900.00,
-            idiomas: 'Español, Inglés, Italiano, Portugués',
-            experiencia_anos: 10,
-            especialidades: 'Guía políglota con experiencia en turismo europeo y ecoturismo',
-            certificacion_oficial: 'SECTUR-OAX-2014-023',
-            zona_servicio: 'Costa Oaxaqueña, Sierra Norte, Valles',
-            estado_operativo: 'activo',
-            documentos: {
-                foto_guia: null,
-                foto_ine: null,
-                foto_certificaciones: null,
-                foto_licencia: null,
-                foto_comprobante_domicilio: null
-            }
-        },
-        {
-            id: 4,
-            nombre: 'Roberto',
-            apellido_paterno: 'Sánchez',
-            apellido_materno: 'García',
-            fecha_nacimiento: '1983-05-12',
-            telefono: '9514567890',
-            email: 'roberto.sanchez@email.com',
-            ciudad: 'Oaxaca de Juárez',
-            estado: 'Oaxaca',
-            nss: '45678901234',
-            institucion_seguro: 'IMSS',
-            contacto_emergencia: 'Laura García',
-            telefono_emergencia: '9516543210',
-            costo_dia: 950.00,
-            idiomas: 'Español, Inglés',
-            experiencia_anos: 15,
-            especialidades: 'Experto en historia y arqueología mexicana, especializado en cultura zapoteca',
-            certificacion_oficial: 'SECTUR-OAX-2009-012',
-            zona_servicio: 'Monte Albán, Mitla, Yagul, Hierve el Agua',
-            estado_operativo: 'activo',
-            documentos: {
-                foto_guia: null,
-                foto_ine: null,
-                foto_certificaciones: null,
-                foto_licencia: null,
-                foto_comprobante_domicilio: null
-            }
-        },
-        {
-            id: 5,
-            nombre: 'Laura',
-            apellido_paterno: 'Torres',
-            apellido_materno: 'Ramírez',
-            fecha_nacimiento: '1998-09-25',
-            telefono: '9515678901',
-            email: 'laura.torres@email.com',
-            ciudad: 'Oaxaca de Juárez',
-            estado: 'Oaxaca',
-            nss: '56789012345',
-            institucion_seguro: 'Privado',
-            contacto_emergencia: 'Carmen Ramírez',
-            telefono_emergencia: '9515432109',
-            costo_dia: 700.00,
-            idiomas: 'Español, Inglés, Japonés',
-            experiencia_anos: 3,
-            especialidades: 'Especialista en turismo asiático y artesanías tradicionales oaxaqueñas',
-            certificacion_oficial: 'SECTUR-OAX-2021-156',
-            zona_servicio: 'Centro Histórico, Mercados, Teotitlán del Valle',
-            estado_operativo: 'activo',
-            documentos: {
-                foto_guia: null,
-                foto_ine: null,
-                foto_certificaciones: null,
-                foto_licencia: null,
-                foto_comprobante_domicilio: null
-            }
-        }
-    ]);
+    const [guias, setGuias] = useState([]);
 
     // Estados para controlar los modales
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
@@ -163,6 +18,22 @@ const GuiasPrincipal = () => {
     const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
     const [guiaSeleccionado, setGuiaSeleccionado] = useState(null);
+
+    const recargarGuias = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get("http://127.0.0.1:8000/api/guias", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                }
+            });
+            setGuias(response.data);
+            console.log('✅ Guias recargados');
+        } catch (error) {
+            console.error('❌ Error al recargar guias:', error);
+        }
+    };
 
     // Funciones para manejar los modales
     const manejarVer = (guia) => {
@@ -178,7 +49,7 @@ const GuiasPrincipal = () => {
     };
 
     const manejarEliminar = async (guia) => {
-        const confirmado = await modalEliminarGuia(guia, eliminarGuia);
+        const confirmado = await modalEliminarGuia(guia, recargarGuias);
         if (confirmado) {
             console.log('Guía eliminado:', guia);
         }
@@ -199,25 +70,98 @@ const GuiasPrincipal = () => {
     };
 
     // Función para agregar guía
-    const agregarGuia = (nuevoGuia) => {
-        console.log('🔥 Datos recibidos del modal:', nuevoGuia);
+    const agregarGuia = async (nuevoGuia) => {
+        try {
+            const token = localStorage.getItem("token");
 
-        const guiaConId = {
-            id: guias.length > 0 ? Math.max(...guias.map(g => g.id)) + 1 : 1,
-            ...nuevoGuia
-        };
+            // Preparar datos para enviar al backend
+            const guiaData = {
+                nombre: nuevoGuia.nombre,
+                apellido_paterno: nuevoGuia.apellido_paterno,
+                apellido_materno: nuevoGuia.apellido_materno,
+                fecha_nacimiento: nuevoGuia.fecha_nacimiento,
+                email: nuevoGuia.email,
+                telefono: nuevoGuia.telefono,
+                telefono_emergencia: nuevoGuia.telefono_emergencia,
+                contacto_emergencia: nuevoGuia.contacto_emergencia,
+                ciudad: nuevoGuia.ciudad,
+                estado: nuevoGuia.estado,
+                costo_dia: parseFloat(nuevoGuia.costo_dia) || 0,
+                estado_operativo: nuevoGuia.estado_operativo,
+                nss: nuevoGuia.nss || null,
+                institucion_seguro: nuevoGuia.institucion_seguro || null,
+                idiomas: nuevoGuia.idiomas || null,
+                experiencia_anos: parseInt(nuevoGuia.experiencia_anos) || 0,
+                especialidades: nuevoGuia.especialidades || null,
+                certificacion_oficial: nuevoGuia.certificacion_oficial || null,
+                zona_servicio: nuevoGuia.zona_servicio || null,
+            };
 
-        console.log('✅ Guía formateado para agregar:', guiaConId);
-        setGuias([...guias, guiaConId]);
-        cerrarModales();
+            const response = await axios.post(
+                "http://127.0.0.1:8000/api/guias",
+                guiaData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    }
+                }
+            );
+
+            console.log("✅ Guía creado:", response.data);
+            cerrarModales();
+            await recargarGuias(); // Recargar la lista
+        } catch (error) {
+            console.error("❌ Error al crear guía:", error);
+            alert("Error al crear guía: " + (error.response?.data?.error || error.message));
+        }
     };
 
     // Función para actualizar guía
-    const actualizarGuia = (guiaActualizado) => {
-        setGuias(guias.map(g =>
-            g.id === guiaActualizado.id ? guiaActualizado : g
-        ));
-        cerrarModales();
+    const actualizarGuia = async (guiaActualizado) => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const guiaData = {
+                nombre: guiaActualizado.nombre,
+                apellido_paterno: guiaActualizado.apellido_paterno,
+                apellido_materno: guiaActualizado.apellido_materno,
+                fecha_nacimiento: guiaActualizado.fecha_nacimiento,
+                email: guiaActualizado.email,
+                telefono: guiaActualizado.telefono,
+                telefono_emergencia: guiaActualizado.telefono_emergencia,
+                contacto_emergencia: guiaActualizado.contacto_emergencia,
+                ciudad: guiaActualizado.ciudad,
+                estado: guiaActualizado.estado,
+                costo_dia: parseFloat(guiaActualizado.costo_dia) || 0,
+                estado_operativo: guiaActualizado.estado_operativo,
+                nss: guiaActualizado.nss || null,
+                institucion_seguro: guiaActualizado.institucion_seguro || null,
+                idiomas: guiaActualizado.idiomas || null,
+                experiencia_anos: parseInt(guiaActualizado.experiencia_anos) || 0,
+                especialidades: guiaActualizado.especialidades || null,
+                certificacion_oficial: guiaActualizado.certificacion_oficial || null,
+                zona_servicio: guiaActualizado.zona_servicio || null,
+            };
+
+            const response = await axios.put(
+                `http://127.0.0.1:8000/api/guias/${guiaActualizado.id}`,
+                guiaData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    }
+                }
+            );
+
+            console.log("✅ Guía actualizado:", response.data);
+            cerrarModales();
+            await recargarGuias(); // Recargar la lista
+        } catch (error) {
+            console.error("❌ Error al actualizar guía:", error);
+            alert("Error al actualizar guía: " + (error.response?.data?.error || error.message));
+        }
     };
 
     // Función para eliminar guía
