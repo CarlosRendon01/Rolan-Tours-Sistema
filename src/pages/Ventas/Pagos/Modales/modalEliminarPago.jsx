@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import axios from "axios";
 import './modalEliminarPago.css';
 
 /**
@@ -12,8 +13,8 @@ export const modalEliminarPago = async (pago, onConfirm) => {
     html: `
       <div class="alerta-contenido">
         <p class="alerta-texto">¿Estás seguro de eliminar el pago de:</p>
-        <p class="alerta-cliente">${pago.cliente}</p>
-        <p class="alerta-monto">${pago.monto}</p>
+        <p class="alerta-cliente">${pago.cliente?.nombre || 'Sin nombre'}</p>
+        <p class="alerta-monto">${pago.planPago.montoTotal}</p>
         
       </div>
     `,
@@ -38,8 +39,17 @@ export const modalEliminarPago = async (pago, onConfirm) => {
 
   if (resultado.isConfirmed) {
     // Ejecutar la función de eliminación
+    const token = localStorage.getItem("token");
+    await axios.delete(`http://127.0.0.1:8000/api/pagos/${pago.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+
     if (onConfirm) {
-      await onConfirm();
+      await onConfirm(pago);
     }
 
     // Mostrar mensaje de éxito
@@ -48,7 +58,7 @@ export const modalEliminarPago = async (pago, onConfirm) => {
       html: `
         <div class="alerta-contenido-exito">
           <p class="alerta-texto-exito">El pago ha sido eliminado exitosamente</p>
-          <p class="alerta-detalle-exito">Cliente: ${pago.cliente}</p>
+          <p class="alerta-detalle-exito">Cliente: ${pago.cliente?.nombre || 'Sin nombre'}</p>
         </div>
       `,
       icon: 'success',

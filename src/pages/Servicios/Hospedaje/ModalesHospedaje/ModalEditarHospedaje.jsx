@@ -13,7 +13,7 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
     capacidad: '',
     descripcion_servicio: '',
     estado: 'Activo',
-    
+
     // Paquete y precios
     tipo_paquete: '',
     duracion_paquete: '',
@@ -21,13 +21,13 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
     moneda: 'MXN',
     incluye: '',
     restricciones: '',
-    
+
     // Proveedor
     empresa_proveedora_id: '',
     ubicacion_hospedaje: '',
     servicios_instalaciones: '',
     disponibilidad: 'disponible',
-    
+
     // Documentos
     foto_servicio: null
   });
@@ -554,7 +554,7 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
             <option value="">Selecciona un proveedor</option>
             {proveedores.map(proveedor => (
               <option key={proveedor.id} value={proveedor.id}>
-                {proveedor.nombre}
+                {proveedor.nombre_razon_social || proveedor.nombre}
               </option>
             ))}
           </select>

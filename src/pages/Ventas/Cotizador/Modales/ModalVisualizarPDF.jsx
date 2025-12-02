@@ -5,7 +5,7 @@ import "./ModalVisualizarPDF.css";
 const ModalVisualizarPDF = ({
   estaAbierto,
   pdfUrl,
-  reserva,
+  cotizacion,
   alCerrar,
   alDescargar,
 }) => {
@@ -20,10 +20,10 @@ const ModalVisualizarPDF = ({
         <div className="modal-visualizar-pdf-encabezado">
           <div>
             <h2 className="modal-visualizar-pdf-titulo">
-              Previsualización de reserva
+              Previsualización de cotización
             </h2>
             <p className="modal-visualizar-pdf-subtitulo">
-              Folio: {reserva?.folio} - {reserva?.nombreCliente}
+              Folio: {cotizacion?.folio} - {cotizacion?.nombre_cliente}
             </p>
           </div>
           <div className="modal-visualizar-pdf-botones-header">

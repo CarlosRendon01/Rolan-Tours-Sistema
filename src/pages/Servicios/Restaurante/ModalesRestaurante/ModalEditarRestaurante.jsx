@@ -11,7 +11,7 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
     categoria: '',
     descripcion_servicio: '',
     capacidad: '',
-    
+
     // Paquete y precios
     tipo_paquete: '',
     duracion_paquete: '',
@@ -19,7 +19,7 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
     moneda: 'MXN',
     incluye: '',
     restricciones: '',
-    
+
     // Relación con proveedores
     empresa_proveedora_id: '',
     nombre_proveedor: '',
@@ -28,7 +28,7 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
     disponibilidad: true,
     codigo_servicio: '',
     estado: 'Activo',
-    
+
     // Documentos
     foto_servicio: null
   });
@@ -92,7 +92,7 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
       if (proveedorSeleccionado) {
         setFormData(prev => ({
           ...prev,
-          nombre_proveedor: proveedorSeleccionado.nombre
+          nombre_proveedor: proveedorSeleccionado.nombre_razon_social || proveedorSeleccionado.nombre  // ✅ FIX
         }));
       }
     }
@@ -509,7 +509,9 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
         >
           <option value="">Seleccionar restaurante...</option>
           {proveedores.map(p => (
-            <option key={p.id} value={p.id}>{p.nombre}</option>
+            <option key={p.id} value={p.id}>
+              {p.nombre_razon_social || p.nombre}
+            </option>
           ))}
         </select>
       </div>

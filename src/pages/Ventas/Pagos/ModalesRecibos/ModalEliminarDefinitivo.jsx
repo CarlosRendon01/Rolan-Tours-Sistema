@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { X, Trash2, AlertTriangle, CheckCircle } from 'lucide-react';
 import './ModalEliminarDefinitivo.css';
 
@@ -21,16 +22,29 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
 
   const manejarConfirmacion = async () => {
     if (!puedeEliminar) return;
-    
+
     setCargando(true);
     try {
+      const token = localStorage.getItem("token");
+
+      // ✅ Llamar al backend para eliminar definitivamente
+      await axios.delete(`http://127.0.0.1:8000/api/abonos/${recibo.id}/force`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+      });
+
       await new Promise(resolve => setTimeout(resolve, 1000));
+
       if (onConfirmar) {
         await onConfirmar(recibo);
       }
+
       onCerrar();
     } catch (error) {
       console.error('Error al eliminar:', error);
+      alert('Error al eliminar el recibo definitivamente. Intenta nuevamente.');
     } finally {
       setCargando(false);
     }
@@ -59,11 +73,11 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
               <div className="modal-eliminar-alerta-content">
                 <p className="modal-eliminar-alerta-titulo">¡Advertencia Crítica!</p>
                 <p className="modal-eliminar-alerta-texto">
-                  Esta acción eliminará el recibo de forma <strong>permanente</strong> de la base de datos. 
+                  Esta acción eliminará el recibo de forma <strong>permanente</strong> de la base de datos.
                   No podrá recuperarse después de confirmar esta operación.
                 </p>
               </div>
-              <button 
+              <button
                 className="modal-eliminar-alerta-cerrar"
                 onClick={() => setMostrarAdvertencia(false)}
                 aria-label="Cerrar advertencia"
@@ -131,14 +145,14 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
         </div>
 
         <div className="modal-eliminar-footer">
-          <button 
-            className="modal-eliminar-boton-secundario" 
+          <button
+            className="modal-eliminar-boton-secundario"
             onClick={onCerrar}
             disabled={cargando}
           >
             Cancelar
           </button>
-          <button 
+          <button
             className="modal-eliminar-boton-peligro"
             onClick={manejarConfirmacion}
             disabled={cargando || !puedeEliminar}

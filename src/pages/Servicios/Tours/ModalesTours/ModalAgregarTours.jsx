@@ -17,7 +17,7 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
     punto_llegada: '',
     hora_salida: '',
     hora_regreso: '',
-    
+
     // Paquete y precios
     tipo_paquete: '',
     precio_base: '',
@@ -29,7 +29,7 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
     costo_por_nino: '',
     costo_por_adulto_mayor: '',
     temporada: '',
-    
+
     // Proveedor
     operado_por: '',
     empresa_proveedora_id: '',
@@ -40,10 +40,10 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
     transporte_incluido: false,
     seguro_incluido: false,
     numero_licencia_guia: '',
-    
+
     // Documentos
     foto_tour: null,
-    
+
     // Administrativo
     codigo_tour: '',
     estado: 'activo'
@@ -767,7 +767,7 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
             <option value="">Selecciona un proveedor</option>
             {proveedores.map(proveedor => (
               <option key={proveedor.id} value={proveedor.id}>
-                {proveedor.nombre}
+                {proveedor.nombre_razon_social || proveedor.nombre}
               </option>
             ))}
           </select>
