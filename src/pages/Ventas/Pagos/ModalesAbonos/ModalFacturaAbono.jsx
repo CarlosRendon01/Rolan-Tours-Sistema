@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import axios from 'axios';
 import { X, Printer, Download, FileText, Calendar, User, Building2, CheckCircle, AlertCircle, Hash, Package, CreditCard, Coins } from 'lucide-react';
 import './ModalFacturaAbono.css';
 import { generarPDFFactura, imprimirFactura } from '../ModalesFactura/generarPDFFactura';
@@ -46,7 +47,7 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
     const tasaIVA = 0.16;
     const iva = subtotal * tasaIVA;
     const total = subtotal + iva;
-    
+
     return { subtotal, iva, tasaIVA, total };
   };
 
@@ -70,7 +71,7 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
   // ===============================================
   // MANEJADORES DE EVENTOS
   // ===============================================
-  
+
   const manejarGenerarFactura = async () => {
     if (!abonoSeleccionado) {
       setError('Por favor selecciona un abono para facturar');
@@ -79,67 +80,51 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
 
     setError(null);
     setGenerandoFactura(true);
-    
+
     try {
-      // Simular llamada API (reemplazar con tu lógica real)
-      const response = await fetch('/api/facturacion/generar-abono', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          pagoId: pagoSeleccionado.id,
-          numeroAbono: abonoSeleccionado.numeroAbono,
-          tipo: 'ABONO_INDIVIDUAL',
-          datosFacturacion: {
-            cliente: pagoSeleccionado.cliente.nombre,
-            rfcCliente: pagoSeleccionado.cliente.rfc,
-            email: pagoSeleccionado.cliente.email,
-            usoCFDI: pagoSeleccionado.usoCFDI || 'G03',
-            formaPago: 'PPD',
-            metodoPago: abonoSeleccionado.metodoPago,
-            moneda: 'MXN',
-            subtotal: impuestosAbono.subtotal,
-            iva: impuestosAbono.iva,
-            tasaIVA: impuestosAbono.tasaIVA,
-            total: impuestosAbono.total,
-            concepto: `Abono #${abonoSeleccionado.numeroAbono} - ${pagoSeleccionado.servicio.tipo}`,
-            descripcion: pagoSeleccionado.servicio.descripcion,
-            numeroContrato: pagoSeleccionado.numeroContrato,
-            fechaAbono: abonoSeleccionado.fecha,
-            referenciaAbono: abonoSeleccionado.referencia
+      const token = localStorage.getItem("token");
+      const impuestosTemp = calcularImpuestos(abonoSeleccionado.monto);
+
+      // ✅ Enviar al backend
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/facturas',
+        {
+          abono_id: abonoSeleccionado.id,
+          numero_factura: `FAC-${String(pagoSeleccionado.id).padStart(4, '0')}-${abonoSeleccionado.numeroAbono}`,
+          monto: impuestosTemp.total,
+          fecha_emision: new Date().toISOString().split('T')[0],
+          fecha_timbrado: new Date().toISOString().split('T')[0],
+          uso_cfdi: pagoSeleccionado.usoCFDI || 'G03',
+          metodo_pago: abonoSeleccionado.metodoPago,
+          forma_pago: 'PPD',
+          email_envio: pagoSeleccionado.cliente.email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           }
-        })
-      });
+        }
+      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.mensaje || 'Error al generar la factura');
-      }
+      console.log('✅ Factura generada:', response.data);
 
-      const result = await response.json();
+      alert(`✅ Factura generada y timbrada exitosamente ante el SAT\n\nFolio: ${response.data.data.numero_factura}\nUUID: ${response.data.data.uuid}\nAbono: #${abonoSeleccionado.numeroAbono}`);
 
-      // Preparar datos de la factura
-      const numeroFactura = `FAC-${String(pagoSeleccionado.id).padStart(4, '0')}-${abonoSeleccionado.numeroAbono}`;
-      const uuid = result.uuid || `${Math.random().toString(36).substring(2, 10).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-      const fechaFacturacion = new Date().toISOString().split('T')[0];
-
-      // Callback para actualizar el abono con la factura generada
+      // ✅ Recargar datos
       if (onFacturar) {
-        onFacturar(pagoSeleccionado.id, abonoSeleccionado.numeroAbono, {
-          numeroFactura,
-          uuid,
-          fechaFacturacion
-        });
+        await onFacturar();
       }
-      
-      alert(`✅ Factura generada y timbrada exitosamente ante el SAT\n\nFolio: ${numeroFactura}\nUUID: ${uuid}\nAbono: #${abonoSeleccionado.numeroAbono}`);
-      
-      // Limpiar selección y cerrar después de 1.5s
+
       setAbonoSeleccionado(null);
-      setTimeout(() => onCerrar(), 1500);
-      
+      setTimeout(() => onCerrar(), 1500);;
+
     } catch (error) {
       console.error('Error al generar factura:', error);
-      setError(error.message || 'Error al generar la factura. Intente nuevamente.');
+      const mensajeError = error.response?.data?.error ||
+        error.response?.data?.message ||
+        'Error al generar la factura. Intente nuevamente.';
+      setError(mensajeError);
     } finally {
       setGenerandoFactura(false);
     }
@@ -151,7 +136,7 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
 
     try {
       const impuestosDescarga = calcularImpuestos(abono.monto);
-      
+
       // Preparar datos de la factura para el PDF
       const datosFactura = {
         id: pagoSeleccionado.id,
@@ -180,7 +165,7 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
 
       // Generar el PDF usando la función importada
       await generarPDFFactura(datosFactura, empresa);
-      
+
       console.log('PDF generado exitosamente para factura:', abono.numeroFactura);
 
     } catch (error) {
@@ -197,7 +182,7 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
 
     try {
       const impuestosImpresion = calcularImpuestos(abono.monto);
-      
+
       const datosFactura = {
         id: pagoSeleccionado.id,
         numeroFactura: abono.numeroFactura,
@@ -220,7 +205,7 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
       };
 
       imprimirFactura(datosFactura, empresa);
-      
+
     } catch (error) {
       console.error('Error al imprimir:', error);
       setError(error.message || 'Error al imprimir la factura. Intente nuevamente.');
@@ -245,7 +230,7 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
   return (
     <div className="modal-factura-overlay" onClick={manejarCerrar}>
       <div className="modal-factura-contenedor" onClick={(e) => e.stopPropagation()}>
-        
+
         {/* HEADER */}
         <div className="modal-factura-header no-print">
           <div className="modal-factura-titulo-seccion">
@@ -261,8 +246,8 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
               </p>
             </div>
           </div>
-          <button 
-            className="modal-factura-boton-cerrar" 
+          <button
+            className="modal-factura-boton-cerrar"
             onClick={manejarCerrar}
             title="Cerrar"
             disabled={generandoFactura}
@@ -273,18 +258,18 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
 
         {/* ALERTAS */}
         {error && (
-          <div className="modal-factura-alerta" style={{background: '#fee2e2', borderBottom: '1px solid #fecaca', color: '#991b1b'}}>
+          <div className="modal-factura-alerta" style={{ background: '#fee2e2', borderBottom: '1px solid #fecaca', color: '#991b1b' }}>
             <AlertCircle size={20} />
             <div>
               <p className="modal-factura-alerta-titulo">Error</p>
-              <p className="modal-factura-alerta-texto" style={{whiteSpace: 'pre-line'}}>{error}</p>
+              <p className="modal-factura-alerta-texto" style={{ whiteSpace: 'pre-line' }}>{error}</p>
             </div>
           </div>
         )}
 
         {/* CONTENIDO */}
         <div className="modal-factura-contenido" ref={facturaRef}>
-          
+
           {/* Información del Cliente y Servicio */}
           <div className="factura-documento" style={{ marginBottom: '1.5rem' }}>
             <div className="factura-seccion">
@@ -407,7 +392,7 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
 
           {/* Preview de Factura */}
           {abonoSeleccionado && impuestosAbono && (
-            <div className="factura-documento" style={{ 
+            <div className="factura-documento" style={{
               border: '2px solid #4338ca',
               background: 'linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%)'
             }}>
@@ -550,17 +535,17 @@ const ModalFacturaAbono = ({ abierto, onCerrar, pagoSeleccionado, datosEmpresa =
 
         {/* BOTONES DE ACCIÓN */}
         <div className="modal-factura-acciones no-print">
-          <button 
-            className="modal-factura-boton secundario" 
+          <button
+            className="modal-factura-boton secundario"
             onClick={manejarCerrar}
             disabled={generandoFactura}
           >
             Cerrar
           </button>
-          
+
           {abonoSeleccionado && (
-            <button 
-              className="modal-factura-boton generar" 
+            <button
+              className="modal-factura-boton generar"
               onClick={manejarGenerarFactura}
               disabled={generandoFactura}
             >

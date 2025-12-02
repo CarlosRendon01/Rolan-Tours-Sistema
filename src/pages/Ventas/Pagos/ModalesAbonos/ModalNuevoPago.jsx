@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import { X, User, Calendar, DollarSign, FileText, CreditCard, AlertCircle, Save } from 'lucide-react';
 import './ModalNuevoPago.css';
 
@@ -21,6 +23,7 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
   });
 
   const [errores, setErrores] = useState({});
+  const [guardando, setGuardando] = useState(false);
 
   const tiposServicio = [
     'Tour Arqueológico',
@@ -53,7 +56,7 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
     if (campo === 'montoTotal' || campo === 'numeroAbonos') {
       const monto = campo === 'montoTotal' ? parseFloat(valor) : parseFloat(formulario.montoTotal);
       const abonos = campo === 'numeroAbonos' ? parseInt(valor) : parseInt(formulario.numeroAbonos);
-      
+
       if (!isNaN(monto) && !isNaN(abonos) && abonos > 0) {
         const abonoCalculado = Math.ceil(monto / abonos);
         setFormulario(prev => ({
@@ -98,13 +101,74 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
     return Object.keys(nuevosErrores).length === 0;
   };
 
-  const manejarEnviar = (e) => {
+  const manejarEnviar = async (e) => {
     e.preventDefault();
-    
-    if (validarFormulario()) {
-      onGuardar(formulario);
+
+    if (!validarFormulario()) return;
+
+    setGuardando(true);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      // ✅ Preparar datos para el backend
+      const datosPago = {
+        numero_contrato: formulario.numeroContrato || `CONT-${Date.now()}`,
+        monto_total: parseFloat(formulario.montoTotal),
+        numero_abonos: parseInt(formulario.numeroAbonos),
+        abono_minimo: parseFloat(formulario.abonoMinimo),
+        frecuencia_pago: formulario.frecuenciaPago,
+        fecha_inicio: formulario.fechaPrimerAbono,
+        fecha_finalizacion: null, // Se calcula automáticamente
+        observaciones: formulario.observaciones || null,
+      };
+
+      // ✅ Enviar al backend
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/pagos',
+        datosPago,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
+      );
+
+      console.log('✅ Pago creado:', response.data);
+
+      // ✅ Mostrar mensaje de éxito
+      await Swal.fire({
+        title: '¡Pago Creado!',
+        text: `Se ha registrado el plan de pagos correctamente`,
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      // ✅ Actualizar la tabla padre
+      if (onGuardar) {
+        await onGuardar();
+      }
+
       limpiarFormulario();
       onCerrar();
+
+    } catch (error) {
+      console.error('❌ Error al crear pago:', error);
+
+      const mensajeError = error.response?.data?.error ||
+        error.response?.data?.message ||
+        'No se pudo crear el pago';
+
+      await Swal.fire({
+        title: 'Error',
+        text: mensajeError,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+    } finally {
+      setGuardando(false);
     }
   };
 
@@ -135,7 +199,7 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
 
   if (!abierto) return null;
 
-  const montoPorAbono = formulario.montoTotal && formulario.numeroAbonos 
+  const montoPorAbono = formulario.montoTotal && formulario.numeroAbonos
     ? (parseFloat(formulario.montoTotal) / parseInt(formulario.numeroAbonos)).toFixed(2)
     : 0;
 

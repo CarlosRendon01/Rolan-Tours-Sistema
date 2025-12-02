@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, AlertCircle } from 'lucide-react';
+import axios from "axios";
 import Swal from 'sweetalert2';
 import './ModalEditarPago.css';
 
 const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
+  const formatearFechaParaInput = (fecha) => {
+    if (!fecha) return '';
+    // Si la fecha tiene hora (formato datetime), extraer solo la fecha
+    if (fecha.includes(' ')) {
+      return fecha.split(' ')[0];
+    }
+    // Si ya está en formato correcto, devolverla
+    return fecha;
+  };
+
   const [formulario, establecerFormulario] = useState({
     cliente: '',
     monto: '',
     fechaVencimiento: '',
     metodoPago: '',
     concepto: '',
-    numeroFactura: ''
   });
 
   const [errores, establecerErrores] = useState({});
@@ -19,12 +29,11 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
   useEffect(() => {
     if (pago && estaAbierto) {
       establecerFormulario({
-        cliente: pago.cliente || '',
-        monto: pago.monto.replace(/[$,]/g, '') || '',
-        fechaVencimiento: pago.fechaVencimiento || '',
-        metodoPago: pago.metodoPago || '',
-        concepto: pago.concepto || '',
-        numeroFactura: pago.numeroFactura || ''
+        cliente: pago.cliente?.nombre || "Sin cliente",
+        monto: pago.planPago?.montoTotal || 0,
+        metodoPago: pago.metodoPago || "Sin método",
+        fechaVencimiento: formatearFechaParaInput(pago.proximoVencimiento),
+        concepto: pago.observaciones || ""
       });
       establecerErrores({});
     }
@@ -36,7 +45,7 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
       ...prev,
       [name]: value
     }));
-    
+
     // Limpiar error del campo cuando se modifica
     if (errores[name]) {
       establecerErrores(prev => ({
@@ -53,13 +62,13 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
       nuevosErrores.cliente = 'El cliente es requerido';
     }
 
-    if (!formulario.monto.trim()) {
-      nuevosErrores.monto = 'El monto es requerido';
-    } else if (isNaN(formulario.monto) || parseFloat(formulario.monto) <= 0) {
-      nuevosErrores.monto = 'El monto debe ser un número válido mayor a 0';
+    if (formulario.monto === null || formulario.monto === "" || isNaN(formulario.monto)) {
+      nuevosErrores.monto = "El monto es requerido";
+    } else if (parseFloat(formulario.monto) <= 0) {
+      nuevosErrores.monto = 'El monto debe ser mayor que 0';
     }
 
-    if (!formulario.fechaVencimiento.trim()) {
+    if (!formulario.fechaVencimiento.trim() || !formulario.fechaVencimiento.trim()) {
       nuevosErrores.fechaVencimiento = 'La fecha de vencimiento es requerida';
     }
 
@@ -79,26 +88,29 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
     establecerGuardando(true);
 
     try {
-      // Simular guardado
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const token = localStorage.getItem("token");
 
-      // Preparar datos actualizados
-      const pagoActualizado = {
-        ...pago,
-        cliente: formulario.cliente,
-        monto: `$${parseFloat(formulario.monto).toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })}`,
-        fechaVencimiento: formulario.fechaVencimiento,
-        metodoPago: formulario.metodoPago,
-        concepto: formulario.concepto,
-        numeroFactura: formulario.numeroFactura
+      const payload = {
+        monto_total: Number(formulario.monto),
+        metodo_pago: formulario.metodoPago || null,
+        fecha_finalizacion: formulario.fechaVencimiento || null,
+        observaciones: formulario.concepto || null,
       };
+
+      const res = await axios.put(
+        `http://127.0.0.1:8000/api/pagos/${pago.id}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
 
       // Llamar función de guardado del padre
       if (alGuardar) {
-        alGuardar(pagoActualizado);
+        alGuardar(res.data.data);
       }
 
       // Cerrar modal
@@ -150,7 +162,6 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
         fechaVencimiento: '',
         metodoPago: '',
         concepto: '',
-        numeroFactura: ''
       });
       establecerErrores({});
       alCerrar();
@@ -173,7 +184,7 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
               <p className="modal-editar-subtitulo">Actualizar información del pago</p>
             </div>
           </div>
-          <button 
+          <button
             className="modal-editar-boton-cerrar"
             onClick={manejarCerrar}
             disabled={guardando}
@@ -268,23 +279,6 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
                 <option value="Tarjeta de Débito">Tarjeta de Débito</option>
                 <option value="Cheque">Cheque</option>
               </select>
-            </div>
-
-            {/* Número de Factura */}
-            <div className="modal-editar-campo">
-              <label htmlFor="numeroFactura" className="modal-editar-label">
-                Número de Factura
-              </label>
-              <input
-                type="text"
-                id="numeroFactura"
-                name="numeroFactura"
-                value={formulario.numeroFactura}
-                onChange={manejarCambio}
-                className="modal-editar-input"
-                placeholder="FAC-000"
-                disabled={guardando}
-              />
             </div>
 
             {/* Concepto */}

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import {
   X,
   Save,
@@ -53,7 +55,7 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
   const [guardando, setGuardando] = useState(false);
   const [camposModificados, setCamposModificados] = useState(new Set());
   const primerCampoConError = useRef(null);
-  
+
   const [formData, setFormData] = useState({
     nombreCliente: '',
     emailCliente: '',
@@ -88,7 +90,7 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
         frecuenciaPago: pagoSeleccionado.frecuenciaPago || 'mensual',
         observaciones: pagoSeleccionado.observaciones || ''
       };
-      
+
       setFormData(datosIniciales);
       setErrores({});
       setCamposModificados(new Set());
@@ -106,17 +108,17 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
   // Manejar cambios en los campos
   const manejarCambio = useCallback((e) => {
     const { name, value } = e.target;
-    
+
     setFormData(prev => {
       const nuevoForm = { ...prev, [name]: value };
-      
+
       // Calcular abono mínimo automáticamente
       if (name === 'montoTotal' || name === 'numeroAbonos') {
         const monto = name === 'montoTotal' ? parseFloat(value) : parseFloat(prev.montoTotal);
         const numAbonos = name === 'numeroAbonos' ? parseInt(value) : parseInt(prev.numeroAbonos);
         nuevoForm.abonoMinimo = calcularAbonoMinimo(monto, numAbonos);
       }
-      
+
       return nuevoForm;
     });
 
@@ -147,7 +149,7 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
 
     // Validaciones de cliente
     if (!VALIDADORES.longitudMinima(formData.nombreCliente, 3)) {
-      nuevosErrores.nombreCliente = !formData.nombreCliente.trim() 
+      nuevosErrores.nombreCliente = !formData.nombreCliente.trim()
         ? 'El nombre del cliente es obligatorio'
         : 'El nombre debe tener al menos 3 caracteres';
       if (!primerCampoConError.current) primerCampoConError.current = 'nombreCliente';
@@ -188,7 +190,7 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
     } else {
       const fechaTour = normalizarFecha(formData.fechaTour);
       const hoy = normalizarFecha(new Date());
-      
+
       if (fechaTour < hoy) {
         nuevosErrores.fechaTour = 'La fecha del tour no puede ser en el pasado';
         if (!primerCampoConError.current) primerCampoConError.current = 'fechaTour';
@@ -206,7 +208,7 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
 
     const numAbonos = parseInt(formData.numeroAbonos);
     if (!numAbonos || !VALIDADORES.rangoNumero(numAbonos, 1, 24)) {
-      nuevosErrores.numeroAbonos = numAbonos <= 0 
+      nuevosErrores.numeroAbonos = numAbonos <= 0
         ? 'Debe haber al menos 1 abono'
         : 'Máximo 24 abonos permitidos';
       if (!primerCampoConError.current) primerCampoConError.current = 'numeroAbonos';
@@ -218,7 +220,7 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
     } else {
       const totalMinimo = parseFloat(formData.abonoMinimo) * parseInt(formData.numeroAbonos);
       const montoTotal = parseFloat(formData.montoTotal);
-      
+
       if (totalMinimo < montoTotal) {
         const diferencia = (montoTotal - totalMinimo).toFixed(2);
         nuevosErrores.abonoMinimo = `Insuficiente. Faltan ${diferencia} para cubrir el total`;
@@ -232,7 +234,7 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
     } else if (formData.fechaPrimerAbono) {
       const fechaAbono = normalizarFecha(formData.fechaPrimerAbono);
       const hoy = normalizarFecha(new Date());
-      
+
       if (fechaAbono < hoy) {
         nuevosErrores.fechaPrimerAbono = 'La fecha no puede ser en el pasado';
         if (!primerCampoConError.current) primerCampoConError.current = 'fechaPrimerAbono';
@@ -301,20 +303,54 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
     setGuardando(true);
 
     try {
-      // TODO: Reemplazar con llamada real a API en producción
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const token = localStorage.getItem("token");
 
       const datosActualizados = {
-        id: pagoSeleccionado.id,
-        ...formData,
-        camposModificados: Array.from(camposModificados)
+        monto_total: parseFloat(formData.montoTotal),
+        numero_abonos: parseInt(formData.numeroAbonos),
+        frecuencia_pago: formData.frecuenciaPago,
+        fecha_finalizacion: formData.fechaPrimerAbono || null,
+        observaciones: formData.observaciones || null,
       };
 
-      onGuardar(datosActualizados);
+      const response = await axios.put(
+        `http://127.0.0.1:8000/api/pagos/${pagoSeleccionado.id}`,
+        datosActualizados,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
+      );
+
+      console.log('✅ Pago actualizado:', response.data);
+
+      await Swal.fire({
+        title: '¡Actualizado!',
+        text: 'El contrato ha sido actualizado correctamente',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      if (onGuardar) {
+        await onGuardar();
+      }
+
       onCerrar();
     } catch (error) {
-      console.error('Error al guardar:', error);
-      setErrores({ general: 'Error al guardar los cambios. Intenta nuevamente.' });
+      console.error('❌ Error al actualizar:', error);
+      const mensajeError = error.response?.data?.error ||
+        error.response?.data?.message ||
+        'No se pudo actualizar el pago';
+
+      await Swal.fire({
+        title: 'Error',
+        text: mensajeError,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
     } finally {
       setGuardando(false);
     }
@@ -358,7 +394,7 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
   return (
     <div className="modal-editar-overlay" onClick={manejarClickOverlay}>
       <div className="modal-editar-contenedor" onClick={(e) => e.stopPropagation()}>
-        
+
         {/* ===== HEADER ===== */}
         <div className="modal-editar-header">
           <div className="modal-editar-header-contenido">
@@ -399,7 +435,7 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
 
         {/* ===== CONTENIDO / FORMULARIO ===== */}
         <div className="modal-editar-contenido">
-          
+
           {/* Sección: Información del Cliente */}
           <div className="modal-editar-seccion">
             <div className="modal-editar-seccion-header">
@@ -408,7 +444,7 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
               </div>
               <h3 className="modal-editar-seccion-titulo">Información del Cliente</h3>
             </div>
-            
+
             <div className="modal-editar-grid">
               {/* Nombre */}
               <div className="modal-editar-campo">
@@ -492,7 +528,7 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
               </div>
               <h3 className="modal-editar-seccion-titulo">Información del Servicio</h3>
             </div>
-            
+
             <div className="modal-editar-grid">
               {/* Tipo de Servicio */}
               <div className="modal-editar-campo">
@@ -579,7 +615,7 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
               </div>
               <h3 className="modal-editar-seccion-titulo">Plan de Pago</h3>
             </div>
-            
+
             <div className="modal-editar-grid">
               {/* Monto Total */}
               <div className="modal-editar-campo">
@@ -743,7 +779,7 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
               </div>
               <h3 className="modal-editar-seccion-titulo">Observaciones</h3>
             </div>
-            
+
             <div className="modal-editar-campo">
               <label htmlFor="observaciones" className="modal-editar-label">
                 Notas Adicionales
@@ -768,7 +804,7 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
             <Info size={16} />
             <span>Los campos con * son obligatorios</span>
           </div>
-          
+
           <div className="modal-editar-acciones">
             <button
               type="button"
@@ -779,7 +815,7 @@ const ModalEditarAbono = ({ abierto, onCerrar, onGuardar, pagoSeleccionado }) =>
               <X size={18} />
               Cancelar
             </button>
-            
+
             <button
               type="button"
               className="modal-editar-boton modal-editar-boton-guardar"
