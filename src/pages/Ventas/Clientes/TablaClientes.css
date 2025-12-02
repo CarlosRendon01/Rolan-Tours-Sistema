@@ -223,13 +223,13 @@
 
 /* Contenedor de tabla con bordes redondeados */
 .clientes-contenedor-tabla {
-  overflow-x: auto;
+  overflow-x: scroll;
   border: 1px solid #dee2e6;
   border-radius: 20px;
   margin: 0 2rem;
   border-top: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* Tabla con border-collapse separate para permitir bordes redondeados */

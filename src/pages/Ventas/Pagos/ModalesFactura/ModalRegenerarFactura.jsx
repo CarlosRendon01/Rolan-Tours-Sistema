@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { X, RefreshCw, Info } from 'lucide-react';
 import './ModalRegenerarFactura.css';
 
@@ -18,13 +19,32 @@ const ModalRegenerarFactura = ({ factura, onConfirmar, onCerrar, isOpen }) => {
   const manejarConfirmacion = async () => {
     setCargando(true);
     try {
+      const token = localStorage.getItem("token");
+
+      // ✅ USAR AXIOS
+      await axios.post(
+        `http://127.0.0.1:8000/api/facturas/${factura.id}/restore`,
+        {
+          motivo_regeneracion: motivoRegeneracion
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          }
+        }
+      );
+
       await new Promise(resolve => setTimeout(resolve, 800));
+
       if (onConfirmar) {
         await onConfirmar(factura, motivoRegeneracion);
       }
+
       onCerrar();
     } catch (error) {
       console.error('Error al regenerar:', error);
+      alert('Error al regenerar la factura. Intenta nuevamente.');
     } finally {
       setCargando(false);
     }
@@ -52,7 +72,7 @@ const ModalRegenerarFactura = ({ factura, onConfirmar, onCerrar, isOpen }) => {
             <div>
               <p className="modal-regenerar-fact-alerta-titulo">Acción de administrador</p>
               <p className="modal-regenerar-fact-alerta-texto">
-                Esta factura fue eliminada visualmente por un vendedor. Al regenerarla, 
+                Esta factura fue eliminada visualmente por un vendedor. Al regenerarla,
                 volverá a estar visible para todos los usuarios.
               </p>
             </div>
@@ -89,8 +109,8 @@ const ModalRegenerarFactura = ({ factura, onConfirmar, onCerrar, isOpen }) => {
             </div>
             <div className="modal-regenerar-fact-info-item modal-regenerar-fact-full-width">
               <span className="modal-regenerar-fact-info-label">UUID:</span>
-              <span className="modal-regenerar-fact-info-value" style={{ 
-                fontSize: '0.75rem', 
+              <span className="modal-regenerar-fact-info-value" style={{
+                fontSize: '0.75rem',
                 fontFamily: 'monospace',
                 wordBreak: 'break-all'
               }}>
@@ -119,14 +139,14 @@ const ModalRegenerarFactura = ({ factura, onConfirmar, onCerrar, isOpen }) => {
         </div>
 
         <div className="modal-regenerar-fact-footer">
-          <button 
-            className="modal-regenerar-fact-boton-secundario" 
+          <button
+            className="modal-regenerar-fact-boton-secundario"
             onClick={onCerrar}
             disabled={cargando}
           >
             Cancelar
           </button>
-          <button 
+          <button
             className="modal-regenerar-fact-boton-principal"
             onClick={manejarConfirmacion}
             disabled={cargando}

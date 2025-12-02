@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { X, AlertTriangle, Trash2 } from 'lucide-react';
 import './ModalEliminarDefinitivoFactura.css';
 
@@ -24,10 +25,25 @@ const ModalEliminarDefinitivoFactura = ({ factura, onConfirmar, onCerrar, isOpen
 
     setCargando(true);
     try {
+      const token = localStorage.getItem("token");
+
+      // ✅ USAR AXIOS
+      await axios.delete(`http://127.0.0.1:8000/api/facturas/${factura.id}/force`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        data: {
+          motivo_eliminacion: motivoEliminacion
+        }
+      });
+
       await new Promise(resolve => setTimeout(resolve, 1000));
+
       if (onConfirmar) {
         await onConfirmar(factura, motivoEliminacion);
       }
+
       onCerrar();
     } catch (error) {
       console.error('Error al eliminar definitivamente:', error);
@@ -59,7 +75,7 @@ const ModalEliminarDefinitivoFactura = ({ factura, onConfirmar, onCerrar, isOpen
             <div>
               <p className="modal-eliminar-def-fact-alerta-titulo">⚠️ ADVERTENCIA CRÍTICA</p>
               <p className="modal-eliminar-def-fact-alerta-texto">
-                Esta acción eliminará permanentemente la factura de la base de datos. 
+                Esta acción eliminará permanentemente la factura de la base de datos.
                 No hay forma de recuperarla después de confirmar.
               </p>
             </div>
@@ -96,8 +112,8 @@ const ModalEliminarDefinitivoFactura = ({ factura, onConfirmar, onCerrar, isOpen
             </div>
             <div className="modal-eliminar-def-fact-info-item modal-eliminar-def-fact-full-width">
               <span className="modal-eliminar-def-fact-info-label">UUID:</span>
-              <span className="modal-eliminar-def-fact-info-value" style={{ 
-                fontSize: '0.75rem', 
+              <span className="modal-eliminar-def-fact-info-value" style={{
+                fontSize: '0.75rem',
                 fontFamily: 'monospace',
                 wordBreak: 'break-all'
               }}>
@@ -158,14 +174,14 @@ const ModalEliminarDefinitivoFactura = ({ factura, onConfirmar, onCerrar, isOpen
         </div>
 
         <div className="modal-eliminar-def-fact-footer">
-          <button 
-            className="modal-eliminar-def-fact-boton-secundario" 
+          <button
+            className="modal-eliminar-def-fact-boton-secundario"
             onClick={onCerrar}
             disabled={cargando}
           >
             Cancelar
           </button>
-          <button 
+          <button
             className="modal-eliminar-def-fact-boton-peligro"
             onClick={manejarConfirmacion}
             disabled={!confirmacionCorrecta || !motivoEliminacion.trim() || cargando}
