@@ -18,6 +18,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -42,6 +43,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -394,4 +396,158 @@
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
   }
+}
+
+/* ========== TABS ========== */
+.modal-editar-usuario-tabs {
+  display: flex !important;
+  border-bottom: 2px solid #e5e7eb !important;
+  background: #f9fafb !important;
+}
+
+.modal-editar-usuario-tab-button {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 1rem 1.5rem !important;
+  border: none !important;
+  background: transparent !important;
+  color: #6b7280 !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  border-bottom: 3px solid transparent !important;
+}
+
+.modal-editar-usuario-tab-button:hover {
+  background: rgba(59, 130, 246, 0.05) !important;
+  color: #3b82f6 !important;
+}
+
+.modal-editar-usuario-tab-button.active {
+  color: #3b82f6 !important;
+  background: white !important;
+  border-bottom-color: #3b82f6 !important;
+}
+
+/* ========== ROLES ========== */
+.modal-editar-usuario-roles-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  padding: 1.5rem !important;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+  border-radius: 12px !important;
+  border-left: 4px solid #3b82f6 !important;
+}
+
+.modal-editar-usuario-roles-header svg {
+  color: #3b82f6 !important;
+  flex-shrink: 0 !important;
+}
+
+.modal-editar-usuario-roles-header h3 {
+  margin: 0 !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #1e3a8a !important;
+}
+
+.modal-editar-usuario-roles-header p {
+  margin: 0.25rem 0 0 0 !important;
+  font-size: 0.875rem !important;
+  color: #3b82f6 !important;
+}
+
+.modal-editar-usuario-sin-roles {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 3rem !important;
+  text-align: center !important;
+  color: #9ca3af !important;
+}
+
+.modal-editar-usuario-sin-roles svg {
+  margin-bottom: 1rem !important;
+  opacity: 0.5 !important;
+}
+
+.modal-editar-usuario-roles-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 1rem !important;
+  margin-top: 1rem !important;
+}
+
+.modal-editar-usuario-rol-card {
+  display: flex !important;
+  gap: 1rem !important;
+  padding: 1.25rem !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  background: white !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.modal-editar-usuario-rol-card:hover {
+  border-color: #3b82f6 !important;
+  background: #eff6ff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
+}
+
+.modal-editar-usuario-rol-card.seleccionado {
+  border-color: #3b82f6 !important;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+}
+
+.modal-editar-usuario-rol-checkbox {
+  flex-shrink: 0 !important;
+  color: #9ca3af !important;
+  transition: color 0.2s !important;
+}
+
+.modal-editar-usuario-rol-card.seleccionado .modal-editar-usuario-rol-checkbox {
+  color: #3b82f6 !important;
+}
+
+.modal-editar-usuario-rol-info {
+  flex: 1 !important;
+}
+
+.modal-editar-usuario-rol-info h4 {
+  margin: 0 0 0.5rem 0 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+}
+
+.modal-editar-usuario-rol-info p {
+  margin: 0 0 0.75rem 0 !important;
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+  line-height: 1.4 !important;
+}
+
+.modal-editar-usuario-rol-permisos {
+  display: inline-block !important;
+  padding: 0.25rem 0.75rem !important;
+  background: #f3f4f6 !important;
+  color: #4b5563 !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+}
+
+.modal-editar-usuario-rol-card.seleccionado .modal-editar-usuario-rol-permisos {
+  background: #3b82f6 !important;
+  color: white !important;
 }

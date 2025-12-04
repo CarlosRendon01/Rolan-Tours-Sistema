@@ -16,12 +16,10 @@ import {
 } from "lucide-react";
 import "./ModalEditarRol.css";
 
-const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
+const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPermisos }) => {
   const [formData, setFormData] = useState({
-    nombre_rol: "",
+    nombre: "",
     descripcion: "",
-    nivel_acceso: "",
-    icono_rol: null,
     permisos: {
       dashboard: { activo: false, ver: false, editar: false, eliminar: false },
       ventas: {
@@ -189,17 +187,105 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
     },
   ];
 
-  useEffect(() => {
-    if (rol) {
-      setFormData({
-        nombre_rol: rol.nombre_rol || "",
-        descripcion: rol.descripcion || "",
-        nivel_acceso: rol.nivel_acceso || "",
-        icono_rol: rol.icono_rol || null,
-        permisos: rol.permisos || formData.permisos,
-      });
+  const transformarIdsAPermisos = (permissionsArray) => {
+    const estructura = {
+      dashboard: { activo: false, ver: false, editar: false, eliminar: false },
+      ventas: {
+        activo: false,
+        modulos: {
+          clientes: { activo: false, ver: false, editar: false, eliminar: false },
+          cotizaciones: { activo: false, ver: false, editar: false, eliminar: false },
+          pagos: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+      documentos: {
+        activo: false,
+        modulos: {
+          contratos: { activo: false, ver: false, editar: false, eliminar: false },
+          ordenes: { activo: false, ver: false, editar: false, eliminar: false },
+          reservas: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+      operaciones: {
+        activo: false,
+        modulos: {
+          operadores: { activo: false, ver: false, editar: false, eliminar: false },
+          vehiculos: { activo: false, ver: false, editar: false, eliminar: false },
+          guias: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+      servicios: {
+        activo: false,
+        modulos: {
+          transporte: { activo: false, ver: false, editar: false, eliminar: false },
+          restaurantes: { activo: false, ver: false, editar: false, eliminar: false },
+          tours: { activo: false, ver: false, editar: false, eliminar: false },
+          hospedaje: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+      mantenimiento: {
+        activo: false,
+        ver: false,
+        editar: false,
+        eliminar: false,
+      },
+      administracion: {
+        activo: false,
+        modulos: {
+          roles: { activo: false, ver: false, editar: false, eliminar: false },
+          usuarios: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+    };
+
+    if (!permissionsArray || !Array.isArray(permissionsArray)) {
+      return estructura;
     }
-  }, [rol]);
+
+    permissionsArray.forEach(permiso => {
+      const partes = permiso.nombre.split('.');
+
+      if (partes.length === 2) {
+        // Módulo sin submódulos (ej: dashboard.ver)
+        const [modulo, accion] = partes;
+        if (estructura[modulo] && !estructura[modulo].modulos) {
+          estructura[modulo][accion] = true;
+          estructura[modulo].activo = true;
+        }
+      } else if (partes.length === 3) {
+        // Módulo con submódulos (ej: ventas.clientes.ver)
+        const [modulo, submodulo, accion] = partes;
+        if (estructura[modulo]?.modulos?.[submodulo]) {
+          estructura[modulo].modulos[submodulo][accion] = true;
+          estructura[modulo].modulos[submodulo].activo = true;
+          estructura[modulo].activo = true;
+        }
+      }
+    });
+
+    return estructura;
+  };
+
+  // Alrededor de la línea 239
+  useEffect(() => {
+    if (rol && permissions && permissions.length > 0) { // ⭐ Agregar verificación
+      // Transformar permissions (array de objetos) a estructura jerárquica
+      const permisosTransformados = transformarIdsAPermisos(rol.permissions || []);
+
+      setFormData({
+        nombre: rol.nombre || "",
+        descripcion: rol.descripcion || "",
+        permisos: permisosTransformados,
+      });
+    } else if (rol) {
+      // Si no hay permissions aún, solo cargar datos básicos
+      setFormData(prev => ({
+        ...prev,
+        nombre: rol.nombre || "",
+        descripcion: rol.descripcion || "",
+      }));
+    }
+  }, [rol, permissions]);
 
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
@@ -352,8 +438,8 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
 
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
-    if (!formData.nombre_rol.trim()) {
-      nuevosErrores.nombre_rol = "El nombre del rol es requerido";
+    if (!formData.nombre.trim()) {
+      nuevosErrores.nombre = "El nombre del rol es requerido";
     }
     return nuevosErrores;
   }, [formData]);
@@ -362,7 +448,7 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
     if (typeof window !== "undefined" && window.Swal) {
       window.Swal.fire({
         title: "¡Rol Actualizado!",
-        text: `El rol "${formData.nombre_rol}" ha sido actualizado correctamente`,
+        text: `El rol "${formData.nombre}" ha sido actualizado correctamente`,
         icon: "success",
         iconHtml: "✓",
         iconColor: "#28a745",
@@ -391,7 +477,7 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
         `,
       });
     } else {
-      alert(`✅ Rol "${formData.nombre_rol}" actualizado correctamente`);
+      alert(`✅ Rol "${formData.nombre}" actualizado correctamente`);
     }
   };
 
@@ -411,10 +497,8 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
       try {
         const rolData = {
           ...rol,
-          nombre_rol: formData.nombre_rol,
+          nombre: formData.nombre,
           descripcion: formData.descripcion,
-          nivel_acceso: formData.nivel_acceso,
-          icono_rol: formData.icono_rol,
           permisos: formData.permisos,
         };
 
@@ -470,13 +554,13 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
           </label>
           <input
             type="text"
-            name="nombre_rol"
-            value={formData.nombre_rol}
+            name="nombre"
+            value={formData.nombre}
             onChange={handleChange}
             placeholder="Ej: Administrador General"
-            className={errores.nombre_rol ? "input-error" : ""}
+            className={errores.nombre ? "input-error" : ""}
           />
-          <MensajeError nombreCampo="nombre_rol" />
+          <MensajeError nombreCampo="nombre" />
         </div>
 
         <div className="mep-form-group form-group-full">
@@ -679,9 +763,8 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
           <button
             type="button"
             onClick={() => setSeccionActiva("general")}
-            className={`mep-tab-button ${
-              seccionActiva === "general" ? "active" : ""
-            }`}
+            className={`mep-tab-button ${seccionActiva === "general" ? "active" : ""
+              }`}
           >
             <Building2 size={18} />
             Información General
@@ -689,9 +772,8 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar }) => {
           <button
             type="button"
             onClick={() => setSeccionActiva("permisos")}
-            className={`mep-tab-button ${
-              seccionActiva === "permisos" ? "active" : ""
-            }`}
+            className={`mep-tab-button ${seccionActiva === "permisos" ? "active" : ""
+              }`}
           >
             <Shield size={18} />
             Permisos

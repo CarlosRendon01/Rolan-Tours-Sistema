@@ -18,10 +18,8 @@ import "./ModalAgregarRol.css";
 
 const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    nombre_rol: "",
+    nombre: "",
     descripcion: "",
-    nivel_acceso: "",
-    icono_rol: null,
     permisos: {
       dashboard: { activo: false, ver: false, editar: false, eliminar: false },
       ventas: {
@@ -340,8 +338,8 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
 
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
-    if (!formData.nombre_rol.trim()) {
-      nuevosErrores.nombre_rol = "El nombre del rol es requerido";
+    if (!formData.nombre.trim()) {
+      nuevosErrores.nombre = "El nombre del rol es requerido";
     }
 
     return nuevosErrores;
@@ -351,7 +349,7 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
     if (typeof window !== "undefined" && window.Swal) {
       window.Swal.fire({
         title: "¡Rol Creado!",
-        text: `El rol "${formData.nombre_rol}" ha sido creado correctamente`,
+        text: `El rol "${formData.nombre}" ha sido creado correctamente`,
         icon: "success",
         iconHtml: "✓",
         iconColor: "#28a745",
@@ -380,7 +378,7 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
         `,
       });
     } else {
-      alert(`✅ Rol "${formData.nombre_rol}" creado correctamente`);
+      alert(`✅ Rol "${formData.nombre}" creado correctamente`);
     }
   };
 
@@ -400,10 +398,8 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
       try {
         const nuevoRol = {
           id_rol: Date.now(),
-          nombre_rol: formData.nombre_rol,
+          nombre: formData.nombre,
           descripcion: formData.descripcion,
-          nivel_acceso: formData.nivel_acceso,
-          icono_rol: formData.icono_rol,
           permisos: formData.permisos,
           usuarios_asignados: 0,
           estado: "activo",
@@ -461,13 +457,13 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
           </label>
           <input
             type="text"
-            name="nombre_rol"
-            value={formData.nombre_rol}
+            name="nombre"
+            value={formData.nombre}
             onChange={handleChange}
             placeholder="Ej: Administrador General"
-            className={errores.nombre_rol ? "input-error" : ""}
+            className={errores.nombre ? "input-error" : ""}
           />
-          <MensajeError nombreCampo="nombre_rol" />
+          <MensajeError nombreCampo="nombre" />
         </div>
 
         <div className="mar-form-group form-group-full">
@@ -670,9 +666,8 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
           <button
             type="button"
             onClick={() => setSeccionActiva("general")}
-            className={`mar-tab-button ${
-              seccionActiva === "general" ? "active" : ""
-            }`}
+            className={`mar-tab-button ${seccionActiva === "general" ? "active" : ""
+              }`}
           >
             <Building2 size={18} />
             Información General
@@ -680,9 +675,8 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
           <button
             type="button"
             onClick={() => setSeccionActiva("permisos")}
-            className={`mar-tab-button ${
-              seccionActiva === "permisos" ? "active" : ""
-            }`}
+            className={`mar-tab-button ${seccionActiva === "permisos" ? "active" : ""
+              }`}
           >
             <Shield size={18} />
             Permisos

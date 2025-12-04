@@ -77,11 +77,91 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
     },
   ];
 
+  // ⭐ AGREGAR ESTA FUNCIÓN COMPLETA
+  const transformarIdsAPermisos = (permissionsArray) => {
+    const estructura = {
+      dashboard: { activo: false, ver: false, editar: false, eliminar: false },
+      ventas: {
+        activo: false,
+        modulos: {
+          clientes: { activo: false, ver: false, editar: false, eliminar: false },
+          cotizaciones: { activo: false, ver: false, editar: false, eliminar: false },
+          pagos: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+      documentos: {
+        activo: false,
+        modulos: {
+          contratos: { activo: false, ver: false, editar: false, eliminar: false },
+          ordenes: { activo: false, ver: false, editar: false, eliminar: false },
+          reservas: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+      operaciones: {
+        activo: false,
+        modulos: {
+          operadores: { activo: false, ver: false, editar: false, eliminar: false },
+          vehiculos: { activo: false, ver: false, editar: false, eliminar: false },
+          guias: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+      servicios: {
+        activo: false,
+        modulos: {
+          transporte: { activo: false, ver: false, editar: false, eliminar: false },
+          restaurantes: { activo: false, ver: false, editar: false, eliminar: false },
+          tours: { activo: false, ver: false, editar: false, eliminar: false },
+          hospedaje: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+      mantenimiento: {
+        activo: false,
+        ver: false,
+        editar: false,
+        eliminar: false,
+      },
+      administracion: {
+        activo: false,
+        modulos: {
+          roles: { activo: false, ver: false, editar: false, eliminar: false },
+          usuarios: { activo: false, ver: false, editar: false, eliminar: false },
+        },
+      },
+    };
+
+    if (!permissionsArray || !Array.isArray(permissionsArray)) {
+      return estructura;
+    }
+
+    permissionsArray.forEach((permiso) => {
+      const partes = permiso.nombre.split(".");
+
+      if (partes.length === 2) {
+        // Módulo sin submódulos (ej: dashboard.ver)
+        const [modulo, accion] = partes;
+        if (estructura[modulo] && !estructura[modulo].modulos) {
+          estructura[modulo][accion] = true;
+          estructura[modulo].activo = true;
+        }
+      } else if (partes.length === 3) {
+        // Módulo con submódulos (ej: ventas.clientes.ver)
+        const [modulo, submodulo, accion] = partes;
+        if (estructura[modulo]?.modulos?.[submodulo]) {
+          estructura[modulo].modulos[submodulo][accion] = true;
+          estructura[modulo].modulos[submodulo].activo = true;
+          estructura[modulo].activo = true;
+        }
+      }
+    });
+
+    return estructura;
+  };
+
   const renderSeccionGeneral = () => (
     <div className="mvr-seccion-general">
       <div className="mvr-form-group">
         <label>Nombre del Rol</label>
-        <div className="mvr-campo-readonly">{rol.nombre_rol}</div>
+        <div className="mvr-campo-readonly">{rol.nombre}</div>
       </div>
 
       <div className="mvr-form-group">
@@ -105,7 +185,8 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
 
       <div className="mvr-modulos-grid">
         {modulosPrincipales.map((modulo) => {
-          const permisoModulo = rol.permisos?.[modulo.id] || {};
+          const permisosTransformados = transformarIdsAPermisos(rol.permissions || []);
+          const permisoModulo = permisosTransformados[modulo.id] || {};
           const esActivo = permisoModulo.activo || false;
 
           return (
@@ -125,9 +206,8 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
               >
                 <div className="mvr-modulo-info">
                   <div
-                    className={`mvr-modulo-icono ${
-                      esActivo ? "activo" : "inactivo"
-                    }`}
+                    className={`mvr-modulo-icono ${esActivo ? "activo" : "inactivo"
+                      }`}
                     style={{
                       "--modulo-color": modulo.color,
                     }}
@@ -140,9 +220,8 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
                   </div>
                 </div>
                 <div
-                  className={`mvr-modulo-badge ${
-                    esActivo ? "activo" : "inactivo"
-                  }`}
+                  className={`mvr-modulo-badge ${esActivo ? "activo" : "inactivo"
+                    }`}
                 >
                   {esActivo ? (
                     <CheckCircle2 size={16} />
@@ -189,23 +268,20 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
                     return (
                       <div
                         key={submoduloId}
-                        className={`mvr-submodulo ${
-                          submoduloActivo ? "activo" : "inactivo"
-                        }`}
+                        className={`mvr-submodulo ${submoduloActivo ? "activo" : "inactivo"
+                          }`}
                       >
                         <div
-                          className={`mvr-submodulo-header ${
-                            !submoduloActivo ? "sin-permisos" : ""
-                          }`}
+                          className={`mvr-submodulo-header ${!submoduloActivo ? "sin-permisos" : ""
+                            }`}
                         >
                           <span className="mvr-submodulo-nombre">
                             {submoduloId.charAt(0).toUpperCase() +
                               submoduloId.slice(1)}
                           </span>
                           <div
-                            className={`mvr-submodulo-badge ${
-                              submoduloActivo ? "activo" : "inactivo"
-                            }`}
+                            className={`mvr-submodulo-badge ${submoduloActivo ? "activo" : "inactivo"
+                              }`}
                           >
                             {submoduloActivo ? (
                               <CheckCircle2 size={12} />
@@ -265,18 +341,16 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
         <div className="mvr-tabs">
           <button
             onClick={() => setSeccionActiva("general")}
-            className={`mvr-tab-button ${
-              seccionActiva === "general" ? "active" : ""
-            }`}
+            className={`mvr-tab-button ${seccionActiva === "general" ? "active" : ""
+              }`}
           >
             <Building2 size={20} />
             Información General
           </button>
           <button
             onClick={() => setSeccionActiva("permisos")}
-            className={`mvr-tab-button ${
-              seccionActiva === "permisos" ? "active" : ""
-            }`}
+            className={`mvr-tab-button ${seccionActiva === "permisos" ? "active" : ""
+              }`}
           >
             <Shield size={20} />
             Permisos
@@ -302,9 +376,8 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
 
 const PermisoIndicador = ({ icono, texto, activo, small }) => (
   <div
-    className={`mvr-permiso-indicador ${small ? "small" : ""} ${
-      activo ? "activo" : "inactivo"
-    }`}
+    className={`mvr-permiso-indicador ${small ? "small" : ""} ${activo ? "activo" : "inactivo"
+      }`}
   >
     {icono}
     <span>{texto}</span>

@@ -20,6 +20,8 @@ import RestaurantePrincipal from "./pages/Servicios/Restaurante/RestaurantePrinc
 import HospedajePrincipal from "./pages/Servicios/Hospedaje/HospedajePrincipal.jsx";
 import MantenimientoPrincipal from "./pages/Mantenimiento/MantenimientoPrincipal.jsx";
 import PrincipalRol from "./pages/Usuario/Roles/PrincipalRol.jsx";
+import PrincipalUsuario from "./pages/Usuario/Usuarios/PrincipalUsuario.jsx";
+
 // Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
   return (
@@ -124,6 +126,7 @@ function App() {
             />
 
             <Route path="/roles" element={<PrincipalRol titulo="Roles" />} />
+            <Route path="/usuarios" element={<PrincipalUsuario titulo="Usuarios" />} />
           </Routes>
         </VehiculosProvider>
       )}

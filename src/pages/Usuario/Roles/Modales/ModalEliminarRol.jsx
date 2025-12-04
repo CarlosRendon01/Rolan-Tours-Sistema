@@ -109,7 +109,7 @@ const ModalEliminarRol = ({ rol, alConfirmar }) => {
         <h3 className="modal-title-simple">¿Eliminar Rol?</h3>
 
         <p className="modal-message-simple">
-          Esta acción eliminará el rol <strong>{rol.nombre_rol}</strong> del
+          Esta acción eliminará el rol <strong>{rol.nombre}</strong> del
           sistema.
         </p>
 

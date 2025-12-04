@@ -288,7 +288,7 @@
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.85rem;
-  min-width: 1200px;
+  min-width: 1100px;
   table-layout: auto;
 }
 
@@ -440,6 +440,7 @@
   font-size: 0.8rem;
   line-height: 1.4;
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
