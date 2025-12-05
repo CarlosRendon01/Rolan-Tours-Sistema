@@ -1,26 +1,14 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import axios from "axios";
 import {
-  Bell,
-  ChevronDown,
-  User,
-  LogOut,
-  Menu,
-  X
+  Bell, ChevronDown, User, LogOut, Menu, X
 } from "lucide-react";
 import { useResponsive } from "../../../utils/useResponsive";
 import ModalNotificaciones from "./ModalNotificaciones";
 import ModalPerfil from "./ModalPerfil";
 import "./Navbar.css";
 
-const Navbar = React.memo(({ 
-  sidebarAbierto, 
-  setSidebarAbierto,
-  responsive, 
-  onLogout, 
-  onEditProfile, 
-  userInfo 
-}) => {
-  // Estados principales
+const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) => {
   const [desplegableAbierto, setDesplegableAbierto] = useState(false);
   const [cargandoPerfil, setCargandoPerfil] = useState(false);
   const [imagenCargada, setImagenCargada] = useState(true);
@@ -28,7 +16,22 @@ const Navbar = React.memo(({
   const [modalNotificacionesAbierto, setModalNotificacionesAbierto] = useState(false);
   const [modalPerfilAbierto, setModalPerfilAbierto] = useState(false);
 
-  // Sistema de notificaciones con datos de ejemplo
+  // ✅ CARGAR USUARIO DESDE LOCALSTORAGE
+  const [usuario, setUsuario] = useState(() => {
+    const userGuardado = localStorage.getItem('user');
+    if (userGuardado) {
+      try {
+        const userData = JSON.parse(userGuardado);
+        console.log('📦 Usuario cargado desde localStorage:', userData);
+        return userData;
+      } catch (e) {
+        console.error('❌ Error al parsear usuario:', e);
+        return null;
+      }
+    }
+    return null;
+  });
+
   const [notificaciones, setNotificaciones] = useState([
     {
       id: 1,
@@ -64,37 +67,102 @@ const Navbar = React.memo(({
     }
   ]);
 
-  // Referencias
   const refDesplegable = useRef(null);
   const refAvatarImg = useRef(null);
   const refLogoRolan = useRef(null);
 
-  // Hook responsivo interno si no se pasa como prop
   const responsiveHook = useResponsive();
   const responsiveData = responsive || responsiveHook;
 
-  // Información del usuario con fallbacks
-  const usuario = useMemo(() => ({
-    nombre: userInfo?.nombre || "Fabiola Hernández",
-    rol: userInfo?.rol || "Administrador",
-    email: userInfo?.email || "fabiola.hernandez@rolantours.com",
-    avatar: userInfo?.avatar || "/assets/Usuario.png",
-    iniciales: userInfo?.iniciales || "FH"
-  }), [userInfo]);
+  const usuarioInfo = useMemo(() => {
+    const obtenerPrimerRol = (roles) => {
+      if (!roles) return "Usuario";
 
-  // Contar notificaciones no leídas
+      if (Array.isArray(roles) && typeof roles[0] === 'string') {
+        return roles[0];
+      }
+
+      if (Array.isArray(roles) && roles[0]?.nombre) {
+        return roles[0].nombre;
+      }
+
+      if (typeof roles === 'string') {
+        return roles;
+      }
+
+      return "Usuario";
+    };
+
+    return {
+      nombre: usuario?.nombre || "Usuario",
+      apellido_paterno: usuario?.apellido_paterno || "",
+      apellido_materno: usuario?.apellido_materno || "",
+      rol: obtenerPrimerRol(usuario?.roles),
+      email: usuario?.correo || "usuario@rolantours.com",
+      avatar: "/assets/Usuario.png",
+      genero: usuario?.genero || "Prefiero no decir",
+      iniciales: usuario?.nombre ? usuario.nombre.substring(0, 2).toUpperCase() : "US"
+    };
+  }, [usuario]);
+
   const notificacionesNoLeidas = useMemo(() => {
     return notificaciones.filter(notif => !notif.leida).length;
   }, [notificaciones]);
 
-  // Función para alternar el sidebar
   const alternarSidebar = useCallback(() => {
     if (setSidebarAbierto) {
       setSidebarAbierto(!sidebarAbierto);
     }
   }, [sidebarAbierto, setSidebarAbierto]);
 
-  // Funciones para manejar notificaciones
+  // ✅ FUNCIÓN PARA CERRAR SESIÓN
+  const manejarCerrarSesion = useCallback(async () => {
+    try {
+      setDesplegableAbierto(false);
+
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        await axios.post('http://127.0.0.1:8000/api/logout');
+      }
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('rol');
+      delete axios.defaults.headers.common['Authorization'];
+      window.location.href = '/';
+    }
+  }, []);
+
+  // ✅ FUNCIÓN PARA EDITAR PERFIL
+  const manejarEditarPerfil = useCallback(async (nuevosDatos) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No hay token');
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      const response = await axios.put(
+        `http://127.0.0.1:8000/api/users/${usuario.id}`,
+        nuevosDatos
+      );
+
+      const usuarioActualizado = response.data.data;
+      setUsuario(usuarioActualizado);
+      localStorage.setItem('user', JSON.stringify(usuarioActualizado));
+
+      return { success: true, data: usuarioActualizado };
+    } catch (error) {
+      console.error('Error al editar perfil:', error);
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Error al actualizar perfil'
+      };
+    }
+  }, [usuario]);
+
   const abrirModalNotificaciones = useCallback(() => {
     setModalNotificacionesAbierto(true);
   }, []);
@@ -104,8 +172,8 @@ const Navbar = React.memo(({
   }, []);
 
   const marcarComoLeida = useCallback((id) => {
-    setNotificaciones(prev => 
-      prev.map(notif => 
+    setNotificaciones(prev =>
+      prev.map(notif =>
         notif.id === id ? { ...notif, leida: true } : notif
       )
     );
@@ -116,7 +184,7 @@ const Navbar = React.memo(({
   }, []);
 
   const marcarTodasComoLeidas = useCallback(() => {
-    setNotificaciones(prev => 
+    setNotificaciones(prev =>
       prev.map(notif => ({ ...notif, leida: true }))
     );
   }, []);
@@ -125,7 +193,6 @@ const Navbar = React.memo(({
     setNotificaciones([]);
   }, []);
 
-  // Funciones para el modal de perfil
   const abrirModalPerfil = useCallback(() => {
     setModalPerfilAbierto(true);
     setDesplegableAbierto(false);
@@ -136,23 +203,9 @@ const Navbar = React.memo(({
     setCargandoPerfil(false);
   }, []);
 
-  // Funciones memoizadas
   const alternarDesplegable = useCallback(() => {
     setDesplegableAbierto(prev => !prev);
   }, []);
-
-  const manejarCerrarSesion = useCallback(async () => {
-    try {
-      setDesplegableAbierto(false);
-      if (onLogout) {
-        await onLogout();
-      } else {
-        console.log("Cerrar sesión");
-      }
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  }, [onLogout]);
 
   const manejarErrorImagen = useCallback((e) => {
     setImagenCargada(false);
@@ -165,14 +218,12 @@ const Navbar = React.memo(({
 
   const manejarErrorLogoRolan = useCallback((e) => {
     setLogoRolanCargado(false);
-    console.warn("No se pudo cargar el logo de Rolan Tours desde /assets/IconoRolanTours.png");
   }, []);
 
   const manejarCargaLogoRolan = useCallback(() => {
     setLogoRolanCargado(true);
   }, []);
 
-  // Cerrar desplegable cuando se hace click afuera
   useEffect(() => {
     const manejarClickAfuera = (evento) => {
       if (refDesplegable.current && !refDesplegable.current.contains(evento.target)) {
@@ -186,18 +237,15 @@ const Navbar = React.memo(({
     }
   }, [desplegableAbierto]);
 
-  // Auto-cerrar desplegable en móvil después de un tiempo
   useEffect(() => {
     if (desplegableAbierto && responsiveData.esMovil) {
       const timer = setTimeout(() => {
         setDesplegableAbierto(false);
       }, 5000);
-
       return () => clearTimeout(timer);
     }
   }, [desplegableAbierto, responsiveData.esMovil]);
 
-  // Lazy loading de imágenes
   useEffect(() => {
     if (refAvatarImg.current && 'loading' in HTMLImageElement.prototype) {
       refAvatarImg.current.loading = 'lazy';
@@ -207,14 +255,12 @@ const Navbar = React.memo(({
     }
   }, []);
 
-  // Calcular tamaño de iconos según dispositivo
   const tamañoIcono = useMemo(() => {
     if (responsiveData.ancho <= 360) return 14;
     if (responsiveData.esMovil) return 16;
     return 18;
   }, [responsiveData]);
 
-  // Componente de notificaciones mejorado
   const ComponenteNotificaciones = useMemo(() => (
     <div className="contenedor-notificacion">
       <button
@@ -233,7 +279,6 @@ const Navbar = React.memo(({
     </div>
   ), [notificacionesNoLeidas, tamañoIcono, abrirModalNotificaciones]);
 
-  // Determinar si mostrar botón hamburguesa
   const mostrarBotonHamburguesa = responsiveData.esMovil || responsiveData.esTablet;
 
   return (
@@ -243,9 +288,7 @@ const Navbar = React.memo(({
         role="banner"
       >
         <div className="contenedor-navbar">
-          {/* Sección del Logo */}
           <div className="seccion-logo">
-            {/* Botón Hamburguesa - Solo visible en móvil y tablet */}
             {mostrarBotonHamburguesa && (
               <button
                 onClick={alternarSidebar}
@@ -261,7 +304,6 @@ const Navbar = React.memo(({
               </button>
             )}
 
-            {/* Barras decorativas - Solo en desktop */}
             {!mostrarBotonHamburguesa && (
               <div className="barras-logo" aria-hidden="true">
                 <div className="barra-roja"></div>
@@ -280,7 +322,6 @@ const Navbar = React.memo(({
               onError={(e) => e.target.style.display = 'none'}
             />
 
-            {/* Logo de Rolan Tours como imagen */}
             {logoRolanCargado ? (
               <img
                 ref={refLogoRolan}
@@ -298,126 +339,101 @@ const Navbar = React.memo(({
                   objectFit: 'contain',
                   transition: 'transform 0.3s ease, filter 0.3s ease'
                 }}
-                onMouseEnter={(e) => {
-                  if (!responsiveData.esMovil) {
-                    e.target.style.transform = 'scale(1.05)';
-                    e.target.style.filter = 'brightness(1.1)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!responsiveData.esMovil) {
-                    e.target.style.transform = 'scale(1)';
-                    e.target.style.filter = 'brightness(1)';
-                  }
-                }}
               />
             ) : (
-              // Fallback si no se puede cargar la imagen
               !responsiveData.esMovil && !responsiveData.esTablet && (
                 <h1 className="nombre-empresa">ROLAN TOURS</h1>
               )
             )}
           </div>
 
-          {/* Sección Derecha */}
           <div className="seccion-usuario">
-            {/* Notificaciones */}
             {ComponenteNotificaciones}
 
-            {/* Perfil de Usuario - Oculto en móvil */}
             {!responsiveData.esMovil && (
               <div className="perfil-usuario" ref={refDesplegable}>
-              {imagenCargada ? (
-                <img
-                  ref={refAvatarImg}
-                  src={usuario.avatar}
-                  alt={`Avatar de ${usuario.nombre}`}
-                  className="avatar-usuario"
-                  onError={manejarErrorImagen}
-                  onLoad={manejarCargaImagen}
-                  loading="lazy"
-                />
-              ) : (
-                <div
-                  className="avatar-fallback"
-                  aria-label={`Avatar de ${usuario.nombre}`}
-                  style={{
-                    width: responsiveData.esMovil && responsiveData.ancho <= 480 ? '32px' : '40px',
-                    height: responsiveData.esMovil && responsiveData.ancho <= 480 ? '32px' : '40px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    fontSize: responsiveData.esMovil && responsiveData.ancho <= 480 ? '12px' : '14px',
-                    border: '3px solid #ffffff',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
-                  }}
-                >
-                  {usuario.iniciales}
-                </div>
-              )}
-
-              {/* Información del usuario - ocultar en móvil pequeño */}
-              {(!responsiveData.esMovil || responsiveData.ancho > 480) && (
-                <div>
-                  <p className="nombre-usuario">{usuario.nombre}</p>
-                  <span className="rol-usuario">{usuario.rol}</span>
-                </div>
-              )}
-
-              <button
-                className="alternar-desplegable"
-                onClick={alternarDesplegable}
-                aria-label="Abrir menú de usuario"
-                aria-expanded={desplegableAbierto}
-                aria-haspopup="true"
-              >
-                <ChevronDown
-                  size={14}
-                  className={`icono-desplegable ${desplegableAbierto ? "abierto" : ""}`}
-                />
-              </button>
-
-              {/* Menú Desplegable */}
-              {desplegableAbierto && (
-                <div
-                  className="menu-desplegable"
-                  role="menu"
-                  aria-label="Menú de usuario"
-                >
-                  <button
-                    onClick={abrirModalPerfil}
-                    className="elemento-desplegable"
-                    role="menuitem"
-                    aria-label="Ver perfil de usuario"
+                {imagenCargada ? (
+                  <img
+                    ref={refAvatarImg}
+                    src={usuarioInfo.avatar}
+                    alt={`Avatar de ${usuarioInfo.nombre}`}
+                    className="avatar-usuario"
+                    onError={manejarErrorImagen}
+                    onLoad={manejarCargaImagen}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className="avatar-fallback"
+                    aria-label={`Avatar de ${usuarioInfo.nombre}`}
+                    style={{
+                      width: responsiveData.esMovil && responsiveData.ancho <= 480 ? '32px' : '40px',
+                      height: responsiveData.esMovil && responsiveData.ancho <= 480 ? '32px' : '40px',
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                      fontSize: responsiveData.esMovil && responsiveData.ancho <= 480 ? '12px' : '14px',
+                      border: '3px solid #ffffff',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
+                    }}
                   >
-                    <User size={16} />
-                    <span>Ver Perfil</span>
-                  </button>
+                    {usuarioInfo.iniciales}
+                  </div>
+                )}
 
-                  <div className="divisor" role="separator"></div>
+                {(!responsiveData.esMovil || responsiveData.ancho > 480) && (
+                  <div>
+                    <p className="nombre-usuario">{usuarioInfo.nombre}</p>
+                    <span className="rol-usuario">{usuarioInfo.rol}</span>
+                  </div>
+                )}
 
-                  <button
-                    onClick={manejarCerrarSesion}
-                    className="elemento-desplegable cerrar-sesion"
-                    role="menuitem"
-                    aria-label="Cerrar sesión"
-                  >
-                    <LogOut size={16} />
-                    <span>Cerrar Sesión</span>
-                  </button>
-                </div>
-              )}
+                <button
+                  className="alternar-desplegable"
+                  onClick={alternarDesplegable}
+                  aria-label="Abrir menú de usuario"
+                  aria-expanded={desplegableAbierto}
+                  aria-haspopup="true"
+                >
+                  <ChevronDown
+                    size={14}
+                    className={`icono-desplegable ${desplegableAbierto ? "abierto" : ""}`}
+                  />
+                </button>
+
+                {desplegableAbierto && (
+                  <div className="menu-desplegable" role="menu">
+                    <button
+                      onClick={abrirModalPerfil}
+                      className="elemento-desplegable"
+                      role="menuitem"
+                    >
+                      <User size={16} />
+                      <span>Ver Perfil</span>
+                    </button>
+
+                    <div className="divisor" role="separator"></div>
+
+                    <button
+                      onClick={manejarCerrarSesion}
+                      className="elemento-desplegable cerrar-sesion"
+                      role="menuitem"
+                    >
+                      <LogOut size={16} />
+                      <span>Cerrar Sesión</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
       </header>
 
-      {/* Modal de Notificaciones */}
       <ModalNotificaciones
         isOpen={modalNotificacionesAbierto}
         onClose={cerrarModalNotificaciones}
@@ -429,12 +445,11 @@ const Navbar = React.memo(({
         responsive={responsiveData}
       />
 
-      {/* Modal de Perfil */}
       <ModalPerfil
         isOpen={modalPerfilAbierto}
         onClose={cerrarModalPerfil}
-        onEditProfile={onEditProfile}
-        userInfo={userInfo}
+        onEditProfile={manejarEditarPerfil}
+        userInfo={usuario}
         cargandoPerfil={cargandoPerfil}
         setCargandoPerfil={setCargandoPerfil}
       />

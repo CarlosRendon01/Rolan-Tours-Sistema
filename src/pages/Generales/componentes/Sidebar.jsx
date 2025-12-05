@@ -1,36 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import {
-  Home,            // Inicio/casa
-  ShoppingCart,    // Carrito de compras
-  FileText,        // Archivo de texto/documento
-  Settings,        // Configuraciones/ajustes
-  Truck,           // Camión/envío
-  Users,           // Usuarios/personas
-  LogOut,          // Cerrar sesión
-  ChevronDown,     // Flecha hacia abajo
-  ChevronUp,       // Flecha hacia arriba
-  User,            // Usuario
-  FileCheck,       // Archivo verificado/aprobado
-  CreditCard,      // Tarjeta de crédito
-  FileSignature,   // Archivo con firma/contrato
-  Receipt,         // Recibo/factura
-  FileBarChart,    // Archivo con gráfico de barras
-  ClipboardList,   // Lista en portapapeles
-  Calendar,        // Calendario
-  UserCheck,       // Usuario verificado
-  Car,             // Carro/automóvil
-  Map,             // Mapa
-  Building,        // Edificio
-  UserCog,         // Usuario con configuración
-  Plane,           // Avión
-  UtensilsCrossed, // Utensilios cruzados/comida
-  MapPin,          // Pin de ubicación
-  Bed,             // Cama/hotel
-  Wrench,          // Llave inglesa/mantenimiento
-  X,               // X para cerrar
-  Moon,            // Luna para modo oscuro
-  Sun              // Sol para modo claro
+  Home, ShoppingCart, FileText, Settings, Truck, Users, LogOut,
+  ChevronDown, ChevronUp, User, FileCheck, CreditCard, FileSignature,
+  Receipt, FileBarChart, ClipboardList, Calendar, UserCheck, Car,
+  Map, Building, UserCog, Plane, UtensilsCrossed, MapPin, Bed,
+  Wrench, X, Moon, Sun
 } from "lucide-react";
 import { useResponsive } from "../../../utils/useResponsive";
 import "./Sidebar.css";
@@ -44,7 +20,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const [mantenimientoAbierto, setMantenimientoAbierto] = useState(false);
   const [tooltipAbierto, setTooltipAbierto] = useState(null);
   const [modoOscuro, setModoOscuro] = useState(() => {
-    // Leer el modo oscuro desde localStorage al inicializar
     const modoGuardado = localStorage.getItem('modoOscuro');
     return modoGuardado === 'true';
   });
@@ -54,7 +29,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const location = useLocation();
   const responsive = useResponsive();
 
-  // Actualizar elemento activo basado en la ruta actual
   useEffect(() => {
     const rutaActual = location.pathname;
     switch (rutaActual) {
@@ -78,28 +52,20 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     }
   }, [location.pathname]);
 
-  // Efecto para manejar el modo oscuro
   useEffect(() => {
-    // Guardar en localStorage
     localStorage.setItem('modoOscuro', modoOscuro.toString());
 
-    // Aplicar clase al body para afectar toda la aplicación
     if (modoOscuro) {
       document.body.classList.add('modo-oscuro');
     } else {
       document.body.classList.remove('modo-oscuro');
     }
 
-    // Cleanup al desmontar el componente
     return () => {
       document.body.classList.remove('modo-oscuro');
     };
   }, [modoOscuro]);
 
-  // No cerrar automáticamente el sidebar en móvil al seleccionar elementos
-  // El usuario debe cerrar manualmente con el botón hamburguesa o haciendo click fuera
-
-  // Cerrar submenús cuando se colapsa el sidebar
   useEffect(() => {
     if (!estaAbierto) {
       setVentasAbierto(false);
@@ -110,10 +76,8 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     }
   }, [estaAbierto]);
 
-  // Cerrar tooltip al hacer scroll, redimensionar o click fuera
   useEffect(() => {
     const cerrarTooltip = (event) => {
-      // Solo cerrar si el click no es dentro del tooltip o del botón que lo activa
       if (!event.target.closest('.tooltip-submenu') &&
         !event.target.closest('.elemento-con-tooltip')) {
         setTooltipAbierto(null);
@@ -140,7 +104,28 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const alternarMantenimiento = () => setMantenimientoAbierto(!mantenimientoAbierto);
   const alternarModoOscuro = () => setModoOscuro(!modoOscuro);
 
-  // Manejar tooltip para móvil y desktop
+  // ✅ FUNCIÓN PARA CERRAR SESIÓN - INTEGRADA AQUÍ
+  const manejarCerrarSesion = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        await axios.post('http://127.0.0.1:8000/api/logout');
+      }
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    } finally {
+      // Limpiar todo
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('rol');
+      delete axios.defaults.headers.common['Authorization'];
+      
+      // Recargar la página para volver al login
+      window.location.href = '/';
+    }
+  };
+
   const manejarTooltip = (elementoId, event) => {
     if (responsive.esMovil || !estaAbierto) {
       event.preventDefault();
@@ -149,14 +134,12 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     }
   };
 
-  // Cerrar tooltip específicamente
   const cerrarTooltip = (event) => {
     if (!event.target.closest('.tooltip-submenu')) {
       setTooltipAbierto(null);
     }
   };
 
-  // Manejar hover para mostrar/ocultar sidebar (solo en desktop)
   const manejarMouseEnter = () => {
     if (!responsive.esMovil && !responsive.esTablet) {
       setHoverExpandido(true);
@@ -166,7 +149,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const manejarMouseLeave = () => {
     if (!responsive.esMovil && !responsive.esTablet) {
       setHoverExpandido(false);
-      // Cerrar todos los submenús cuando se quita el hover
       setVentasAbierto(false);
       setDocumentosAbierto(false);
       setOperacionesAbierto(false);
@@ -199,7 +181,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         { id: 'Reservas', icono: Calendar, etiqueta: 'Reservas' }
       ]
     },
-
     {
       id: 'Operaciones',
       icono: Settings,
@@ -213,7 +194,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         { id: 'Coordinadores', icono: UserCog, etiqueta: 'Coordinadores' }
       ]
     },
-
     {
       id: 'Servicios',
       icono: Truck,
@@ -238,7 +218,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     { id: 'Administracion', icono: Users, etiqueta: 'Administración' }
   ];
 
-  // Función para manejar navegación
   const manejarNavegacion = (elementoId) => {
     switch (elementoId) {
       case 'Principal':
@@ -253,14 +232,12 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       case 'Pagos':
         navigate('/pagos');
         break;
-      // Agregar más rutas según sea necesario
       default:
         console.log(`Navegación para ${elementoId} no implementada aún`);
         break;
     }
   };
 
-  // Renderizar elemento de submenú
   const renderElementoSubmenu = (subElemento, esTooltip = false) => {
     const ComponenteSubIcono = subElemento.icono;
     const estaSubActivo = elementoActivo === subElemento.id;
@@ -271,8 +248,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
           onClick={() => {
             setElementoActivo(subElemento.id);
             manejarNavegacion(subElemento.id);
-
-            // Solo cerrar tooltip si es un tooltip flotante, no si es móvil
             if (esTooltip) {
               setTooltipAbierto(null);
             }
@@ -289,10 +264,8 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     );
   };
 
-  // Renderizar tooltip flotante para sidebar colapsado
   const renderTooltipSubmenu = (elemento) => {
     if (!elemento.tieneSubmenu) return null;
-
     const estaTooltipAbierto = tooltipAbierto === elemento.id;
 
     return (
@@ -323,35 +296,26 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
   return (
     <div className="contenedor-sidebar" onClick={cerrarTooltip}>
-      {/* Superposición para móviles */}
       {estaAbierto && responsive.esMovil && (
         <div className="superposicion-sidebar" onClick={() => setEstaAbierto(false)} />
       )}
 
-      {/* Superposición específica para tooltips en móvil */}
       {tooltipAbierto && responsive.esMovil && (
         <div className="superposicion-tooltip" onClick={() => setTooltipAbierto(null)} />
       )}
 
-      {/* Área de activación del hover (solo en desktop) */}
       {!responsive.esMovil && !responsive.esTablet && (
-        <div
-          className="area-activacion-hover"
-          onMouseEnter={manejarMouseEnter}
-        />
+        <div className="area-activacion-hover" onMouseEnter={manejarMouseEnter} />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`sidebar ${responsive.esMovil || responsive.esTablet ? (estaAbierto ? 'abierto' : '') : ''} ${modoOscuro ? 'modo-oscuro' : ''} ${hoverExpandido ? 'hover-expandido' : ''}`}
         onMouseEnter={manejarMouseEnter}
         onMouseLeave={manejarMouseLeave}
       >
-
-        {/* Menú de Navegación */}
         <nav className="navegacion-sidebar">
           <ul className="lista-navegacion">
-            {elementosMenu.map((elemento, index) => {
+            {elementosMenu.map((elemento) => {
               const ComponenteIcono = elemento.icono;
               const estaActivo = elementoActivo === elemento.id;
 
@@ -360,40 +324,22 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
                   <button
                     onClick={(e) => {
                       if (elemento.tieneSubmenu) {
-                        // En desktop con hover o móvil/tablet abierto, expandir submenús
                         if ((responsive.esMovil || responsive.esTablet) && estaAbierto) {
-                          // Móvil/tablet: expandir submenús cuando está abierto
-                          if (elemento.id === 'Ventas') {
-                            alternarVentas();
-                          } else if (elemento.id === 'Documentos') {
-                            alternarDocumentos();
-                          } else if (elemento.id === 'Operaciones') {
-                            alternarOperaciones();
-                          } else if (elemento.id === 'Servicios') {
-                            alternarServicios();
-                          } else if (elemento.id === 'Mantenimiento') {
-                            alternarMantenimiento();
-                          }
+                          if (elemento.id === 'Ventas') alternarVentas();
+                          else if (elemento.id === 'Documentos') alternarDocumentos();
+                          else if (elemento.id === 'Operaciones') alternarOperaciones();
+                          else if (elemento.id === 'Servicios') alternarServicios();
+                          else if (elemento.id === 'Mantenimiento') alternarMantenimiento();
                         } else if (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) {
-                          // Desktop: expandir submenús cuando hay hover
-                          if (elemento.id === 'Ventas') {
-                            alternarVentas();
-                          } else if (elemento.id === 'Documentos') {
-                            alternarDocumentos();
-                          } else if (elemento.id === 'Operaciones') {
-                            alternarOperaciones();
-                          } else if (elemento.id === 'Servicios') {
-                            alternarServicios();
-                          } else if (elemento.id === 'Mantenimiento') {
-                            alternarMantenimiento();
-                          }
+                          if (elemento.id === 'Ventas') alternarVentas();
+                          else if (elemento.id === 'Documentos') alternarDocumentos();
+                          else if (elemento.id === 'Operaciones') alternarOperaciones();
+                          else if (elemento.id === 'Servicios') alternarServicios();
+                          else if (elemento.id === 'Mantenimiento') alternarMantenimiento();
                         } else if ((responsive.esMovil || responsive.esTablet) && !estaAbierto) {
-                          // Móvil/tablet: mostrar tooltip si está cerrado
                           manejarTooltip(elemento.id, e);
                         }
-                        // Si no hay hover en desktop, no hacer nada (mantener solo iconos)
                       } else {
-                        // Elemento sin submenú: navegación directa
                         setElementoActivo(elemento.id);
                         manejarNavegacion(elemento.id);
                       }
@@ -401,25 +347,15 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
                     className={`elemento-navegacion elemento-con-tooltip ${estaActivo ? 'activo' : ''}`}
                     data-menu={elemento.id}
                     aria-label={elemento.etiqueta}
-                    aria-expanded={elemento.tieneSubmenu ? (
-                      (elemento.id === 'Ventas' && ventasAbierto) ||
-                      (elemento.id === 'Documentos' && documentosAbierto) ||
-                      (elemento.id === 'Operaciones' && operacionesAbierto) ||
-                      (elemento.id === 'Servicios' && serviciosAbierto) ||
-                      (elemento.id === 'Mantenimiento' && mantenimientoAbierto)
-                    ) : undefined}
                   >
-                    {/* Contenedor de icono */}
                     <div className="contenedor-icono-navegacion">
                       <ComponenteIcono className="icono-navegacion" />
                     </div>
 
-                    {/* Texto */}
                     <span className={`texto-navegacion ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
                       {elemento.etiqueta}
                     </span>
 
-                    {/* Flecha del submenú */}
                     {elemento.tieneSubmenu && (
                       <div className="flecha-submenu">
                         {(elemento.id === 'Ventas' && ventasAbierto) ||
@@ -435,10 +371,8 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
                     )}
                   </button>
 
-                  {/* Tooltip flotante para sidebar colapsado - Solo en móvil cuando está cerrado */}
                   {(responsive.esMovil || responsive.esTablet) && !estaAbierto && renderTooltipSubmenu(elemento)}
 
-                  {/* Submenú expandido */}
                   {elemento.tieneSubmenu && (((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && (
                     ((elemento.id === 'Ventas' && ventasAbierto) ||
                       (elemento.id === 'Documentos' && documentosAbierto) ||
@@ -455,7 +389,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
             })}
           </ul>
 
-          {/* Botón de Ver Perfil - PRIMERO (solo en móvil) */}
           {responsive.esMovil && (
             <div className="seccion-ver-perfil">
               <button className="btn-ver-perfil" aria-label="Ver perfil">
@@ -467,9 +400,13 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
             </div>
           )}
 
-          {/* Botón de Cerrar Sesión - SEGUNDO */}
+          {/* ✅ BOTÓN DE CERRAR SESIÓN CON FUNCIÓN */}
           <div className="seccion-cerrar-sesion">
-            <button className="btn-cerrar-sesion" aria-label="Cerrar sesión">
+            <button 
+              className="btn-cerrar-sesion" 
+              aria-label="Cerrar sesión"
+              onClick={manejarCerrarSesion}
+            >
               <LogOut className="icono-cerrar-sesion" />
               <span className={`texto-cerrar-sesion ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
                 Cerrar Sesión
@@ -477,26 +414,20 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
             </button>
           </div>
 
-          {/* Sección de Modo Oscuro - SEGUNDO */}
+          {/* SECCIÓN MODO OSCURO */}
           <div className="seccion-modo-oscuro">
             <button
               className="btn-modo-oscuro"
               onClick={alternarModoOscuro}
               aria-label={modoOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
             >
-              {modoOscuro ? (
-                <Sun className="icono-modo-oscuro" />
-              ) : (
-                <Moon className="icono-modo-oscuro" />
-              )}
+              {modoOscuro ? <Sun className="icono-modo-oscuro" /> : <Moon className="icono-modo-oscuro" />}
               <span className={`texto-modo-oscuro ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
                 {modoOscuro ? 'Modo Claro' : 'Modo Oscuro'}
               </span>
               {(((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && <div className="toggle-modo-oscuro"></div>}
             </button>
           </div>
-
-
         </nav>
       </aside>
     </div>
