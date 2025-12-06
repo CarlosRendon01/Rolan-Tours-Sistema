@@ -18,6 +18,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -28,13 +29,14 @@
   background: white !important;
   border-radius: 16px !important;
   width: 90% !important;
-  max-width: 900px !important;
+  max-width: 1200px !important;
   max-height: 90vh !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   animation: slideUp 0.3s ease-out !important;
+  position: relative !important;
+  transform: scale(0.85) !important;
 }
 
 @keyframes slideUp {
@@ -42,6 +44,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -50,14 +53,17 @@
 
 /* Header */
 .modal-agregar-usuario-header {
-  padding: 2rem 2.5rem !important;
-  border-bottom: 1px solid #e5e7eb !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  border-top-left-radius: 16px !important;
-  border-top-right-radius: 16px !important;
+  padding: 2rem 2.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .modal-agregar-usuario-header h2 {
@@ -83,7 +89,7 @@
 
 .modal-agregar-usuario-btn-cerrar:hover {
   background: rgba(255, 255, 255, 0.3) !important;
-  transform: scale(1.05) !important;
+  transform: scale(1.05)!important;
 }
 
 /* Tabs */
@@ -112,13 +118,13 @@
 
 .modal-agregar-usuario-tab-button:hover {
   background: rgba(16, 185, 129, 0.05) !important;
-  color: #10b981 !important;
+  color: #080bd8 !important;
 }
 
 .modal-agregar-usuario-tab-button.active {
-  color: #10b981 !important;
+  color: #080bd8 !important;
   background: white !important;
-  border-bottom-color: #10b981 !important;
+  border-bottom-color: #080bd8 !important;
 }
 
 /* Formulario */
@@ -154,7 +160,7 @@
 }
 
 .modal-agregar-usuario-required {
-  color: #059669 !important;
+  color: #080bd8 !important;
   font-weight: 600 !important;
 }
 
@@ -176,7 +182,7 @@
 }
 
 .modal-agregar-usuario-form-group input:focus {
-  border-color: #10b981 !important;
+  border-color: #080bd8 !important;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
 }
 
@@ -206,11 +212,11 @@
   padding: 1.5rem !important;
   background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
   border-radius: 12px !important;
-  border-left: 4px solid #10b981 !important;
+  border-left: 4px solid #080bd8 !important;
 }
 
 .modal-agregar-usuario-roles-header svg {
-  color: #10b981 !important;
+  color: #080bd8 !important;
   flex-shrink: 0 !important;
 }
 
@@ -218,13 +224,13 @@
   margin: 0 !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
-  color: #065f46 !important;
+  color: #06165f !important;
 }
 
 .modal-agregar-usuario-roles-header p {
   margin: 0.25rem 0 0 0 !important;
   font-size: 0.875rem !important;
-  color: #059669 !important;
+  color: #080bd8 !important;
 }
 
 .modal-agregar-usuario-sin-roles {
@@ -261,14 +267,14 @@
 }
 
 .modal-agregar-usuario-rol-card:hover {
-  border-color: #10b981 !important;
+  border-color: #080bd8 !important;
   background: #d1fae5 !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15) !important;
 }
 
 .modal-agregar-usuario-rol-card.seleccionado {
-  border-color: #10b981 !important;
+  border-color: #080bd8 !important;
   background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25) !important;
 }
@@ -280,7 +286,7 @@
 }
 
 .modal-agregar-usuario-rol-card.seleccionado .modal-agregar-usuario-rol-checkbox {
-  color: #10b981 !important;
+  color: #080bd8 !important;
 }
 
 .modal-agregar-usuario-rol-info {
@@ -312,7 +318,7 @@
 }
 
 .modal-agregar-usuario-rol-card.seleccionado .modal-agregar-usuario-rol-permisos {
-  background: #10b981 !important;
+  background: #080bd8 !important;
   color: white !important;
 }
 
@@ -358,20 +364,20 @@
   gap: 0.625rem !important;
   padding: 0.875rem 2rem !important;
   border: none !important;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
   color: white !important;
   border-radius: 10px !important;
   font-weight: 600 !important;
   font-size: 1rem !important;
   cursor: pointer !important;
   transition: all 0.2s !important;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(16, 27, 185, 0.25) !important;
 }
 
 .modal-agregar-usuario-btn-guardar:hover {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
+  box-shadow: 0 6px 20px rgba(16, 19, 185, 0.35) !important;
 }
 
 .modal-agregar-usuario-btn-guardar.loading {

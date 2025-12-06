@@ -18,6 +18,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -28,13 +29,14 @@
   background: white !important;
   border-radius: 16px !important;
   width: 90% !important;
-  max-width: 900px !important;
+  max-width: 1200px !important;
   max-height: 90vh !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   animation: slideUp 0.3s ease-out !important;
+  position: relative !important;
+  transform: scale(0.8) !important;
 }
 
 @keyframes slideUp {
@@ -42,6 +44,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -55,7 +58,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
   border-top-left-radius: 16px !important;
   border-top-right-radius: 16px !important;
 }
@@ -256,9 +259,9 @@
 
 .modal-ver-usuario-btn-cerrar-footer {
   padding: 0.875rem 2rem !important;
-  border: 2px solid #1e40af !important;
+  border: 2px solid #949393 !important;
   background: white !important;
-  color: #1e40af !important;
+  color: #374151 !important;
   border-radius: 10px !important;
   font-weight: 600 !important;
   font-size: 1rem !important;
@@ -267,10 +270,9 @@
 }
 
 .modal-ver-usuario-btn-cerrar-footer:hover {
-  background: #1e40af !important;
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
   color: white !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
 }
 
 /* Scrollbar */

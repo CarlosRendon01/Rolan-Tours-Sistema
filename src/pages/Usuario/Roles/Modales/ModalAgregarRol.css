@@ -2,25 +2,25 @@
 
 /* Overlay */
 .mar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 1rem;
-  animation: marFadeIn 0.2s ease-out;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9999 !important;
+  padding: 1rem !important;
+  animation: fadeIn 0.2s ease-out !important;
 }
 
 @keyframes marFadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -28,16 +28,17 @@
 
 /* Contenedor Principal */
 .mar-contenido {
-  background: white;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 1200px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  animation: marSlideUp 0.3s ease-out;
+  background: white !important;
+  border-radius: 16px !important;
+  width: 90% !important;
+  max-width: 1200px !important;
+  max-height: 90vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  animation: slideUp 0.3s ease-out !important;
+  position: relative !important;
+  transform: scale(0.85) !important;
 }
 
 @keyframes marSlideUp {
@@ -45,6 +46,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -420,7 +422,7 @@
   border-radius: 50%;
 }
 
-.permiso-switch input:checked + .permiso-slider:before {
+.permiso-switch input:checked+.permiso-slider:before {
   transform: translateX(24px);
 }
 
@@ -466,11 +468,11 @@
   color: #6b7280;
 }
 
-.permiso-accion input[type="checkbox"]:checked ~ svg {
+.permiso-accion input[type="checkbox"]:checked~svg {
   color: #5f10b9;
 }
 
-.permiso-accion input[type="checkbox"]:checked ~ span {
+.permiso-accion input[type="checkbox"]:checked~span {
   color: #5f10b9;
 }
 
@@ -557,7 +559,7 @@
   color: #6b7280;
 }
 
-.permiso-accion-small input[type="checkbox"]:checked ~ svg {
+.permiso-accion-small input[type="checkbox"]:checked~svg {
   color: #5f10b9;
 }
 
@@ -746,7 +748,7 @@
     width: 16px;
   }
 
-  .permiso-switch input:checked + .permiso-slider:before {
+  .permiso-switch input:checked+.permiso-slider:before {
     transform: translateX(20px);
   }
 }
