@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import axios from "axios";
 import {
   Search,
@@ -16,37 +16,45 @@ import {
   X,
   FileSpreadsheet,
   RefreshCw,
-  Shield
-} from 'lucide-react';
-import './TablaRecibos.css';
-import { generarPDFRecibo, imprimirRecibo } from '../ModalesRecibos/generarPDFRecibo';
-import { modalEliminarRecibo } from '../ModalesRecibos/ModalEliminarRecibo';
-import ModalRegenerarRecibo from '../ModalesRecibos/ModalRegenerarRecibo';
-import ModalEliminarDefinitivo from '../ModalesRecibos/ModalEliminarDefinitivo';
+  Shield,
+} from "lucide-react";
+import "./TablaRecibos.css";
+import {
+  generarPDFRecibo,
+  imprimirRecibo,
+} from "../ModalesRecibos/generarPDFRecibo";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { modalEliminarRecibo } from "../ModalesRecibos/ModalEliminarRecibo";
+import ModalRegenerarRecibo from "../ModalesRecibos/ModalRegenerarRecibo";
+import ModalEliminarDefinitivo from "../ModalesRecibos/ModalEliminarDefinitivo";
+import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
 
 const TablaRecibos = ({
   datosIniciales = [],
-  vistaActual = 'recibos',
-  onCambiarVista = () => { },
+  vistaActual = "recibos",
+  onCambiarVista = () => {},
   onEliminar = null,
   onDescargar = null,
   onImprimir = null,
   onRegenerar = null,
-  onEliminarDefinitivo = null
+  onEliminarDefinitivo = null,
 }) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
-  const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
-
-  const [rolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
-
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
   // Estados para modales
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
-  const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] = useState(false);
+  const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
+    useState(false);
   const [reciboSeleccionado, setReciboSeleccionado] = useState(null);
+
+  const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [reciboPDFActual, setReciboPDFActual] = useState(null);
 
   const API_URL = "http://127.0.0.1:8000/api/abonos"; // Ajusta al dominio/backend real
 
@@ -64,7 +72,7 @@ const TablaRecibos = ({
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
       });
 
       const recibos = res.data.data || [];
@@ -77,12 +85,12 @@ const TablaRecibos = ({
 
   // Formatear moneda
   const formatearMoneda = useCallback((monto) => {
-    if (typeof monto === 'string') {
-      monto = parseFloat(monto.replace(/[$,]/g, ''));
+    if (typeof monto === "string") {
+      monto = parseFloat(monto.replace(/[$,]/g, ""));
     }
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
     }).format(monto || 0);
   }, []);
 
@@ -90,10 +98,10 @@ const TablaRecibos = ({
   const formatearFecha = useCallback((fecha) => {
     try {
       const date = new Date(fecha);
-      return new Intl.DateTimeFormat('es-MX', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
+      return new Intl.DateTimeFormat("es-MX", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
       }).format(date);
     } catch {
       return fecha;
@@ -102,38 +110,55 @@ const TablaRecibos = ({
 
   // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
-    if (rolUsuario === 'admin') {
+    if (rolUsuario === "admin") {
       if (mostrarEliminados) {
-        return datosRecibos.filter(r => r.activo === false);
+        return datosRecibos.filter((r) => r.activo === false);
       }
       return datosRecibos;
     } else {
       // Vendedor solo ve recibos no eliminados
-      return datosRecibos.filter(r => r.activo === true);
+      return datosRecibos.filter((r) => r.activo === true);
     }
   }, [datosRecibos, rolUsuario, mostrarEliminados]);
 
   // Cálculo de estadísticas
   const estadisticas = useMemo(() => {
-    const datos = rolUsuario === 'admin' ? datosRecibos : datosSegunRol;
+    const datos = rolUsuario === "admin" ? datosRecibos : datosSegunRol;
     const totalRecibos = datos.length;
-    const emitidos = datos.filter(r => r.estado === 'Emitido' && r.activo === true).length;
-    const cancelados = datos.filter(r => r.estado === 'Cancelado' && r.activo === true).length;
-    const eliminados = datos.filter(r => r.activo === false).length;
+    const emitidos = datos.filter(
+      (r) => r.estado === "Emitido" && r.activo === true
+    ).length;
+    const cancelados = datos.filter(
+      (r) => r.estado === "Cancelado" && r.activo === true
+    ).length;
+    const eliminados = datos.filter((r) => r.activo === false).length;
 
     const montoTotal = datos.reduce((total, recibo) => {
-      const monto = typeof recibo.monto === 'number' ? recibo.monto : parseFloat(recibo.monto?.replace(/[$,]/g, '') || 0);
+      const monto =
+        typeof recibo.monto === "number"
+          ? recibo.monto
+          : parseFloat(recibo.monto?.replace(/[$,]/g, "") || 0);
       return total + monto;
     }, 0);
 
     const montoEmitidos = datos
-      .filter(r => r.estado === 'Emitido' && r.activo === true)
+      .filter((r) => r.estado === "Emitido" && r.activo === true)
       .reduce((total, recibo) => {
-        const monto = typeof recibo.monto === 'number' ? recibo.monto : parseFloat(recibo.monto?.replace(/[$,]/g, '') || 0);
+        const monto =
+          typeof recibo.monto === "number"
+            ? recibo.monto
+            : parseFloat(recibo.monto?.replace(/[$,]/g, "") || 0);
         return total + monto;
       }, 0);
 
-    return { totalRecibos, emitidos, cancelados, eliminados, montoTotal, montoEmitidos };
+    return {
+      totalRecibos,
+      emitidos,
+      cancelados,
+      eliminados,
+      montoTotal,
+      montoEmitidos,
+    };
   }, [datosRecibos, datosSegunRol, rolUsuario]);
 
   // Filtrar datos según búsqueda
@@ -141,7 +166,7 @@ const TablaRecibos = ({
     let datos = [...datosSegunRol];
 
     if (terminoBusqueda) {
-      datos = datos.filter(recibo => {
+      datos = datos.filter((recibo) => {
         const searchTerm = terminoBusqueda.toLowerCase();
         return (
           recibo.cliente?.toLowerCase().includes(searchTerm) ||
@@ -158,16 +183,25 @@ const TablaRecibos = ({
 
   // Calcular paginación
   const totalRegistros = datosFiltrados.length;
-  const totalPaginas = Math.max(1, Math.ceil(totalRegistros / (registrosPorPagina || 1)));
+  const totalPaginas = Math.max(
+    1,
+    Math.ceil(totalRegistros / (registrosPorPagina || 1))
+  );
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
-  const indiceFinal = Math.min(indiceInicio + registrosPorPagina, totalRegistros);
+  const indiceFinal = Math.min(
+    indiceInicio + registrosPorPagina,
+    totalRegistros
+  );
   const datosPaginados = datosFiltrados.slice(indiceInicio, indiceFinal);
 
-  const cambiarPagina = useCallback((nuevaPagina) => {
-    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-      setPaginaActual(nuevaPagina);
-    }
-  }, [totalPaginas]);
+  const cambiarPagina = useCallback(
+    (nuevaPagina) => {
+      if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+        setPaginaActual(nuevaPagina);
+      }
+    },
+    [totalPaginas]
+  );
 
   const manejarCambioRegistros = useCallback((evento) => {
     const valor = parseInt(evento.target.value) || 10;
@@ -181,50 +215,65 @@ const TablaRecibos = ({
   }, []);
 
   const limpiarBusqueda = useCallback(() => {
-    setTerminoBusqueda('');
+    setTerminoBusqueda("");
     setPaginaActual(1);
   }, []);
 
   // Exportar a CSV
   const exportarCSV = useCallback(() => {
     try {
-      const headers = ['Recibo', 'Cliente', 'Monto', 'Fecha', 'Concepto', 'Método Pago', 'Estado'];
-      if (rolUsuario === 'admin' && mostrarEliminados) {
-        headers.push('Eliminado Por', 'Fecha Eliminación');
+      const headers = [
+        "Recibo",
+        "Cliente",
+        "Monto",
+        "Fecha",
+        "Concepto",
+        "Método Pago",
+        "Estado",
+      ];
+      if (rolUsuario === "admin" && mostrarEliminados) {
+        headers.push("Eliminado Por", "Fecha Eliminación");
       }
 
       const csv = [
-        headers.join(','),
-        ...datosFiltrados.map(recibo => {
+        headers.join(","),
+        ...datosFiltrados.map((recibo) => {
           const row = [
             recibo.numeroRecibo,
             `"${recibo.cliente}"`,
-            typeof recibo.monto === 'number' ? recibo.monto : recibo.monto?.replace(/[$,]/g, ''),
+            typeof recibo.monto === "number"
+              ? recibo.monto
+              : recibo.monto?.replace(/[$,]/g, ""),
             recibo.fechaEmision,
             `"${recibo.concepto}"`,
             recibo.metodoPago,
-            recibo.estado
+            recibo.estado,
           ];
 
-          if (rolUsuario === 'admin' && mostrarEliminados) {
-            row.push(recibo.eliminadoPor || '', recibo.fechaEliminacion || '');
+          if (rolUsuario === "admin" && mostrarEliminados) {
+            row.push(recibo.eliminadoPor || "", recibo.fechaEliminacion || "");
           }
 
-          return row.join(',');
-        })
-      ].join('\n');
+          return row.join(",");
+        }),
+      ].join("\n");
 
-      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
+      const blob = new Blob(["\ufeff" + csv], {
+        type: "text/csv;charset=utf-8;",
+      });
+      const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `recibos_${new Date().toISOString().split('T')[0]}.csv`);
-      link.style.visibility = 'hidden';
+      link.setAttribute("href", url);
+      link.setAttribute(
+        "download",
+        `recibos_${new Date().toISOString().split("T")[0]}.csv`
+      );
+      link.style.visibility = "hidden";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (err) {
-      setError('Error al exportar CSV');
+      setError("Error al exportar CSV");
       setTimeout(() => setError(null), 3000);
     }
   }, [datosFiltrados, rolUsuario, mostrarEliminados]);
@@ -243,85 +292,209 @@ const TablaRecibos = ({
   const manejarRegenerar = async (recibo, motivo) => {
     try {
       await cargarRecibos();
-      console.log('✅ Recibo regenerado:', recibo.id);
+      console.log("✅ Recibo regenerado:", recibo.id);
 
       if (onRegenerar) {
         await onRegenerar(recibo, motivo);
       }
     } catch (error) {
-      console.error('Error al regenerar:', error);
+      console.error("Error al regenerar:", error);
     }
   };
-
 
   const manejarEliminarDefinitivo = async (recibo) => {
     try {
       await cargarRecibos();
-      console.log('✅ Recibo eliminado definitivamente:', recibo.id);
+      console.log("✅ Recibo eliminado definitivamente:", recibo.id);
 
       if (onEliminarDefinitivo) {
         await onEliminarDefinitivo(recibo);
       }
     } catch (error) {
-      console.error('Error al eliminar definitivamente:', error);
+      console.error("Error al eliminar definitivamente:", error);
     }
   };
 
-  const manejarAccion = useCallback(async (accion, recibo) => {
-    setCargando(true);
-    setError(null);
+  const manejarAccion = useCallback(
+    async (accion, recibo) => {
+      setCargando(true);
+      setError(null);
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-      switch (accion) {
-        case 'eliminar':
-          setCargando(false);
-          const confirmado = await modalEliminarRecibo(recibo, async () => {
-            await cargarRecibos();
-          });
-          if (confirmado) {
-            await cargarRecibos();
-          }
-          break;
-        case 'descargar':
-          if (onDescargar) {
-            await onDescargar(recibo);
-          } else {
-            await generarPDFRecibo(recibo);
-          }
-          break;
-        case 'imprimir':
-          if (onImprimir) {
-            await onImprimir(recibo);
-          } else {
-            imprimirRecibo(recibo);
-          }
-          break;
-        default:
-          break;
+        switch (accion) {
+          case "eliminar":
+            setCargando(false);
+            const confirmado = await modalEliminarRecibo(recibo, async () => {
+              await cargarRecibos();
+            });
+            if (confirmado) {
+              await cargarRecibos();
+            }
+            break;
+          case "pdf":
+            visualizarPDF(recibo);
+            break;
+          case "descargar":
+            if (onDescargar) {
+              await onDescargar(recibo);
+            } else {
+              await generarPDFRecibo(recibo);
+            }
+            break;
+          case "imprimir":
+            if (onImprimir) {
+              await onImprimir(recibo);
+            } else {
+              imprimirRecibo(recibo);
+            }
+            break;
+          default:
+            break;
+        }
+      } catch (err) {
+        setError(`Error al ${accion}: ${err.message}`);
+        setTimeout(() => setError(null), 3000);
+      } finally {
+        setCargando(false);
       }
-    } catch (err) {
-      setError(`Error al ${accion}: ${err.message}`);
-      setTimeout(() => setError(null), 3000);
-    } finally {
-      setCargando(false);
-    }
-  }, [onEliminar, onDescargar, onImprimir]);
+    },
+    [onEliminar, onDescargar, onImprimir]
+  );
 
   const obtenerClaseEstado = useCallback((estado, activo) => {
     if (activo === false) {
-      return 'recibos-estado-eliminado';
+      return "recibos-estado-eliminado";
     }
     switch (estado?.toLowerCase()) {
-      case 'emitido':
-        return 'recibos-estado-emitido';
-      case 'cancelado':
-        return 'recibos-estado-cancelado';
+      case "emitido":
+        return "recibos-estado-emitido";
+      case "cancelado":
+        return "recibos-estado-cancelado";
       default:
-        return 'recibos-estado-emitido';
+        return "recibos-estado-emitido";
     }
   }, []);
+
+  const cerrarModalPDF = () => {
+    setModalPDFAbierto(false);
+    if (pdfUrl) {
+      window.URL.revokeObjectURL(pdfUrl);
+    }
+    setPdfUrl(null);
+    setReciboPDFActual(null);
+  };
+
+  const generarPDF = async (recibo) => {
+    try {
+      const plantillaUrl = "/ReciboPago.pdf";
+      const plantillaBytes = await fetch(plantillaUrl).then((res) =>
+        res.arrayBuffer()
+      );
+
+      const pdfDoc = await PDFDocument.load(plantillaBytes);
+      const pages = pdfDoc.getPages();
+      const firstPage = pages[0];
+
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      const dibujar = (texto, x, y, size = 9) => {
+        if (texto) {
+          firstPage.drawText(texto.toString(), {
+            x,
+            y,
+            size,
+            font,
+            color: rgb(0, 0, 0),
+          });
+        }
+      };
+
+      const fechaActual = new Date();
+      const formatoActual = {
+        weeyday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+
+      const fechaCompleta = fechaActual.toLocaleDateString(
+        "es-ES",
+        formatoActual
+      );
+      const formatearFecha = (fecha) =>
+        new Date(fecha).toLocaleDateString("es-MX");
+
+      const campos = [
+        { valor: recibo?.cliente, x: 110, y: 248 },
+        { valor: recibo?.numeroRecibo, x: 500, y: 299 },
+        { valor: recibo?.id, x: 230, y: 299 },
+        { valor: recibo?.concepto, x: 180, y: 155 },
+        { valor: `$ ${recibo?.monto}`, x: 470, y: 153 },
+        { valor: `$ ${recibo?.monto}`, x: 470, y: 88 },
+        { valor: `1`, x: 70, y: 153 },
+        { valor: recibo.cliente?.telefono, x: 100, y: 197 },
+        {
+          valor: `Oaxaca de Juárez, Oaxaca a ${fechaCompleta}`,
+          x: 290,
+          y: 272,
+        },
+
+        //Se dejó los valores de dirección para cuando esté normalizada
+        // { valor: recibo.calle, x: 180, y: 155 },
+        // { valor: recibo.colonia, x: 180, y: 155 },
+        // { valor: recibo.numero, x: 180, y: 155 },
+        // { valor: recibo.ciudad, x: 180, y: 155 },
+      ];
+
+      campos.forEach(({ valor, x, y }) => dibujar(valor, x, y));
+
+      const pdfBytes = await pdfDoc.save();
+      return pdfBytes;
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+      throw error;
+    }
+  };
+
+  const visualizarPDF = async (recibo) => {
+    try {
+      setReciboPDFActual(recibo);
+      setModalPDFAbierto(true);
+      setPdfUrl(null);
+
+      const pdfBytes = await generarPDF(recibo);
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      setPdfUrl(url);
+    } catch (error) {
+      console.error("Error al visualizar PDF:", error);
+      alert("Error al generar la previsualización del PDF.");
+      cerrarModalPDF();
+    }
+  };
+
+  const descargarPDF = async () => {
+    try {
+      if (!reciboPDFActual) return;
+
+      const pdfBytes = await generarPDF(reciboPDFActual);
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Recibo_${reciboPDFActual.fechaEmision}_${reciboPDFActual.numeroRecibo}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+
+      console.log("PDF descargado correctamente");
+    } catch (error) {
+      console.error("Error al descargar PDF:", error);
+      alert("Error al descargar el PDF. Por favor, intente nuevamente.");
+    }
+  };
 
   const generarNumerosPaginacion = useCallback(() => {
     const numeros = [];
@@ -336,21 +509,21 @@ const TablaRecibos = ({
         for (let i = 1; i <= 4; i++) {
           numeros.push(i);
         }
-        numeros.push('...');
+        numeros.push("...");
         numeros.push(totalPaginas);
       } else if (paginaActual >= totalPaginas - 2) {
         numeros.push(1);
-        numeros.push('...');
+        numeros.push("...");
         for (let i = totalPaginas - 3; i <= totalPaginas; i++) {
           numeros.push(i);
         }
       } else {
         numeros.push(1);
-        numeros.push('...');
+        numeros.push("...");
         numeros.push(paginaActual - 1);
         numeros.push(paginaActual);
         numeros.push(paginaActual + 1);
-        numeros.push('...');
+        numeros.push("...");
         numeros.push(totalPaginas);
       }
     }
@@ -359,7 +532,11 @@ const TablaRecibos = ({
   }, [totalPaginas, paginaActual]);
 
   return (
-    <div className={`recibos-contenedor-principal ${cargando ? 'recibos-cargando' : ''}`}>
+    <div
+      className={`recibos-contenedor-principal ${
+        cargando ? "recibos-cargando" : ""
+      }`}
+    >
       {/* Header */}
       <div className="recibos-encabezado">
         <div className="recibos-seccion-logo">
@@ -368,38 +545,46 @@ const TablaRecibos = ({
           </div>
           <div>
             <h1 className="recibos-titulo">Gestión de Recibos</h1>
-            <p className="recibos-subtitulo">
-              Comprobantes de pago generados
-            </p>
+            <p className="recibos-subtitulo">Comprobantes de pago generados</p>
           </div>
         </div>
 
         <div className="recibos-estadisticas-header">
           <div className="recibos-tarjeta-estadistica total">
             <BarChart3 className="recibos-icono-estadistica" size={20} />
-            <span className="recibos-valor-estadistica">{estadisticas.totalRecibos}</span>
+            <span className="recibos-valor-estadistica">
+              {estadisticas.totalRecibos}
+            </span>
             <span className="recibos-etiqueta-estadistica">Total Recibos</span>
           </div>
           <div className="recibos-tarjeta-estadistica pagados">
             <CheckCircle className="recibos-icono-estadistica" size={20} />
-            <span className="recibos-valor-estadistica">{estadisticas.emitidos}</span>
+            <span className="recibos-valor-estadistica">
+              {estadisticas.emitidos}
+            </span>
             <span className="recibos-etiqueta-estadistica">Emitidos</span>
           </div>
           <div className="recibos-tarjeta-estadistica cancelados">
             <Clock className="recibos-icono-estadistica" size={20} />
-            <span className="recibos-valor-estadistica">{estadisticas.cancelados}</span>
+            <span className="recibos-valor-estadistica">
+              {estadisticas.cancelados}
+            </span>
             <span className="recibos-etiqueta-estadistica">Cancelados</span>
           </div>
-          {rolUsuario === 'admin' && (
+          {rolUsuario === "admin" && (
             <div className="recibos-tarjeta-estadistica eliminados">
               <Trash2 className="recibos-icono-estadistica" size={20} />
-              <span className="recibos-valor-estadistica">{estadisticas.eliminados}</span>
+              <span className="recibos-valor-estadistica">
+                {estadisticas.eliminados}
+              </span>
               <span className="recibos-etiqueta-estadistica">Eliminados</span>
             </div>
           )}
           <div className="recibos-tarjeta-estadistica monto-emitido">
             <Receipt className="recibos-icono-estadistica" size={20} />
-            <span className="recibos-valor-estadistica">{formatearMoneda(estadisticas.montoEmitidos)}</span>
+            <span className="recibos-valor-estadistica">
+              {formatearMoneda(estadisticas.montoEmitidos)}
+            </span>
             <span className="recibos-etiqueta-estadistica">Monto Emitido</span>
           </div>
         </div>
@@ -451,7 +636,7 @@ const TablaRecibos = ({
           </div>
 
           {/* Filtro para admin */}
-          {rolUsuario === 'admin' && (
+          {rolUsuario === "admin" && (
             <div className="recibos-filtro-eliminados">
               <label className="recibos-switch">
                 <input
@@ -514,10 +699,10 @@ const TablaRecibos = ({
             <h3 className="recibos-mensaje-vacio">No se encontraron recibos</h3>
             <p className="recibos-submensaje-vacio">
               {terminoBusqueda
-                ? 'Intenta ajustar los filtros de búsqueda'
+                ? "Intenta ajustar los filtros de búsqueda"
                 : mostrarEliminados
-                  ? 'No hay recibos eliminados en el sistema'
-                  : 'No hay recibos registrados en el sistema'}
+                ? "No hay recibos eliminados en el sistema"
+                : "No hay recibos registrados en el sistema"}
             </p>
           </div>
         ) : (
@@ -531,7 +716,7 @@ const TablaRecibos = ({
                 <th>Concepto</th>
                 <th>Método Pago</th>
                 <th>Estado</th>
-                {rolUsuario === 'admin' && mostrarEliminados && (
+                {rolUsuario === "admin" && mostrarEliminados && (
                   <>
                     <th>Eliminado Por</th>
                     <th>Fecha Eliminación</th>
@@ -544,34 +729,66 @@ const TablaRecibos = ({
               {datosPaginados.map((recibo, indice) => (
                 <tr
                   key={recibo.id}
-                  className={`recibos-fila-pago ${recibo.activo === false ? 'recibos-fila-eliminada' : ''}`}
+                  className={`recibos-fila-pago ${
+                    recibo.activo === false ? "recibos-fila-eliminada" : ""
+                  }`}
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
-                  <td data-label="Recibo" className="recibos-columna-factura">{recibo.numeroRecibo}</td>
-                  <td data-label="Cliente" className="recibos-columna-cliente">{recibo.cliente}</td>
-                  <td data-label="Monto" className="recibos-columna-monto">{formatearMoneda(recibo.monto)}</td>
-                  <td data-label="Fecha">{formatearFecha(recibo.fechaEmision)}</td>
+                  <td data-label="Recibo" className="recibos-columna-factura">
+                    {recibo.numeroRecibo}
+                  </td>
+                  <td data-label="Cliente" className="recibos-columna-cliente">
+                    {recibo.cliente}
+                  </td>
+                  <td data-label="Monto" className="recibos-columna-monto">
+                    {formatearMoneda(recibo.monto)}
+                  </td>
+                  <td data-label="Fecha">
+                    {formatearFecha(recibo.fechaEmision)}
+                  </td>
                   <td data-label="Concepto">
-                    <div style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={recibo.concepto}>
+                    <div
+                      style={{
+                        maxWidth: "200px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                      title={recibo.concepto}
+                    >
                       {recibo.concepto}
                     </div>
                   </td>
                   <td data-label="Método Pago">{recibo.metodoPago}</td>
                   <td data-label="Estado">
-                    <span className={`recibos-badge-estado ${obtenerClaseEstado(recibo.estado, recibo.activo)}`}>
+                    <span
+                      className={`recibos-badge-estado ${obtenerClaseEstado(
+                        recibo.estado,
+                        recibo.activo
+                      )}`}
+                    >
                       <span className="recibos-indicador-estado"></span>
-                      {recibo.activo === false ? 'Eliminado' : recibo.estado}
+                      {recibo.activo === false ? "Eliminado" : recibo.estado}
                     </span>
                   </td>
-                  {rolUsuario === 'admin' && mostrarEliminados && (
+                  {rolUsuario === "admin" && mostrarEliminados && (
                     <>
-                      <td data-label="Eliminado Por">{recibo.eliminadoPor || '-'}</td>
-                      <td data-label="Fecha Eliminación">{recibo.fechaEliminacion ? formatearFecha(recibo.fechaEliminacion) : '-'}</td>
+                      <td data-label="Eliminado Por">
+                        {recibo.eliminadoPor || "-"}
+                      </td>
+                      <td data-label="Fecha Eliminación">
+                        {recibo.fechaEliminacion
+                          ? formatearFecha(recibo.fechaEliminacion)
+                          : "-"}
+                      </td>
                     </>
                   )}
-                  <td data-label="Acciones" className="recibos-columna-acciones">
+                  <td
+                    data-label="Acciones"
+                    className="recibos-columna-acciones"
+                  >
                     <div className="recibos-botones-accion">
-                      {recibo.activo === false && rolUsuario === 'admin' ? (
+                      {recibo.activo === false && rolUsuario === "admin" ? (
                         // Botones para recibos eliminados (solo admin)
                         <>
                           <button
@@ -583,6 +800,7 @@ const TablaRecibos = ({
                           >
                             <RefreshCw size={14} />
                           </button>
+
                           <button
                             className="recibos-boton-accion recibos-eliminar-definitivo"
                             onClick={() => abrirModalEliminarDefinitivo(recibo)}
@@ -597,27 +815,21 @@ const TablaRecibos = ({
                         // Botones normales para recibos activos
                         <>
                           <button
-                            className="recibos-boton-accion recibos-descargar"
-                            onClick={() => manejarAccion('descargar', recibo)}
-                            title="Descargar PDF"
-                            aria-label={`Descargar recibo ${recibo.numeroRecibo}`}
-                            disabled={cargando}
+                            className="recibos-boton-accion recibos-pdf"
+                            onClick={() => manejarAccion("pdf", recibo)}
+                            title="Descargar recibo"
                           >
-                            <Download size={14} />
+                            <FileText size={16} />
                           </button>
-                          <button
-                            className="recibos-boton-accion recibos-imprimir"
-                            onClick={() => manejarAccion('imprimir', recibo)}
-                            title="Imprimir recibo"
-                            aria-label={`Imprimir recibo ${recibo.numeroRecibo}`}
-                            disabled={cargando}
-                          >
-                            <Printer size={14} />
-                          </button>
+
                           <button
                             className="recibos-boton-accion recibos-eliminar"
-                            onClick={() => manejarAccion('eliminar', recibo)}
-                            title={rolUsuario === 'admin' ? 'Eliminar de vista' : 'Eliminar recibo'}
+                            onClick={() => manejarAccion("eliminar", recibo)}
+                            title={
+                              rolUsuario === "admin"
+                                ? "Eliminar de vista"
+                                : "Eliminar recibo"
+                            }
                             aria-label={`Eliminar recibo ${recibo.numeroRecibo}`}
                             disabled={cargando}
                           >
@@ -638,9 +850,11 @@ const TablaRecibos = ({
       {datosPaginados.length > 0 && (
         <div className="recibos-pie-tabla">
           <div className="recibos-informacion-registros">
-            Mostrando <strong>{indiceInicio + 1}</strong> a <strong>{indiceFinal}</strong> de <strong>{totalRegistros}</strong> registros
+            Mostrando <strong>{indiceInicio + 1}</strong> a{" "}
+            <strong>{indiceFinal}</strong> de <strong>{totalRegistros}</strong>{" "}
+            registros
             {terminoBusqueda && (
-              <span style={{ color: '#6b7280', marginLeft: '0.5rem' }}>
+              <span style={{ color: "#6b7280", marginLeft: "0.5rem" }}>
                 (filtrado de {datosRecibos.length} registros totales)
               </span>
             )}
@@ -658,24 +872,30 @@ const TablaRecibos = ({
             </button>
 
             <div className="recibos-numeros-paginacion">
-              {generarNumerosPaginacion().map((numero, indice) => (
-                numero === '...' ? (
-                  <span key={`ellipsis-${indice}`} style={{ padding: '0.5rem', color: '#9ca3af' }} aria-hidden="true">
+              {generarNumerosPaginacion().map((numero, indice) =>
+                numero === "..." ? (
+                  <span
+                    key={`ellipsis-${indice}`}
+                    style={{ padding: "0.5rem", color: "#9ca3af" }}
+                    aria-hidden="true"
+                  >
                     ...
                   </span>
                 ) : (
                   <button
                     key={numero}
-                    className={`recibos-numero-pagina ${paginaActual === numero ? 'recibos-activo' : ''}`}
+                    className={`recibos-numero-pagina ${
+                      paginaActual === numero ? "recibos-activo" : ""
+                    }`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
                     aria-label={`Página ${numero}`}
-                    aria-current={paginaActual === numero ? 'page' : undefined}
+                    aria-current={paginaActual === numero ? "page" : undefined}
                   >
                     {numero}
                   </button>
                 )
-              ))}
+              )}
             </div>
 
             <button
@@ -700,6 +920,14 @@ const TablaRecibos = ({
           setReciboSeleccionado(null);
         }}
         isOpen={modalRegenerarAbierto}
+      />
+
+      <ModalVisualizarPDF
+        estaAbierto={modalPDFAbierto}
+        pdfUrl={pdfUrl}
+        recibo={reciboPDFActual}
+        alCerrar={cerrarModalPDF}
+        alDescargar={descargarPDF}
       />
 
       <ModalEliminarDefinitivo
