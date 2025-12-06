@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import axios from 'axios';
 import {
-  Calendar,        // Icono de calendario
-  ChevronLeft,     // Flecha izquierda  
-  ChevronRight,    // Flecha derecha
-  MapPin,          // Pin de ubicación
-  Users,           // Usuarios/personas
-  Clock,           // Reloj
-  Eye,             // Ojo (ver)
-  Edit             // Editar
+  Calendar, ChevronLeft, ChevronRight, MapPin, Users, Clock, Eye, Edit
 } from "lucide-react";
 import "./CalendarioViajes.css";
 
-const CalendarioViajes = () => {
+const CalendarioViajes = ({ onActualizarEstadisticas }) => {
   const [fechaActual, setFechaActual] = useState(new Date());
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
   const [eventos, setEventos] = useState([]);
@@ -20,109 +14,139 @@ const CalendarioViajes = () => {
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [cargando, setCargando] = useState(false);
 
-  // Datos de ejemplo - aquí conectarías con Google Calendar API
-  const eventosEjemplo = [
-    {
-      id: 1,
-      titulo: "Tour Hierve el Agua",
-      fecha: "2025-09-10",
-      hora_inicio: "08:00",
-      hora_fin: "18:00",
-      tipo: "tour",
-      clientes: 12,
-      estado: "confirmado",
-      guia: "Carlos Mendoza",
-      vehiculo: "Autobús Mercedes - Placa ABC-123",
-      descripcion: "Tour completo a Hierve el Agua con paradas en pueblos mágicos"
-    },
-    {
-      id: 2,
-      titulo: "Traslado Aeropuerto",
-      fecha: "2025-09-12",
-      hora_inicio: "06:30",
-      hora_fin: "08:00",
-      tipo: "traslado",
-      clientes: 4,
-      estado: "confirmado",
-      guia: "María González",
-      vehiculo: "Van Toyota - Placa XYZ-456",
-      descripcion: "Traslado hotel - aeropuerto para huéspedes VIP"
-    },
-    {
-      id: 3,
-      titulo: "Tour Monte Albán",
-      fecha: "2025-09-15",
-      hora_inicio: "09:00",
-      hora_fin: "16:00",
-      tipo: "tour",
-      clientes: 8,
-      estado: "confirmado",
-      guia: "Roberto Silva",
-      vehiculo: "Minibús Nissan - Placa DEF-789",
-      descripcion: "Visita arqueológica a Monte Albán con almuerzo incluido"
-    },
-    {
-      id: 4,
-      titulo: "Ruta Mezcal",
-      fecha: "2025-09-20",
-      hora_inicio: "10:00",
-      hora_fin: "19:00",
-      tipo: "tour",
-      clientes: 15,
-      estado: "confirmado",
-      guia: "Ana Pérez",
-      vehiculo: "Autobús Mercedes - Placa GHI-012",
-      descripcion: "Tour completo de mezcal con degustaciones y comida tradicional"
-    },
-    {
-      id: 5,
-      titulo: "Tour Mitla",
-      fecha: "2025-09-22",
-      hora_inicio: "09:30",
-      hora_fin: "17:00",
-      tipo: "tour",
-      clientes: 10,
-      estado: "confirmado",
-      guia: "Luis Ramirez",
-      vehiculo: "Van Mercedes - Placa JKL-345",
-      descripcion: "Exploración de las ruinas de Mitla y mercados locales"
-    },
-    {
-      id: 6,
-      titulo: "Traslado Hotel",
-      fecha: "2025-09-25",
-      hora_inicio: "14:00",
-      hora_fin: "15:30",
-      tipo: "traslado",
-      clientes: 2,
-      estado: "confirmado",
-      guia: "Sofia Martinez",
-      vehiculo: "Sedan Nissan - Placa MNO-678",
-      descripcion: "Traslado privado desde aeropuerto hasta hotel boutique"
-    },
-    {
-      id: 7,
-      titulo: "Tour Teotitlán",
-      fecha: "2025-09-28",
-      hora_inicio: "08:30",
-      hora_fin: "17:30",
-      tipo: "tour",
-      clientes: 6,
-      estado: "confirmado",
-      guia: "Diego Morales",
-      vehiculo: "Van Toyota - Placa PQR-901",
-      descripcion: "Tour de textiles tradicionales en Teotitlán del Valle"
-    }
-  ];
-
+  // ✅ Cargar eventos desde la API
   useEffect(() => {
-    // Simular carga de eventos - aquí harías el fetch a Google Calendar
-    setCargando(true);
-    setTimeout(() => {
-      setEventos(eventosEjemplo);
+    cargarEventosDelMes();
+  }, [fechaActual]);
+
+  const cargarEventosDelMes = async () => {
+    try {
+      setCargando(true);
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        console.error('No hay token de autenticación');
+        return;
+      }
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      const primerDia = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1);
+      const ultimoDia = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 0);
+
+      const fechaInicio = primerDia.toISOString().split('T')[0];
+      const fechaFin = ultimoDia.toISOString().split('T')[0];
+
+      console.log('📅 Cargando eventos del:', fechaInicio, 'al', fechaFin);
+
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/ordenes-servicio/filtrar/rango-fechas`,
+        {
+          params: {
+            fecha_inicio: fechaInicio,
+            fecha_fin: fechaFin
+          }
+        }
+      );
+
+      console.log('✅ Órdenes recibidas:', response.data);
+
+      // ✅ FUNCIÓN HELPER PARA CONVERTIR FECHA ISO A FORMATO YYYY-MM-DD
+      const formatearFechaISO = (fechaISO) => {
+        if (!fechaISO) return null;
+        // Extraer solo la parte de la fecha (YYYY-MM-DD)
+        return fechaISO.split('T')[0];
+      };
+
+      // Transformar órdenes a formato de eventos
+      const eventosTransformados = response.data.map(orden => {
+        // ✅ Convertir fecha ISO a formato simple
+        const fechaEvento = formatearFechaISO(orden.fecha_inicio_servicio);
+
+        return {
+          id: orden.id,
+          titulo: `${orden.destino || 'Sin destino'} - ${orden.nombre_cliente || 'Sin cliente'}`,
+          fecha: fechaEvento, // ✅ Ahora está en formato YYYY-MM-DD
+          hora_inicio: orden.horario_inicio_servicio || "08:00",
+          hora_fin: orden.horario_final_servicio || "18:00",
+          tipo: determinarTipoServicio(orden),
+          clientes: orden.numero_pasajeros || 0,
+          estado: orden.activo ? "confirmado" : "cancelado",
+          guia: obtenerNombreCompleto(orden),
+          vehiculo: obtenerInfoVehiculo(orden),
+          descripcion: orden.itinerario_detallado || `Servicio de ${orden.ciudad_origen || 'Origen'} a ${orden.destino || 'Destino'}`
+        };
+      });
+
+      console.log('🎯 Eventos transformados:', eventosTransformados);
+
+      // ✅ Filtrar eventos que tienen fecha válida
+      const eventosValidos = eventosTransformados.filter(evento => evento.fecha !== null);
+
+      console.log('📋 Eventos válidos para mostrar:', eventosValidos);
+      setEventos(eventosValidos);
+
+      if (onActualizarEstadisticas) {
+        onActualizarEstadisticas();
+      }
+
+    } catch (error) {
+      console.error('❌ Error al cargar eventos:', error);
+      console.error('Detalles:', error.response?.data);
+      setEventos([]);
+    } finally {
       setCargando(false);
-    }, 1000);
-  }, []);
+    }
+  };
+
+  const determinarTipoServicio = (orden) => {
+    const destino = (orden.destino || '').toLowerCase();
+    const servicio = (orden.servicio || '').toLowerCase();
+
+    // Palabras clave para tours
+    const palabrasTour = ['tour', 'monte albán', 'hierve', 'mitla', 'teotitlán',
+      'tule', 'mezcal', 'artesanías', 'excursión', 'paseo'];
+
+    // Palabras clave para traslados
+    const palabrasTraslado = ['traslado', 'aeropuerto', 'hotel', 'terminal',
+      'transporte', 'pickup', 'transfer'];
+
+    // Revisar en destino y servicio
+    const textoCompleto = `${destino} ${servicio}`;
+
+    if (palabrasTour.some(palabra => textoCompleto.includes(palabra))) {
+      return 'tour';
+    }
+
+    if (palabrasTraslado.some(palabra => textoCompleto.includes(palabra))) {
+      return 'traslado';
+    }
+
+    // Por defecto, si tiene más de 5 pasajeros, es tour
+    return (orden.numero_pasajeros || orden.num_pasajeros || 0) > 5 ? 'tour' : 'traslado';
+  };
+
+  const obtenerNombreCompleto = (orden) => {
+    const partes = [
+      orden.nombre_conductor,
+      orden.apellido_paterno_conductor,
+      orden.apellido_materno_conductor
+    ].filter(Boolean);
+
+    return partes.length > 0 ? partes.join(' ') : 'Sin asignar';
+  };
+
+  const obtenerInfoVehiculo = (orden) => {
+    const marca = orden.marca || '';
+    const modelo = orden.modelo || '';
+    const placa = orden.placa || 'Sin placa';
+
+    if (marca || modelo) {
+      return `${marca} ${modelo} - ${placa}`.trim();
+    }
+
+    return placa;
+  };
 
   const meses = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -140,15 +164,9 @@ const CalendarioViajes = () => {
   };
 
   const navegarMes = (direccion) => {
-    setCargando(true);
     const nuevaFecha = new Date(fechaActual);
     nuevaFecha.setMonth(fechaActual.getMonth() + direccion);
     setFechaActual(nuevaFecha);
-
-    // Simular carga de nuevos datos
-    setTimeout(() => {
-      setCargando(false);
-    }, 500);
   };
 
   const obtenerEventosPorFecha = (fecha) => {
@@ -197,11 +215,13 @@ const CalendarioViajes = () => {
   };
 
   const manejarVerMas = () => {
-    alert(`Ver detalles completos de: ${eventoSeleccionado?.titulo}`);
+    console.log('Ver más detalles:', eventoSeleccionado);
+    // Aquí podrías navegar a una página de detalles o abrir un modal más completo
   };
 
   const manejarEditar = () => {
-    alert(`Editar evento: ${eventoSeleccionado?.titulo}`);
+    console.log('Editar evento:', eventoSeleccionado);
+    // Aquí podrías navegar a la página de edición
   };
 
   const renderizarDias = () => {
@@ -228,11 +248,6 @@ const CalendarioViajes = () => {
           className={`calendario-dia ${esHoy ? 'calendario-dia-hoy' : ''} ${esDiaSeleccionado ? 'calendario-dia-seleccionado' : ''} ${eventosDelDia.length > 0 ? 'calendario-con-eventos' : ''}`}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              setFechaSeleccionada(fechaCompleta);
-            }
-          }}
         >
           <div className={`calendario-numero-dia ${esHoy ? 'calendario-numero-hoy' : ''}`}>
             {dia}
@@ -248,12 +263,6 @@ const CalendarioViajes = () => {
                 className={`calendario-elemento-evento ${obtenerColorTipo(evento.tipo)}`}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.stopPropagation();
-                    abrirModal(evento);
-                  }
-                }}
               >
                 <div className="calendario-titulo-evento">{evento.titulo}</div>
                 <div className="calendario-hora-evento">{evento.hora_inicio}</div>
@@ -272,7 +281,6 @@ const CalendarioViajes = () => {
     return dias;
   };
 
-  // Modal renderizado con createPortal para evitar problemas de z-index
   const renderModal = () => {
     if (!mostrarModal || !eventoSeleccionado) return null;
 
@@ -382,7 +390,6 @@ const CalendarioViajes = () => {
   return (
     <>
       <div className={`calendario-contenedor-principal ${cargando ? 'calendario-cargando' : ''}`}>
-        {/* Encabezado del calendario */}
         <div className="calendario-encabezado">
           <div className="calendario-contenido-encabezado">
             <div className="calendario-seccion-titulo">
@@ -421,7 +428,6 @@ const CalendarioViajes = () => {
           </div>
         </div>
 
-        {/* Leyenda de tipos */}
         <div className="calendario-leyenda-tipos">
           <div className="calendario-elementos-leyenda">
             <span className="calendario-etiqueta-leyenda">Tipos de servicio:</span>
@@ -440,7 +446,6 @@ const CalendarioViajes = () => {
           </div>
         </div>
 
-        {/* Días de la semana */}
         <div className="calendario-dias-semana">
           {diasSemana.map((dia) => (
             <div key={dia} className="calendario-elemento-dia-semana">
@@ -449,12 +454,10 @@ const CalendarioViajes = () => {
           ))}
         </div>
 
-        {/* Cuadrícula del calendario */}
         <div className="calendario-cuadricula">
           {renderizarDias()}
         </div>
 
-        {/* Estadísticas rápidas */}
         <div className="calendario-estadisticas-rapidas">
           <div className="calendario-tarjeta-estadistica calendario-estadistica-tours">
             <div className="calendario-etiqueta-estadistica">Tours Confirmados</div>
@@ -477,10 +480,15 @@ const CalendarioViajes = () => {
             </div>
           </div>
         </div>
+
+        {cargando && (
+          <div className="calendario-overlay-carga">
+            <div className="calendario-spinner"></div>
+            <p>Cargando eventos...</p>
+          </div>
+        )}
       </div>
 
-
-      {/* Modal renderizado con createPortal */}
       {renderModal()}
     </>
   );
