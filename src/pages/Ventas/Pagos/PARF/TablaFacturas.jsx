@@ -14,7 +14,6 @@ import {
   XCircle,
   Trash2,
   RefreshCw,
-  Shield,
   Eye,
   EyeOff,
 } from "lucide-react";
@@ -27,7 +26,7 @@ import {
 import { modalEliminarFactura } from "../ModalesFactura/ModalEliminarFactura";
 import ModalRegenerarFactura from "../ModalesFactura/ModalRegenerarFactura";
 import ModalEliminarDefinitivoFactura from "../ModalesFactura/ModalEliminarDefinitivoFactura";
-import { SiTruenas } from "react-icons/si";
+import ModalVisualizarExcel from "../Modales/ModalVisualizarFactura";
 
 // Constantes para estados de factura
 const ESTADOS_FACTURA = {
@@ -54,11 +53,11 @@ const TablaFacturas = ({
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
     useState(false);
+  const [modalExcelAbierto, setModalExcelAbierto] = useState(false);
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
 
-  const API_URL = "http://127.0.0.1:8000/api/facturas"; // Ajusta al dominio/backend real
+  const API_URL = "http://127.0.0.1:8000/api/facturas";
 
-  // Datos de ejemplo para facturas
   const [datosFacturas, setdatosFacturas] = useState([]);
 
   useEffect(() => {
@@ -82,7 +81,6 @@ const TablaFacturas = ({
       console.error("Error al cargar facturas:", error);
     }
   };
-
   // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
     if (rolUsuario === "admin") {
@@ -188,6 +186,11 @@ const TablaFacturas = ({
     setModalEliminarDefinitivoAbierto(true);
   };
 
+  const abrirModalExcel = (factura) => {
+    setFacturaSeleccionada(factura);
+    setModalExcelAbierto(true);
+  };
+
   const manejarRegenerar = async (factura, motivo) => {
     try {
       await cargarFacturas();
@@ -225,6 +228,11 @@ const TablaFacturas = ({
           case "descargar":
             await generarPDFFacturaTimbrada(factura);
             break;
+
+          case "excel":
+            setCargando(false);
+            abrirModalExcel(factura);
+            return;
 
           case "enviar":
             const emailCliente = prompt(
@@ -615,6 +623,15 @@ const TablaFacturas = ({
                             <Download size={14} />
                           </button>
 
+                          <button
+                            className="recibos-boton-accion recibos-pdf"
+                            onClick={() => manejarAccion("excel", factura)}
+                            title="Descargar Excel"
+                            disabled={cargando}
+                          >
+                            <FileText size={16} />
+                          </button>
+
                           {factura.estado === ESTADOS_FACTURA.TIMBRADA && (
                             <>
                               <button
@@ -774,6 +791,20 @@ const TablaFacturas = ({
             setFacturaSeleccionada(null);
           }}
           isOpen={modalEliminarDefinitivoAbierto}
+        />
+      )}
+
+      {modalExcelAbierto && facturaSeleccionada && (
+        <ModalVisualizarExcel
+          estaAbierto={modalExcelAbierto}
+          factura={facturaSeleccionada}
+          alCerrar={() => {
+            setModalExcelAbierto(false);
+            setFacturaSeleccionada(null);
+          }}
+          alDescargar={(nombreArchivo) => {
+            console.log("✅ Excel descargado:", nombreArchivo);
+          }}
         />
       )}
     </div>

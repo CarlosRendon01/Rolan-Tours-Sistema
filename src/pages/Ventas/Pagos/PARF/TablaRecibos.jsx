@@ -23,6 +23,7 @@ import {
   generarPDFRecibo,
   imprimirRecibo,
 } from "../ModalesRecibos/generarPDFRecibo";
+import writtenNumber from "written-number";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { modalEliminarRecibo } from "../ModalesRecibos/ModalEliminarRecibo";
 import ModalRegenerarRecibo from "../ModalesRecibos/ModalRegenerarRecibo";
@@ -419,13 +420,24 @@ const TablaRecibos = ({
         month: "long",
         day: "numeric",
       };
+      function capitalize(text) {
+        if (!text) return "";
+        return text.charAt(0).toUpperCase() + text.slice(1);
+      }
+
+      function numeroAMonedaTexto(valor) {
+        const entero = Math.floor(valor);
+        const centavos = Math.round((valor - entero) * 100)
+          .toString()
+          .padStart(2, "0");
+        const texto = writtenNumber(entero, { lang: "es" });
+        return `${texto} pesos ${centavos}/100 M.N.`;
+      }
 
       const fechaCompleta = fechaActual.toLocaleDateString(
         "es-ES",
         formatoActual
       );
-      const formatearFecha = (fecha) =>
-        new Date(fecha).toLocaleDateString("es-MX");
 
       const campos = [
         { valor: recibo?.cliente, x: 110, y: 248 },
@@ -437,12 +449,18 @@ const TablaRecibos = ({
         { valor: `1`, x: 70, y: 153 },
         { valor: recibo.cliente?.telefono, x: 100, y: 197 },
         {
+          valor: `${capitalize(numeroAMonedaTexto(recibo?.monto))}`,
+          x: 140,
+          y: 88,
+        },
+
+        {
           valor: `Oaxaca de Juárez, Oaxaca a ${fechaCompleta}`,
           x: 290,
           y: 272,
         },
 
-        //Se dejó los valores de dirección para cuando esté normalizada
+        //Se dejó los valores de dirección para cuando esté normalizada en un futuro
         // { valor: recibo.calle, x: 180, y: 155 },
         // { valor: recibo.colonia, x: 180, y: 155 },
         // { valor: recibo.numero, x: 180, y: 155 },
