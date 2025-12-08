@@ -17,7 +17,8 @@ import ToursPrincipal from "./pages/Servicios/Tours/ToursPrincipal.jsx";
 import RestaurantePrincipal from "./pages/Servicios/Restaurante/RestaurantePrincipal.jsx";
 import HospedajePrincipal from "./pages/Servicios/Hospedaje/HospedajePrincipal.jsx";
 import MantenimientoPrincipal from "./pages/Mantenimiento/MantenimientoPrincipal.jsx";
-//import PrincipalRol from "./pages/Usuario/Roles/PrincipalRol.jsx";
+import PrincipalRol from "./pages/Usuario/Roles/PrincipalRol.jsx";
+import PrincipalUsuario from "./pages/Usuario/Usuarios/PrincipalUsuario.jsx";
 import VehiculosPrincipal from "./pages/Operaciones/Vehiculos/VehiculosPrincipal.jsx";
 
 // Componente temporal para páginas vacías
@@ -77,8 +78,10 @@ function App() {
           {/* Ruta de Administración */}
           <Route path="/administracion" element={<PaginaTemporal titulo="Administración" />} />
 
-          {/* <Route path="/roles" element={<PrincipalRol titulo="Roles" />} /> */}
-        </Routes>
+            <Route path="/roles" element={<PrincipalRol titulo="Roles" />} />
+            <Route path="/usuarios" element={<PrincipalUsuario titulo="Usuarios" />} />
+          </Routes>
+        </VehiculosProvider>
       )}
     </Router>
   );

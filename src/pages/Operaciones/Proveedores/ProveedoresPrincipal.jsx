@@ -40,18 +40,18 @@ const ProveedoresPrincipal = () => {
         recargarProveedores();
     }, []);
 
-    // Funciones para manejar los modales
-    const manejarVer = (proveedor) => {
-        setProveedorSeleccionado(proveedor);
-        setModalVerAbierto(true);
-        console.log('Ver proveedor:', proveedor);
-    };
+  // Funciones para manejar los modales
+  const manejarVer = (proveedor) => {
+    setProveedorSeleccionado(proveedor);
+    setModalVerAbierto(true);
+    console.log("Ver proveedor:", proveedor);
+  };
 
-    const manejarEditar = (proveedor) => {
-        setProveedorSeleccionado(proveedor);
-        setModalEditarAbierto(true);
-        console.log('Editar proveedor:', proveedor);
-    };
+  const manejarEditar = (proveedor) => {
+    setProveedorSeleccionado(proveedor);
+    setModalEditarAbierto(true);
+    console.log("Editar proveedor:", proveedor);
+  };
 
     const manejarEliminar = async (proveedor) => {
         const confirmado = await modalEliminarProveedor(proveedor, await recargarProveedores)
@@ -60,19 +60,19 @@ const ProveedoresPrincipal = () => {
         }
     };
 
-    const manejarAgregar = () => {
-        setModalAgregarAbierto(true);
-        console.log('Agregar nuevo proveedor');
-    };
+  const manejarAgregar = () => {
+    setModalAgregarAbierto(true);
+    console.log("Agregar nuevo proveedor");
+  };
 
-    // Función para cerrar modales
-    const cerrarModales = () => {
-        setModalVerAbierto(false);
-        setModalEditarAbierto(false);
-        setModalEliminarAbierto(false);
-        setModalAgregarAbierto(false);
-        setProveedorSeleccionado(null);
-    };
+  // Función para cerrar modales
+  const cerrarModales = () => {
+    setModalVerAbierto(false);
+    setModalEditarAbierto(false);
+    setModalEliminarAbierto(false);
+    setModalAgregarAbierto(false);
+    setProveedorSeleccionado(null);
+  };
 
     // Función para agregar proveedor
     const agregarProveedor = async (nuevoProveedor) => {
@@ -160,45 +160,45 @@ const ProveedoresPrincipal = () => {
         }
     };
 
-    return (
-        <PrincipalComponente>
-            <div className="proveedores-principal">
-                <TablaProveedores
-                    proveedores={proveedores}
-                    setProveedores={setProveedores}
-                    onVer={manejarVer}
-                    onEditar={manejarEditar}
-                    onEliminar={manejarEliminar}
-                    onAgregar={manejarAgregar}
-                />
+  return (
+    <PrincipalComponente>
+      <div className="proveedores-principal">
+        <TablaProveedores
+          proveedores={proveedores}
+          setProveedores={setProveedores}
+          onVer={manejarVer}
+          onEditar={manejarEditar}
+          onEliminar={manejarEliminar}
+          onAgregar={manejarAgregar}
+        />
 
-                {/* Modal VER */}
-                {modalVerAbierto && proveedorSeleccionado && (
-                    <ModalVerProveedor
-                        proveedor={proveedorSeleccionado}
-                        onCerrar={cerrarModales}
-                    />
-                )}
+        {/* Modal VER */}
+        {modalVerAbierto && proveedorSeleccionado && (
+          <ModalVerProveedor
+            proveedor={proveedorSeleccionado}
+            onCerrar={cerrarModales}
+          />
+        )}
 
-                {/* Modal EDITAR */}
-                {modalEditarAbierto && proveedorSeleccionado && (
-                    <ModalEditarProveedor
-                        proveedor={proveedorSeleccionado}
-                        onGuardar={actualizarProveedor}
-                        onCerrar={cerrarModales}
-                    />
-                )}
+        {/* Modal EDITAR */}
+        {modalEditarAbierto && proveedorSeleccionado && (
+          <ModalEditarProveedor
+            proveedor={proveedorSeleccionado}
+            onGuardar={actualizarProveedor}
+            onCerrar={cerrarModales}
+          />
+        )}
 
-                {/* ✅ Modal AGREGAR - YA FUNCIONAL */}
-                {modalAgregarAbierto && (
-                    <ModalAgregarProveedor
-                        onGuardar={agregarProveedor}
-                        onCerrar={cerrarModales}
-                    />
-                )}
-            </div>
-        </PrincipalComponente>
-    );
+        {/* ✅ Modal AGREGAR - YA FUNCIONAL */}
+        {modalAgregarAbierto && (
+          <ModalAgregarProveedor
+            onGuardar={agregarProveedor}
+            onCerrar={cerrarModales}
+          />
+        )}
+      </div>
+    </PrincipalComponente>
+  );
 };
 
 export default ProveedoresPrincipal;
