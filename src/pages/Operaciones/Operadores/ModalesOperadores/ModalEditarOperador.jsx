@@ -253,18 +253,18 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
       // Guardar el nombre completo antes de cerrar
       const nombreCompleto = `${formData.nombre} ${formData.apellidoPaterno}`;
 
-      // Llamar a la función onGuardar del padre
+      // ✅ ESPERAR a que la petición al backend termine completamente
       await onGuardar(operadorData);
 
-      console.log('✅ Operador actualizado, cerrando modal primero...');
+      console.log('✅ Operador actualizado exitosamente en el backend');
 
-      // ✅ PRIMERO: Cerrar el modal
+      // ✅ AHORA SÍ: Cerrar el modal DESPUÉS de que se guardó en el backend
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
+      // ✅ Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
+      // ✅ Mostrar la alerta de éxito
       console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
@@ -293,12 +293,10 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
-
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
 
-      // Si hay error, también cerrar el modal primero
+      // Si hay error, cerrar el modal
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -322,14 +320,13 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
       setGuardando(false);
     }
   }, [formData, validarFormulario, onGuardar, operador, onCerrar]);
-
   const MensajeError = ({ nombreCampo }) => {
     const error = errores[nombreCampo];
     if (!error) return null;
     return <span className="meo-error-mensaje">{error}</span>;
   };
 
-  
+
   const renderSeccionPersonales = () => (
     <div className="meo-form-grid">
       <div className="meo-form-group">
@@ -660,12 +657,12 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
               <h3>Vista Previa de Credencial</h3>
             </div>
             <div className="meo-preview-content">
-              <CredencialOperador 
+              <CredencialOperador
                 operador={{
                   ...formData,
                   cargo: 'Conductor',
                   foto: obtenerFotoUrl()
-                }} 
+                }}
               />
             </div>
             <div className="meo-preview-info">

@@ -1,32 +1,32 @@
-import { 
-  X, UtensilsCrossed, MapPin, DollarSign, Package, 
-  FileText, Clock, Eye, Download, CheckCircle, 
+import {
+  X, UtensilsCrossed, MapPin, DollarSign, Package,
+  FileText, Clock, Eye, Download, CheckCircle,
   AlertCircle, XCircle, Building2, Calendar, Hash
 } from 'lucide-react';
 import './ModalVerRestaurante.css';
 
 const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
-  
+
   // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
-    
+
     // Si ya es una URL string, retornarla
     if (typeof archivo === 'string') {
       return archivo;
     }
-    
+
     // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
-    
+
     return null;
   };
 
   // Obtener URL de la foto
   const fotoUrl = obtenerUrlArchivo(restaurante.foto_servicio);
-  
+
   // Función para formatear precio
   const formatearPrecio = (precio, moneda) => {
     if (!precio) return 'N/A';
@@ -55,20 +55,20 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
       alert('No hay documento disponible para visualizar');
       return;
     }
-    
+
     // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       window.open(url, '_blank');
       return;
     }
-    
+
     // Si es una URL string
     if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
       window.open(archivo, '_blank');
       return;
     }
-    
+
     alert('No hay documento disponible para visualizar');
   };
 
@@ -78,7 +78,7 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
       alert('No hay documento disponible para descargar');
       return;
     }
-    
+
     // Si es un objeto File
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
@@ -91,7 +91,7 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
       URL.revokeObjectURL(url);
       return;
     }
-    
+
     // Si es una URL string
     if (typeof archivo === 'string') {
       const link = document.createElement('a');
@@ -102,7 +102,7 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
       document.body.removeChild(link);
       return;
     }
-    
+
     alert('No hay documento disponible para descargar');
   };
 
@@ -159,12 +159,12 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Foto del Servicio */}
                 <div className="mvr-servicio-imagen-container">
                   {fotoUrl ? (
-                    <img 
-                      src={fotoUrl} 
+                    <img
+                      src={fotoUrl}
                       alt={restaurante.nombre_servicio}
                       className="mvr-servicio-foto"
                       onError={(e) => {
@@ -354,7 +354,7 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                       <UtensilsCrossed size={32} />
                       <span>Fotografía del Servicio</span>
                       <div className="mvr-botones-documento">
-                        <button 
+                        <button
                           className="mvr-btn-descargar mvr-btn-ver"
                           onClick={() => handleVerDocumento(restaurante.foto_servicio)}
                           title="Ver fotografía en nueva pestaña"
@@ -362,7 +362,7 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                           <Eye size={16} />
                           Ver
                         </button>
-                        <button 
+                        <button
                           className="mvr-btn-descargar mvr-btn-download"
                           onClick={() => handleDescargar(restaurante.foto_servicio, 'foto_servicio')}
                           title="Descargar fotografía"

@@ -12,21 +12,21 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
     apellidoMaterno: '',
     edad: '',
     correoElectronico: '',
-    
+
     // Teléfonos
     telefonoEmergencia: '',
     telefonoPersonal: '',
     telefonoFamiliar: '',
-    
+
     // Datos de licencia
     numeroLicencia: '',
     fechaVigenciaLicencia: '',
     fechaVencimientoLicencia: '',
     fechaVencimientoExamen: '',
-    
+
     // Comentarios
     comentarios: '',
-    
+
     // Documentos
     foto: null,
     ine: null
@@ -114,7 +114,7 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
 
     // Validaciones teléfonos (obligatorios)
     const regexTelefono = /^\d{10}$/;
-    
+
     if (!formData.telefonoEmergencia.trim()) {
       nuevosErrores.telefonoEmergencia = 'El teléfono de emergencia es requerido';
     } else if (!regexTelefono.test(formData.telefonoEmergencia)) {
@@ -224,18 +224,18 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
       // Guardar el nombre del operador antes de cerrar
       const nombreCompleto = `${formData.nombre} ${formData.apellidoPaterno}`;
 
-      // Llamar a la función onGuardar del padre
+      // ✅ ESPERAR a que la petición al backend termine completamente
       await onGuardar(operadorData);
 
-      console.log('✅ Operador guardado, cerrando modal primero...');
+      console.log('✅ Operador guardado exitosamente en el backend');
 
-      // ✅ PRIMERO: Cerrar el modal
+      // ✅ AHORA SÍ: Cerrar el modal DESPUÉS de que se guardó en el backend
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
+      // ✅ Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
+      // ✅ Mostrar la alerta de éxito
       console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
@@ -264,12 +264,10 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
-
     } catch (error) {
       console.error('❌ Error al guardar:', error);
 
-      // Si hay error, también cerrar el modal primero
+      // Si hay error, cerrar el modal
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -623,12 +621,12 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
               <h3>Vista Previa de Credencial</h3>
             </div>
             <div className="modal-agregar-preview-content">
-              <CredencialOperador 
+              <CredencialOperador
                 operador={{
                   ...formData,
                   cargo: 'Conductor', // Valor por defecto
                   foto: obtenerFotoUrl()
-                }} 
+                }}
               />
             </div>
             <div className="modal-agregar-preview-info">

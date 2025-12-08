@@ -82,7 +82,7 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
         if (proveedorSeleccionado) {
           setFormData((prev) => ({
             ...prev,
-            nombre_proveedor: proveedorSeleccionado.nombre
+            nombre_proveedor: proveedorSeleccionado.nombre_razon_social || proveedorSeleccionado.nombre  // ✅ FIX
           }));
         }
       }
@@ -369,7 +369,7 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
           <option value="">Seleccionar proveedor...</option>
           {proveedores.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.nombre}
+              {p.nombre_razon_social || p.nombre}
             </option>
           ))}
         </select>

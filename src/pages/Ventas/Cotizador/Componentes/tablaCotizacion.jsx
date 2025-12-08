@@ -12,6 +12,8 @@ import {
 import PropTypes from "prop-types";
 import ModalVerCotizacion from "../Modales/ModalVerCotizacion";
 import ModalEliminarCotizacion from "../Modales/ModalEliminarCotizacion";
+import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
 import "./tablaCotizacion.css";
 
@@ -27,6 +29,11 @@ const TablaCotizacion = ({
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
+
+  // Estados para el modal de visualización PDF
+  const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [cotizacionPDFActual, setCotizacionPDFActual] = useState(null);
 
   useEffect(() => {
     setPaginaActual(1);
@@ -64,10 +71,10 @@ const TablaCotizacion = ({
     return cotizaciones.filter(
       (cotizacion) =>
         cotizacion.folio?.toLowerCase().includes(termino) ||
-        cotizacion.destinoServicio?.toLowerCase().includes(termino) ||
-        cotizacion.origenServicio?.toLowerCase().includes(termino) ||
-        formatearFecha(cotizacion.fechaSalida).includes(termino) ||
-        formatearFecha(cotizacion.fechaRegreso).includes(termino)
+        cotizacion.destino?.toLowerCase().includes(termino) ||
+        cotizacion.origen?.toLowerCase().includes(termino) ||
+        formatearFecha(cotizacion.fecha_salida).includes(termino) ||
+        formatearFecha(cotizacion.fecha_regreso).includes(termino)
     );
   }, [cotizaciones, terminoBusqueda, formatearFecha]);
 
@@ -144,6 +151,235 @@ const TablaCotizacion = ({
 
   const manejarAccionEliminar = useCallback((cotizacion) => {
     setCotizacionAEliminar(cotizacion);
+  }, []);
+
+  const cerrarModalPDF = useCallback(() => {
+    setModalPDFAbierto(false);
+    if (pdfUrl) {
+      window.URL.revokeObjectURL(pdfUrl);
+    }
+    setPdfUrl(null);
+    setCotizacionPDFActual(null);
+  }, [pdfUrl]);
+
+  // Función para generar PDF de cotización
+  const generarPDF = async (cotizacion) => {
+    try {
+      // Aquí debes poner la ruta a tu plantilla PDF de cotización
+      const plantillaUrl = "/cotizacionblaco.pdf"; // Ajusta según tu archivo
+      const plantillaBytes = await fetch(plantillaUrl).then((res) =>
+        res.arrayBuffer()
+      );
+
+      const pdfDoc = await PDFDocument.load(plantillaBytes);
+      const pages = pdfDoc.getPages();
+      const firstPage = pages[0];
+
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      // Ajusta las coordenadas según tu plantilla PDF
+      // Folio
+      firstPage.drawText(cotizacion.folio?.toString() || "", {
+        x: 490,
+        y: 671,
+        size: 10,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      firstPage.drawText(cotizacion.destino?.toString() || "", {
+        x: 125,
+        y: 494,
+        size: 10,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      firstPage.drawText(cotizacion.destino?.toString() || "", {
+        x: 275,
+        y: 453,
+        size: 10,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      firstPage.drawText("$ " + cotizacion.total?.toString() || "", {
+        x: 395,
+        y: 355,
+        size: 10,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      firstPage.drawText(cotizacion.hora_salida?.toString() || "", {
+        x: 59,
+        y: 480,
+        size: 10,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      firstPage.drawText(cotizacion.hora_regreso?.toString() || "", {
+        x: 59,
+        y: 438,
+        size: 10,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      const fechaActual = new Date()
+        .toLocaleDateString("es-MX", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+        .replace("de de", "del");
+
+      firstPage.drawText(fechaActual, {
+        x: 430,
+        y: 657,
+        size: 10,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      firstPage.drawText(
+        new Date(cotizacion.fecha_salida).toLocaleDateString("es-MX", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }),
+        {
+          x: 90,
+          y: 508,
+          size: 10,
+          font: font,
+          color: rgb(0, 0, 0),
+        }
+      );
+
+      firstPage.drawText(
+        new Date(cotizacion.fecha_regreso).toLocaleDateString("es-MX", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }),
+        {
+          x: 90,
+          y: 466,
+          size: 10,
+          font: font,
+          color: rgb(0, 0, 0),
+        }
+      );
+
+      // // Fecha de salida
+      // firstPage.drawText(formatearFecha(cotizacion.fecha_salida), {
+      //   x: 100,
+      //   y: 700,
+      //   size: 9,
+      //   font: font,
+      //   color: rgb(0, 0, 0),
+      // });
+
+      // // Fecha de regreso
+      // firstPage.drawText(formatearFecha(cotizacion.fecha_regreso), {
+      //   x: 100,
+      //   y: 680,
+      //   size: 9,
+      //   font: font,
+      //   color: rgb(0, 0, 0),
+      // });
+
+      // // Origen
+      // firstPage.drawText(cotizacion.origen || "", {
+      //   x: 100,
+      //   y: 660,
+      //   size: 9,
+      //   font: font,
+      //   color: rgb(0, 0, 0),
+      // });
+
+      // // Destino
+      // firstPage.drawText(cotizacion.destino || "", {
+      //   x: 100,
+      //   y: 640,
+      //   size: 9,
+      //   font: font,
+      //   color: rgb(0, 0, 0),
+      // });
+
+      // // Agrega más campos según los datos de tu cotización
+      // // Ejemplos:
+      // if (cotizacion.numero_pasajeros) {
+      //   firstPage.drawText(cotizacion.numero_pasajeros.toString(), {
+      //     x: 100,
+      //     y: 620,
+      //     size: 9,
+      //     font: font,
+      //     color: rgb(0, 0, 0),
+      //   });
+      // }
+
+      // if (cotizacion.total) {
+      //   firstPage.drawText(`$${cotizacion.total.toFixed(2)}`, {
+      //     x: 100,
+      //     y: 600,
+      //     size: 10,
+      //     font: fontBold,
+      //     color: rgb(0, 0, 0),
+      //   });
+      // }
+
+      const pdfBytes = await pdfDoc.save();
+      return pdfBytes;
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+      throw error;
+    }
+  };
+
+  // Función para visualizar PDF
+  const visualizarPDF = async (cotizacion) => {
+    try {
+      setCotizacionPDFActual(cotizacion);
+      setModalPDFAbierto(true);
+      setPdfUrl(null); // Mostrar loading
+
+      const pdfBytes = await generarPDF(cotizacion);
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      setPdfUrl(url);
+    } catch (error) {
+      console.error("Error al visualizar PDF:", error);
+      alert("Error al generar la previsualización del PDF.");
+      cerrarModalPDF();
+    }
+  };
+
+  // Función para descargar PDF
+  const descargarPDF = async () => {
+    try {
+      if (!cotizacionPDFActual) return;
+
+      const pdfBytes = await generarPDF(cotizacionPDFActual);
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Cotizacion_${cotizacionPDFActual.folio}_${cotizacionPDFActual.fecha_salida}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+
+      console.log("PDF descargado correctamente");
+    } catch (error) {
+      console.error("Error al descargar PDF:", error);
+      alert("Error al descargar el PDF. Por favor, intente nuevamente.");
+    }
+  };
+
+  const manejarAccionPDF = useCallback((cotizacion) => {
+    visualizarPDF(cotizacion);
   }, []);
 
   const numerosPaginas = useMemo(() => {
@@ -283,27 +519,27 @@ const TablaCotizacion = ({
                       <td data-label="Fecha Salida">
                         <time
                           className="cotizaciones-fecha"
-                          dateTime={cotizacion.fechaSalida}
+                          dateTime={cotizacion.fecha_salida}
                         >
-                          {formatearFecha(cotizacion.fechaSalida)}
+                          {formatearFecha(cotizacion.fecha_salida)}
                         </time>
                       </td>
                       <td data-label="Fecha Regreso">
                         <time
                           className="cotizaciones-fecha"
-                          dateTime={cotizacion.fechaRegreso}
+                          dateTime={cotizacion.fecha_regreso}
                         >
-                          {formatearFecha(cotizacion.fechaRegreso)}
+                          {formatearFecha(cotizacion.fecha_regreso)}
                         </time>
                       </td>
                       <td data-label="Origen">
                         <span className="cotizaciones-destino">
-                          {cotizacion.origenServicio || "Sin origen"}
+                          {cotizacion.origen || "Sin origen"}
                         </span>
                       </td>
                       <td data-label="Destino">
                         <span className="cotizaciones-destino">
-                          {cotizacion.destinoServicio || "Sin destino"}
+                          {cotizacion.destino || "Sin destino"}
                         </span>
                       </td>
                       <td data-label="Acciones">
@@ -323,6 +559,18 @@ const TablaCotizacion = ({
                           >
                             <Eye size={16} aria-hidden="true" />
                             <span className="sr-only">Ver</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="cotizaciones-boton-accion cotizaciones-descargar"
+                            onClick={() => manejarAccionPDF(cotizacion)}
+                            aria-label={`Previsualizar y descargar cotización ${
+                              cotizacion.folio || cotizacion.id
+                            }`}
+                            title="Previsualizar y descargar cotización"
+                          >
+                            <FileText size={16} aria-hidden="true" />
+                            <span className="sr-only">PDF</span>
                           </button>
                           <button
                             type="button"
@@ -491,6 +739,14 @@ const TablaCotizacion = ({
         alCerrar={cerrarModal}
       />
 
+      <ModalVisualizarPDF
+        estaAbierto={modalPDFAbierto}
+        pdfUrl={pdfUrl}
+        orden={cotizacionPDFActual}
+        alCerrar={cerrarModalPDF}
+        alDescargar={descargarPDF}
+      />
+
       {cotizacionAEliminar && (
         <ModalEliminarCotizacion
           cotizacion={cotizacionAEliminar}
@@ -506,20 +762,22 @@ TablaCotizacion.propTypes = {
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       folio: PropTypes.string,
-      fechaSalida: PropTypes.string,
-      fechaRegreso: PropTypes.string,
-      origenServicio: PropTypes.string,
-      destinoServicio: PropTypes.string,
+      fecha_salida: PropTypes.string,
+      fecha_regreso: PropTypes.string,
+      origen: PropTypes.string,
+      destino: PropTypes.string,
     })
   ),
   onEditar: PropTypes.func,
   onEliminar: PropTypes.func,
+  botonNuevaCotizacion: PropTypes.node,
 };
 
 TablaCotizacion.defaultProps = {
   cotizaciones: [],
   onEditar: null,
   onEliminar: null,
+  botonNuevaCotizacion: null,
 };
 
 export default TablaCotizacion;
