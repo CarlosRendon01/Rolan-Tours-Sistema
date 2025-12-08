@@ -850,3 +850,28 @@
     display: none;
   }
 }
+
+/* Agregar después de .historial-item */
+.historial-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.historial-item:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateX(2px);
+}
+
+.historial-item:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

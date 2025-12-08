@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { 
-  X, 
-  Calendar, 
-  MapPin, 
-  Users, 
-  Clock, 
+import {
+  X,
+  Calendar,
+  MapPin,
+  Users,
+  Clock,
   AlertCircle,
   Car,
   Camera,
@@ -15,14 +15,14 @@ import {
 } from "lucide-react";
 import "./ModalResultadosFechas.css";
 
-const ModalResultadosFechas = ({ 
-  isOpen, 
-  onClose, 
-  fechaDesde, 
-  fechaHasta, 
-  resultados = [] 
+const ModalResultadosFechas = ({
+  isOpen,
+  onClose,
+  fechaDesde,
+  fechaHasta,
+  resultados = []
 }) => {
-  
+
   const [filtroActivo, setFiltroActivo] = useState('todos');
 
   if (!isOpen) return null;
@@ -36,19 +36,19 @@ const ModalResultadosFechas = ({
   const formatearFechaCompleta = (fecha) => {
     if (!fecha) return "";
     const fechaObj = new Date(fecha);
-    return fechaObj.toLocaleDateString('es-ES', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return fechaObj.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
   const obtenerIconoTipo = (tipo) => {
-    switch(tipo.toLowerCase()) {
-      case 'tour':
+    switch (tipo.toLowerCase()) {
+      case 'Tour':
         return <Camera size={24} />;
-      case 'traslado':
+      case 'Traslado':
         return <Car size={24} />;
       default:
         return <Calendar size={24} />;
@@ -63,88 +63,7 @@ const ModalResultadosFechas = ({
   };
 
   // Datos de ejemplo mejorados para tours y traslados
-  const eventosMock = resultados.length > 0 ? resultados : [
-    {
-      id: 1,
-      titulo: "Tour Gastronómico Centro Histórico",
-      tipo: "tour",
-      fechaInicio: "2025-09-15",
-      fechaFin: "2025-09-15",
-      destino: "Centro Histórico, Oaxaca",
-      descripcion: "Descubre los sabores auténticos de Oaxaca en un recorrido por mercados tradicionales y restaurantes locales.",
-      duracion: "4 horas",
-      participantes: 15,
-      disponibles: 8,
-      precio: "$850.00",
-      hora: "10:00 AM",
-      puntuacion: 4.8,
-      incluye: ["Guía especializado", "Degustaciones", "Transporte"]
-    },
-    {
-      id: 2,
-      titulo: "Traslado Aeropuerto - Hotel",
-      tipo: "traslado",
-      fechaInicio: "2025-09-20",
-      fechaFin: "2025-09-20",
-      destino: "Oaxaca de Juárez",
-      descripcion: "Servicio de traslado cómodo y seguro desde el aeropuerto hasta tu hotel en la ciudad.",
-      duracion: "45 min",
-      participantes: 4,
-      disponibles: 2,
-      precio: "$280.00",
-      hora: "14:30 PM",
-      puntuacion: 4.9,
-      incluye: ["Vehículo climatizado", "Conductor profesional", "Equipaje incluido"]
-    },
-    {
-      id: 3,
-      titulo: "Expedición Monte Albán",
-      tipo: "tour",
-      fechaInicio: "2025-09-25",
-      fechaFin: "2025-09-25",
-      destino: "Monte Albán, Oaxaca",
-      descripcion: "Explora la antigua capital zapoteca con guías especializados en historia prehispánica.",
-      duracion: "6 horas",
-      participantes: 12,
-      disponibles: 12,
-      precio: "$950.00",
-      hora: "08:00 AM",
-      puntuacion: 4.7,
-      incluye: ["Entrada al sitio", "Guía certificado", "Almuerzo", "Transporte"]
-    },
-    {
-      id: 4,
-      titulo: "Tour Pueblos Mancomunados",
-      tipo: "tour",
-      fechaInicio: "2025-10-02",
-      fechaFin: "2025-10-04",
-      destino: "Sierra Norte, Oaxaca",
-      descripcion: "Aventura de 3 días en los pueblos mancomunados con actividades de ecoturismo y cultura local.",
-      duracion: "3 días",
-      participantes: 8,
-      disponibles: 0,
-      precio: "$2,500.00",
-      hora: "07:00 AM",
-      puntuacion: 4.9,
-      incluye: ["Hospedaje", "Todas las comidas", "Actividades", "Guía local"]
-    },
-    {
-      id: 5,
-      titulo: "Traslado a Hierve el Agua",
-      tipo: "traslado",
-      fechaInicio: "2025-10-08",
-      fechaFin: "2025-10-08",
-      destino: "Hierve el Agua, Oaxaca",
-      descripcion: "Transporte directo y cómodo hacia las cascadas petrificadas más famosas de Oaxaca.",
-      duracion: "2 horas",
-      participantes: 6,
-      disponibles: 4,
-      precio: "$450.00",
-      hora: "09:00 AM",
-      puntuacion: 4.6,
-      incluye: ["Transporte ida y vuelta", "Paradas panorámicas", "Conductor guía"]
-    }
-  ];
+  const eventosMock = resultados.length > 0 ? resultados : [];
 
   // Filtrar eventos según el filtro activo
   const eventosFiltrados = eventosMock.filter(evento => {
@@ -153,41 +72,41 @@ const ModalResultadosFechas = ({
       const fechaEvento = new Date(evento.fechaInicio);
       const fechaDesdeObj = new Date(fechaDesde);
       const fechaHastaObj = new Date(fechaHasta);
-      
+
       // Si el evento no está en el rango de fechas, no lo incluir
       if (fechaEvento < fechaDesdeObj || fechaEvento > fechaHastaObj) {
         return false;
       }
     }
-    
+
     // Luego filtrar por tipo según el filtro activo
-    switch(filtroActivo) {
-      case 'tours':
-        return evento.tipo === 'tour';
-      case 'traslados':
-        return evento.tipo === 'traslado';
+    switch (filtroActivo) {
+      case 'Tour':
+        return evento.tipo === 'Tour';
+      case 'Traslado':
+        return evento.tipo === 'Traslado';
       default:
         return true;
     }
   });
 
   const totalEventos = eventosMock.length;
-  const totalTours = eventosMock.filter(e => e.tipo === 'tour').length;
-  const totalTraslados = eventosMock.filter(e => e.tipo === 'traslado').length;
+  const totalTours = eventosMock.filter(e => e.tipo === 'Tour').length;
+  const totalTraslados = eventosMock.filter(e => e.tipo === 'Traslado').length;
 
   const filtros = [
     { id: 'todos', label: 'Todos', count: totalEventos, icono: <Filter size={16} /> },
-    { id: 'tours', label: 'Tours', count: totalTours, icono: <Camera size={16} /> },
-    { id: 'traslados', label: 'Traslados', count: totalTraslados, icono: <Car size={16} /> }
+    { id: 'Tour', label: 'Tours', count: totalTours, icono: <Camera size={16} /> },
+    { id: 'Traslado', label: 'Traslados', count: totalTraslados, icono: <Car size={16} /> }
   ];
 
   const modalContent = (
-    <div 
-      className="modal-overlay-resultados" 
+    <div
+      className="modal-overlay-resultados"
       onClick={onClose}
     >
       <div className="modal-resultados" onClick={(e) => e.stopPropagation()}>
-        
+
         {/* Header Principal */}
         <div className="resultados-header">
           <div className="header-contenido">
@@ -216,7 +135,7 @@ const ModalResultadosFechas = ({
           <div className="filtros-container">
             <div className="filtros-tabs">
               {filtros.map(filtro => (
-                <button 
+                <button
                   key={filtro.id}
                   className={`filtro-tab ${filtroActivo === filtro.id ? 'activo' : ''}`}
                   onClick={() => setFiltroActivo(filtro.id)}
@@ -235,13 +154,13 @@ const ModalResultadosFechas = ({
           {eventosFiltrados.length > 0 ? (
             eventosFiltrados.map((evento) => {
               const estadoDisponibilidad = obtenerEstadoDisponibilidad(evento.disponibles, evento.participantes);
-              
+
               return (
                 <div key={evento.id} className="tour-item">
                   <div className={`tour-icono ${evento.tipo}`}>
                     {obtenerIconoTipo(evento.tipo)}
                   </div>
-                  
+
                   <div className="tour-contenido">
                     <div className="tour-header">
                       <h3 className="tour-titulo">{evento.titulo}</h3>
@@ -252,9 +171,9 @@ const ModalResultadosFechas = ({
                         <span className="tour-precio">{evento.precio}</span>
                       </div>
                     </div>
-                    
+
                     <p className="tour-descripcion">{evento.descripcion}</p>
-                    
+
                     <div className="tour-detalles">
                       <div className="detalle-item">
                         <MapPin className="detalle-icono" size={16} />
@@ -273,7 +192,7 @@ const ModalResultadosFechas = ({
                         <span>{evento.puntuacion} ★</span>
                       </div>
                     </div>
-                    
+
                     <div className="tour-acciones">
                       <div className={`estado-indicator ${estadoDisponibilidad}`}>
                         {estadoDisponibilidad === 'disponible' && <Calendar size={16} />}
@@ -285,8 +204,8 @@ const ModalResultadosFechas = ({
                           {estadoDisponibilidad === 'completo' && 'Completo'}
                         </span>
                       </div>
-                      
-                      <button 
+
+                      <button
                         className="boton-seleccionar"
                         disabled={estadoDisponibilidad === 'completo'}
                         onClick={() => {
@@ -308,7 +227,7 @@ const ModalResultadosFechas = ({
               </div>
               <h3>No se encontraron resultados</h3>
               <p>
-                No hay {filtroActivo === 'todos' ? 'tours o traslados' : filtroActivo} disponibles 
+                No hay {filtroActivo === 'todos' ? 'tours o traslados' : filtroActivo} disponibles
                 para las fechas seleccionadas.
                 <br />
                 Intenta ajustar tus filtros o seleccionar diferentes fechas.
@@ -323,7 +242,7 @@ const ModalResultadosFechas = ({
             Mostrando <strong>{eventosFiltrados.length}</strong> de <strong>{totalEventos}</strong> resultados
           </div>
           <div className="footer-acciones">
-            <button 
+            <button
               className="boton-nueva-busqueda"
               onClick={onClose}
             >

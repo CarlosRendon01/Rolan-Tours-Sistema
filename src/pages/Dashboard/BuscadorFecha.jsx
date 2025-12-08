@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Calendar,
   Search,
@@ -28,13 +29,9 @@ const BuscadorFecha = () => {
     const fechaHoy = new Date(fechaActual);
 
     // Validar que no sean fechas pasadas
-    if (desde && fechaDesdeObj < fechaHoy) {
-      nuevosErrores.fechaDesde = "No se pueden seleccionar fechas anteriores a hoy";
-    }
+    
 
-    if (hasta && fechaHastaObj < fechaHoy) {
-      nuevosErrores.fechaHasta = "No se pueden seleccionar fechas anteriores a hoy";
-    }
+  
 
     // Validar que fecha hasta no sea menor que fecha desde
     if (desde && hasta && fechaHastaObj < fechaDesdeObj) {
@@ -69,7 +66,8 @@ const BuscadorFecha = () => {
     setErrores(erroresValidacion);
   };
 
-  const manejarBusqueda = () => {
+  // En la función manejarBusqueda, reemplazar por:
+  const manejarBusqueda = async () => {
     if (!fechaDesde || !fechaHasta) {
       setErrores({
         general: "Por favor selecciona ambas fechas"
@@ -77,7 +75,6 @@ const BuscadorFecha = () => {
       return;
     }
 
-    // Validar fechas antes de buscar
     const erroresValidacion = validarFechas(fechaDesde, fechaHasta);
 
     if (Object.keys(erroresValidacion).length > 0) {
@@ -85,11 +82,9 @@ const BuscadorFecha = () => {
       return;
     }
 
-    // Limpiar errores
     setErrores({});
     setLoading(true);
 
-    // Agregar al historial
     const nuevaBusqueda = {
       id: Date.now(),
       fechaDesde,
@@ -98,51 +93,81 @@ const BuscadorFecha = () => {
     };
     setHistorial(prev => [nuevaBusqueda, ...prev.slice(0, 4)]);
 
-    // Simular búsqueda y obtener resultados
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      // Aquí simularemos algunos resultados (en una app real vendrían de una API)
-      const resultadosSimulados = [
+      const response = await axios.get(
+        'http://127.0.0.1:8000/api/ordenes-servicio/filtrar/rango-fechas',
         {
-          id: 1,
-          titulo: "Viaje a Playa del Carmen",
-          fechaInicio: fechaDesde,
-          fechaFin: fechaHasta,
-          destino: "Quintana Roo, México",
-          participantes: 8,
-          estado: "confirmado",
-          hora: "09:00",
-          tipo: "Excursión"
-        },
-        {
-          id: 2,
-          titulo: "Tour Gastronómico Oaxaca",
-          fechaInicio: fechaDesde,
-          fechaFin: fechaDesde,
-          destino: "Oaxaca de Juárez, Oaxaca",
-          participantes: 12,
-          estado: "pendiente",
-          hora: "11:30",
-          tipo: "Tour Gastronómico"
-        },
-        {
-          id: 3,
-          titulo: "Aventura en Chiapas",
-          fechaInicio: fechaDesde,
-          fechaFin: fechaHasta,
-          destino: "San Cristóbal de las Casas, Chiapas",
-          participantes: 15,
-          estado: "confirmado",
-          hora: "07:00",
-          tipo: "Aventura"
+          params: {
+            fecha_inicio: fechaDesde,
+            fecha_fin: fechaHasta
+          }
         }
-      ];
+      );
 
-      setResultadosBusqueda(resultadosSimulados);
+      console.log('🔍 Resultados de búsqueda:', response.data);
+
+      // ✅ Transformar órdenes a formato de resultados
+      const resultados = response.data.map(orden => ({
+        id: orden.id,
+        titulo: `${orden.destino || 'Sin destino'} - ${orden.nombre_cliente || 'Sin cliente'}`,
+        fechaInicio: orden.fecha_inicio_servicio ? orden.fecha_inicio_servicio.split('T')[0] : fechaDesde,
+        fechaFin: orden.fecha_final_servicio ? orden.fecha_final_servicio.split('T')[0] : fechaHasta,
+        destino: orden.destino || 'Sin destino',
+        participantes: orden.numero_pasajeros || 0,
+        disponibles: Math.max(0, 10 - (orden.numero_pasajeros || 0)), // Simulado
+        estado: orden.activo ? "confirmado" : "cancelado",
+        hora: orden.horario_inicio_servicio || "09:00",
+        duracion: calcularDuracion(orden.horario_inicio_servicio, orden.horario_final_servicio),
+        tipo: determinarTipo(orden.destino),
+        descripcion: orden.itinerario_detallado || `Servicio de ${orden.ciudad_origen} a ${orden.destino}`,
+        precio: "$850.00", // Simulado - ajustar según tu lógica
+        puntuacion: 4.5 // Simulado
+      }));
+
+      console.log('✅ Resultados transformados:', resultados);
+
+      setResultadosBusqueda(resultados);
       setModalAbierto(true);
+    } catch (error) {
+      console.error('Error al buscar órdenes:', error);
+      setErrores({
+        general: "Error al buscar. Intenta nuevamente."
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    }, 1500);
+  const calcularDuracion = (inicio, fin) => {
+    if (!inicio || !fin) return "Duración no especificada";
+
+    const [horaInicio, minInicio] = inicio.split(':').map(Number);
+    const [horaFin, minFin] = fin.split(':').map(Number);
+
+    const minutosInicio = horaInicio * 60 + minInicio;
+    const minutosFin = horaFin * 60 + minFin;
+    const diferencia = minutosFin - minutosInicio;
+
+    const horas = Math.floor(diferencia / 60);
+    const minutos = diferencia % 60;
+
+    if (horas > 0 && minutos > 0) {
+      return `${horas}h ${minutos}min`;
+    } else if (horas > 0) {
+      return `${horas}h`;
+    } else {
+      return `${minutos}min`;
+    }
+  };
+
+  const determinarTipo = (destino) => {
+    const destinoLower = (destino || '').toLowerCase();
+    const palabrasTour = ['tour', 'monte albán', 'hierve', 'mitla', 'teotitlán'];
+
+    return palabrasTour.some(palabra => destinoLower.includes(palabra)) ? 'Tour' : 'Traslado';
   };
 
   const manejarLimpiar = () => {
@@ -313,14 +338,30 @@ const BuscadorFecha = () => {
               </div>
               <div className="historial-lista">
                 {historial.slice(0, 3).map((busqueda) => (
-                  <button
+                  <div
                     key={busqueda.id}
                     className="historial-item"
                     onClick={() => cargarBusquedaDelHistorial(busqueda)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        cargarBusquedaDelHistorial(busqueda);
+                      }
+                    }}
                   >
                     <span>{formatearFecha(busqueda.fechaDesde)} - {formatearFecha(busqueda.fechaHasta)}</span>
-                    <small>{busqueda.fecha}</small>
-                  </button>
+                    <div className="historial-info">
+                      <small>{busqueda.fecha}</small>
+                      <button
+                        className="boton-eliminar-historial"
+                        onClick={(e) => eliminarDelHistorial(busqueda.id, e)}
+                        title="Eliminar del historial"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
