@@ -18,6 +18,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const [operacionesAbierto, setOperacionesAbierto] = useState(false);
   const [serviciosAbierto, setServiciosAbierto] = useState(false);
   const [mantenimientoAbierto, setMantenimientoAbierto] = useState(false);
+  const [administracionAbierto, setAdministracionAbierto] = useState(false);
   const [tooltipAbierto, setTooltipAbierto] = useState(null);
   const [modoOscuro, setModoOscuro] = useState(() => {
     const modoGuardado = localStorage.getItem('modoOscuro');
@@ -120,7 +121,15 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
       // Administración
       case '/administracion':
-        setElementoActivo('Administracion');
+        setElementoActivo("Administracion");
+        break;
+      case '/roles':
+        setElementoActivo("Roles");
+        setAdministracionAbierto(true);
+        break;
+      case '/usuarios':
+        setElementoActivo("Usuarios");
+        setAdministracionAbierto(true);
         break;
 
       default:
@@ -149,6 +158,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       setOperacionesAbierto(false);
       setServiciosAbierto(false);
       setMantenimientoAbierto(false);
+      setAdministracionAbierto(false);
     }
   }, [estaAbierto]);
 
@@ -178,6 +188,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const alternarOperaciones = () => setOperacionesAbierto(!operacionesAbierto);
   const alternarServicios = () => setServiciosAbierto(!serviciosAbierto);
   const alternarMantenimiento = () => setMantenimientoAbierto(!mantenimientoAbierto);
+  const alternarAdministracion = () => setAdministracionAbierto(!administracionAbierto);
   const alternarModoOscuro = () => setModoOscuro(!modoOscuro);
 
   // ✅ FUNCIÓN PARA CERRAR SESIÓN - INTEGRADA AQUÍ
@@ -196,7 +207,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       localStorage.removeItem('user');
       localStorage.removeItem('rol');
       delete axios.defaults.headers.common['Authorization'];
-      
+
       // Recargar la página para volver al login
       window.location.href = '/';
     }
@@ -230,6 +241,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       setOperacionesAbierto(false);
       setServiciosAbierto(false);
       setMantenimientoAbierto(false);
+      setAdministracionAbierto(false);
     }
   };
 
@@ -291,7 +303,16 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         { id: 'MantenimientoVehiculos', icono: Car, etiqueta: 'Mantenimiento de Vehículos' }
       ]
     },
-    { id: 'Administracion', icono: Users, etiqueta: 'Administración' }
+    {
+      id: "Administracion",
+      icono: Users,
+      etiqueta: "Administración",
+      tieneSubmenu: true,
+      submenu: [
+        { id: "Roles", icono: UserCog, etiqueta: "Roles" },
+        { id: "Usuarios", icono: User, etiqueta: "Usuarios" },
+      ],
+    },
   ];
 
   const manejarNavegacion = (elementoId) => {
@@ -366,8 +387,14 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         break;
 
       // Administración
-      case 'Administracion':
-        navigate('/administracion');
+      case "Administracion":
+        navigate("/administracion");
+        break;
+      case "Roles":
+        navigate("/roles");
+        break;
+      case "Usuarios":
+        navigate("/usuarios");
         break;
 
       default:
@@ -468,12 +495,14 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
                           else if (elemento.id === 'Operaciones') alternarOperaciones();
                           else if (elemento.id === 'Servicios') alternarServicios();
                           else if (elemento.id === 'Mantenimiento') alternarMantenimiento();
+                          else if (elemento.id === "Administracion") alternarAdministracion();
                         } else if (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) {
                           if (elemento.id === 'Ventas') alternarVentas();
                           else if (elemento.id === 'Documentos') alternarDocumentos();
                           else if (elemento.id === 'Operaciones') alternarOperaciones();
                           else if (elemento.id === 'Servicios') alternarServicios();
                           else if (elemento.id === 'Mantenimiento') alternarMantenimiento();
+                          else if (elemento.id === "Administracion") alternarAdministracion();
                         } else if ((responsive.esMovil || responsive.esTablet) && !estaAbierto) {
                           manejarTooltip(elemento.id, e);
                         }
@@ -496,14 +525,15 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
                     {elemento.tieneSubmenu && (
                       <div className="flecha-submenu">
-                        {(elemento.id === 'Ventas' && ventasAbierto) ||
+                        {((elemento.id === 'Ventas' && ventasAbierto) ||
                           (elemento.id === 'Documentos' && documentosAbierto) ||
                           (elemento.id === 'Operaciones' && operacionesAbierto) ||
                           (elemento.id === 'Servicios' && serviciosAbierto) ||
-                          (elemento.id === 'Mantenimiento' && mantenimientoAbierto) ? (
-                          <ChevronUp className="icono-flecha" />
-                        ) : (
+                          (elemento.id === 'Mantenimiento' && mantenimientoAbierto) ||
+                          (elemento.id === "Administracion" && administracionAbierto)) ? (
                           <ChevronDown className="icono-flecha" />
+                        ) : (
+                          <ChevronUp className="icono-flecha" />
                         )}
                       </div>
                     )}
@@ -511,17 +541,20 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
                   {(responsive.esMovil || responsive.esTablet) && !estaAbierto && renderTooltipSubmenu(elemento)}
 
-                  {elemento.tieneSubmenu && (((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && (
-                    ((elemento.id === 'Ventas' && ventasAbierto) ||
-                      (elemento.id === 'Documentos' && documentosAbierto) ||
-                      (elemento.id === 'Operaciones' && operacionesAbierto) ||
-                      (elemento.id === 'Servicios' && serviciosAbierto) ||
-                      (elemento.id === 'Mantenimiento' && mantenimientoAbierto))
-                  ) && (
+                  {
+                    elemento.tieneSubmenu && (((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && (
+                      ((elemento.id === 'Ventas' && ventasAbierto) ||
+                        (elemento.id === 'Documentos' && documentosAbierto) ||
+                        (elemento.id === 'Operaciones' && operacionesAbierto) ||
+                        (elemento.id === 'Servicios' && serviciosAbierto) ||
+                        (elemento.id === 'Mantenimiento' && mantenimientoAbierto) ||
+                        (elemento.id === "Administracion" && administracionAbierto))
+                    ) && (
                       <ul className="submenu">
                         {elemento.submenu.map(subElemento => renderElementoSubmenu(subElemento))}
                       </ul>
-                    )}
+                    )
+                  }
                 </li>
               );
             })}
@@ -540,8 +573,8 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
           {/* ✅ BOTÓN DE CERRAR SESIÓN CON FUNCIÓN */}
           <div className="seccion-cerrar-sesion">
-            <button 
-              className="btn-cerrar-sesion" 
+            <button
+              className="btn-cerrar-sesion"
               aria-label="Cerrar sesión"
               onClick={manejarCerrarSesion}
             >
@@ -568,7 +601,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
           </div>
         </nav>
       </aside>
-    </div>
+    </div >
   );
 };
 

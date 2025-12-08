@@ -78,10 +78,9 @@ function App() {
           {/* Ruta de Administración */}
           <Route path="/administracion" element={<PaginaTemporal titulo="Administración" />} />
 
-            <Route path="/roles" element={<PrincipalRol titulo="Roles" />} />
-            <Route path="/usuarios" element={<PrincipalUsuario titulo="Usuarios" />} />
-          </Routes>
-        </VehiculosProvider>
+          <Route path="/roles" element={<PrincipalRol titulo="Roles" />} />
+          <Route path="/usuarios" element={<PrincipalUsuario titulo="Usuarios" />} />
+        </Routes>
       )}
     </Router>
   );

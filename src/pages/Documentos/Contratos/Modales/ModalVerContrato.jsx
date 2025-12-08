@@ -19,6 +19,21 @@ import "./ModalVerContrato.css";
 const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
   const [seccionActiva, setSeccionActiva] = useState("contrato");
 
+  // ✅ FUNCIÓN HELPER PARA PARSEAR ARRAYS DE FORMA SEGURA
+  const parsearArray = (valor) => {
+    if (!valor) return [];
+    if (Array.isArray(valor)) return valor;
+    if (typeof valor === 'string') {
+      try {
+        const parsed = JSON.parse(valor);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  };
+
   useEffect(() => {
     const restaurarScroll = () => {
       document.body.style.overflow = "";
@@ -113,7 +128,7 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
         etiqueta="Nacionalidad"
         valor={contrato.nacionalidad}
       />
-      <CampoVisualizacion icono={Globe} etiqueta="rfc" valor={contrato.rfc} />
+      <CampoVisualizacion icono={Globe} etiqueta="RFC" valor={contrato.rfc} />
       <CampoVisualizacion
         icono={Phone}
         etiqueta="Teléfono"
@@ -191,50 +206,55 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
     </div>
   );
 
-  const renderSeccionCosto = () => (
-    <div className="meo-form-grid">
-      <CampoVisualizacion
-        icono={DollarSign}
-        etiqueta="Importe del Servicio"
-        valor={formatearMoneda(contrato.importe_servicio)}
-      />
-      <CampoVisualizacion
-        icono={DollarSign}
-        etiqueta="Anticipo"
-        valor={formatearMoneda(contrato.anticipo)}
-      />
-      <CampoVisualizacion
-        icono={Calendar}
-        etiqueta="Fecha de Liquidación"
-        valor={formatearFecha(contrato.fecha_liquidacion)}
-      />
-      <div className="meo-form-group form-group-full">
-        <label>
-          <FileText size={18} />
-          Costos Cubiertos por este Servicio
-        </label>
-        <div className="meo-campo-visualizacion">
-          {contrato.costos_cubiertos && contrato.costos_cubiertos.length > 0 ? (
-            <ul className="meo-lista-costos-ver">
-              {contrato.costos_cubiertos.map((costo, index) => (
-                <li key={index}>{costo}</li>
-              ))}
-            </ul>
-          ) : (
-            "No se especificaron costos cubiertos"
-          )}
+  const renderSeccionCosto = () => {
+    // ✅ PARSEAR COSTOS_CUBIERTOS DE FORMA SEGURA
+    const costosCubiertos = parsearArray(contrato.costos_cubiertos);
+
+    return (
+      <div className="meo-form-grid">
+        <CampoVisualizacion
+          icono={DollarSign}
+          etiqueta="Importe del Servicio"
+          valor={formatearMoneda(contrato.importe_servicio)}
+        />
+        <CampoVisualizacion
+          icono={DollarSign}
+          etiqueta="Anticipo"
+          valor={formatearMoneda(contrato.anticipo)}
+        />
+        <CampoVisualizacion
+          icono={Calendar}
+          etiqueta="Fecha de Liquidación"
+          valor={formatearFecha(contrato.fecha_liquidacion)}
+        />
+        <div className="meo-form-group form-group-full">
+          <label>
+            <FileText size={18} />
+            Costos Cubiertos por este Servicio
+          </label>
+          <div className="meo-campo-visualizacion">
+            {costosCubiertos.length > 0 ? (
+              <ul className="meo-lista-costos-ver">
+                {costosCubiertos.map((costo, index) => (
+                  <li key={index}>{costo}</li>
+                ))}
+              </ul>
+            ) : (
+              "No se especificaron costos cubiertos"
+            )}
+          </div>
         </div>
+        {costosCubiertos.includes("Otro, especifique") &&
+          contrato.otro_costo_especificacion && (
+            <CampoVisualizacion
+              icono={FileText}
+              etiqueta="Especificación de Otro Costo"
+              valor={contrato.otro_costo_especificacion}
+            />
+          )}
       </div>
-      {contrato.costos_cubiertos?.includes("Otro, especifique") &&
-        contrato.otro_costo_especificacion && (
-          <CampoVisualizacion
-            icono={FileText}
-            etiqueta="Especificación de Otro Costo"
-            valor={contrato.otro_costo_especificacion}
-          />
-        )}
-    </div>
-  );
+    );
+  };
 
   const renderSeccionVehiculo = () => (
     <div className="meo-form-grid">
