@@ -287,9 +287,19 @@ const ModalEditarOrden = ({
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const datosActualizados = {
-        ...orden,
+      const limpiaHora = (h) =>
+        h && h.length >= 4 ? h.substring(0, 5) : null;
+
+      const datosLimpios = {
         ...datosFormulario,
+        horario_inicio_servicio: limpiaHora(datosFormulario.horario_inicio_servicio),
+        horario_final_servicio: limpiaHora(datosFormulario.horario_final_servicio),
+        horario_final_real: limpiaHora(datosFormulario.horario_final_real),
+      };
+
+      const datosActualizados = {
+        id: orden.id,
+        ...datosLimpios,
         fecha_actualizacion: new Date().toISOString(),
       };
 
@@ -425,8 +435,8 @@ const ModalEditarOrden = ({
           <option value="">-- Seleccione un conductor --</option>
           {conductoresDisponibles.map((conductor) => (
             <option key={conductor.id} value={conductor.id}>
-              {conductor.nombre_conductor} {}
-              {conductor.apellido_paterno_conductor} {}
+              {conductor.nombre_conductor} { }
+              {conductor.apellido_paterno_conductor} { }
               {conductor.apellido_materno_conductor}
             </option>
           ))}
@@ -909,9 +919,8 @@ const ModalEditarOrden = ({
         {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "orden" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "orden" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("orden")}
             type="button"
           >
@@ -919,9 +928,8 @@ const ModalEditarOrden = ({
             Datos Orden de Servicio
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "conductor" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "conductor" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("conductor")}
             type="button"
           >
@@ -929,9 +937,8 @@ const ModalEditarOrden = ({
             Datos Conductor
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "servicio" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "servicio" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
@@ -939,9 +946,8 @@ const ModalEditarOrden = ({
             Datos Servicio
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "vehiculo" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "vehiculo" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >

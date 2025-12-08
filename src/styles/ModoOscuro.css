@@ -1,0 +1,575 @@
+/* ================================================
+   MODO OSCURO GLOBAL - TODA LA APLICACIÓN
+   ================================================ */
+
+/* Variables de colores */
+:root {
+  --color-fondo-oscuro: #0f172a;
+  --color-fondo-secundario-oscuro: #1e293b;
+  --color-fondo-terciario-oscuro: #334155;
+  --color-texto-oscuro: #f1f5f9;
+  --color-texto-secundario-oscuro: #cbd5e1;
+  --color-borde-oscuro: #475569;
+  --color-hover-oscuro: #475569;
+}
+
+/* ================================================
+   BODY Y CONTENEDORES PRINCIPALES
+   ================================================ */
+body.modo-oscuro {
+  background-color: var(--color-fondo-oscuro);
+  color: var(--color-texto-oscuro);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.modo-oscuro * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body.modo-oscuro .perfil-usuario,
+body.modo-oscuro .rol-usuario {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ================================================
+   NAVBAR
+   ================================================ */
+body.modo-oscuro .navbar {
+  background-color: var(--color-fondo-secundario-oscuro);
+  border-bottom: 3px solid #e53e3e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+body.modo-oscuro .contenedor-navbar {
+  background-color: transparent;
+}
+
+body.modo-oscuro .nombre-usuario {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .rol-usuario {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .menu-desplegable {
+  background-color: var(--color-fondo-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+body.modo-oscuro .elemento-desplegable {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .elemento-desplegable:hover {
+  background-color: var(--color-hover-oscuro);
+}
+
+body.modo-oscuro .divisor {
+  background-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .logo-empresa,
+body.modo-oscuro .logo-rolan {
+  filter: brightness(1.2);
+}
+
+body.modo-oscuro .nombre-empresa {
+  color: var(--color-texto-oscuro);
+}
+
+/* ================================================
+   CONTENIDO PRINCIPAL Y PÁGINAS
+   ================================================ */
+body.modo-oscuro .contenido-principal {
+  background-color: var(--color-fondo-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina {
+  background-color: var(--color-fondo-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .principal-componente {
+  background-color: var(--color-fondo-oscuro);
+}
+
+/* ================================================
+   TARJETAS Y CONTENEDORES
+   ================================================ */
+body.modo-oscuro .card,
+body.modo-oscuro .tarjeta,
+body.modo-oscuro .contenedor-tabla,
+body.modo-oscuro .tabla-contenedor {
+  background-color: var(--color-fondo-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+body.modo-oscuro .card-header,
+body.modo-oscuro .tarjeta-header,
+body.modo-oscuro .tabla-header {
+  background-color: var(--color-fondo-terciario-oscuro);
+  border-bottom-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .card-body,
+body.modo-oscuro .tarjeta-body {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+/* ================================================
+   TABLAS
+   ================================================ */
+body.modo-oscuro table {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro thead {
+  background-color: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro th {
+  background-color: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro td {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro tbody tr {
+  background-color: var(--color-fondo-secundario-oscuro);
+}
+
+body.modo-oscuro tbody tr:hover {
+  background-color: var(--color-hover-oscuro);
+}
+
+body.modo-oscuro tbody tr:nth-child(even) {
+  background-color: rgba(51, 65, 85, 0.3);
+}
+
+/* ================================================
+   FORMULARIOS E INPUTS
+   ================================================ */
+body.modo-oscuro input,
+body.modo-oscuro textarea,
+body.modo-oscuro select {
+  background-color: var(--color-fondo-terciario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro input:focus,
+body.modo-oscuro textarea:focus,
+body.modo-oscuro select:focus {
+  background-color: var(--color-fondo-terciario-oscuro);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+body.modo-oscuro input::placeholder,
+body.modo-oscuro textarea::placeholder {
+  color: var(--color-texto-secundario-oscuro);
+  opacity: 0.7;
+}
+
+body.modo-oscuro input[type="search"] {
+  background-color: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro input:disabled,
+body.modo-oscuro textarea:disabled,
+body.modo-oscuro select:disabled {
+  background-color: var(--color-fondo-oscuro);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ================================================
+   LABELS Y TEXTO DE FORMULARIOS
+   ================================================ */
+body.modo-oscuro label {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .form-label,
+body.modo-oscuro .campo-formulario label {
+  color: var(--color-texto-oscuro);
+}
+
+/* ================================================
+   BOTONES
+   ================================================ */
+body.modo-oscuro button {
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .btn,
+body.modo-oscuro .boton {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .btn-secondary,
+body.modo-oscuro .boton-secundario {
+  background-color: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .btn-secondary:hover,
+body.modo-oscuro .boton-secundario:hover {
+  background-color: var(--color-hover-oscuro);
+}
+
+body.modo-oscuro .btn-outline {
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .btn-outline:hover {
+  background-color: var(--color-hover-oscuro);
+}
+
+/* ================================================
+   MODALES
+   ================================================ */
+body.modo-oscuro .modal-overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+body.modo-oscuro .modal-content,
+body.modo-oscuro .modal-perfil-content,
+body.modo-oscuro .modal-notificaciones-content {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .modal-header,
+body.modo-oscuro .modal-perfil-header {
+  background-color: var(--color-fondo-terciario-oscuro);
+  border-bottom-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .modal-body,
+body.modo-oscuro .modal-perfil-body {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .modal-footer,
+body.modo-oscuro .modal-perfil-actions {
+  background-color: var(--color-fondo-secundario-oscuro);
+  border-top-color: var(--color-borde-oscuro);
+}
+
+/* Modal Perfil específico */
+body.modo-oscuro .modal-perfil-info-item {
+  background-color: var(--color-fondo-terciario-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .modal-perfil-label {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .modal-perfil-value {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .modal-perfil-input {
+  background-color: var(--color-fondo-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .modal-perfil-input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+body.modo-oscuro .modal-perfil-close-btn {
+  color: var(--color-texto-oscuro);
+  background-color: transparent;
+}
+
+body.modo-oscuro .modal-perfil-close-btn:hover {
+  background-color: var(--color-hover-oscuro);
+}
+
+/* ================================================
+   NOTIFICACIONES
+   ================================================ */
+body.modo-oscuro .notificacion-item {
+  background-color: var(--color-fondo-terciario-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .notificacion-item:hover {
+  background-color: var(--color-hover-oscuro);
+}
+
+body.modo-oscuro .notificacion-titulo {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .notificacion-mensaje {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .insignia-notificacion {
+  background-color: #ef4444;
+  color: white;
+}
+
+/* ================================================
+   PAGINACIÓN
+   ================================================ */
+body.modo-oscuro .pagination {
+  background-color: var(--color-fondo-secundario-oscuro);
+}
+
+body.modo-oscuro .pagination button {
+  background-color: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .pagination button:hover:not(:disabled) {
+  background-color: var(--color-hover-oscuro);
+}
+
+body.modo-oscuro .pagination button.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+body.modo-oscuro .pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ================================================
+   TOOLTIPS
+   ================================================ */
+body.modo-oscuro .tooltip {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* ================================================
+   BREADCRUMBS
+   ================================================ */
+body.modo-oscuro .breadcrumb {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .breadcrumb-item {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .breadcrumb-item.active {
+  color: var(--color-texto-oscuro);
+}
+
+/* ================================================
+   BADGES Y ETIQUETAS
+   ================================================ */
+body.modo-oscuro .badge,
+body.modo-oscuro .etiqueta {
+  background-color: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+/* ================================================
+   ALERTS
+   ================================================ */
+body.modo-oscuro .alert {
+  background-color: var(--color-fondo-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .alert-success {
+  background-color: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+body.modo-oscuro .alert-error {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+body.modo-oscuro .alert-warning {
+  background-color: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+/* ================================================
+   DROPDOWNS
+   ================================================ */
+body.modo-oscuro .dropdown-menu {
+  background-color: var(--color-fondo-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+body.modo-oscuro .dropdown-item {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .dropdown-item:hover {
+  background-color: var(--color-hover-oscuro);
+}
+
+/* ================================================
+   DIVIDERS
+   ================================================ */
+body.modo-oscuro hr,
+body.modo-oscuro .divider {
+  border-color: var(--color-borde-oscuro);
+}
+
+/* ================================================
+   TÍTULOS Y TEXTO
+   ================================================ */
+body.modo-oscuro h1,
+body.modo-oscuro h2,
+body.modo-oscuro h3,
+body.modo-oscuro h4,
+body.modo-oscuro h5,
+body.modo-oscuro h6 {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro p {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .text-muted,
+body.modo-oscuro .texto-secundario {
+  color: var(--color-texto-secundario-oscuro) !important;
+}
+
+body.modo-oscuro small {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+/* ================================================
+   LINKS
+   ================================================ */
+body.modo-oscuro a {
+  color: #60a5fa;
+}
+
+body.modo-oscuro a:hover {
+  color: #93c5fd;
+}
+
+/* ================================================
+   SCROLLBAR
+   ================================================ */
+body.modo-oscuro ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+body.modo-oscuro ::-webkit-scrollbar-track {
+  background: var(--color-fondo-secundario-oscuro);
+}
+
+body.modo-oscuro ::-webkit-scrollbar-thumb {
+  background: var(--color-fondo-terciario-oscuro);
+  border-radius: 6px;
+}
+
+body.modo-oscuro ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-hover-oscuro);
+}
+
+/* ================================================
+   DASHBOARD Y ESTADÍSTICAS
+   ================================================ */
+body.modo-oscuro .stat-card,
+body.modo-oscuro .estadistica-card {
+  background-color: var(--color-fondo-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .stat-title,
+body.modo-oscuro .estadistica-titulo {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .stat-value,
+body.modo-oscuro .estadistica-valor {
+  color: var(--color-texto-oscuro);
+}
+
+/* ================================================
+   GRÁFICAS Y CHARTS
+   ================================================ */
+body.modo-oscuro .chart-container {
+  background-color: var(--color-fondo-secundario-oscuro);
+}
+
+/* ================================================
+   CLASES ESPECÍFICAS DE PÁGINAS
+   ================================================ */
+/* Dashboard */
+body.modo-oscuro .dashboard-contenedor {
+  background-color: var(--color-fondo-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+/* Clientes */
+body.modo-oscuro .clientes-contenedor {
+  background-color: var(--color-fondo-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+/* Cotizaciones */
+body.modo-oscuro .cotizacion-contenedor {
+  background-color: var(--color-fondo-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+/* Pagos */
+body.modo-oscuro .pagos-contenedor {
+  background-color: var(--color-fondo-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+/* ================================================
+   ANIMACIONES SUAVES
+   ================================================ */
+body.modo-oscuro * {
+  transition: background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}

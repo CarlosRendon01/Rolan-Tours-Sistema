@@ -21,6 +21,7 @@
     opacity: 0;
     backdrop-filter: blur(0px);
   }
+
   to {
     opacity: 1;
     backdrop-filter: blur(8px);
@@ -46,6 +47,7 @@
     opacity: 0;
     transform: scale(0.95) translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -293,8 +295,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* ===== UTILIDADES ===== */
@@ -405,6 +412,7 @@
       opacity: 0;
       transform: translateY(100%);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -523,11 +531,12 @@
 
 /* ===== ACCESIBILIDAD ===== */
 @media (prefers-reduced-motion: reduce) {
+
   .modal-perfil-overlay,
   .modal-perfil-content {
     animation: none;
   }
-  
+
   .modal-perfil-btn:hover:not(:disabled),
   .modal-perfil-close-btn:hover,
   .modal-perfil-info-item:hover {
@@ -539,7 +548,7 @@
   .modal-perfil-content {
     border: 2px solid #000;
   }
-  
+
   .modal-perfil-btn {
     border: 2px solid currentColor;
   }
@@ -557,3 +566,141 @@
   outline-color: #f9fafb;
 }
 
+/* Agregar al final del archivo ModalPerfil.css */
+
+/* Inputs del formulario */
+.modal-perfil-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.modal-perfil-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modal-perfil-input.error {
+  border-color: #ef4444;
+}
+
+.modal-perfil-input.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.modal-perfil-input:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Select específico */
+select.modal-perfil-input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* Mensajes de error */
+.modal-perfil-error {
+  display: block;
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Mensaje de éxito */
+.modal-perfil-mensaje-exito {
+  background-color: #10b981;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 0 24px 16px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideDown 0.3s ease;
+}
+
+/* Mensaje de error general */
+.modal-perfil-mensaje-error {
+  background-color: #ef4444;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 0 24px 16px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+/* Spinner de carga */
+.modal-perfil-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para modo oscuro */
+body.modo-oscuro .modal-perfil-input {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+body.modo-oscuro .modal-perfil-input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+body.modo-oscuro .modal-perfil-input:disabled {
+  background-color: #111827;
+}
+
+body.modo-oscuro select.modal-perfil-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23e5e7eb' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+}
+
+/* Responsivo para inputs */
+@media (max-width: 768px) {
+  .modal-perfil-input {
+    font-size: 16px;
+    /* Evita zoom en iOS */
+    padding: 12px;
+  }
+}

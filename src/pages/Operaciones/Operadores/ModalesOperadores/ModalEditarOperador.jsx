@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { X, Save, User, FileText, CreditCard, Phone } from 'lucide-react';
 import './ModalEditarOperador.css';
 import Swal from 'sweetalert2';
+import CredencialOperador from '../Credenciales/CredencialOperador';
 
 const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
@@ -34,6 +35,23 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
+
+  // Función para obtener URL segura de la foto para vista previa
+  const obtenerFotoUrl = () => {
+    if (!formData.foto) return null;
+    if (formData.foto instanceof File) {
+      try {
+        return URL.createObjectURL(formData.foto);
+      } catch (error) {
+        console.error('Error al crear URL de foto:', error);
+        return null;
+      }
+    }
+    if (typeof formData.foto === 'string') {
+      return formData.foto;
+    }
+    return null;
+  };
 
   // Cargar datos del operador cuando se abre el modal
   useEffect(() => {
@@ -235,18 +253,18 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
       // Guardar el nombre completo antes de cerrar
       const nombreCompleto = `${formData.nombre} ${formData.apellidoPaterno}`;
 
-      // Llamar a la función onGuardar del padre
+      // ✅ ESPERAR a que la petición al backend termine completamente
       await onGuardar(operadorData);
 
-      console.log('✅ Operador actualizado, cerrando modal primero...');
+      console.log('✅ Operador actualizado exitosamente en el backend');
 
-      // ✅ PRIMERO: Cerrar el modal
+      // ✅ AHORA SÍ: Cerrar el modal DESPUÉS de que se guardó en el backend
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
+      // ✅ Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
+      // ✅ Mostrar la alerta de éxito
       console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
@@ -275,12 +293,10 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
-
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
 
-      // Si hay error, también cerrar el modal primero
+      // Si hay error, cerrar el modal
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -304,14 +320,13 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
       setGuardando(false);
     }
   }, [formData, validarFormulario, onGuardar, operador, onCerrar]);
-
   const MensajeError = ({ nombreCampo }) => {
     const error = errores[nombreCampo];
     if (!error) return null;
     return <span className="meo-error-mensaje">{error}</span>;
   };
 
-  
+
   const renderSeccionPersonales = () => (
     <div className="meo-form-grid">
       <div className="meo-form-group">
@@ -623,13 +638,39 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
-        <form onSubmit={handleSubmit} className="meo-form">
-          {seccionActiva === 'personales' && renderSeccionPersonales()}
-          {seccionActiva === 'contacto' && renderSeccionContacto()}
-          {seccionActiva === 'licencia' && renderSeccionLicencia()}
-          {seccionActiva === 'documentos' && renderSeccionDocumentos()}
-        </form>
+        {/* Contenedor con dos columnas: Formulario + Vista Previa */}
+        <div className="meo-contenedor-principal">
+          {/* Columna Izquierda - Formulario */}
+          <div className="meo-columna-formulario">
+            <form onSubmit={handleSubmit} className="meo-form">
+              {seccionActiva === 'personales' && renderSeccionPersonales()}
+              {seccionActiva === 'contacto' && renderSeccionContacto()}
+              {seccionActiva === 'licencia' && renderSeccionLicencia()}
+              {seccionActiva === 'documentos' && renderSeccionDocumentos()}
+            </form>
+          </div>
+
+          {/* Columna Derecha - Vista Previa de Credencial */}
+          <div className="meo-columna-preview">
+            <div className="meo-preview-header">
+              <CreditCard size={20} />
+              <h3>Vista Previa de Credencial</h3>
+            </div>
+            <div className="meo-preview-content">
+              <CredencialOperador
+                operador={{
+                  ...formData,
+                  cargo: 'Conductor',
+                  foto: obtenerFotoUrl()
+                }}
+              />
+            </div>
+            <div className="meo-preview-info">
+              <FileText size={16} />
+              <p>Vista previa en tiempo real de la credencial actualizada.</p>
+            </div>
+          </div>
+        </div>
 
         {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="meo-footer">

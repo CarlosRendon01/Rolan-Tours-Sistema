@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import axios from "axios";
 import './ModalEliminarAbono.css';
 
 /**
@@ -67,6 +68,15 @@ export const modalEliminarPago = async (pago, onConfirmar) => {
     modalCargando('Eliminando pago...');
 
     try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://127.0.0.1:8000/api/abonos/${pago.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
       if (onConfirmar) {
         await onConfirmar(pago.id);
       }

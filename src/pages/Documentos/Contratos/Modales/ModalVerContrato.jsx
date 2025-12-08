@@ -294,9 +294,8 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
 
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "contrato" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "contrato" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("contrato")}
             type="button"
           >
@@ -304,9 +303,8 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
             Datos de Contrato
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "servicio" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "servicio" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
@@ -314,9 +312,8 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
             Datos del Servicio
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "costo" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "costo" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("costo")}
             type="button"
           >
@@ -324,9 +321,8 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
             Costo Extra
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "vehiculo" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "vehiculo" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >

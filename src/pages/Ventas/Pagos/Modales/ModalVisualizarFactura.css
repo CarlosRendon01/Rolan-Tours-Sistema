@@ -1,0 +1,292 @@
+.modal-visualizar-excel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-visualizar-excel-contenedor {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1200px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.modal-visualizar-excel-encabezado {
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border-radius: 12px 12px 0 0;
+  gap: 1rem;
+}
+
+.modal-visualizar-excel-titulo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modal-visualizar-excel-subtitulo {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0.25rem 0 0 0;
+}
+
+.modal-visualizar-excel-botones-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.modal-visualizar-excel-boton-plantilla {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.modal-visualizar-excel-boton-plantilla:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.modal-visualizar-excel-boton-descargar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: white;
+  color: #059669;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.modal-visualizar-excel-boton-descargar:hover:not(:disabled) {
+  background: #f0fdf4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-visualizar-excel-boton-descargar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-visualizar-excel-boton-cerrar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-visualizar-excel-boton-cerrar:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.modal-visualizar-excel-contenido {
+  flex: 1;
+  overflow: hidden;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-visualizar-excel-tabla-contenedor {
+  flex: 1;
+  overflow: auto;
+  padding: 2rem;
+  background: #f9fafb;
+}
+
+.modal-visualizar-excel-tabla {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.modal-visualizar-excel-tabla table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.modal-visualizar-excel-tabla table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.modal-visualizar-excel-tabla table td:first-child {
+  font-weight: 600;
+  background: #f9fafb;
+  color: #059669;
+  white-space: nowrap;
+}
+
+.modal-visualizar-excel-tabla table tr:hover {
+  background: #f0fdf4;
+}
+
+.modal-visualizar-excel-cargando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1rem;
+}
+
+.modal-visualizar-excel-cargando p {
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.modal-visualizar-excel-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1rem;
+  color: #6b7280;
+}
+
+.modal-visualizar-excel-footer {
+  padding: 1rem 2rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0 0 12px 12px;
+}
+
+.modal-visualizar-excel-nota {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #059669;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-visualizar-excel-contenedor {
+    height: 95vh;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 12px;
+  }
+
+  .modal-visualizar-excel-encabezado {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .modal-visualizar-excel-botones-header {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .modal-visualizar-excel-titulo {
+    font-size: 1.15rem;
+  }
+
+  .modal-visualizar-excel-subtitulo {
+    font-size: 0.8rem;
+  }
+
+  .modal-visualizar-excel-boton-descargar,
+  .modal-visualizar-excel-boton-plantilla {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .modal-visualizar-excel-tabla-contenedor {
+    padding: 1rem;
+  }
+
+  .modal-visualizar-excel-tabla table td {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+}

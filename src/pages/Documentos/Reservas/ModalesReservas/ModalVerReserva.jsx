@@ -296,11 +296,10 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
             Estado de Pago
           </label>
           <div
-            className={`mvg-campo-valor ${
-              reserva.pagado === "pagado"
+            className={`mvg-campo-valor ${reserva.pagado === "pagado"
                 ? "mvg-estado-pagado"
                 : "mvg-estado-no-pagado"
-            }`}
+              }`}
           >
             {reserva.pagado === "pagado" ? "✓ Pagado" : "✗ No Pagado"}
           </div>
@@ -326,7 +325,7 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
                     {typeof reserva.fotoTransferencia === "string"
                       ? "Comprobante de transferencia"
                       : reserva.fotoTransferencia?.name ||
-                        "Comprobante de transferencia"}
+                      "Comprobante de transferencia"}
                   </span>
                 </div>
                 <div className="mvg-documento-acciones">
@@ -402,9 +401,8 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
 
         <div className="meg-tabs">
           <button
-            className={`meg-tab-button ${
-              seccionActiva === "basicos" ? "active" : ""
-            }`}
+            className={`meg-tab-button ${seccionActiva === "basicos" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("basicos")}
             type="button"
           >
@@ -412,9 +410,8 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
             Información de Reserva
           </button>
           <button
-            className={`meg-tab-button ${
-              seccionActiva === "documentos" ? "active" : ""
-            }`}
+            className={`meg-tab-button ${seccionActiva === "documentos" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("documentos")}
             type="button"
           >

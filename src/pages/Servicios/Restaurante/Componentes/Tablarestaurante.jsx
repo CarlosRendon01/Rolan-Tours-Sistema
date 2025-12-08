@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, UtensilsCrossed, ChefHat, Plus, DollarSign } from 'lucide-react';
 import './TablaRestaurante.css';
 
-const TablaRestaurante = ({ 
+const TablaRestaurante = ({
   restaurantes,
   setRestaurantes,
-  onVer, 
-  onEditar, 
+  onVer,
+  onEditar,
   onEliminar,
-  onAgregar 
+  onAgregar
 }) => {
   // Estados locales para UI
   const [paginaActual, setPaginaActual] = useState(1);
@@ -98,7 +98,7 @@ const TablaRestaurante = ({
           </div>
           <h1 className="resto-titulo">Gestión de Restaurante</h1>
         </div>
-        
+
         {/* Estadísticas */}
         <div className="resto-contenedor-estadisticas">
           <div className="resto-estadistica">
@@ -109,7 +109,7 @@ const TablaRestaurante = ({
               <span className="resto-label-estadistica">TOTAL: {totalRestaurantes}</span>
             </div>
           </div>
-          
+
           <div className="resto-estadistica">
             <div className="resto-icono-estadistica-cuadrado">
               <ChefHat size={20} />
@@ -125,9 +125,9 @@ const TablaRestaurante = ({
       <div className="resto-controles">
         <div className="resto-control-registros">
           <label htmlFor="resto-registros">Mostrar</label>
-          <select 
+          <select
             id="resto-registros"
-            value={registrosPorPagina} 
+            value={registrosPorPagina}
             onChange={manejarCambioRegistros}
             className="resto-selector-registros"
           >
@@ -140,7 +140,7 @@ const TablaRestaurante = ({
         </div>
 
         <div className="resto-controles-derecha">
-          <button 
+          <button
             className="resto-boton-agregar"
             onClick={onAgregar}
             title="Agregar nuevo servicio de restaurante"
@@ -174,8 +174,8 @@ const TablaRestaurante = ({
           </div>
           <p className="resto-mensaje-vacio">No se encontraron servicios de restaurante</p>
           <p className="resto-submensaje-vacio">
-            {terminoBusqueda 
-              ? 'Intenta ajustar los filtros de búsqueda' 
+            {terminoBusqueda
+              ? 'Intenta ajustar los filtros de búsqueda'
               : 'Comienza agregando un servicio de restaurante'}
           </p>
         </div>
@@ -199,8 +199,8 @@ const TablaRestaurante = ({
               <tbody>
                 {restaurantesPaginados.map((restaurante, index) => {
                   return (
-                    <tr 
-                      key={restaurante.id} 
+                    <tr
+                      key={restaurante.id}
                       className="resto-fila-restaurante"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
@@ -209,7 +209,7 @@ const TablaRestaurante = ({
                           {restaurante.codigo_servicio}
                         </span>
                       </td>
-                      
+
                       <td data-label="Servicio" className="resto-columna-servicio">
                         <div className="resto-info-servicio">
                           <div className="resto-avatar">
@@ -223,19 +223,19 @@ const TablaRestaurante = ({
                           </div>
                         </div>
                       </td>
-                      
+
                       <td data-label="Tipo Servicio" className="resto-columna-tipo">
                         <span className="resto-badge-tipo">
                           {restaurante.tipo_servicio}
                         </span>
                       </td>
-                      
+
                       <td data-label="Categoría" className="resto-columna-categoria">
                         <span className="resto-badge-categoria">
                           {restaurante.categoria}
                         </span>
                       </td>
-                      
+
                       <td data-label="Paquete" className="resto-columna-paquete">
                         <span className="resto-valor-paquete">
                           {restaurante.tipo_paquete}
@@ -246,43 +246,43 @@ const TablaRestaurante = ({
                           </div>
                         )}
                       </td>
-                      
+
                       <td data-label="Precio" className="resto-columna-precio">
                         <span className="resto-valor-precio">
                           <DollarSign size={14} />
                           {formatearPrecio(restaurante.precio_base, restaurante.moneda)}
                         </span>
                       </td>
-                      
+
                       <td data-label="Restaurante" className="resto-columna-proveedor">
                         <span className="resto-valor-proveedor">
                           {restaurante.nombre_proveedor}
                         </span>
                       </td>
-                      
+
                       <td data-label="Estado" className="resto-columna-estado">
                         <span className={`resto-badge-estado ${restaurante.estado.toLowerCase()} ${!restaurante.disponibilidad ? 'no-disponible' : ''}`}>
                           {restaurante.disponibilidad ? restaurante.estado : 'No disponible'}
                         </span>
                       </td>
-                      
+
                       <td data-label="Acciones" className="resto-columna-acciones">
                         <div className="resto-botones-accion">
-                          <button 
+                          <button
                             className="resto-boton-accion resto-ver"
                             onClick={() => manejarAccion('ver', restaurante)}
                             title="Ver servicio"
                           >
                             <Eye size={16} />
                           </button>
-                          <button 
+                          <button
                             className="resto-boton-accion resto-editar"
                             onClick={() => manejarAccion('editar', restaurante)}
                             title="Editar servicio"
                           >
                             <Edit size={16} />
                           </button>
-                          <button 
+                          <button
                             className="resto-boton-accion resto-eliminar"
                             onClick={() => manejarAccion('eliminar', restaurante)}
                             title="Eliminar servicio"
@@ -303,14 +303,14 @@ const TablaRestaurante = ({
             <div className="resto-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
               {terminoBusqueda && (
-                <span style={{color: '#6c757d', marginLeft: '0.5rem'}}>
+                <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
                   (filtrado de {restaurantes.length} registros totales)
                 </span>
               )}
             </div>
-            
+
             <div className="resto-controles-paginacion">
-              <button 
+              <button
                 className="resto-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual - 1)}
                 disabled={paginaActual === 1}
@@ -318,7 +318,7 @@ const TablaRestaurante = ({
                 <ChevronLeft size={18} />
                 Anterior
               </button>
-              
+
               <div className="resto-numeros-paginacion">
                 {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
                   <button
@@ -330,8 +330,8 @@ const TablaRestaurante = ({
                   </button>
                 ))}
               </div>
-              
-              <button 
+
+              <button
                 className="resto-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual + 1)}
                 disabled={paginaActual === totalPaginas}

@@ -1,39 +1,39 @@
-import { 
-  X, Truck, DollarSign, MapPin, Package, 
+import {
+  X, Truck, DollarSign, MapPin, Package,
   FileText, Hash, CheckCircle, AlertCircle, XCircle,
   Eye, Download, Building2, Navigation, Flag
 } from 'lucide-react';
 import './ModalVerTransporte.css';
 
 const ModalVerTransporte = ({ transporte, onCerrar }) => {
-  
+
   // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
-    
+
     // Si ya es una URL string, retornarla
     if (typeof archivo === 'string') {
       return archivo;
     }
-    
+
     // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
-    
+
     return null;
   };
 
   // Obtener URL de la foto del servicio
   const fotoUrl = obtenerUrlArchivo(transporte.foto_servicio);
-  
+
   // Función para formatear precio
   const formatearPrecio = (precio, moneda) => {
     if (!precio) return 'N/A';
     const simbolo = moneda === 'USD' ? '$' : '$';
-    return `${simbolo}${parseFloat(precio).toLocaleString('es-MX', { 
-      minimumFractionDigits: 2, 
-      maximumFractionDigits: 2 
+    return `${simbolo}${parseFloat(precio).toLocaleString('es-MX', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     })} ${moneda}`;
   };
 
@@ -44,7 +44,7 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
       'Inactivo': { clase: 'inactivo', icono: XCircle },
       'Mantenimiento': { clase: 'mantenimiento', icono: AlertCircle }
     };
-    
+
     return estados[estado] || { clase: 'inactivo', icono: XCircle };
   };
 
@@ -62,18 +62,18 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
       alert('No hay documento disponible para visualizar');
       return;
     }
-    
+
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       window.open(url, '_blank');
       return;
     }
-    
+
     if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
       window.open(archivo, '_blank');
       return;
     }
-    
+
     alert('No hay documento disponible para visualizar');
   };
 
@@ -83,7 +83,7 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
       alert('No hay documento disponible para descargar');
       return;
     }
-    
+
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       const link = document.createElement('a');
@@ -95,7 +95,7 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
       URL.revokeObjectURL(url);
       return;
     }
-    
+
     if (typeof archivo === 'string') {
       const link = document.createElement('a');
       link.href = archivo;
@@ -105,7 +105,7 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
       document.body.removeChild(link);
       return;
     }
-    
+
     alert('No hay documento disponible para descargar');
   };
 
@@ -166,12 +166,12 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Foto del Servicio */}
                 <div className="mvt-transporte-imagen-container">
                   {fotoUrl ? (
-                    <img 
-                      src={fotoUrl} 
+                    <img
+                      src={fotoUrl}
                       alt={transporte.nombre_servicio}
                       className="mvt-transporte-foto"
                       onError={(e) => {
@@ -379,7 +379,7 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                       <Truck size={32} />
                       <span>Fotografía del Vehículo/Servicio</span>
                       <div className="mvt-botones-documento">
-                        <button 
+                        <button
                           className="mvt-btn-descargar mvt-btn-ver"
                           onClick={() => handleVerDocumento(transporte.foto_servicio)}
                           title="Ver fotografía en nueva pestaña"
@@ -387,7 +387,7 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                           <Eye size={16} />
                           Ver
                         </button>
-                        <button 
+                        <button
                           className="mvt-btn-descargar mvt-btn-download"
                           onClick={() => handleDescargar(transporte.foto_servicio, 'foto_servicio')}
                           title="Descargar fotografía"

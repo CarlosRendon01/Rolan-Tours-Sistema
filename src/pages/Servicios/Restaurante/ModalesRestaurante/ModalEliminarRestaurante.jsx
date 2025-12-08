@@ -15,8 +15,8 @@ export const modalEliminarRestaurante = async (restaurante, onConfirmar) => {
   }
 
   const tipoTexto = restaurante.tipo === 'restaurante' ? 'Restaurante' : 'Paquete';
-  const tipoBadge = restaurante.tipo === 'restaurante' 
-    ? '<span class="eliminar-rest-tipo">Restaurante</span>' 
+  const tipoBadge = restaurante.tipo === 'restaurante'
+    ? '<span class="eliminar-rest-tipo">Restaurante</span>'
     : '<span class="eliminar-rest-tipo" style="background: #fef3c7; color: #b45309;">Paquete</span>';
 
   const resultado = await Swal.fire({

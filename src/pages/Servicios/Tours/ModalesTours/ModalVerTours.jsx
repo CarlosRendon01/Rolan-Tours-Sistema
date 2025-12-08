@@ -1,25 +1,25 @@
-import { 
-  X, MapPin, DollarSign, Users, Calendar, Hash, 
-  Building, Package, CheckCircle, XCircle, 
-  AlertCircle, Image as ImageIcon, Clock, 
+import {
+  X, MapPin, DollarSign, Users, Calendar, Hash,
+  Building, Package, CheckCircle, XCircle,
+  AlertCircle, Image as ImageIcon, Clock,
   FileText, Info, Compass, Route, Globe, Shield
 } from 'lucide-react';
 import './ModalVerTours.css';
 
 const ModalVerTours = ({ tour, onCerrar }) => {
-  
+
   // Función para obtener URL de archivo
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
-    
+
     if (typeof archivo === 'string') {
       return archivo;
     }
-    
+
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
-    
+
     return null;
   };
 
@@ -28,7 +28,7 @@ const ModalVerTours = ({ tour, onCerrar }) => {
   // Función para formatear precio
   const formatearPrecio = (precio, moneda = 'MXN') => {
     if (!precio) return 'N/A';
-    
+
     const simbolos = {
       'MXN': '$',
       'USD': '$',
@@ -132,12 +132,12 @@ const ModalVerTours = ({ tour, onCerrar }) => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Foto del Tour */}
                 <div className="mvt-tour-imagen-container">
                   {fotoUrl ? (
-                    <img 
-                      src={fotoUrl} 
+                    <img
+                      src={fotoUrl}
                       alt={tour.nombre_tour}
                       className="mvt-tour-foto"
                       onError={(e) => {
@@ -306,7 +306,7 @@ const ModalVerTours = ({ tour, onCerrar }) => {
                         <span className="mvt-detalle-label">Descripción del Tour</span>
                       </div>
                       <div className="mvt-descripcion-box">
-                        <p>{tour.descripcion_tour}</p>
+                        <div>{tour.descripcion_tour}</div>
                       </div>
                     </div>
                   )}

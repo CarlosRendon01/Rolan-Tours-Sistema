@@ -195,10 +195,7 @@ const BuscadorFecha = () => {
     setFechaHasta(busqueda.fechaHasta);
     setErrores({}); // Limpiar errores al cargar del historial
   };
-  const eliminarDelHistorial = (id, e) => {
-    e.stopPropagation(); // Evita que se active el onClick del botón padre
-    setHistorial(prev => prev.filter(busqueda => busqueda.id !== id));
-  };
+
   return (
     <>
       <div className="contenedor-buscador">

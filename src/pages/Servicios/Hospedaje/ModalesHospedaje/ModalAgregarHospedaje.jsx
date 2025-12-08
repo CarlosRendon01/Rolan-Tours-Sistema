@@ -11,7 +11,7 @@ const ModalAgregarHospedaje = ({ onGuardar, onCerrar, proveedores = [] }) => {
     tipo_habitacion: '',
     capacidad: '',
     descripcion_servicio: '',
-    
+
     // Paquete y precios
     tipo_paquete: '',
     duracion_paquete: '',
@@ -19,16 +19,16 @@ const ModalAgregarHospedaje = ({ onGuardar, onCerrar, proveedores = [] }) => {
     moneda: 'MXN',
     incluye: '',
     restricciones: '',
-    
+
     // Proveedor
     empresa_proveedora_id: '',
     ubicacion_hospedaje: '',
     servicios_instalaciones: '',
     disponibilidad: 'disponible', // ✅ Cambiado de true a 'disponible'
-    
+
     // Documentos
     foto_servicio: null,
-    
+
     // Administrativo
     codigo_servicio: '',
     estado: 'Activo'
@@ -514,7 +514,7 @@ const ModalAgregarHospedaje = ({ onGuardar, onCerrar, proveedores = [] }) => {
             <option value="">Selecciona un proveedor</option>
             {proveedores.map(proveedor => (
               <option key={proveedor.id} value={proveedor.id}>
-                {proveedor.nombre}
+                {proveedor.nombre_razon_social || proveedor.nombre}
               </option>
             ))}
           </select>

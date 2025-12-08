@@ -1,5 +1,5 @@
-import { 
-  X, User, Phone, Mail, Calendar, CreditCard, 
+import {
+  X, User, Phone, Mail, Calendar, CreditCard,
   FileText, Hash, MapPin, Globe, Award,
   UserCircle, Eye, Download, Briefcase, DollarSign,
   Home, Users
@@ -7,7 +7,7 @@ import {
 import './ModalVerGuia.css';
 
 const ModalVerGuia = ({ guia, onCerrar }) => {
-  
+
   // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
@@ -22,7 +22,19 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
   const licenciaUrl = obtenerUrlArchivo(guia.documentos?.foto_licencia);
   const comprobanteUrl = obtenerUrlArchivo(guia.documentos?.foto_comprobante_domicilio);
   const certificacionesUrl = obtenerUrlArchivo(guia.certificado || guia.documentos?.foto_certificaciones);
-  
+
+  const calcularEdad = (fechaNacimiento) => {
+    if (!fechaNacimiento) return '-';
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+    return edad;
+  };
+
   // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'N/A';
@@ -37,10 +49,10 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
   const formatearFecha = (fecha) => {
     if (!fecha) return 'N/A';
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-MX', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
@@ -59,18 +71,18 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
       alert('No hay documento disponible para visualizar');
       return;
     }
-    
+
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       window.open(url, '_blank');
       return;
     }
-    
+
     if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
       window.open(archivo, '_blank');
       return;
     }
-    
+
     alert('No hay documento disponible para visualizar');
   };
 
@@ -80,7 +92,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
       alert('No hay documento disponible para descargar');
       return;
     }
-    
+
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       const link = document.createElement('a');
@@ -92,7 +104,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
       URL.revokeObjectURL(url);
       return;
     }
-    
+
     if (typeof archivo === 'string') {
       const link = document.createElement('a');
       link.href = archivo;
@@ -102,15 +114,15 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
       document.body.removeChild(link);
       return;
     }
-    
+
     alert('No hay documento disponible para descargar');
   };
 
   const tieneDocumentos = fotoUrl || ineUrl || licenciaUrl || comprobanteUrl || certificacionesUrl;
 
   // Procesar idiomas
-  const idiomasArray = Array.isArray(guia.idiomas) 
-    ? guia.idiomas 
+  const idiomasArray = Array.isArray(guia.idiomas)
+    ? guia.idiomas
     : (guia.idiomas ? guia.idiomas.split(',').map(i => i.trim()) : []);
 
   return (
@@ -148,7 +160,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                     <div className="mvg-spec-item">
                       <span className="mvg-spec-label">Edad</span>
                       <span className="mvg-spec-valor">
-                        {guia.edad || 'N/A'} años
+                        {calcularEdad(guia.fecha_nacimiento) || 'N/A'} años
                       </span>
                     </div>
                     <div className="mvg-spec-item">
@@ -165,12 +177,12 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Foto del Guía */}
                 <div className="mvg-guia-imagen-container">
                   {fotoUrl ? (
-                    <img 
-                      src={fotoUrl} 
+                    <img
+                      src={fotoUrl}
                       alt={`${guia.nombre} ${guia.apellidoPaterno}`}
                       className="mvg-guia-foto"
                       onError={(e) => {
@@ -234,7 +246,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                       </div>
                       <span className="mvg-detalle-label">Edad</span>
                     </div>
-                    <span className="mvg-detalle-valor">{guia.edad || 'N/A'} años</span>
+                    <span className="mvg-detalle-valor">{calcularEdad(guia.fecha_nacimiento) || 'N/A'} años</span>
                   </div>
 
                   <div className="mvg-detalle-item">
@@ -247,26 +259,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                     <span className="mvg-detalle-valor destacado">
                       {guia.correoElectronico || guia.email || 'N/A'}
                     </span>
-                  </div>
-
-                  <div className="mvg-detalle-item">
-                    <div className="mvg-detalle-header">
-                      <div className="mvg-detalle-icono">
-                        <CreditCard size={18} />
-                      </div>
-                      <span className="mvg-detalle-label">RFC</span>
-                    </div>
-                    <span className="mvg-detalle-valor">{guia.rfc || 'N/A'}</span>
-                  </div>
-
-                  <div className="mvg-detalle-item">
-                    <div className="mvg-detalle-header">
-                      <div className="mvg-detalle-icono">
-                        <CreditCard size={18} />
-                      </div>
-                      <span className="mvg-detalle-label">CURP</span>
-                    </div>
-                    <span className="mvg-detalle-valor">{guia.curp || 'N/A'}</span>
                   </div>
 
                   <div className="mvg-detalle-item">
@@ -292,7 +284,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                   </div>
                 </div>
               </div>
-
               {/* Información de Domicilio */}
               <div className="mvg-seccion-detalles">
                 <h3 className="mvg-titulo-seccion">
@@ -300,15 +291,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                   Domicilio
                 </h3>
                 <div className="mvg-detalles-grid">
-                  <div className="mvg-detalle-item">
-                    <div className="mvg-detalle-header">
-                      <div className="mvg-detalle-icono">
-                        <MapPin size={18} />
-                      </div>
-                      <span className="mvg-detalle-label">Dirección</span>
-                    </div>
-                    <span className="mvg-detalle-valor">{guia.domicilio || 'N/A'}</span>
-                  </div>
 
                   <div className="mvg-detalle-item">
                     <div className="mvg-detalle-header">
@@ -328,18 +310,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                       <span className="mvg-detalle-label">Estado</span>
                     </div>
                     <span className="mvg-detalle-valor">{guia.estado || 'N/A'}</span>
-                  </div>
-
-                  <div className="mvg-detalle-item">
-                    <div className="mvg-detalle-header">
-                      <div className="mvg-detalle-icono">
-                        <Hash size={18} />
-                      </div>
-                      <span className="mvg-detalle-label">Código Postal</span>
-                    </div>
-                    <span className="mvg-detalle-valor">
-                      {guia.codigoPostal || guia.codigo_postal || 'N/A'}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -417,14 +387,14 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                           <UserCircle size={32} />
                           <span>Fotografía</span>
                           <div className="mvg-botones-documento">
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-ver"
                               onClick={() => handleVerDocumento(guia.foto || guia.documentos?.foto_guia)}
                             >
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-download"
                               onClick={() => handleDescargar(guia.foto || guia.documentos?.foto_guia, 'foto')}
                             >
@@ -434,20 +404,20 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                           </div>
                         </div>
                       )}
-                      
+
                       {ineUrl && (
                         <div className="mvg-documento-item">
                           <CreditCard size={32} />
                           <span>INE</span>
                           <div className="mvg-botones-documento">
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-ver"
                               onClick={() => handleVerDocumento(guia.ine || guia.documentos?.foto_ine)}
                             >
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-download"
                               onClick={() => handleDescargar(guia.ine || guia.documentos?.foto_ine, 'ine')}
                             >
@@ -463,14 +433,14 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                           <CreditCard size={32} />
                           <span>Licencia de Conducir</span>
                           <div className="mvg-botones-documento">
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-ver"
                               onClick={() => handleVerDocumento(guia.documentos?.foto_licencia)}
                             >
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-download"
                               onClick={() => handleDescargar(guia.documentos?.foto_licencia, 'licencia')}
                             >
@@ -486,14 +456,14 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                           <FileText size={32} />
                           <span>Comprobante de Domicilio</span>
                           <div className="mvg-botones-documento">
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-ver"
                               onClick={() => handleVerDocumento(guia.documentos?.foto_comprobante_domicilio)}
                             >
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-download"
                               onClick={() => handleDescargar(guia.documentos?.foto_comprobante_domicilio, 'comprobante')}
                             >
@@ -509,14 +479,14 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                           <Award size={32} />
                           <span>Certificaciones</span>
                           <div className="mvg-botones-documento">
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-ver"
                               onClick={() => handleVerDocumento(guia.certificado || guia.documentos?.foto_certificaciones)}
                             >
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvg-btn-descargar mvg-btn-download"
                               onClick={() => handleDescargar(guia.certificado || guia.documentos?.foto_certificaciones, 'certificaciones')}
                             >
