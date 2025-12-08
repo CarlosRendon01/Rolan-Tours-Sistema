@@ -1,81 +1,205 @@
-import React, { useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
+import axios from "axios";
 import NuevaCotizacion from "./Componentes/nuevaCotizacion";
 import TablaCotizacion from "./Componentes/tablaCotizacion";
 import "./Componentes/nuevaCotizacion.css";
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
 import "./cotizaciones.css";
 
 const Cotizacion = () => {
-  // Estado para almacenar todas las cotizaciones
   const [cotizaciones, setCotizaciones] = useState([]);
-
-  // Estado para manejar la cotización que se está editando
   const [cotizacionEditar, setCotizacionEditar] = useState(null);
+  const [cargando, setCargando] = useState(false);
+  const rol = localStorage.getItem("rol");
 
-  // Función para guardar o actualizar una cotización
-  const handleGuardarCotizacion = (nuevaCotizacion, esEdicion = false) => {
-    if (esEdicion) {
-      // Actualizar cotización existente
-      setCotizaciones((prev) =>
-        prev.map((cot) =>
-          cot.id === nuevaCotizacion.id ? nuevaCotizacion : cot
-        )
-      );
-      setCotizacionEditar(null); // Limpiar estado de edición
-      console.log("Cotización actualizada:", nuevaCotizacion);
-    } else {
-      // Agregar nueva cotización
-      setCotizaciones((prev) => [...prev, nuevaCotizacion]);
-      console.log("Nueva cotización agregada:", nuevaCotizacion);
+  const API_URL = "http://127.0.0.1:8000/api/cotizaciones";
+
+  // 🆕 CARGAR cotizaciones al montar el componente
+  useEffect(() => {
+    cargarCotizaciones();
+  }, []);
+
+  // 🆕 FUNCIÓN para cargar cotizaciones desde el API
+  const cargarCotizaciones = async () => {
+    try {
+      setCargando(true);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No hay token disponible");
+        setCargando(false);
+        return;
+      }
+
+      const response = await axios.get(API_URL, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      console.log("Cotizaciones cargadas:", response.data);
+
+      // 🔹 Normalizar los extras antes de guardar en el estado
+      const cotizacionesProcesadas = response.data.map((cotizacion) => {
+        let extras = [];
+
+        if (cotizacion.extra) {
+          try {
+            const parsed =
+              typeof cotizacion.extra === "string"
+                ? JSON.parse(cotizacion.extra)
+                : cotizacion.extra;
+
+            extras = parsed.extras_seleccionados || [];
+          } catch (e) {
+            console.error(
+              "Error al parsear extras en cotización:",
+              cotizacion.id,
+              e
+            );
+          }
+        }
+
+        return {
+          ...cotizacion,
+          extras,
+        };
+      });
+
+      setCotizaciones(cotizacionesProcesadas);
+    } catch (error) {
+      console.error("Error al cargar cotizaciones:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+      } else {
+        alert(
+          "Error al cargar cotizaciones: " +
+            (error.response?.data?.error || error.message)
+        );
+      }
+    } finally {
+      setCargando(false);
     }
   };
 
-  // Función para iniciar la edición de una cotización
-  const handleEditarCotizacion = (cotizacion) => {
+  const handleGuardarCotizacion = useCallback(
+    async (nuevaCotizacion, esEdicion = false) => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          alert("No hay sesión activa");
+          return;
+        }
+
+        if (esEdicion) {
+          // ACTUALIZAR
+          await axios.put(`${API_URL}/${nuevaCotizacion.id}`, nuevaCotizacion, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+        } else {
+          // CREAR
+          await axios.post(API_URL, nuevaCotizacion, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          });
+        }
+
+        // Recargar cotizaciones después de guardar
+        await cargarCotizaciones();
+        setCotizacionEditar(null);
+
+        console.log(
+          esEdicion ? "Cotización actualizada" : "Nueva cotización agregada"
+        );
+      } catch (error) {
+        console.error("Error al guardar cotización:", error);
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/login";
+        } else {
+          alert(
+            "Error al guardar la cotización: " +
+              (error.response?.data?.error || error.message)
+          );
+        }
+        throw error;
+      }
+    },
+    [API_URL]
+  );
+
+  const handleEditarCotizacion = useCallback((cotizacion) => {
     setCotizacionEditar(cotizacion);
     console.log("Editando cotización:", cotizacion);
-  };
+  }, []);
 
-  // Función para cancelar la edición
-  const handleCancelarEdicion = () => {
+  const handleCancelarEdicion = useCallback(() => {
     setCotizacionEditar(null);
-  };
+  }, []);
 
-  // Función para eliminar una cotización
-  const handleEliminarCotizacion = (id) => {
-    const cotizacionAEliminar = cotizaciones.find((cot) => cot.id === id);
-    const folio = cotizacionAEliminar?.folio || id;
+  const handleEliminarCotizacion = useCallback(
+    async (id) => {
+      try {
+        const token = localStorage.getItem("token");
 
-    if (
-      window.confirm(
-        `¿Estás seguro de que deseas eliminar la cotización ${folio}?`
-      )
-    ) {
-      setCotizaciones((prev) => prev.filter((cot) => cot.id !== id));
-      console.log("Cotización eliminada con ID:", id);
-    }
-  };
+        if (!token) {
+          alert("No hay sesión activa");
+          return;
+        }
+
+        await axios.delete(`${API_URL}/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+
+        // Recargar cotizaciones después de eliminar
+        await cargarCotizaciones();
+        console.log("Cotización eliminada con ID:", id);
+      } catch (error) {
+        console.error("Error al eliminar cotización:", error);
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/login";
+        } else {
+          alert(
+            "Error al eliminar la cotización: " +
+              (error.response?.data?.error || error.message)
+          );
+        }
+        throw error;
+      }
+    },
+    [API_URL]
+  );
 
   return (
     <div className="cotizacion-container">
-      <div className="cotizacion-header">
-        <h1>Cotizaciones</h1>
-      </div>
-
       <div className="cotizacion-layout">
-        <div className="nueva-cotizacion-section">
-          <NuevaCotizacion
-            onGuardarCotizacion={handleGuardarCotizacion}
-            cotizacionEditar={cotizacionEditar}
-            onCancelarEdicion={handleCancelarEdicion}
-          />
-        </div>
-
         <div className="tabla-cotizacion-section">
           <TablaCotizacion
             cotizaciones={cotizaciones}
             onEditar={handleEditarCotizacion}
             onEliminar={handleEliminarCotizacion}
+            botonNuevaCotizacion={
+              <NuevaCotizacion
+                mostrarBoton={rol === "admin"}
+                onGuardarCotizacion={handleGuardarCotizacion}
+                cotizacionEditar={cotizacionEditar}
+                onCancelarEdicion={handleCancelarEdicion}
+              />
+            }
           />
         </div>
       </div>

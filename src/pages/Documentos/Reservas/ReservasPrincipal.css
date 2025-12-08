@@ -1,0 +1,11 @@
+.reservas-principal {
+  width: 100%;
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 0;
+  margin: 0;
+}
+
+.reservas-principal * {
+  box-sizing: border-box;
+}

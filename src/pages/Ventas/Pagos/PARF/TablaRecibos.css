@@ -1,0 +1,1717 @@
+/* ========================================
+   TABLARECIBOS.CSS - ESTILOS INDEPENDIENTES
+   Solo para el componente TablaRecibos
+   ======================================== */
+
+/* Contenedor Principal */
+.recibos-contenedor-principal {
+  width: 100% !important;
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  overflow: hidden !important;
+  margin: 1rem !important;
+  animation: rec-fadeIn 0.4s ease-out !important;
+}
+
+/* ========== HEADER ========== */
+.recibos-encabezado {
+  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%) !important;
+  padding: 2rem !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Botón ver PDF */
+.recibos-boton-accion-recibos-ver-pdf {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border: 1px solid #6ee7b7 !important;
+}
+
+.recibos-boton-accion-recibos-ver-pdf:hover:not(:disabled) {
+  background: #059669 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+.recibos-encabezado::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid-rec" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid-rec)"/></svg>') !important;
+  opacity: 0.5 !important;
+}
+
+.recibos-seccion-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.5rem !important;
+  z-index: 2 !important;
+  position: relative !important;
+}
+
+.recibos-icono-principal {
+  width: 48px !important;
+  height: 48px !important;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.recibos-titulo {
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  color: white !important;
+  letter-spacing: -0.025em !important;
+}
+
+.recibos-subtitulo {
+  font-size: 0.875rem !important;
+  color: #cbd5e1 !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+}
+
+/* ========== ESTADÍSTICAS ========== */
+.recibos-estadisticas-header {
+  display: flex !important;
+  gap: 1.5rem !important;
+  z-index: 2 !important;
+  position: relative !important;
+}
+
+.recibos-tarjeta-estadistica {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 1rem 1.5rem !important;
+  color: white !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+}
+
+.recibos-tarjeta-estadistica.total {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.2),
+    rgba(29, 78, 216, 0.3)
+  ) !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+}
+
+.recibos-tarjeta-estadistica.total:hover {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+.recibos-tarjeta-estadistica.pagados {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.2),
+    rgba(5, 150, 105, 0.3)
+  ) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+}
+
+.recibos-tarjeta-estadistica.pagados:hover {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4) !important;
+}
+
+.recibos-tarjeta-estadistica.cancelados {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.2),
+    rgba(217, 119, 6, 0.3)
+  ) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+}
+
+.recibos-tarjeta-estadistica.cancelados:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4) !important;
+}
+
+.recibos-tarjeta-estadistica.monto-emitido {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.2),
+    rgba(5, 150, 105, 0.3)
+  ) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+}
+
+.recibos-tarjeta-estadistica.monto-emitido:hover {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4) !important;
+}
+
+.recibos-icono-estadistica {
+  width: 20px !important;
+  height: 20px !important;
+  opacity: 0.9 !important;
+  position: relative !important;
+  z-index: 2 !important;
+  flex-shrink: 0 !important;
+}
+
+.recibos-valor-estadistica {
+  display: block !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.25rem !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.recibos-etiqueta-estadistica {
+  font-size: 0.75rem !important;
+  opacity: 0.9 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* ========== ALERTA DE ERROR ========== */
+.recibos-alerta-error {
+  background: #fee2e2 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 8px !important;
+  padding: 1rem !important;
+  margin: 1rem 2rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  color: #991b1b !important;
+  animation: rec-slideDown 0.3s ease-out !important;
+}
+
+/* ========== CONTROLES ========== */
+.recibos-controles {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 1.5rem 2rem !important;
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  gap: 2rem !important;
+  flex-wrap: wrap !important;
+}
+
+.recibos-seccion-izquierda {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2rem !important;
+  flex-wrap: wrap !important;
+}
+
+.recibos-control-registros {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  color: #64748b !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+.recibos-selector-registros {
+  padding: 0.5rem 0.75rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  background: white !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  color: #374151 !important;
+}
+
+.recibos-selector-registros:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.recibos-filtro-estado {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  color: #64748b !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+.recibos-selector-filtro {
+  padding: 0.5rem 0.75rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  background: white !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  color: #374151 !important;
+}
+
+.recibos-selector-filtro:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.recibos-seccion-derecha {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* ========== BÚSQUEDA ========== */
+.recibos-control-busqueda {
+  position: relative !important;
+}
+
+.recibos-entrada-buscar {
+  padding: 0.75rem 2.75rem 0.75rem 2.75rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+  width: 280px !important;
+  transition: all 0.2s ease !important;
+  background: white !important;
+  color: #374151 !important;
+}
+
+.recibos-entrada-buscar:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  width: 320px !important;
+}
+
+.recibos-entrada-buscar::placeholder {
+  color: #9ca3af !important;
+}
+
+.recibos-icono-buscar {
+  position: absolute !important;
+  left: 0.875rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: #6b7280 !important;
+  pointer-events: none !important;
+}
+
+.recibos-boton-limpiar {
+  position: absolute !important;
+  right: 0.5rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: none !important;
+  border: none !important;
+  color: #6b7280 !important;
+  cursor: pointer !important;
+  padding: 0.25rem !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.recibos-boton-limpiar:hover {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+}
+
+/* ========== BOTÓN EXPORTAR ========== */
+.recibos-boton-exportar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  background: #10b981 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.recibos-boton-exportar:hover {
+  background: #059669 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25) !important;
+}
+
+/* ========== TABLA ========== */
+.recibos-contenedor-tabla {
+  overflow-x: auto !important;
+  background: white !important;
+  border-radius: 12px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.recibos-tabla {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  font-size: 0.875rem !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.recibos-tabla thead {
+  background: #ffffff !important;
+}
+
+.recibos-fila-encabezado th {
+  padding: 1rem 1.5rem !important;
+  text-align: left !important;
+  font-weight: 700 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.8rem !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+}
+
+.recibos-tabla tbody tr {
+  border-bottom: 1px solid #f1f5f9 !important;
+  transition: all 0.2s ease !important;
+  background: white !important;
+}
+
+.recibos-tabla tbody tr:hover {
+  background: #f8fafc !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.recibos-fila-pago {
+  animation: rec-fadeIn 0.3s ease-out !important;
+}
+
+.recibos-fila-pago td {
+  padding: 1rem 1.5rem !important;
+  vertical-align: middle !important;
+  color: #374151 !important;
+}
+
+.recibos-columna-id {
+  font-weight: 600 !important;
+  color: #6b7280 !important;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace !important;
+}
+
+.recibos-columna-cliente {
+  font-weight: 600 !important;
+  color: #111827 !important;
+}
+
+.recibos-columna-monto {
+  font-weight: 700 !important;
+  color: #059669 !important;
+  font-size: 0.9375rem !important;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace !important;
+}
+
+.recibos-columna-factura {
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace !important;
+  font-weight: 500 !important;
+  color: #6b7280 !important;
+  font-size: 0.8125rem !important;
+}
+
+/* ========== BADGES DE ESTADO ========== */
+.recibos-badge-estado {
+  padding: 0.375rem 0.75rem !important;
+  border-radius: 6px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.375rem !important;
+  min-width: 90px !important;
+  justify-content: center !important;
+}
+
+.recibos-estado-emitido {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border: 1px solid #a7f3d0 !important;
+}
+
+.recibos-estado-pendiente {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #fde68a !important;
+}
+
+.recibos-estado-cancelado {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #fecaca !important;
+}
+
+.recibos-indicador-estado {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+
+.recibos-estado-emitido .recibos-indicador-estado {
+  background: #059669 !important;
+}
+
+.recibos-estado-pendiente .recibos-indicador-estado {
+  background: #d97706 !important;
+}
+
+.recibos-estado-cancelado .recibos-indicador-estado {
+  background: #dc2626 !important;
+}
+
+/* ========== BOTONES DE ACCIÓN ========== */
+.recibos-columna-acciones {
+  width: 150px !important;
+}
+
+.recibos-botones-accion {
+  display: flex !important;
+  gap: 0.375rem !important;
+  justify-content: flex-end !important;
+}
+
+.recibos-boton-accion {
+  padding: 0.5rem !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.recibos-boton-accion:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.recibos-boton-accion.recibos-descargar {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+.recibos-boton-accion.recibos-descargar:hover:not(:disabled) {
+  background: #ffffff !important;
+  color: #2064ca !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+}
+.recibos-boton-accion.recibos-pdf {
+  background: #9333ea !important;
+  color: #ffffff !important;
+  border: 1px solid #e9d5ff !important;
+}
+
+.recibos-boton-accion.recibos-pdf:hover:not(:disabled) {
+  background: #7c3aed !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.25) !important;
+}
+
+.recibos-boton-accion.recibos-imprimir {
+  background: #9333ea !important;
+  color: #ffffff !important;
+  border: 1px solid #e9d5ff !important;
+}
+
+.recibos-boton-accion.recibos-imprimir:hover:not(:disabled) {
+  background: #7c3aed !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.25) !important;
+}
+
+.recibos-boton-accion.recibos-eliminar {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border: 1px solid #fecaca !important;
+}
+
+.recibos-boton-accion.recibos-eliminar:hover:not(:disabled) {
+  background: #b91c1c !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25) !important;
+}
+
+/* ========== PIE DE TABLA ========== */
+.recibos-pie-tabla {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 1.5rem 2rem !important;
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  gap: 2rem !important;
+  flex-wrap: wrap !important;
+}
+
+.recibos-informacion-registros {
+  color: #64748b !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  flex: 1 !important;
+}
+
+.recibos-controles-paginacion {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.recibos-boton-paginacion {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem 1rem !important;
+  border: 1px solid #d1d5db !important;
+  background: white !important;
+  color: #374151 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+.recibos-boton-paginacion:hover:not(:disabled) {
+  background: #3b82f6 !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+}
+
+.recibos-boton-paginacion:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  background: #f9fafb !important;
+}
+
+.recibos-numeros-paginacion {
+  display: flex !important;
+  gap: 0.25rem !important;
+}
+
+.recibos-numero-pagina {
+  padding: 0.5rem 0.75rem !important;
+  border: 1px solid #d1d5db !important;
+  background: white !important;
+  color: #374151 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  min-width: 36px !important;
+  text-align: center !important;
+}
+
+.recibos-numero-pagina:hover:not(:disabled) {
+  background: #f3f4f6 !important;
+  border-color: #9ca3af !important;
+}
+
+.recibos-numero-pagina:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.recibos-numero-pagina.recibos-activo {
+  background: #3b82f6 !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* ========== ESTADO VACÍO ========== */
+.recibos-estado-vacio {
+  text-align: center !important;
+  padding: 3rem 2rem !important;
+  color: #6b7280 !important;
+}
+
+.recibos-icono-vacio {
+  width: 64px !important;
+  height: 64px !important;
+  margin: 0 auto 1rem !important;
+  color: #d1d5db !important;
+}
+
+.recibos-mensaje-vacio {
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.recibos-submensaje-vacio {
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+}
+
+/* ========== ESTADO DE CARGA ========== */
+.recibos-cargando {
+  opacity: 0.6 !important;
+  pointer-events: none !important;
+  position: relative !important;
+}
+
+.recibos-cargando::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 24px !important;
+  height: 24px !important;
+  border: 2px solid #e5e7eb !important;
+  border-top: 2px solid #3b82f6 !important;
+  border-radius: 50% !important;
+  animation: rec-spin 0.8s linear infinite !important;
+  z-index: 1000 !important;
+}
+
+/* ========== ANIMACIONES ========== */
+@keyframes rec-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rec-spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes rec-slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 1024px) {
+  .recibos-encabezado {
+    padding: 1.5rem !important;
+  }
+
+  .recibos-estadisticas-header {
+    gap: 1rem !important;
+  }
+
+  .recibos-tarjeta-estadistica {
+    padding: 0.75rem 1rem !important;
+    min-width: 100px !important;
+  }
+
+  .recibos-valor-estadistica {
+    font-size: 1.25rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .recibos-encabezado {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    padding: 1.5rem 1rem !important;
+    text-align: center !important;
+  }
+
+  .recibos-titulo {
+    font-size: 1.5rem !important;
+  }
+
+  .recibos-estadisticas-header {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+
+  .recibos-controles {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+  }
+
+  .recibos-seccion-izquierda,
+  .recibos-seccion-derecha {
+    justify-content: space-between !important;
+    width: 100% !important;
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+  }
+
+  .recibos-entrada-buscar {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .recibos-entrada-buscar:focus {
+    width: 100% !important;
+  }
+
+  .recibos-boton-exportar {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .recibos-tabla thead {
+    display: none !important;
+  }
+
+  .recibos-tabla tbody,
+  .recibos-tabla tr,
+  .recibos-tabla td {
+    display: block !important;
+  }
+
+  .recibos-tabla tr {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    background: white !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .recibos-tabla td {
+    padding: 0.75rem 0 !important;
+    border: none !important;
+    text-align: left !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+  }
+
+  .recibos-tabla td:last-child {
+    border-bottom: none !important;
+  }
+
+  .recibos-tabla td:before {
+    content: attr(data-label) !important;
+    font-weight: 600 !important;
+    color: #6b7280 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    width: 120px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .recibos-botones-accion {
+    justify-content: flex-end !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .recibos-pie-tabla {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+    text-align: center !important;
+  }
+
+  .recibos-controles-paginacion {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .recibos-encabezado {
+    padding: 1rem !important;
+  }
+
+  .recibos-icono-principal {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .recibos-titulo {
+    font-size: 1.25rem !important;
+  }
+
+  .recibos-tarjeta-estadistica {
+    padding: 0.5rem 0.75rem !important;
+    min-width: 80px !important;
+  }
+
+  .recibos-valor-estadistica {
+    font-size: 1.125rem !important;
+  }
+
+  .recibos-icono-estadistica {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .recibos-tabla td:before {
+    width: 100px !important;
+    font-size: 0.6875rem !important;
+  }
+
+  .recibos-botones-accion {
+    gap: 0.25rem !important;
+    justify-content: flex-start !important;
+  }
+
+  .recibos-boton-accion {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .recibos-contenedor-principal {
+    margin: 0.5rem !important;
+  }
+}
+
+/* ========================================
+   TABLAFACTURAS-ADICIONALES.CSS
+   Estilos adicionales para roles y funcionalidades
+   ======================================== */
+
+/* Badge de Rol Administrador */
+.facturas-badge-rol-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 1rem;
+  animation: facturas-badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes facturas-badge-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Tarjeta de Estadística - Eliminados */
+.facturas-tarjeta-estadistica.eliminados {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 146, 60, 0.2),
+    rgba(249, 115, 22, 0.3)
+  );
+  border: 1px solid rgba(251, 146, 60, 0.4);
+}
+
+.facturas-tarjeta-estadistica.eliminados:hover {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(251, 146, 60, 0.4);
+}
+
+/* Botón Toggle Eliminados */
+.facturas-boton-toggle-eliminados {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  color: #64748b;
+  border: 1px solid #d1d5db;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.facturas-boton-toggle-eliminados:hover:not(:disabled) {
+  background: #f8fafc;
+  color: #1e293b;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.facturas-boton-toggle-eliminados.activo {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: white;
+  border-color: #fb923c;
+  box-shadow: 0 4px 12px rgba(251, 146, 60, 0.3);
+}
+
+.facturas-boton-toggle-eliminados.activo:hover {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  box-shadow: 0 6px 16px rgba(251, 146, 60, 0.4);
+}
+
+.facturas-boton-toggle-eliminados:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Fila Eliminada */
+.facturas-fila-eliminada {
+  background: #fef3c7 !important;
+  position: relative;
+}
+
+.facturas-fila-eliminada::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(135deg, #fb923c, #f97316);
+}
+
+.facturas-fila-eliminada:hover {
+  background: #fef08a !important;
+  box-shadow: 0 2px 8px rgba(251, 146, 60, 0.15) !important;
+}
+
+/* Badge Eliminado Mini */
+.facturas-badge-eliminado-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #fff7ed;
+  color: #ea580c;
+  border: 1px solid #fed7aa;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Estado Eliminado */
+.facturas-estado-eliminado {
+  background: #fff7ed;
+  color: #ea580c;
+  border: 1px solid #fed7aa;
+}
+
+.facturas-estado-eliminado .facturas-indicador-estado {
+  background: #fb923c;
+}
+
+/* Botones de Acción - Regenerar */
+.facturas-boton-accion.facturas-regenerar {
+  background: #3b82f6;
+  color: #ffffff;
+  border: 1px solid #93c5fd;
+}
+
+.facturas-boton-accion.facturas-regenerar:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Botones de Acción - Eliminar Definitivo */
+.facturas-boton-accion.facturas-eliminar-definitivo {
+  background: #991b1b;
+  color: #ffffff;
+  border: 1px solid #fca5a5;
+}
+
+.facturas-boton-accion.facturas-eliminar-definitivo:hover:not(:disabled) {
+  background: #7f1d1d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(153, 27, 27, 0.4);
+}
+
+/* Alerta de Rol en Header */
+.facturas-alerta-rol {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 2rem;
+  color: #1e40af;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.facturas-alerta-rol svg {
+  flex-shrink: 0;
+  color: #3b82f6;
+}
+
+/* Animación para filas eliminadas */
+@keyframes facturas-highlight-eliminado {
+  0% {
+    background: #fef3c7;
+  }
+  50% {
+    background: #fde68a;
+  }
+  100% {
+    background: #fef3c7;
+  }
+}
+
+.facturas-fila-eliminada.facturas-nueva-eliminada {
+  animation: facturas-highlight-eliminado 2s ease-in-out;
+}
+
+/* Tooltip para acciones de administrador */
+.facturas-tooltip-admin {
+  position: relative;
+}
+
+.facturas-tooltip-admin::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.facturas-tooltip-admin:hover::after {
+  opacity: 1;
+}
+
+/* Badge de Info Eliminación */
+.facturas-info-eliminacion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+.facturas-info-eliminacion-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #92400e;
+}
+
+.facturas-info-eliminacion-label {
+  font-weight: 500;
+}
+
+.facturas-info-eliminacion-value {
+  font-weight: 600;
+}
+
+/* Mensaje de Vista Eliminados */
+.facturas-mensaje-vista-eliminados {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border: 2px solid #fb923c;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin: 1rem 2rem;
+  color: #92400e;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.facturas-mensaje-vista-eliminados svg {
+  color: #fb923c;
+  flex-shrink: 0;
+}
+
+/* Contador de Registros Eliminados */
+.facturas-contador-eliminados {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: #fff7ed;
+  color: #ea580c;
+  border: 1px solid #fed7aa;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+/* Botones de Acción - Estados Hover Mejorados */
+.facturas-boton-accion.facturas-regenerar:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+}
+
+.facturas-boton-accion.facturas-eliminar-definitivo:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(153, 27, 27, 0.3);
+}
+
+/* Indicador Visual para Administradores */
+.facturas-indicador-admin {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  animation: facturas-pulse-admin 2s ease-in-out infinite;
+}
+
+@keyframes facturas-pulse-admin {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Mejorar visibilidad de columnas en filas eliminadas */
+.facturas-fila-eliminada .facturas-columna-monto {
+  color: #92400e;
+}
+
+.facturas-fila-eliminada .facturas-columna-factura {
+  color: #78716c;
+}
+
+/* Responsive adicional */
+@media (max-width: 768px) {
+  .facturas-badge-rol-admin {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  .facturas-boton-toggle-eliminados {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .facturas-mensaje-vista-eliminados {
+    flex-direction: column;
+    text-align: center;
+    margin: 0.5rem 1rem;
+  }
+
+  .facturas-alerta-rol {
+    margin: 0.5rem 1rem;
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .facturas-badge-rol-admin {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .facturas-boton-toggle-eliminados {
+    font-size: 0.8125rem;
+    padding: 0.625rem 1rem;
+  }
+
+  .facturas-tarjeta-estadistica.eliminados {
+    padding: 0.5rem 0.75rem;
+    min-width: 80px;
+  }
+}
+
+/* Animación de entrada para modales */
+@keyframes facturas-modal-entrada {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Estados de carga mejorados */
+.facturas-cargando-regenerar {
+  position: relative;
+  pointer-events: none;
+}
+
+.facturas-cargando-regenerar::after {
+  content: "Regenerando...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(59, 130, 246, 0.95);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: facturas-pulse-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes facturas-pulse-loading {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Efecto de brillo en botones importantes */
+.facturas-boton-toggle-eliminados.activo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: facturas-shine 3s infinite;
+}
+
+@keyframes facturas-shine {
+  0% {
+    left: -100%;
+  }
+  50%,
+  100% {
+    left: 200%;
+  }
+}
+
+/* Mejora de accesibilidad */
+.facturas-boton-accion:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.facturas-boton-toggle-eliminados:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Separador visual para secciones de administrador */
+.facturas-separador-admin {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+  margin: 1rem 0;
+}
+
+/* Overlay de confirmación */
+.facturas-overlay-confirmacion {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  animation: facturas-overlay-entrada 0.2s ease-out;
+}
+
+@keyframes facturas-overlay-entrada {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Estilos adicionales para TablaRecibos.css */
+/* Agregar estos estilos al archivo TablaRecibos.css existente */
+
+/* Badge de administrador */
+.recibos-badge-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+}
+
+/* Tarjeta de estadísticas para eliminados */
+.recibos-tarjeta-estadistica.eliminados {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-left: 4px solid #ef4444;
+}
+
+.recibos-tarjeta-estadistica.eliminados .recibos-icono-estadistica {
+  color: #ef4444;
+}
+
+.recibos-tarjeta-estadistica.eliminados .recibos-valor-estadistica {
+  color: #dc2626;
+}
+
+/* Switch para ver eliminados */
+.recibos-filtro-eliminados {
+  display: flex;
+  align-items: center;
+}
+
+.recibos-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: 10px;
+}
+
+.recibos-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.recibos-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: #cbd5e1;
+  border-radius: 24px;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.recibos-slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.recibos-switch input:checked + .recibos-slider {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.recibos-switch input:checked + .recibos-slider::before {
+  transform: translateX(20px);
+}
+
+.recibos-label-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  white-space: nowrap;
+}
+
+/* Estado eliminado */
+.recibos-estado-eliminado {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.recibos-estado-eliminado .recibos-indicador-estado {
+  background-color: #dc2626;
+}
+
+/* Fila eliminada */
+.recibos-fila-eliminada {
+  background-color: #fef2f2 !important;
+  opacity: 0.85;
+}
+
+.recibos-fila-eliminada:hover {
+  background-color: #fee2e2 !important;
+  opacity: 1;
+}
+
+/* Botón regenerar */
+.recibos-boton-accion.recibos-regenerar {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+}
+
+.recibos-boton-accion.recibos-regenerar:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* Botón eliminar definitivo */
+.recibos-boton-accion.recibos-eliminar-definitivo {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+}
+
+.recibos-boton-accion.recibos-eliminar-definitivo:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Animaciones adicionales */
+@keyframes recibosSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recibos-filtro-eliminados {
+  animation: recibosSlideIn 0.3s ease-out;
+}
+
+/* Tooltip mejorado */
+.recibos-boton-accion[title] {
+  position: relative;
+}
+
+.recibos-boton-accion[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background: #1e293b;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: recibosTooltipFadeIn 0.2s ease-out forwards;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.recibos-boton-accion[title]:hover::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #1e293b;
+  margin-bottom: 2px;
+  opacity: 0;
+  animation: recibosTooltipFadeIn 0.2s ease-out forwards;
+  pointer-events: none;
+  z-index: 100;
+}
+
+@keyframes recibosTooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Responsive para nuevos elementos */
+@media (max-width: 768px) {
+  .recibos-badge-admin {
+    display: block;
+    margin-left: 0;
+    margin-top: 4px;
+    width: fit-content;
+  }
+
+  .recibos-filtro-eliminados {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  .recibos-switch {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .recibos-tarjeta-estadistica.eliminados {
+    order: 3;
+  }
+
+  .recibos-fila-eliminada td {
+    background-color: #fef2f2;
+  }
+}
+
+@media (max-width: 480px) {
+  .recibos-boton-accion.recibos-regenerar,
+  .recibos-boton-accion.recibos-eliminar-definitivo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .recibos-label-text {
+    font-size: 13px;
+  }
+}
+
+/* Mejoras de accesibilidad */
+.recibos-switch input:focus + .recibos-slider {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  outline: none;
+}
+
+.recibos-boton-accion.recibos-regenerar:focus,
+.recibos-boton-accion.recibos-eliminar-definitivo:focus {
+  outline: 3px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+}
+
+/* Indicador de carga para acciones */
+.recibos-boton-accion:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.recibos-boton-accion:disabled::after {
+  display: none;
+}
+
+/* Transiciones suaves */
+.recibos-fila-eliminada td {
+  transition: background-color 0.3s ease;
+}
+
+.recibos-estado-eliminado {
+  animation: recibosPulseRed 2s ease-in-out infinite;
+}
+
+@keyframes recibosPulseRed {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.2);
+  }
+}

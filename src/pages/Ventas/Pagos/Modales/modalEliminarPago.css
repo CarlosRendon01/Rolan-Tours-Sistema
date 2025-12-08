@@ -1,0 +1,238 @@
+/* ========================================
+   ESTILOS PARA SWEETALERT2 - MODAL ELIMINAR PAGO
+   ======================================== */
+
+/* Popup principal */
+.alerta-popup {
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  font-family: inherit !important;
+}
+
+.alerta-popup-cargando {
+  border-radius: 16px !important;
+  padding: 2rem !important;
+}
+
+/* Títulos */
+.alerta-titulo {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.alerta-titulo-exito {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #059669 !important;
+  margin-bottom: 0 !important;
+}
+
+.alerta-titulo-error {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: #dc2626 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.alerta-titulo-cargando {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #4b5563 !important;
+}
+
+/* Contenedor HTML */
+.alerta-html {
+  margin: 0 !important;
+  padding: 0.5rem 0 !important;
+}
+
+/* Contenido de la alerta de eliminación */
+.alerta-contenido {
+  text-align: center;
+}
+
+.alerta-texto {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.alerta-cliente {
+  font-size: 1rem;
+  color: #1f2937;
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+.alerta-monto {
+  font-size: 0.9375rem;
+  color: #3b82f6;
+  margin: 0.25rem 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.alerta-advertencia {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+/* Contenido de éxito */
+.alerta-contenido-exito {
+  text-align: center;
+}
+
+.alerta-texto-exito {
+  font-size: 1rem;
+  color: #059669;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.alerta-detalle-exito {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+/* Iconos */
+.alerta-icono {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+  font-size: 2.5rem !important;
+  margin: 0.5rem auto !important;
+}
+
+.alerta-icono-exito {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+}
+
+.alerta-icono-error {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+/* Botones */
+.alerta-acciones {
+  margin-top: 1rem !important;
+}
+
+.alerta-boton-confirmar {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+}
+
+.alerta-boton-confirmar:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+.alerta-boton-cancelar {
+  background: white !important;
+  color: #6b7280 !important;
+  border: 1.5px solid #e5e7eb !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  margin-right: 0.5rem !important;
+}
+
+.alerta-boton-cancelar:hover {
+  background: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+
+.alerta-boton-exito {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) !important;
+}
+
+.alerta-boton-exito:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4) !important;
+}
+
+.alerta-boton-error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.9375rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Timer progress bar */
+.swal2-timer-progress-bar {
+  background: #10b981 !important;
+}
+
+/* Animaciones suaves */
+.swal2-show {
+  animation: swal2-show 0.3s !important;
+}
+
+.swal2-hide {
+  animation: swal2-hide 0.2s !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .alerta-popup {
+    padding: 1.25rem !important;
+    width: 90% !important;
+    max-width: 350px !important;
+  }
+
+  .alerta-titulo,
+  .alerta-titulo-exito {
+    font-size: 1.125rem !important;
+  }
+
+  .alerta-cliente {
+    font-size: 0.9375rem !important;
+  }
+
+  .alerta-monto {
+    font-size: 0.875rem !important;
+  }
+
+  .alerta-boton-confirmar,
+  .alerta-boton-cancelar,
+  .alerta-boton-exito {
+    padding: 0.5rem 1.25rem !important;
+    font-size: 0.8125rem !important;
+  }
+}
+
+/* Loading spinner personalizado */
+.swal2-loading {
+  border-color: #3b82f6 transparent #3b82f6 transparent !important;
+}

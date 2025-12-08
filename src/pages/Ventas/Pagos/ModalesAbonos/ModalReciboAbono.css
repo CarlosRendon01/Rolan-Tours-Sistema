@@ -1,0 +1,836 @@
+/* ============================================
+   MODAL RECIBO ABONO - ESTILOS MEJORADOS
+   ============================================ */
+
+/* Variables CSS */
+:root {
+  --recibo-primary: #1e3a8a;
+  --recibo-secondary: #2563eb;
+  --recibo-success: #10b981;
+  --recibo-warning: #f59e0b;
+  --recibo-text-primary: #1f2937;
+  --recibo-text-secondary: #1e2022;
+  --recibo-text-tertiary: #6b7280;
+  --recibo-text-light: #af9c9c;
+  --recibo-bg-white: #ffffff;
+  --recibo-bg-gray: #f9fafb;
+  --recibo-bg-light: #f6f3f3;
+  --recibo-border: #e5e7eb;
+  --recibo-border-light: #f1f5f9;
+}
+
+/* ================================
+   OVERLAY Y CONTENEDOR
+   ================================ */
+
+.modal-recibo-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(4px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10000 !important;
+  padding: 1rem !important;
+  animation: modalReciboFadeIn 0.2s ease-out !important;
+}
+
+@keyframes modalReciboFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-recibo-contenedor {
+  background: var(--recibo-bg-white) !important;
+  border-radius: 12px !important;
+  width: 100% !important;
+  max-width: 900px !important;
+  max-height: 90vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  animation: modalReciboSlideUp 0.3s ease-out !important;
+  overflow: hidden !important;
+}
+
+@keyframes modalReciboSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ================================
+   HEADER DEL MODAL
+   ================================ */
+
+.modal-recibo-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 1.5rem !important;
+  border-bottom: 1px solid var(--recibo-border) !important;
+  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
+  color: white !important;
+  border-radius: 12px 12px 0 0 !important;
+  gap: 1rem !important;
+}
+
+.modal-recibo-titulo-seccion {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  flex: 1 !important;
+}
+
+.modal-recibo-icono-titulo {
+  flex-shrink: 0 !important;
+  color: white !important;
+}
+
+.modal-recibo-titulo {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  color: white !important;
+  line-height: 1.2 !important;
+}
+
+.modal-recibo-subtitulo {
+  font-size: 0.875rem !important;
+  margin: 0.25rem 0 0 0 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 400 !important;
+}
+
+.modal-recibo-boton-cerrar {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  color: white !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.modal-recibo-boton-cerrar:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: rotate(90deg) !important;
+}
+
+/* ================================
+   CONTENIDO DEL MODAL
+   ================================ */
+
+.modal-recibo-contenido {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 2rem !important;
+  background: var(--recibo-bg-gray) !important;
+}
+
+.modal-recibo-contenido::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.modal-recibo-contenido::-webkit-scrollbar-track {
+  background: var(--recibo-border-light) !important;
+}
+
+.modal-recibo-contenido::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 4px !important;
+}
+
+.modal-recibo-contenido::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+
+/* ================================
+   DOCUMENTO DEL RECIBO
+   ================================ */
+
+.recibo-documento {
+  background: var(--recibo-bg-white) !important;
+  padding: 3rem !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+}
+
+/* ================================
+   ENCABEZADO DEL RECIBO
+   ================================ */
+
+.recibo-encabezado {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 2rem !important;
+  gap: 2rem !important;
+}
+
+.recibo-empresa {
+  flex: 1 !important;
+}
+
+.recibo-empresa-nombre {
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  color: var(--recibo-text-primary) !important;
+  margin: 0 0 0.5rem 0 !important;
+  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  line-height: 1.2 !important;
+}
+
+.recibo-empresa-info {
+  font-size: 0.875rem !important;
+  color: var(--recibo-text-tertiary) !important;
+  margin: 0.25rem 0 !important;
+  line-height: 1.5 !important;
+}
+
+.recibo-info-documento {
+  text-align: right !important;
+  flex-shrink: 0 !important;
+}
+
+.recibo-numero {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.recibo-etiqueta {
+  font-size: 0.75rem !important;
+  color: var(--recibo-text-tertiary) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  font-weight: 600 !important;
+}
+
+.recibo-valor-destacado {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: var(--recibo-primary) !important;
+  line-height: 1 !important;
+}
+
+.recibo-fecha {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0.5rem !important;
+  font-size: 0.875rem !important;
+  color: var(--recibo-text-tertiary) !important;
+}
+
+.recibo-fecha svg {
+  color: var(--recibo-primary) !important;
+}
+
+/* ================================
+   DIVISOR
+   ================================ */
+
+.recibo-divisor {
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent, var(--recibo-primary), transparent) !important;
+  margin: 2rem 0 !important;
+  border: none !important;
+}
+
+/* ================================
+   SECCIONES DEL RECIBO
+   ================================ */
+
+.recibo-seccion {
+  margin-bottom: 2rem !important;
+}
+
+.recibo-seccion:last-child {
+  margin-bottom: 0 !important;
+}
+
+.recibo-seccion-titulo {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: var(--recibo-text-secondary) !important;
+  margin: 0 0 1rem 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  border-bottom: 2px solid var(--recibo-border) !important;
+}
+
+.recibo-seccion-titulo svg {
+  color: var(--recibo-primary) !important;
+  flex-shrink: 0 !important;
+}
+
+.recibo-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+  gap: 1rem !important;
+}
+
+.recibo-campo {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+}
+
+.recibo-campo-etiqueta {
+  font-size: 0.75rem !important;
+  color: var(--recibo-text-tertiary) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.recibo-campo-valor {
+  font-size: 0.9375rem !important;
+  color: var(--recibo-text-primary) !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+}
+
+/* ================================
+   PAGO DESTACADO
+   ================================ */
+
+.recibo-pago-destacado {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%) !important;
+  border: 2px solid var(--recibo-primary) !important;
+  border-radius: 8px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.recibo-pago-info {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 1rem !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.25) !important;
+}
+
+.recibo-pago-etiqueta {
+  font-size: 0.875rem !important;
+  color: var(--recibo-text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.recibo-pago-monto {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: var(--recibo-primary) !important;
+  line-height: 1 !important;
+}
+
+.recibo-pago-detalles {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 0.75rem !important;
+}
+
+.recibo-pago-detalle-item {
+  display: flex !important;
+  justify-content: space-between !important;
+  font-size: 0.875rem !important;
+}
+
+.recibo-pago-detalle-item span:first-child {
+  color: var(--recibo-text-tertiary) !important;
+  font-weight: 500 !important;
+}
+
+.recibo-pago-detalle-item span:last-child {
+  color: var(--recibo-text-primary) !important;
+  font-weight: 600 !important;
+}
+
+/* ================================
+   RESUMEN
+   ================================ */
+
+.recibo-resumen {
+  background: var(--recibo-bg-gray) !important;
+  border-radius: 8px !important;
+  padding: 1.5rem !important;
+}
+
+.recibo-resumen-linea {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0.75rem 0 !important;
+  font-size: 0.9375rem !important;
+  color: var(--recibo-text-secondary) !important;
+  border-bottom: 1px solid var(--recibo-border) !important;
+}
+
+.recibo-resumen-linea:last-of-type {
+  border-bottom: none !important;
+}
+
+.recibo-resumen-linea span:last-child {
+  font-weight: 600 !important;
+  color: var(--recibo-text-primary) !important;
+}
+
+.recibo-resumen-linea.recibo-resumen-destacado {
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  padding: 1rem 0 !important;
+  margin-top: 0.5rem !important;
+  border-top: 2px solid var(--recibo-primary) !important;
+  color: var(--recibo-primary) !important;
+}
+
+.recibo-resumen-linea.recibo-resumen-destacado span:last-child {
+  color: var(--recibo-primary) !important;
+}
+
+.recibo-progreso-info {
+  text-align: center !important;
+  margin-top: 1rem !important;
+  padding-top: 1rem !important;
+  border-top: 1px solid var(--recibo-border) !important;
+  font-size: 0.875rem !important;
+  color: var(--recibo-text-tertiary) !important;
+}
+
+/* ================================
+   ESTADO FINALIZADO
+   ================================ */
+
+.recibo-estado-finalizado {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  padding: 1rem !important;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.08) 100%) !important;
+  border: 2px solid var(--recibo-success) !important;
+  border-radius: 8px !important;
+  color: #065f46 !important;
+  font-weight: 600 !important;
+  font-size: 1.125rem !important;
+  margin: 1.5rem 0 !important;
+}
+
+.recibo-estado-finalizado svg {
+  color: var(--recibo-success) !important;
+  flex-shrink: 0 !important;
+}
+
+/* ================================
+   NOTAS
+   ================================ */
+
+.recibo-notas {
+  background: #fef3c7 !important;
+  border-left: 4px solid var(--recibo-warning) !important;
+  padding: 1rem !important;
+  border-radius: 4px !important;
+  margin-top: 2rem !important;
+}
+
+.recibo-nota-texto {
+  font-size: 0.875rem !important;
+  color: #92400e !important;
+  margin: 0.5rem 0 !important;
+  line-height: 1.6 !important;
+}
+
+.recibo-nota-texto:first-child {
+  margin-top: 0 !important;
+}
+
+.recibo-nota-texto:last-child {
+  margin-bottom: 0 !important;
+}
+
+.recibo-nota-texto strong {
+  font-weight: 700 !important;
+}
+
+/* ================================
+   FOOTER DEL RECIBO
+   ================================ */
+
+.recibo-footer {
+  margin-top: 3rem !important;
+  padding-top: 2rem !important;
+  border-top: 2px solid var(--recibo-border) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 1.5rem !important;
+}
+
+.recibo-firma {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.recibo-linea-firma {
+  width: 200px !important;
+  height: 1px !important;
+  background: var(--recibo-text-light) !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.recibo-firma-texto {
+  font-size: 0.75rem !important;
+  color: var(--recibo-text-tertiary) !important;
+  margin: 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.recibo-footer-info {
+  text-align: right !important;
+}
+
+.recibo-footer-info p {
+  font-size: 0.75rem !important;
+  color: var(--recibo-text-light) !important;
+  margin: 0.25rem 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* ================================
+   BOTONES DE ACCIÓN
+   ================================ */
+
+.modal-recibo-acciones {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 0.75rem !important;
+  padding: 1.25rem 1.5rem !important;
+  border-top: 1px solid var(--recibo-border) !important;
+  background: var(--recibo-bg-white) !important;
+  border-radius: 0 0 12px 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.modal-recibo-boton {
+  padding: 0.625rem 1.25rem !important;
+  border-radius: 8px !important;
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  border: none !important;
+  white-space: nowrap !important;
+}
+
+.modal-recibo-boton-secundario {
+  background: var(--recibo-bg-light) !important;
+  color: var(--recibo-text-secondary) !important;
+  border: 1.5px solid var(--recibo-border) !important;
+}
+
+.modal-recibo-boton-secundario:hover:not(:disabled) {
+  background: var(--recibo-border) !important;
+  border-color: var(--recibo-text-tertiary) !important;
+}
+
+.modal-recibo-boton-primario {
+  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgb(50, 80, 212) !important;
+}
+
+.modal-recibo-boton-primario:hover:not(:disabled) {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+}
+
+.modal-recibo-boton:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.modal-recibo-boton svg {
+  flex-shrink: 0 !important;
+}
+
+/* ================================
+   CLASE NO-PRINT
+   ================================ */
+
+.no-print {
+  display: flex !important;
+}
+
+/* ================================
+   ESTILOS DE IMPRESIÓN
+   ================================ */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .modal-recibo-overlay {
+    background: white !important;
+    position: static !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+  }
+
+  .modal-recibo-contenedor {
+    max-width: none !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .modal-recibo-contenido {
+    padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  .recibo-documento {
+    box-shadow: none !important;
+    padding: 1rem !important;
+  }
+
+  .recibo-pago-destacado {
+    border: 1px solid var(--recibo-border) !important;
+    background: white !important;
+  }
+
+  .recibo-resumen {
+    border: 1px solid var(--recibo-border) !important;
+    background: white !important;
+  }
+
+  .recibo-notas {
+    border: 1px solid var(--recibo-warning) !important;
+    background: white !important;
+  }
+
+  .recibo-estado-finalizado {
+    border: 1px solid var(--recibo-success) !important;
+    background: white !important;
+  }
+
+  /* Evitar saltos de página dentro de elementos */
+  .recibo-seccion,
+  .recibo-pago-destacado,
+  .recibo-resumen,
+  .recibo-notas {
+    page-break-inside: avoid !important;
+  }
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 768px) {
+  .modal-recibo-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .modal-recibo-contenedor {
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+
+  .modal-recibo-header {
+    border-radius: 16px 16px 0 0 !important;
+    padding: 1rem !important;
+  }
+
+  .modal-recibo-titulo {
+    font-size: 1.25rem !important;
+  }
+
+  .modal-recibo-subtitulo {
+    font-size: 0.8125rem !important;
+  }
+
+  .modal-recibo-boton-cerrar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .modal-recibo-contenido {
+    padding: 1rem !important;
+  }
+
+  .recibo-documento {
+    padding: 1.5rem !important;
+  }
+
+  .recibo-encabezado {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  .recibo-info-documento {
+    text-align: left !important;
+    width: 100% !important;
+  }
+
+  .recibo-fecha {
+    justify-content: flex-start !important;
+  }
+
+  .recibo-empresa-nombre {
+    font-size: 1.5rem !important;
+  }
+
+  .recibo-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .recibo-pago-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  .recibo-pago-monto {
+    font-size: 1.75rem !important;
+  }
+
+  .recibo-pago-detalles {
+    grid-template-columns: 1fr !important;
+  }
+
+  .recibo-footer {
+    flex-direction: column !important;
+    gap: 2rem !important;
+    align-items: center !important;
+  }
+
+  .recibo-footer-info {
+    text-align: center !important;
+  }
+
+  .modal-recibo-acciones {
+    flex-direction: column !important;
+    padding: 1rem !important;
+  }
+
+  .modal-recibo-boton {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-recibo-header {
+    padding: 0.875rem !important;
+  }
+
+  .modal-recibo-titulo {
+    font-size: 1.125rem !important;
+  }
+
+  .recibo-documento {
+    padding: 1rem !important;
+  }
+
+  .recibo-empresa-nombre {
+    font-size: 1.25rem !important;
+  }
+
+  .recibo-valor-destacado {
+    font-size: 1.25rem !important;
+  }
+
+  .recibo-pago-monto {
+    font-size: 1.5rem !important;
+  }
+
+  .recibo-seccion-titulo {
+    font-size: 0.9375rem !important;
+  }
+}
+
+/* ================================
+   ACCESIBILIDAD
+   ================================ */
+
+.modal-recibo-boton:focus-visible {
+  outline: 2px solid var(--recibo-primary) !important;
+  outline-offset: 2px !important;
+}
+
+.modal-recibo-boton-cerrar:focus-visible {
+  outline: 2px solid white !important;
+  outline-offset: 2px !important;
+}
+
+/* Modo de alto contraste */
+@media (prefers-contrast: high) {
+  .modal-recibo-contenedor {
+    border: 2px solid var(--recibo-text-primary) !important;
+  }
+  
+  .recibo-documento {
+    border: 1px solid var(--recibo-border) !important;
+  }
+}
+
+/* Reducir movimiento para usuarios que lo prefieren */
+@media (prefers-reduced-motion: reduce) {
+  .modal-recibo-overlay,
+  .modal-recibo-contenedor,
+  .modal-recibo-boton,
+  .modal-recibo-boton-cerrar {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ================================
+   UTILIDADES
+   ================================ */
+
+.modal-recibo-oculto {
+  display: none !important;
+}
+
+/* ================================
+   FIN DE ESTILOS
+   ================================ */

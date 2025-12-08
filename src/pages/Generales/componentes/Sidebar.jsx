@@ -35,6 +35,8 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       case '/':
         setElementoActivo('Principal');
         break;
+
+      // Ventas
       case '/clientes':
         setElementoActivo('Clientes');
         setVentasAbierto(true);
@@ -47,6 +49,80 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setElementoActivo('Pagos');
         setVentasAbierto(true);
         break;
+
+      // Documentos
+      case '/contratos':
+        setElementoActivo('Contratos');
+        setDocumentosAbierto(true);
+        break;
+      case '/facturas':
+        setElementoActivo('Facturas');
+        setDocumentosAbierto(true);
+        break;
+      case '/recibos':
+        setElementoActivo('Recibos');
+        setDocumentosAbierto(true);
+        break;
+
+      // Operaciones
+      case '/orden-servicio':
+        setElementoActivo('OrdenServicio');
+        setOperacionesAbierto(true);
+        break;
+      case '/reservas':
+        setElementoActivo('Reservas');
+        setOperacionesAbierto(true);
+        break;
+      case '/operadores':
+        setElementoActivo('Operadores');
+        setOperacionesAbierto(true);
+        break;
+      case '/vehiculos':
+        setElementoActivo('Vehiculos');
+        setOperacionesAbierto(true);
+        break;
+      case '/guias':
+        setElementoActivo('Guias');
+        setOperacionesAbierto(true);
+        break;
+      case '/proveedores':
+        setElementoActivo('Proveedores');
+        setOperacionesAbierto(true);
+        break;
+      case '/coordinadores':
+        setElementoActivo('Coordinadores');
+        setOperacionesAbierto(true);
+        break;
+
+      // Servicios
+      case '/transporte':
+        setElementoActivo('Transporte');
+        setServiciosAbierto(true);
+        break;
+      case '/restaurantes':
+        setElementoActivo('Restaurantes');
+        setServiciosAbierto(true);
+        break;
+      case '/tours':
+        setElementoActivo('Tours');
+        setServiciosAbierto(true);
+        break;
+      case '/hospedaje':
+        setElementoActivo('Hospedaje');
+        setServiciosAbierto(true);
+        break;
+
+      // Mantenimiento
+      case '/mantenimiento-vehiculos':
+        setElementoActivo('MantenimientoVehiculos');
+        setMantenimientoAbierto(true);
+        break;
+
+      // Administración
+      case '/administracion':
+        setElementoActivo('Administracion');
+        break;
+
       default:
         break;
     }
@@ -220,9 +296,12 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
   const manejarNavegacion = (elementoId) => {
     switch (elementoId) {
+      // Dashboard
       case 'Principal':
         navigate('/');
         break;
+
+      // Ventas
       case 'Clientes':
         navigate('/clientes');
         break;
@@ -232,6 +311,65 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       case 'Pagos':
         navigate('/pagos');
         break;
+
+      // Documentos
+      case 'Contratos':
+        navigate('/contratos');
+        break;
+      case 'Facturas':
+        navigate('/facturas');
+        break;
+      case 'Recibos':
+        navigate('/recibos');
+        break;
+
+      // Operaciones
+      case 'OrdenServicio':
+        navigate('/orden-servicio');
+        break;
+      case 'Reservas':
+        navigate('/reservas');
+        break;
+      case 'Operadores':
+        navigate('/operadores');
+        break;
+      case 'Vehiculos':
+        navigate('/vehiculos');
+        break;
+      case 'Guias':
+        navigate('/guias');
+        break;
+      case 'Proveedores':
+        navigate('/proveedores');
+        break;
+      case 'Coordinadores':
+        navigate('/coordinadores');
+        break;
+
+      // Servicios
+      case 'Transporte':
+        navigate('/transporte');
+        break;
+      case 'Restaurantes':
+        navigate('/restaurantes');
+        break;
+      case 'Tours':
+        navigate('/tours');
+        break;
+      case 'Hospedaje':
+        navigate('/hospedaje');
+        break;
+
+      // Mantenimiento
+      case 'MantenimientoVehiculos':
+        navigate('/mantenimiento-vehiculos');
+        break;
+
+      // Administración
+      case 'Administracion':
+        navigate('/administracion');
+        break;
+
       default:
         console.log(`Navegación para ${elementoId} no implementada aún`);
         break;
