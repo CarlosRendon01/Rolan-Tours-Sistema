@@ -18,7 +18,6 @@ import {
   EyeOff,
 } from "lucide-react";
 import "./TablaFacturas.css";
-import * as XLSX from "xlsx";
 import {
   generarPDFFacturaTimbrada,
   imprimirFacturaTimbrada,
@@ -26,7 +25,6 @@ import {
 import { modalEliminarFactura } from "../ModalesFactura/ModalEliminarFactura";
 import ModalRegenerarFactura from "../ModalesFactura/ModalRegenerarFactura";
 import ModalEliminarDefinitivoFactura from "../ModalesFactura/ModalEliminarDefinitivoFactura";
-import ModalVisualizarExcel from "../Modales/ModalVisualizarFactura";
 
 // Constantes para estados de factura
 const ESTADOS_FACTURA = {
@@ -53,7 +51,6 @@ const TablaFacturas = ({
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
     useState(false);
-  const [modalExcelAbierto, setModalExcelAbierto] = useState(false);
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
 
   const API_URL = "http://127.0.0.1:8000/api/facturas";
@@ -81,6 +78,7 @@ const TablaFacturas = ({
       console.error("Error al cargar facturas:", error);
     }
   };
+
   // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
     if (rolUsuario === "admin") {
@@ -186,11 +184,6 @@ const TablaFacturas = ({
     setModalEliminarDefinitivoAbierto(true);
   };
 
-  const abrirModalExcel = (factura) => {
-    setFacturaSeleccionada(factura);
-    setModalExcelAbierto(true);
-  };
-
   const manejarRegenerar = async (factura, motivo) => {
     try {
       await cargarFacturas();
@@ -217,6 +210,40 @@ const TablaFacturas = ({
     }
   };
 
+  // Función para descargar la plantilla Excel
+  const descargarPlantillaExcel = async () => {
+    try {
+      console.log("🔍 Iniciando descarga de plantilla Excel...");
+
+      const response = await fetch("/Factura.xlsm");
+
+      console.log("📡 Status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(
+          "Archivo no encontrado. Verifica que Factura.xlsm esté en public/"
+        );
+      }
+
+      const blob = await response.blob();
+      console.log("📦 Archivo descargado, tamaño:", blob.size, "bytes");
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Factura.xlsm";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      console.log("✅ Descarga completada");
+    } catch (error) {
+      console.error("❌ Error:", error.message);
+      alert("Error al descargar: " + error.message);
+    }
+  };
+
   const manejarAccion = useCallback(
     async (accion, factura) => {
       setCargando(true);
@@ -229,9 +256,9 @@ const TablaFacturas = ({
             await generarPDFFacturaTimbrada(factura);
             break;
 
-          case "excel":
+          case "descargarExcel":
             setCargando(false);
-            abrirModalExcel(factura);
+            await descargarPlantillaExcel();
             return;
 
           case "enviar":
@@ -624,8 +651,10 @@ const TablaFacturas = ({
                           </button>
 
                           <button
-                            className="recibos-boton-accion recibos-pdf"
-                            onClick={() => manejarAccion("excel", factura)}
+                            className="recibos-boton-accion recibos-excel"
+                            onClick={() =>
+                              manejarAccion("descargarExcel", factura)
+                            }
                             title="Descargar Excel"
                             disabled={cargando}
                           >
@@ -791,20 +820,6 @@ const TablaFacturas = ({
             setFacturaSeleccionada(null);
           }}
           isOpen={modalEliminarDefinitivoAbierto}
-        />
-      )}
-
-      {modalExcelAbierto && facturaSeleccionada && (
-        <ModalVisualizarExcel
-          estaAbierto={modalExcelAbierto}
-          factura={facturaSeleccionada}
-          alCerrar={() => {
-            setModalExcelAbierto(false);
-            setFacturaSeleccionada(null);
-          }}
-          alDescargar={(nombreArchivo) => {
-            console.log("✅ Excel descargado:", nombreArchivo);
-          }}
         />
       )}
     </div>
