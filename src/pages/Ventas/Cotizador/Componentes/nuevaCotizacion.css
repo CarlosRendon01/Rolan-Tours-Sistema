@@ -125,18 +125,17 @@
 
 /* Modal contenido */
 .modal-contenido {
-  background: white;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  animation: slideIn 0.3s ease-out;
-  position: relative;
-  overflow: hidden;
+  background: white !important;
+  border-radius: 16px !important;
+  width: 90% !important;
+  max-width: 1100px !important;
+  max-height: 90vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  animation: slideUp 0.3s ease-out !important;
+  position: relative !important;
+  transform: scale(0.85) !important;
 }
 
 @keyframes slideIn {

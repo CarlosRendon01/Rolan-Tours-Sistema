@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // ✅ Agregar useEffect
+import React, { useState, useEffect } from 'react';
 import {
   X, User, Mail, Phone, Calendar, MapPin, FileText, DollarSign,
   CreditCard, Clock, CheckCircle, AlertCircle, TrendingUp, Receipt, Info,
@@ -11,7 +11,7 @@ import ModalReactivarAbono from '../ModalesAbonos/ModalReactivarAbono';
 import ModalEliminarDefinitivoAbono from '../ModalesAbonos/ModalEliminarDefinitivoAbono';
 
 const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) => {
-  // ✅ TODOS LOS HOOKS AL INICIO (antes del if)
+  // ✅ TODOS LOS HOOKS AL INICIO
   const [tabActiva, setTabActiva] = useState(1);
   const [modalReactivarAbierto, setModalReactivarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] = useState(false);
@@ -27,7 +27,7 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
     }
   }, [pagoSeleccionado]);
 
-  // ✅ AHORA SÍ el return condicional
+  // ✅ Return condicional
   if (!abierto || !datosActualizados) return null;
 
   const calcularProgreso = (montoPagado, montoTotal) => {
@@ -58,7 +58,7 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
 
   const cantidadAbonos = abonosFiltrados.length;
 
-  // ===== USAR MODAL EXISTENTE PARA ELIMINAR SOFT =====
+  // ===== FUNCIONES PARA MODALES =====
   const eliminarAbonoSoft = async (abono) => {
     const abonoConFormato = {
       id: abono.id,
@@ -90,7 +90,6 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
     }
   };
 
-  // ===== ABRIR MODALES EXISTENTES =====
   const abrirModalReactivar = (abono) => {
     setAbonoSeleccionado({
       id: abono.id,
@@ -137,11 +136,8 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
         <div className="modal-ver-abono-contenedor" onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div className="modal-ver-abono-header">
-            <button className="modal-ver-abono-boton-cerrar" onClick={onCerrar}>
-              <X size={20} />
-            </button>
             <div className="modal-ver-abono-header-contenido">
-              <FileText size={24} />
+              <FileText size={28} />
               <div>
                 <h2 className="modal-ver-abono-titulo">Detalle del Pago</h2>
                 <p className="modal-ver-abono-subtitulo">
@@ -149,25 +145,30 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                 </p>
               </div>
             </div>
+            <button className="modal-ver-abono-boton-cerrar" onClick={onCerrar}>
+              <X size={24} />
+            </button>
+          </div>
 
-            {/* Pestañas de navegación */}
-            <div className="modal-ver-abono-tabs">
-              <button
-                className={`modal-ver-abono-tab ${tabActiva === 1 ? 'activa' : ''}`}
-                onClick={() => setTabActiva(1)}
-              >
-                <Info size={16} />
-                Información General
-              </button>
-              <button
-                className={`modal-ver-abono-tab ${tabActiva === 2 ? 'activa' : ''}`}
-                onClick={() => setTabActiva(2)}
-              >
-                <Receipt size={16} />
-                Historial
-                <span className="modal-ver-abono-tab-badge">{cantidadAbonos}</span>
-              </button>
-            </div>
+          {/* Pestañas de navegación */}
+          <div className="modal-ver-abono-tabs">
+            <button
+              className={`modal-ver-abono-tab ${tabActiva === 1 ? 'activa' : ''}`}
+              onClick={() => setTabActiva(1)}
+              type="button"
+            >
+              <Info size={18} />
+              Información General
+            </button>
+            <button
+              className={`modal-ver-abono-tab ${tabActiva === 2 ? 'activa' : ''}`}
+              onClick={() => setTabActiva(2)}
+              type="button"
+            >
+              <Receipt size={18} />
+              Historial
+              <span className="modal-ver-abono-tab-badge">{cantidadAbonos}</span>
+            </button>
           </div>
 
           {/* Contenido */}
@@ -178,15 +179,16 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                 <div className="modal-ver-abono-seccion-estado">
                   <div className={`modal-ver-abono-badge-estado ${obtenerEstadoClase(datosActualizados.estado)}`}>
                     {datosActualizados.estado === 'FINALIZADO' ? (
-                      <CheckCircle size={14} />
+                      <CheckCircle size={16} />
                     ) : (
-                      <Clock size={14} />
+                      <Clock size={16} />
                     )}
                     <span>
                       {datosActualizados.estado === 'FINALIZADO' ? 'Pago Completado' : 'En Proceso'}
                     </span>
                   </div>
                   <div className="modal-ver-abono-fecha-creacion">
+                    <Calendar size={14} />
                     Registrado el {datosActualizados.fechaCreacion}
                   </div>
                 </div>
@@ -194,7 +196,7 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                 {/* Información del Cliente */}
                 <div className="modal-ver-abono-seccion">
                   <h3 className="modal-ver-abono-titulo-seccion">
-                    <User size={16} />
+                    <User size={18} />
                     Cliente
                   </h3>
                   <div className="modal-ver-abono-grid">
@@ -224,18 +226,18 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                 {/* Información del Servicio */}
                 <div className="modal-ver-abono-seccion">
                   <h3 className="modal-ver-abono-titulo-seccion">
-                    <MapPin size={16} />
+                    <MapPin size={18} />
                     Servicio
                   </h3>
                   <div className="modal-ver-abono-grid">
                     <div className="modal-ver-abono-campo">
-                      <label>Tipo de Tour</label>
+                      <label><FileText size={14} /> Tipo de Tour</label>
                       <div className="modal-ver-abono-valor-destacado">
                         {datosActualizados.servicio.tipo}
                       </div>
                     </div>
                     <div className="modal-ver-abono-campo">
-                      <label>Descripción</label>
+                      <label><FileText size={14} /> Descripción</label>
                       <div className="modal-ver-abono-valor">
                         {datosActualizados.servicio.descripcion}
                       </div>
@@ -252,14 +254,14 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                 {/* Plan de Pago */}
                 <div className="modal-ver-abono-seccion">
                   <h3 className="modal-ver-abono-titulo-seccion">
-                    <DollarSign size={16} />
+                    <DollarSign size={18} />
                     Plan de Pago
                   </h3>
 
                   {/* Progreso */}
                   <div className="modal-ver-abono-progreso-contenedor">
                     <div className="modal-ver-abono-progreso-info">
-                      <span className="modal-ver-abono-progreso-texto">Progreso</span>
+                      <span className="modal-ver-abono-progreso-texto">Progreso del Pago</span>
                       <span className="modal-ver-abono-progreso-porcentaje">{progreso}%</span>
                     </div>
                     <div className="modal-ver-abono-barra-progreso">
@@ -267,7 +269,9 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                         className="modal-ver-abono-barra-progreso-relleno"
                         style={{
                           width: `${progreso}%`,
-                          backgroundColor: progreso === 100 ? '#10b981' : '#3b82f6'
+                          background: progreso === 100 
+                            ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)' 
+                            : 'linear-gradient(90deg, #2563eb 0%, #3b82f6 100%)'
                         }}
                       ></div>
                     </div>
@@ -336,7 +340,7 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                       <div className="modal-ver-abono-info-item">
                         <span className="modal-ver-abono-info-label">Próximo Vencimiento:</span>
                         <span className="modal-ver-abono-info-valor destacado">
-                          <Clock size={12} />
+                          <Clock size={14} />
                           {datosActualizados.proximoVencimiento}
                         </span>
                       </div>
@@ -348,7 +352,7 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                 {datosActualizados.observaciones && (
                   <div className="modal-ver-abono-seccion">
                     <h3 className="modal-ver-abono-titulo-seccion">
-                      <FileText size={16} />
+                      <FileText size={18} />
                       Observaciones
                     </h3>
                     <div className="modal-ver-abono-observaciones-contenido">
@@ -364,13 +368,13 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                 {/* Historial de Abonos */}
                 <div className="modal-ver-abono-seccion">
                   <h3 className="modal-ver-abono-titulo-seccion">
-                    <Receipt size={16} />
+                    <Receipt size={18} />
                     Historial de Abonos ({cantidadAbonos})
                   </h3>
 
                   {cantidadAbonos === 0 ? (
                     <div className="modal-ver-abono-sin-abonos">
-                      <AlertCircle size={40} />
+                      <AlertCircle size={48} />
                       <p>No hay abonos {rolUsuario === 'admin' ? 'registrados' : 'visibles'}</p>
                     </div>
                   ) : (
@@ -382,10 +386,6 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                           <div
                             key={indice}
                             className={`modal-ver-abono-item-historial ${estaEliminado ? 'eliminado' : ''}`}
-                            style={{
-                              background: estaEliminado ? '#fee2e2' : 'white',
-                              border: estaEliminado ? '2px solid #fca5a5' : '1px solid #e5e7eb'
-                            }}
                           >
                             <div className="modal-ver-abono-historial-header">
                               <div className="modal-ver-abono-historial-numero">
@@ -393,14 +393,14 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                                 {estaEliminado && (
                                   <span style={{
                                     marginLeft: '0.5rem',
-                                    padding: '0.125rem 0.5rem',
+                                    padding: '0.25rem 0.75rem',
                                     background: '#dc2626',
                                     color: 'white',
-                                    borderRadius: '4px',
+                                    borderRadius: '6px',
                                     fontSize: '0.75rem',
-                                    fontWeight: '600'
+                                    fontWeight: '700'
                                   }}>
-                                    Eliminado
+                                    ELIMINADO
                                   </span>
                                 )}
                               </div>
@@ -408,7 +408,7 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                                 ${abono.monto.toLocaleString()}
                               </span>
                               <span className="modal-ver-abono-historial-fecha">
-                                <Calendar size={12} />
+                                <Calendar size={14} />
                                 {abono.fecha}
                               </span>
                             </div>
@@ -416,7 +416,7 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                             <div className="modal-ver-abono-historial-contenido">
                               <div className="modal-ver-abono-historial-info">
                                 <span className="modal-ver-abono-historial-metodo">
-                                  <CreditCard size={12} />
+                                  <CreditCard size={14} />
                                   {abono.metodoPago}
                                 </span>
                                 {abono.referencia && (
@@ -426,12 +426,12 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                                 )}
                                 {abono.facturaGenerada && (
                                   <span style={{
-                                    padding: '0.25rem 0.5rem',
+                                    padding: '0.375rem 0.75rem',
                                     background: '#d1fae5',
                                     color: '#065f46',
-                                    borderRadius: '6px',
+                                    borderRadius: '8px',
                                     fontSize: '0.75rem',
-                                    fontWeight: '600'
+                                    fontWeight: '700'
                                   }}>
                                     ✓ Facturado
                                   </span>
@@ -444,60 +444,24 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                                 </div>
                               )}
 
-                              {/* ✅ BOTONES DE ACCIÓN POR ABONO */}
-                              <div style={{
-                                display: 'flex',
-                                gap: '0.5rem',
-                                marginTop: '0.75rem',
-                                paddingTop: '0.75rem',
-                                borderTop: '1px solid #e5e7eb'
-                              }}>
+                              {/* Botones de Acción */}
+                              <div className="modal-ver-abono-botones-accion">
                                 {!estaEliminado ? (
                                   <>
                                     <button
                                       onClick={() => eliminarAbonoSoft(abono)}
-                                      style={{
-                                        padding: '0.5rem 1rem',
-                                        background: '#ef4444',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '6px',
-                                        fontSize: '0.875rem',
-                                        fontWeight: '600',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem',
-                                        transition: 'all 0.2s'
-                                      }}
-                                      onMouseEnter={e => e.currentTarget.style.background = '#dc2626'}
-                                      onMouseLeave={e => e.currentTarget.style.background = '#ef4444'}
+                                      className="modal-ver-abono-boton-accion modal-ver-abono-boton-eliminar"
                                     >
-                                      <Trash2 size={14} />
+                                      <Trash2 size={16} />
                                       Eliminar
                                     </button>
 
                                     {rolUsuario === 'admin' && (
                                       <button
                                         onClick={() => abrirModalEliminarDefinitivo(abono)}
-                                        style={{
-                                          padding: '0.5rem 1rem',
-                                          background: '#dc2626',
-                                          color: 'white',
-                                          border: 'none',
-                                          borderRadius: '6px',
-                                          fontSize: '0.875rem',
-                                          fontWeight: '600',
-                                          cursor: 'pointer',
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          gap: '0.5rem',
-                                          transition: 'all 0.2s'
-                                        }}
-                                        onMouseEnter={e => e.currentTarget.style.background = '#991b1b'}
-                                        onMouseLeave={e => e.currentTarget.style.background = '#dc2626'}
+                                        className="modal-ver-abono-boton-accion modal-ver-abono-boton-eliminar-definitivo"
                                       >
-                                        <XCircle size={14} />
+                                        <XCircle size={16} />
                                         Eliminar Definitivo
                                       </button>
                                     )}
@@ -508,47 +472,17 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
                                       <>
                                         <button
                                           onClick={() => abrirModalReactivar(abono)}
-                                          style={{
-                                            padding: '0.5rem 1rem',
-                                            background: '#10b981',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '6px',
-                                            fontSize: '0.875rem',
-                                            fontWeight: '600',
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.5rem',
-                                            transition: 'all 0.2s'
-                                          }}
-                                          onMouseEnter={e => e.currentTarget.style.background = '#059669'}
-                                          onMouseLeave={e => e.currentTarget.style.background = '#10b981'}
+                                          className="modal-ver-abono-boton-accion modal-ver-abono-boton-restaurar"
                                         >
-                                          <RotateCcw size={14} />
+                                          <RotateCcw size={16} />
                                           Restaurar
                                         </button>
 
                                         <button
                                           onClick={() => abrirModalEliminarDefinitivo(abono)}
-                                          style={{
-                                            padding: '0.5rem 1rem',
-                                            background: '#dc2626',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '6px',
-                                            fontSize: '0.875rem',
-                                            fontWeight: '600',
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.5rem',
-                                            transition: 'all 0.2s'
-                                          }}
-                                          onMouseEnter={e => e.currentTarget.style.background = '#991b1b'}
-                                          onMouseLeave={e => e.currentTarget.style.background = '#dc2626'}
+                                          className="modal-ver-abono-boton-accion modal-ver-abono-boton-eliminar-definitivo"
                                         >
-                                          <XCircle size={14} />
+                                          <XCircle size={16} />
                                           Eliminar de Raíz
                                         </button>
                                       </>
@@ -576,7 +510,7 @@ const ModalVerAbono = ({ abierto, onCerrar, pagoSeleccionado, onActualizar }) =>
         </div>
       </div>
 
-      {/* ✅ MODALES REUTILIZADOS */}
+      {/* Modales Reutilizados */}
       <ModalReactivarAbono
         estaAbierto={modalReactivarAbierto}
         alCerrar={() => setModalReactivarAbierto(false)}

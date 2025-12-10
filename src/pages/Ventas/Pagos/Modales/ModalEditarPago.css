@@ -9,20 +9,20 @@
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  background-color: rgba(0, 0, 0, 0.6) !important;
+  background: rgba(0, 0, 0, 0.5) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  z-index: 1000 !important;
+  z-index: 9999 !important;
   padding: 1rem !important;
-  animation: modal-editar-fade-in 0.2s ease-out !important;
-  backdrop-filter: blur(2px) !important;
+  animation: fadeIn 0.2s ease-out !important;
 }
 
 @keyframes modal-editar-fade-in {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -31,16 +31,16 @@
 /* Contenedor principal */
 .modal-editar-contenedor {
   background: white !important;
-  border-radius: 12px !important;
-  width: 100% !important;
-  max-width: 600px !important;
-  max-height: 90vh !important;
-  overflow: hidden !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-  animation: modal-editar-slide-up 0.3s ease-out !important;
-  position: relative !important;
+  border-radius: 16px !important;
+  width: 90% !important;
+  max-width: 1000px !important;
+  max-height: 100vh !important;
   display: flex !important;
   flex-direction: column !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  animation: slideUp 0.3s ease-out !important;
+  position: relative !important;
+  transform: scale(0.88) !important;
 }
 
 @keyframes modal-editar-slide-up {
@@ -48,6 +48,7 @@
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -56,15 +57,19 @@
 
 /* Header */
 .modal-editar-header {
+  padding: 0.65rem 1.25rem !important;
+  min-height: 135px !important;
+  border-bottom: 1px solid #e5e7eb !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 1.5rem !important;
-  border-bottom: none !important;
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
-  color: white !important;
-  position: relative !important;
-  overflow: hidden !important;
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  margin: 0 !important;
 }
 
 .modal-editar-header::after {

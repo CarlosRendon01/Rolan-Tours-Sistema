@@ -28,11 +28,6 @@ const BuscadorFecha = () => {
     const fechaHastaObj = new Date(hasta);
     const fechaHoy = new Date(fechaActual);
 
-    // Validar que no sean fechas pasadas
-    
-
-  
-
     // Validar que fecha hasta no sea menor que fecha desde
     if (desde && hasta && fechaHastaObj < fechaDesdeObj) {
       nuevosErrores.fechaHasta = "La fecha hasta debe ser posterior a la fecha desde";
@@ -66,7 +61,6 @@ const BuscadorFecha = () => {
     setErrores(erroresValidacion);
   };
 
-  // En la función manejarBusqueda, reemplazar por:
   const manejarBusqueda = async () => {
     if (!fechaDesde || !fechaHasta) {
       setErrores({
@@ -117,14 +111,14 @@ const BuscadorFecha = () => {
         fechaFin: orden.fecha_final_servicio ? orden.fecha_final_servicio.split('T')[0] : fechaHasta,
         destino: orden.destino || 'Sin destino',
         participantes: orden.numero_pasajeros || 0,
-        disponibles: Math.max(0, 10 - (orden.numero_pasajeros || 0)), // Simulado
+        disponibles: Math.max(0, 10 - (orden.numero_pasajeros || 0)),
         estado: orden.activo ? "confirmado" : "cancelado",
         hora: orden.horario_inicio_servicio || "09:00",
         duracion: calcularDuracion(orden.horario_inicio_servicio, orden.horario_final_servicio),
         tipo: determinarTipo(orden.destino),
         descripcion: orden.itinerario_detallado || `Servicio de ${orden.ciudad_origen} a ${orden.destino}`,
-        precio: "$850.00", // Simulado - ajustar según tu lógica
-        puntuacion: 4.5 // Simulado
+        precio: "$850.00",
+        puntuacion: 4.5
       }));
 
       console.log('✅ Resultados transformados:', resultados);
@@ -193,7 +187,12 @@ const BuscadorFecha = () => {
   const cargarBusquedaDelHistorial = (busqueda) => {
     setFechaDesde(busqueda.fechaDesde);
     setFechaHasta(busqueda.fechaHasta);
-    setErrores({}); // Limpiar errores al cargar del historial
+    setErrores({});
+  };
+
+  const eliminarDelHistorial = (id, e) => {
+    e.stopPropagation(); 
+    setHistorial(prev => prev.filter(item => item.id !== id));
   };
 
   return (
@@ -350,9 +349,11 @@ const BuscadorFecha = () => {
                       }
                     }}
                   >
-                    <span>{formatearFecha(busqueda.fechaDesde)} - {formatearFecha(busqueda.fechaHasta)}</span>
-                    <div className="historial-info">
-                      <small>{busqueda.fecha}</small>
+                    <span className="historial-fechas">
+                      {formatearFecha(busqueda.fechaDesde)} - {formatearFecha(busqueda.fechaHasta)}
+                    </span>
+                    <div className="historial-acciones">
+                      <small className="historial-fecha-busqueda">{busqueda.fecha}</small>
                       <button
                         className="boton-eliminar-historial"
                         onClick={(e) => eliminarDelHistorial(busqueda.id, e)}

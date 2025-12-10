@@ -37,7 +37,7 @@
   max-height: 90vh;  /* CAMBIO: de 85vh a 90vh */
   overflow: hidden;
   animation: slideIn 0.4s ease-out;
-  border-top: 4px solid #3b82f6;
+  border-top: 4px solid #2563eb;
   display: flex;          /* NUEVO: añadir flexbox */
   flex-direction: column; /* NUEVO: dirección columna */
 }
@@ -55,23 +55,11 @@
 
 /* ===== HEADER ===== */
 .resultados-header {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #2563eb 100%);
   color: white;
   padding: 24px 28px;
   position: relative;
   overflow: hidden;
-}
-
-.resultados-header::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20px;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  opacity: 0.6;
 }
 
 .header-contenido {

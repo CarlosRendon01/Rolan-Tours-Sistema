@@ -20,10 +20,11 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const [mantenimientoAbierto, setMantenimientoAbierto] = useState(false);
   const [administracionAbierto, setAdministracionAbierto] = useState(false);
   const [tooltipAbierto, setTooltipAbierto] = useState(null);
-  const [modoOscuro, setModoOscuro] = useState(() => {
+  /*const [modoOscuro, setModoOscuro] = useState(() => {
     const modoGuardado = localStorage.getItem('modoOscuro');
     return modoGuardado === 'true';
-  });
+  });/*/
+  const modoOscuro = false;
   const [hoverExpandido, setHoverExpandido] = useState(false);
 
   const navigate = useNavigate();
@@ -137,7 +138,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     }
   }, [location.pathname]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     localStorage.setItem('modoOscuro', modoOscuro.toString());
 
     if (modoOscuro) {
@@ -149,7 +150,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     return () => {
       document.body.classList.remove('modo-oscuro');
     };
-  }, [modoOscuro]);
+  }, [modoOscuro]);*/
 
   useEffect(() => {
     if (!estaAbierto) {
@@ -585,8 +586,10 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
             </button>
           </div>
 
+
+          
           {/* SECCIÓN MODO OSCURO */}
-          <div className="seccion-modo-oscuro">
+          {/*<div className="seccion-modo-oscuro">
             <button
               className="btn-modo-oscuro"
               onClick={alternarModoOscuro}
@@ -598,7 +601,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
               </span>
               {(((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && <div className="toggle-modo-oscuro"></div>}
             </button>
-          </div>
+          </div> */} 
         </nav>
       </aside>
     </div >

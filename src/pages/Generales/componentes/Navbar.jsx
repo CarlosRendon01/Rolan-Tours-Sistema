@@ -314,18 +314,11 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
               </div>
             )}
 
-            <img
-              src="/assets/logo.png"
-              alt="Logo Rolan Tours"
-              className="logo-empresa"
-              loading="lazy"
-              onError={(e) => e.target.style.display = 'none'}
-            />
-
+           
             {logoRolanCargado ? (
               <img
                 ref={refLogoRolan}
-                src="/assets/IconoRolanTours.png"
+                src="/assets/rolanTours.png"
                 alt="Rolan Tours"
                 className="logo-rolan"
                 loading="lazy"
@@ -333,7 +326,7 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
                 onLoad={manejarCargaLogoRolan}
                 style={{
                   height: responsiveData.esMovil
-                    ? (responsiveData.ancho <= 480 ? '24px' : '28px')
+                    ? (responsiveData.ancho <= 480 ? '34px' : '40px')
                     : responsiveData.esTablet ? '32px' : '36px',
                   width: 'auto',
                   objectFit: 'contain',
