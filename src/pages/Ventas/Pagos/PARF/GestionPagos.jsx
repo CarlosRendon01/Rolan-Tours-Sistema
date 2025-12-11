@@ -504,7 +504,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                               title={pago.activo ? "Eliminar definitivamente" : "Eliminar de raíz"}
                               disabled={cargando}
                             >
-                              <XCircle size={14} />
+                              <Trash2 size={14} />
                             </button>
                           </>
                         )}

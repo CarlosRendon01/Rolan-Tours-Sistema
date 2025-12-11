@@ -506,12 +506,13 @@
 .reservas-boton-accion.reservas-editar {
   background: linear-gradient(45deg, #3b82f6, #2563eb);
   color: #ffffff;
+
 }
 
 .reservas-boton-accion.reservas-editar:hover {
   background: linear-gradient(45deg, #2563eb, #1d4ed8);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+
 }
 
 .reservas-boton-accion.reservas-eliminar {
@@ -623,6 +624,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -634,10 +636,12 @@
 }
 
 @keyframes reservas-pulse {
+
   0%,
   100% {
     transform: scaleY(1);
   }
+
   50% {
     transform: scaleY(1.2);
   }

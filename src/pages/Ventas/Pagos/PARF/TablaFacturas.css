@@ -29,7 +29,7 @@
 
 /* ========== HEADER ========== */
 .facturas-encabezado {
-  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%) !important;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
   padding: 2rem;
   display: flex;
   justify-content: space-between;

@@ -5,24 +5,25 @@
 
 /* Overlay del modal VER */
 .superposicion-modal-ver {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeInVer 0.3s ease;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+  animation: mvoFadeIn 0.2s ease !important;
 }
 
 @keyframes fadeInVer {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -30,35 +31,42 @@
 
 /* Contenido del modal VER */
 .contenido-modal-ver {
-  background-color: #fff;
-  border-radius: 12px;
-  width: 380px;
-  max-width: 90%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideInVer 0.3s ease;
-  overflow: hidden;
-  position: relative;
-  margin-top: 60px;
+  background: white !important;
+  border-radius: 16px !important;
+  max-width: 1200px !important;
+  width: 95% !important;
+  max-height: 90vh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  animation: mvoSlideUp 0.3s ease !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25)!important;
+  transform: scale(0.9) !important;
 }
 
 @keyframes slideInVer {
   from {
-    opacity: 0;
-    transform: translateY(-30px) scale(0.95);
+    opacity: 0 !important;
+    transform: translateY(-30px) scale(0.95)!important;
   }
+
   to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    opacity: 1 !important;
+    transform: translateY(0) scale(1)!important;
   }
 }
 
 /* Header del modal VER */
 .encabezado-modal-ver {
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-  padding: 25px;
-  margin: 0;
-  position: relative;
-  color: white;
+  padding: 2rem !important;
+  border-bottom: 1px solid #006eff !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.50) !important;
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
 }
 
 .encabezado-modal-ver::after {
@@ -206,52 +214,52 @@
 
 /* Botón de cerrar inferior VER */
 .boton-cerrar-inferior-ver {
-  background-color: white;
-  color: #dc2626;
-  border: 2px solid #dc2626;
-  border-radius: 8px;
-  padding: 11px 20px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 90px;
-  position: relative;
-  overflow: hidden;
+  background-color: white!important;
+  color: #d6dbd6 !important;
+  border: 2px solid #d6dbd6 !important;
+  border-radius: 8px !important;
+  padding: 11px 20px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  min-width: 90px !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
 .boton-cerrar-inferior-ver::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  transform: translate(-50%, -50%);
-  transition: width 0.4s, height 0.4s;
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translate(-50%, -50%)!important;
+  transition: width 0.4s, height 0.4s!important;
 }
 
 .boton-cerrar-inferior-ver:hover::before {
-  width: 300px;
-  height: 300px;
+  width: 300px !important;
+  height: 300px!important;
 }
 
 .boton-cerrar-inferior-ver:hover {
-  background-color: #dc2626;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  background-color: #dc2626 !important;
+  color: white!important;
+  transform: translateY(-2px)!important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3)!important;
 }
 
 .boton-cerrar-inferior-ver:active {
-  transform: translateY(0);
+  transform: translateY(0)!important;
 }
 
 .boton-cerrar-inferior-ver:focus {
-  outline: 2px solid #dc2626;
-  outline-offset: 2px;
+  outline: 2px solid #dc2626 !important;
+  outline-offset: 2px !important;
 }
 
 /* Media Queries VER - Responsivo */
@@ -261,19 +269,19 @@
     margin: 10px;
     transform: scale(0.95);
   }
-  
+
   .encabezado-modal-ver {
     padding: 20px;
   }
-  
+
   .titulo-modal-ver {
     font-size: 18px;
   }
-  
+
   .cuerpo-modal-ver {
     padding: 20px;
   }
-  
+
   .boton-cerrar-modal-ver {
     right: 10px;
     top: 10px;
@@ -284,7 +292,7 @@
   .superposicion-modal-ver {
     padding: 20px;
   }
-  
+
   .contenido-modal-ver {
     max-width: 95%;
   }

@@ -5,13 +5,13 @@ import './ModalEliminarDefinitivo.css';
 
 const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
   const [cargando, setCargando] = useState(false);
-  const [confirmacionTexto, setConfirmacionTexto] = useState('');
+  //const [confirmacionTexto, setConfirmacionTexto] = useState('');
   const [mostrarAdvertencia, setMostrarAdvertencia] = useState(true);
 
   if (!isOpen) return null;
 
-  const textoConfirmacion = 'ELIMINAR';
-  const puedeEliminar = confirmacionTexto.toUpperCase() === textoConfirmacion;
+  // const textoConfirmacion = 'ELIMINAR';
+  // const puedeEliminar = confirmacionTexto.toUpperCase() === textoConfirmacion;
 
   const formatearMoneda = (monto) => {
     return new Intl.NumberFormat('es-MX', {
@@ -21,13 +21,10 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
   };
 
   const manejarConfirmacion = async () => {
-    if (!puedeEliminar) return;
-
     setCargando(true);
     try {
       const token = localStorage.getItem("token");
 
-      // ✅ Llamar al backend para eliminar definitivamente
       await axios.delete(`http://127.0.0.1:8000/api/abonos/${recibo.id}/force`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,6 +47,7 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
     }
   };
 
+
   return (
     <div className="modal-eliminar-overlay" onClick={onCerrar}>
       <div className="modal-eliminar-contenedor" onClick={(e) => e.stopPropagation()}>
@@ -61,6 +59,7 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
             <h2 className="modal-eliminar-titulo">Eliminar Definitivamente</h2>
             <p className="modal-eliminar-subtitulo">Esta acción no se puede deshacer</p>
           </div>
+
           <button className="modal-eliminar-boton-cerrar" onClick={onCerrar} aria-label="Cerrar">
             <X size={20} />
           </button>
@@ -77,6 +76,7 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
                   No podrá recuperarse después de confirmar esta operación.
                 </p>
               </div>
+              {/* 
               <button
                 className="modal-eliminar-alerta-cerrar"
                 onClick={() => setMostrarAdvertencia(false)}
@@ -84,6 +84,7 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
               >
                 <X size={16} />
               </button>
+              */}
             </div>
           )}
 
@@ -107,32 +108,7 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
               <span className="modal-eliminar-info-value">{recibo.estado}</span>
             </div>
           </div>
-
-          <div className="modal-eliminar-confirmacion-seccion">
-            <p className="modal-eliminar-confirmacion-instruccion">
-              Para confirmar la eliminación definitiva, escriba{' '}
-              <strong className="modal-eliminar-texto-requerido">{textoConfirmacion}</strong>{' '}
-              en el campo siguiente:
-            </p>
-            <div className="modal-eliminar-form-group">
-              <input
-                type="text"
-                className={`modal-eliminar-form-input ${puedeEliminar ? 'modal-eliminar-input-valido' : ''}`}
-                placeholder="Escriba ELIMINAR para confirmar"
-                value={confirmacionTexto}
-                onChange={(e) => setConfirmacionTexto(e.target.value)}
-                autoComplete="off"
-                autoFocus
-              />
-              {puedeEliminar && (
-                <div className="modal-eliminar-confirmacion-valida">
-                  <CheckCircle size={16} />
-                  <span>Confirmación correcta</span>
-                </div>
-              )}
-            </div>
-          </div>
-
+          {/* 
           <div className="modal-eliminar-consecuencias">
             <p className="modal-eliminar-consecuencias-titulo">Consecuencias de esta acción:</p>
             <ul className="modal-eliminar-consecuencias-lista">
@@ -142,6 +118,7 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
               <li>No será posible regenerar o recuperar este recibo</li>
             </ul>
           </div>
+*/}
         </div>
 
         <div className="modal-eliminar-footer">
@@ -155,7 +132,7 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
           <button
             className="modal-eliminar-boton-peligro"
             onClick={manejarConfirmacion}
-            disabled={cargando || !puedeEliminar}
+            disabled={cargando}
           >
             {cargando ? (
               <>

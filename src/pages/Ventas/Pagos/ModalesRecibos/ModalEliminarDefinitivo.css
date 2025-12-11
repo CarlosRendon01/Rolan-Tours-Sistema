@@ -10,7 +10,6 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: modalEliminarFadeIn 0.2s ease-out;
   backdrop-filter: blur(6px);
 }
 
@@ -35,6 +34,8 @@
   flex-direction: column;
   animation: modalEliminarSlideUp 0.3s ease-out;
   border: 2px solid #fecaca;
+  
+
 }
 
 @keyframes modalEliminarSlideUp {
@@ -67,7 +68,6 @@
   justify-content: center;
   color: white;
   flex-shrink: 0;
-  animation: modalEliminarPulsar 1.5s ease-in-out infinite;
 }
 
 @keyframes modalEliminarPulsar {
@@ -135,7 +135,6 @@
   border: 2px solid #fca5a5;
   margin-bottom: 24px;
   position: relative;
-  animation: modalEliminarShake 0.5s ease-in-out;
 }
 
 @keyframes modalEliminarShake {
@@ -311,7 +310,6 @@
   color: #065f46;
   font-size: 13px;
   font-weight: 600;
-  animation: modalEliminarSlideIn 0.3s ease-out;
 }
 
 @keyframes modalEliminarSlideIn {
@@ -413,9 +411,7 @@
   transform: none !important;
 }
 
-.modal-eliminar-icono-temblor {
-  animation: modalEliminarTemblor 0.5s ease-in-out infinite;
-}
+
 
 @keyframes modalEliminarTemblor {
   0%, 100% {

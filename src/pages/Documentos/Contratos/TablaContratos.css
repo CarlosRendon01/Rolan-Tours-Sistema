@@ -233,24 +233,31 @@
 .Contratos-fila-encabezado th:nth-child(1) {
   width: 80px;
 }
+
 .Contratos-fila-encabezado th:nth-child(2) {
   width: 200px;
 }
+
 .Contratos-fila-encabezado th:nth-child(3) {
   width: 220px;
 }
+
 .Contratos-fila-encabezado th:nth-child(4) {
   width: 250px;
 }
+
 .Contratos-fila-encabezado th:nth-child(5) {
   width: 150px;
 }
+
 .Contratos-fila-encabezado th:nth-child(6) {
   width: 150px;
 }
+
 .Contratos-fila-encabezado th:nth-child(7) {
   width: 150px;
 }
+
 .Contratos-fila-encabezado th:nth-child(8) {
   width: 150px;
 }
@@ -428,11 +435,12 @@
 .Contratos-boton-accion.Contratos-editar {
   background: linear-gradient(45deg, #3b82f6, #2563eb);
   color: #ffffff;
+
 }
 
 .Contratos-boton-accion.Contratos-editar:hover {
-  background: linear-gradient(45deg, #2563eb, #1d4ed8);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+   background: linear-gradient(45deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
 }
 
 .Contratos-boton-accion.Contratos-eliminar {
@@ -543,6 +551,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -550,10 +559,12 @@
 }
 
 @keyframes Contratos-pulse {
+
   0%,
   100% {
     transform: scaleY(1);
   }
+
   50% {
     transform: scaleY(1.2);
   }
@@ -566,12 +577,15 @@
 .Contratos-lineas-decorativas:hover .Contratos-linea:nth-child(1) {
   animation-delay: 0s;
 }
+
 .Contratos-lineas-decorativas:hover .Contratos-linea:nth-child(2) {
   animation-delay: 0.1s;
 }
+
 .Contratos-lineas-decorativas:hover .Contratos-linea:nth-child(3) {
   animation-delay: 0.2s;
 }
+
 .Contratos-lineas-decorativas:hover .Contratos-linea:nth-child(4) {
   animation-delay: 0.3s;
 }
@@ -757,24 +771,31 @@
   .Contratos-fila-contrato td:nth-child(1):before {
     content: "ID:";
   }
+
   .Contratos-fila-contrato td:nth-child(2):before {
     content: "CLIENTE:";
   }
+
   .Contratos-fila-contrato td:nth-child(3):before {
     content: "FECHA INICIO:";
   }
+
   .Contratos-fila-contrato td:nth-child(4):before {
     content: "FECHA FINAL:";
   }
+
   .Contratos-fila-contrato td:nth-child(5):before {
     content: "PASAJEROS:";
   }
+
   .Contratos-fila-contrato td:nth-child(6):before {
     content: "ORIGEN:";
   }
+
   .Contratos-fila-contrato td:nth-child(7):before {
     content: "DESTINO:";
   }
+
   .Contratos-fila-contrato td:nth-child(8):before {
     content: "ACCIONES:";
   }
@@ -849,8 +870,7 @@
     font-size: 0.7rem;
   }
 
-  .Contratos-numeros-paginacion
-    .Contratos-numero-pagina:not(.Contratos-activo) {
+  .Contratos-numeros-paginacion .Contratos-numero-pagina:not(.Contratos-activo) {
     display: none;
   }
 }

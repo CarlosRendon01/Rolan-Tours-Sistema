@@ -13,25 +13,25 @@
 
 /* Superposición del modal */
 .superposicion-modal-ver {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 1rem;
-  animation: fadeInVer 0.2s ease-out;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+  animation: mvoFadeIn 0.2s ease !important;
 }
 
 @keyframes fadeInVer {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -39,17 +39,17 @@
 
 /* Contenido del modal */
 .contenido-modal-ver {
-  background: white;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 1200px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  animation: slideInVer 0.3s ease-out;
-  position: relative;
+  background: white !important;
+  border-radius: 16px !important;
+  max-width: 1100px !important;
+  width: 95% !important;
+  max-height: 90vh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  animation: mvoSlideUp 0.3s ease !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  transform: scale(0.9) !important;
 }
 
 .contenido-modal-ver.modal-xl {
@@ -61,6 +61,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -69,15 +70,15 @@
 
 /* Encabezado del modal */
 .encabezado-modal-ver {
-  padding: 1.75rem 2.5rem;
-  border-bottom: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  position: relative;
+  padding: 2rem !important;
+  border-bottom: 1px solid #006eff !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.50) !important;
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
 }
 
 .titulo-modal-ver {

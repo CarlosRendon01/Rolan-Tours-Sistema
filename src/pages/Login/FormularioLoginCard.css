@@ -7,7 +7,7 @@
   border: 5px solid #1e40af;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  
+
   /* DESKTOP: Posición absoluta (1200px+) */
   position: absolute;
   top: 50%;
@@ -48,9 +48,18 @@
   height: 4px;
 }
 
-.franja.roja { background: #dc2626; }
-.franja.blanca { background: white; border: 1px solid #e5e7eb; }
-.franja.verde { background: #1630a3; }
+.franja.roja {
+  background: #dc2626;
+}
+
+.franja.blanca {
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.franja.verde {
+  background: #1630a3;
+}
 
 .titulo-bienvenida {
   font-size: 20px;
@@ -134,8 +143,14 @@
   transition: background-color 0.2s;
 }
 
-.icono-entrada:hover { background: #b91c1c; }
-.icono-entrada svg { width: 14px; height: 14px; }
+.icono-entrada:hover {
+  background: #b91c1c;
+}
+
+.icono-entrada svg {
+  width: 14px;
+  height: 14px;
+}
 
 .opciones-formulario {
   display: flex;
@@ -157,7 +172,9 @@
   letter-spacing: 0.5px;
 }
 
-.boton-mostrar-contraseña:hover { color: #dc2626; }
+.boton-mostrar-contraseña:hover {
+  color: #dc2626;
+}
 
 .mensaje-error {
   background: #fef2f2;
@@ -184,8 +201,15 @@
   letter-spacing: 0.5px;
 }
 
-.boton-enviar:hover:not(:disabled) { background: #b91c1c; }
-.boton-enviar:disabled { background: #9ca3af; cursor: not-allowed; opacity: 0.7; }
+.boton-enviar:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.boton-enviar:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
 
 .separador-o {
   text-align: center;
@@ -230,12 +254,16 @@
   margin-bottom: 10px;
   padding-right: 55px;
   padding-top: 30px;
+  position: relative;
 }
 
 .logo-rolan-transporte-img {
-  width: 200px;
-  height: auto;
+  width: 280px;  /* hazlo tan grande como lo quieras */
+  position: absolute;
+  top: -20px;     /* ajusta para subirlo/bajarlo */
+  right: 20px;   /* ajusta para moverlo a la derecha */
 }
+
 
 .ilustracion-transporte {
   flex: 1;
@@ -252,7 +280,7 @@
   height: auto;
   z-index: 2;
   position: relative;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 /* Elementos decorativos */
@@ -273,7 +301,7 @@
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   z-index: 3;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .pin-ubicacion::after {
@@ -304,13 +332,11 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(
-    90deg,
-    #dc2626 0px,
-    #dc2626 8px,
-    transparent 8px,
-    transparent 16px
-  );
+  background: repeating-linear-gradient(90deg,
+      #dc2626 0px,
+      #dc2626 8px,
+      transparent 8px,
+      transparent 16px);
   border-radius: 1px;
 }
 
@@ -323,7 +349,7 @@
   background: white;
   border-radius: 6px;
   z-index: 4;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
   transform: rotate(-8deg);
 }
 
@@ -357,11 +383,11 @@
     height: 420px;
     right: 30px;
   }
-  
+
   .logo-rolan-transporte-img {
     width: 160px;
   }
-  
+
   .imagen-van {
     width: 200px;
   }
@@ -373,33 +399,33 @@
     /* Cambiar a posición estática */
     position: static;
     transform: none;
-    
+
     /* Centrar horizontalmente */
     margin: 20px auto;
-    
+
     /* Ajustar tamaño */
     width: calc(100% - 40px);
     max-width: 600px;
     height: auto;
     min-height: 450px;
-    
+
     /* Mantener layout horizontal en tablets */
     flex-direction: row;
   }
-  
+
   .tarjeta-login {
     padding: 20px;
   }
-  
+
   .seccion-transporte {
     padding: 15px;
   }
-  
+
   .logo-rolan-transporte-img {
     width: 120px;
     padding-right: 20px;
   }
-  
+
   .imagen-van {
     width: 160px;
   }
@@ -412,25 +438,25 @@
     position: static;
     transform: none;
     margin: 15px auto;
-    
+
     /* Ancho completo con margen */
     width: calc(100% - 30px);
     max-width: 450px;
     height: auto;
     min-height: 600px;
-    
+
     /* Cambiar a layout vertical */
     flex-direction: column;
-    
+
     border-width: 3px;
   }
-  
+
   .tarjeta-login {
     flex: none;
     padding: 25px 20px;
     border-radius: 12px 12px 0 0;
   }
-  
+
   .seccion-transporte {
     flex: none;
     height: 180px;
@@ -439,20 +465,20 @@
     align-items: center;
     justify-content: space-between;
   }
-  
+
   .encabezado-transporte {
     margin: 0;
     padding: 0;
   }
-  
+
   .logo-rolan-transporte-img {
     width: 90px;
   }
-  
+
   .ilustracion-transporte {
     padding: 5px;
   }
-  
+
   .imagen-van {
     width: 120px;
   }
@@ -464,77 +490,77 @@
     position: static;
     transform: none;
     margin: 10px auto;
-    
+
     width: calc(100% - 20px);
     max-width: 380px;
     height: auto;
     min-height: 550px;
-    
+
     flex-direction: column;
     border-width: 2px;
     border-radius: 8px;
   }
-  
+
   .tarjeta-login {
     padding: 20px 15px;
     border-radius: 8px 8px 0 0;
   }
-  
+
   .titulo-bienvenida {
     font-size: 14px;
   }
-  
+
   .subtitulo-bienvenida {
     font-size: 10px;
   }
-  
+
   .franja {
     width: 16px;
     height: 3px;
   }
-  
+
   .formulario-login {
     gap: 12px;
   }
-  
+
   .grupo-entrada input {
     padding: 8px 28px 8px 10px;
     font-size: 11px;
   }
-  
+
   .icono-entrada {
     width: 28px;
   }
-  
+
   .icono-entrada svg {
     width: 12px;
     height: 12px;
   }
-  
+
   .boton-enviar {
     padding: 8px;
     font-size: 9px;
   }
-  
+
   .seccion-transporte {
     height: 150px;
     border-radius: 0 0 8px 8px;
     padding: 10px;
   }
-  
+
   .logo-rolan-transporte-img {
     width: 70px;
   }
-  
+
   .imagen-van {
     width: 100px;
   }
-  
+
   .pin-ubicacion {
     width: 12px;
     height: 12px;
   }
-  
+
   .pin-ubicacion::after {
     top: 2px;
     left: 2px;
@@ -550,23 +576,23 @@
     margin: 8px auto;
     min-height: 500px;
   }
-  
+
   .tarjeta-login {
     padding: 15px 12px;
   }
-  
+
   .titulo-bienvenida {
     font-size: 13px;
   }
-  
+
   .logo-rolan-transporte-img {
     width: 60px;
   }
-  
+
   .imagen-van {
     width: 85px;
   }
-  
+
   .seccion-transporte {
     height: 130px;
   }
@@ -578,41 +604,41 @@
     position: static;
     transform: none;
     margin: 10px auto;
-    
+
     width: calc(100% - 20px);
     max-width: 700px;
     height: auto;
     max-height: 85vh;
-    
+
     flex-direction: row;
     border-radius: 8px;
   }
-  
+
   .tarjeta-login {
     flex: 1.5;
     padding: 15px;
     border-radius: 8px 0 0 8px;
   }
-  
+
   .formulario-login {
     gap: 8px;
   }
-  
+
   .encabezado-tarjeta {
     margin-bottom: 10px;
   }
-  
+
   .seccion-transporte {
     flex: 1;
     height: auto;
     border-radius: 0 8px 8px 0;
     flex-direction: column;
   }
-  
+
   .logo-rolan-transporte-img {
     width: 60px;
   }
-  
+
   .imagen-van {
     width: 80px;
   }

@@ -138,7 +138,7 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
       <div className="seccion-transporte">
         <div className="encabezado-transporte">
           <img
-            src="/assets/RolanTranshportes.png"
+            src="/assets/CORPORTATIVO.png"
             alt="Rolan Transporte Logo"
             className="logo-rolan-transporte-img"
           />

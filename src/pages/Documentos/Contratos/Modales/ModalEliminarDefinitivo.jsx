@@ -20,16 +20,16 @@ const ModalEliminarDefinitivo = ({ contrato, alConfirmar, alCancelar }) => {
           <AlertTriangle size={56} />
         </div>
 
-        <h2 className="modal-eliminar-def-titulo">⚠️ ¡ADVERTENCIA!</h2>
+        <h2 className="modal-eliminar-def-titulo">âš ï¸ Â¡ADVERTENCIA!</h2>
 
         <div className="modal-eliminar-def-alerta-principal">
           <p className="modal-eliminar-def-texto-peligro">
-            Esta acción es IRREVERSIBLE
+            Esta acciÃ³n es IRREVERSIBLE
           </p>
         </div>
 
         <p className="modal-eliminar-def-descripcion">
-          ¿Está completamente seguro de <strong>ELIMINAR DEFINITIVAMENTE</strong> este contrato del sistema sin posibilidad de recuperación?
+          Â¿EstÃ¡ completamente seguro de <strong>ELIMINAR DEFINITIVAMENTE</strong> este contrato del sistema sin posibilidad de recuperaciÃ³n?
         </p>
 
         <div className="modal-eliminar-def-botones">
@@ -39,7 +39,7 @@ const ModalEliminarDefinitivo = ({ contrato, alConfirmar, alCancelar }) => {
           </button>
           <button className="modal-eliminar-def-btn-confirmar" onClick={manejarConfirmar}>
             <Trash2 size={18} />
-            Sí, Eliminar Definitivamente
+            SÃ­, Eliminar Definitivamente
           </button>
         </div>
       </div>

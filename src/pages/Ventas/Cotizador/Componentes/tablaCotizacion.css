@@ -9,7 +9,7 @@
 }
 
 .cotizaciones-encabezado {
-  background: linear-gradient(135deg, #dc3545 0%, #b71c1c 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   padding: 2.5rem 3rem;
   display: flex;
   justify-content: space-between;
@@ -95,11 +95,9 @@
 }
 
 .cotizaciones-estadistica:first-child {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.2),
-    rgba(29, 78, 216, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.2),
+      rgba(29, 78, 216, 0.3));
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
@@ -116,12 +114,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(59, 130, 246, 0.1) 50%,
-    transparent 70%
-  );
+  background: linear-gradient(45deg,
+      transparent 30%,
+      rgba(59, 130, 246, 0.1) 50%,
+      transparent 70%);
   transform: translateX(-100%);
   transition: transform 0.6s ease;
 }
@@ -131,11 +127,9 @@
 }
 
 .cotizaciones-estadistica:last-child {
-  background: linear-gradient(
-    135deg,
-    rgba(245, 158, 11, 0.2),
-    rgba(217, 119, 6, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(245, 158, 11, 0.2),
+      rgba(217, 119, 6, 0.3));
   border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
@@ -152,12 +146,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(245, 158, 11, 0.1) 50%,
-    transparent 70%
-  );
+  background: linear-gradient(45deg,
+      transparent 30%,
+      rgba(245, 158, 11, 0.1) 50%,
+      transparent 70%);
   transform: translateX(-100%);
   transition: transform 0.6s ease;
 }
@@ -462,14 +454,15 @@
 }
 
 .cotizaciones-boton-accion.cotizaciones-editar {
-  background: linear-gradient(45deg, #17a2b8, #20c997);
-  color: white;
+  background: linear-gradient(45deg, #3b82f6, #2563eb);
+  color: #ffffff;
+
 }
 
 .cotizaciones-boton-accion.cotizaciones-editar:hover {
-  background: linear-gradient(45deg, #138496, #1aa179);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+  background: linear-gradient(45deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+
 }
 
 .cotizaciones-boton-accion.cotizaciones-eliminar {
@@ -582,11 +575,13 @@
   color: #dee2e6;
   margin-bottom: 1rem;
 }
+
 @keyframes cotizaciones-fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -594,10 +589,12 @@
 }
 
 @keyframes cotizaciones-pulse {
+
   0%,
   100% {
     transform: scaleY(1);
   }
+
   50% {
     transform: scaleY(1.2);
   }
@@ -823,7 +820,7 @@
     padding-right: 0.5rem;
   }
 
-  .cotizaciones-fila-cotizacion td > * {
+  .cotizaciones-fila-cotizacion td>* {
     flex: 1;
     word-break: break-word;
   }
@@ -901,6 +898,7 @@
     width: 16px;
     height: 16px;
   }
+
   .cotizaciones-boton-nueva-wrapper .cotizacion-boton-agregar {
     width: 62%;
     justify-content: center;
@@ -916,8 +914,7 @@
     font-size: 0.7rem;
   }
 
-  .cotizaciones-numeros-paginacion
-    .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
+  .cotizaciones-numeros-paginacion .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
     display: none;
   }
 

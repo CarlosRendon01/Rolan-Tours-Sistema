@@ -641,6 +641,8 @@ const TablaFacturas = ({
                     <div className="facturas-botones-accion">
                       {factura.activo === true ? (
                         <>
+
+                        
                           <button
                             className="facturas-boton-accion facturas-ver"
                             onClick={() => manejarAccion("descargar", factura)}
@@ -649,6 +651,7 @@ const TablaFacturas = ({
                           >
                             <Download size={14} />
                           </button>
+                          
 
                           <button
                             className="recibos-boton-accion recibos-excel"
@@ -663,6 +666,7 @@ const TablaFacturas = ({
 
                           {factura.estado === ESTADOS_FACTURA.TIMBRADA && (
                             <>
+                            {/*  
                               <button
                                 className="facturas-boton-accion facturas-editar"
                                 onClick={() => manejarAccion("enviar", factura)}
@@ -671,6 +675,8 @@ const TablaFacturas = ({
                               >
                                 <Send size={14} />
                               </button>
+                              */}
+
                               <button
                                 className="facturas-boton-accion facturas-eliminar"
                                 onClick={() =>
@@ -686,6 +692,7 @@ const TablaFacturas = ({
 
                           {factura.estado === ESTADOS_FACTURA.CANCELADA && (
                             <>
+                             {/*  
                               <button
                                 className="facturas-boton-accion facturas-editar"
                                 onClick={() => manejarAccion("enviar", factura)}
@@ -694,6 +701,8 @@ const TablaFacturas = ({
                               >
                                 <Send size={14} />
                               </button>
+                              */}
+
                               <button
                                 className="facturas-boton-accion facturas-eliminar"
                                 onClick={() =>
