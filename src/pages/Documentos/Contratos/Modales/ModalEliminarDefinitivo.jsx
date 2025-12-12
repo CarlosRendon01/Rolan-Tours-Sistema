@@ -10,36 +10,84 @@ const ModalEliminarDefinitivo = ({ contrato, alConfirmar, alCancelar }) => {
   };
 
   return (
-    <div className="modal-eliminar-def-overlay">
-      <div className="modal-eliminar-def-contenido">
-        <button className="modal-eliminar-def-cerrar" onClick={alCancelar}>
-          <X size={24} />
-        </button>
-
-        <div className="modal-eliminar-def-icono">
-          <AlertTriangle size={56} />
+    <div className="modal-eliminar-overlay" onClick={alCancelar}>
+      <div className="modal-eliminar-contenedor" onClick={(e) => e.stopPropagation()}>
+        {/* HEADER */}
+        <div className="modal-eliminar-header">
+          <div className="modal-eliminar-icono-header">
+            <Trash2 size={24} />
+          </div>
+          <div className="modal-eliminar-titulo-seccion">
+            <h2 className="modal-eliminar-titulo">Eliminar Definitivamente</h2>
+            <p className="modal-eliminar-subtitulo">Esta acción no se puede deshacer</p>
+          </div>
+          <button 
+            className="modal-eliminar-boton-cerrar" 
+            onClick={alCancelar} 
+            aria-label="Cerrar"
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        <h2 className="modal-eliminar-def-titulo">âš ï¸ Â¡ADVERTENCIA!</h2>
+        {/* CONTENIDO */}
+        <div className="modal-eliminar-contenido">
+          {/* Alerta de advertencia */}
+          <div className="modal-eliminar-alerta">
+            <AlertTriangle size={20} />
+            <div className="modal-eliminar-alerta-content">
+              <p className="modal-eliminar-alerta-titulo">¡Advertencia Crítica!</p>
+              <p className="modal-eliminar-alerta-texto">
+                Esta acción eliminará el contrato de forma <strong>permanente</strong> de la base de datos.
+                No podrá recuperarse después de confirmar esta operación.
+              </p>
+            </div>
+          </div>
 
-        <div className="modal-eliminar-def-alerta-principal">
-          <p className="modal-eliminar-def-texto-peligro">
-            Esta acciÃ³n es IRREVERSIBLE
-          </p>
+          {/* Información del contrato */}
+          <div className="modal-eliminar-recibo-info">
+            <div className="modal-eliminar-info-item">
+              <span className="modal-eliminar-info-label">Número de Contrato:</span>
+              <span className="modal-eliminar-info-value modal-eliminar-destacado">
+                {contrato.numeroContrato || contrato.id || 'N/A'}
+              </span>
+            </div>
+            <div className="modal-eliminar-info-item">
+              <span className="modal-eliminar-info-label">Cliente:</span>
+              <span className="modal-eliminar-info-value">
+                {contrato.cliente || contrato.nombreCliente || 'N/A'}
+              </span>
+            </div>
+            <div className="modal-eliminar-info-item">
+              <span className="modal-eliminar-info-label">Fecha:</span>
+              <span className="modal-eliminar-info-value">
+                {contrato.fecha || contrato.fechaContrato || 'N/A'}
+              </span>
+            </div>
+            <div className="modal-eliminar-info-item">
+              <span className="modal-eliminar-info-label">Estado:</span>
+              <span className="modal-eliminar-info-value">
+                {contrato.estado || 'N/A'}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <p className="modal-eliminar-def-descripcion">
-          Â¿EstÃ¡ completamente seguro de <strong>ELIMINAR DEFINITIVAMENTE</strong> este contrato del sistema sin posibilidad de recuperaciÃ³n?
-        </p>
-
-        <div className="modal-eliminar-def-botones">
-          <button className="modal-eliminar-def-btn-cancelar" onClick={alCancelar}>
-            <X size={18} />
+        {/* FOOTER */}
+        <div className="modal-eliminar-footer">
+          <button 
+            className="modal-eliminar-boton-secundario" 
+            onClick={alCancelar}
+          >
+            <X size={16} />
             Cancelar
           </button>
-          <button className="modal-eliminar-def-btn-confirmar" onClick={manejarConfirmar}>
-            <Trash2 size={18} />
-            SÃ­, Eliminar Definitivamente
+          <button 
+            className="modal-eliminar-boton-peligro" 
+            onClick={manejarConfirmar}
+          >
+            <Trash2 size={16} />
+            Eliminar Permanentemente
           </button>
         </div>
       </div>

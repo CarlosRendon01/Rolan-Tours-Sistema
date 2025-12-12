@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { RotateCcw, X, CheckCircle } from 'lucide-react';
 import './ModalRestaurarCliente.css';
 
-const ModalRestaurarCliente = ({ cliente, alConfirmar, alCancelar }) => {
+const ModalRegenerarCliente = ({ cliente, alConfirmar, alCancelar }) => {
   const [restaurando, setRestaurando] = useState(false);
 
   const mostrarNotificacionExito = () => {
@@ -87,33 +87,36 @@ const ModalRestaurarCliente = ({ cliente, alConfirmar, alCancelar }) => {
   if (!cliente) return null;
 
   return (
-    <div className="modal-restaurar-overlay" onClick={manejarCancelar}>
-      <div className="modal-restaurar-contenido" onClick={(e) => e.stopPropagation()}>
-        <button 
-          className="modal-restaurar-cerrar" 
-          onClick={manejarCancelar}
-          disabled={restaurando}
-          aria-label="Cerrar"
-        >
-          <X size={24} />
-        </button>
-
-        <div className="modal-restaurar-icono">
-          <RotateCcw size={48} />
-        </div>
-
-        <h2 className="modal-restaurar-titulo">¿Restaurar Cliente?</h2>
-
-        
-
-        <div className="modal-restaurar-mensaje-exito">
-          <CheckCircle size={20} />
-          <span>El cliente volverá a estar activo y visible para todos los usuarios.</span>
-        </div>
-
-        <div className="modal-restaurar-botones">
+    <div className="modal-regenerar-overlay" onClick={manejarCancelar}>
+      <div className="modal-regenerar-contenedor" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-regenerar-header">
+          <div className="modal-regenerar-icono-header">
+            <RotateCcw size={24} />
+          </div>
+          <div className="modal-regenerar-titulo-seccion">
+            <h2 className="modal-regenerar-titulo">¿Restaurar Cliente?</h2>
+            <p className="modal-regenerar-subtitulo">Restaurar cliente eliminado</p>
+          </div>
           <button 
-            className="modal-restaurar-btn-cancelar" 
+            className="modal-regenerar-boton-cerrar" 
+            onClick={manejarCancelar}
+            disabled={restaurando}
+            aria-label="Cerrar"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="modal-regenerar-contenido">
+          <div className="modal-regenerar-mensaje-exito">
+            <CheckCircle size={20} />
+            <span>El cliente volverá a estar activo y visible para todos los usuarios.</span>
+          </div>
+        </div>
+
+        <div className="modal-regenerar-footer">
+          <button 
+            className="modal-regenerar-boton-secundario" 
             onClick={manejarCancelar}
             disabled={restaurando}
           >
@@ -121,18 +124,18 @@ const ModalRestaurarCliente = ({ cliente, alConfirmar, alCancelar }) => {
             Cancelar
           </button>
           <button 
-            className="modal-restaurar-btn-confirmar" 
+            className="modal-regenerar-boton-principal" 
             onClick={manejarConfirmar}
             disabled={restaurando}
           >
             {restaurando ? (
               <>
-                <span className="spinner-restaurar"></span>
+                <RotateCcw size={16} className="modal-regenerar-icono-girando" />
                 Restaurando...
               </>
             ) : (
               <>
-                <RotateCcw size={18} />
+                <RotateCcw size={16} />
                 Sí, Restaurar
               </>
             )}
@@ -143,4 +146,4 @@ const ModalRestaurarCliente = ({ cliente, alConfirmar, alCancelar }) => {
   );
 };
 
-export default ModalRestaurarCliente;
+export default ModalRegenerarCliente;
