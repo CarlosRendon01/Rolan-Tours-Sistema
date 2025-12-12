@@ -1,67 +1,22 @@
 import React, { useState } from 'react';
 import axios from "axios";
-import Swal from 'sweetalert2';
+import { X, Trash2, AlertTriangle } from 'lucide-react';
+import './ModalEliminarDefinitivoAbono.css';
 
 const ModalEliminarDefinitivoAbono = ({ estaAbierto, alCerrar, abono, alEliminar }) => {
   const [procesando, setProcesando] = useState(false);
 
   if (!estaAbierto || !abono) return null;
 
+  const formatearMoneda = (monto) => {
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(monto);
+  };
+
   const manejarEliminar = async () => {
-    // ✅ PRIMERA CONFIRMACIÓN
-    const resultado = await Swal.fire({
-      title: '⚠️ ¡Eliminar Definitivamente!',
-      html: `
-        <div style="text-align: left; padding: 1rem;">
-          <p><strong>Cliente:</strong> ${abono.cliente.nombre}</p>
-          <p><strong>Servicio:</strong> ${abono.servicio.tipo}</p>
-          <p><strong>Monto Total:</strong> $${abono.planPago.montoTotal.toLocaleString()}</p>
-          <hr style="margin: 1rem 0;">
-          <div style="background: #fee2e2; padding: 1rem; border-radius: 8px; border-left: 4px solid #dc2626;">
-            <p style="color: #991b1b; font-weight: 600; margin: 0;">
-              ⚠️ ADVERTENCIA: Esta acción es PERMANENTE
-            </p>
-            <p style="color: #991b1b; font-size: 0.875rem; margin: 0.5rem 0 0 0;">
-              El pago y todos sus ${abono.planPago.abonosRealizados || 0} abonos serán eliminados de la base de datos y NO podrán ser recuperados.
-            </p>
-          </div>
-        </div>
-      `,
-      icon: 'error',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar definitivamente',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#dc2626',
-      cancelButtonColor: '#6b7280',
-      reverseButtons: true
-    });
-
-    if (!resultado.isConfirmed) return;
-
-    // ✅ SEGUNDA CONFIRMACIÓN
-    const confirmacionFinal = await Swal.fire({
-      title: '¿Estás completamente seguro?',
-      text: 'Esta es tu última oportunidad para cancelar',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'No, cancelar',
-      confirmButtonColor: '#dc2626'
-    });
-
-    if (!confirmacionFinal.isConfirmed) return;
-
-    // ✅ PROCESAR ELIMINACIÓN
     setProcesando(true);
-    Swal.fire({
-      title: 'Eliminando...',
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`http://127.0.0.1:8000/api/abonos/${abono.id}/force`, {
@@ -71,44 +26,92 @@ const ModalEliminarDefinitivoAbono = ({ estaAbierto, alCerrar, abono, alEliminar
         }
       });
 
-      Swal.close();
-
-      await Swal.fire({
-        title: 'Eliminado Definitivamente',
-        html: `
-          <div style="padding: 1rem;">
-            <p style="color: #059669; font-weight: 600;">
-              El pago ha sido eliminado permanentemente
-            </p>
-            <p style="color: #6b7280; font-size: 0.875rem; margin-top: 0.5rem;">
-              Cliente: ${abono.cliente.nombre}
-            </p>
-          </div>
-        `,
-        icon: 'success',
-        timer: 2500,
-        showConfirmButton: false
-      });
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       if (alEliminar) {
-        await alEliminar(abono);
+        await alEliminar();
       }
 
       alCerrar();
     } catch (error) {
-      console.error('Error al eliminar definitivamente:', error);
-      Swal.fire({
-        title: 'Error',
-        text: error.response?.data?.message || 'No se pudo eliminar el pago',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
+      console.error('Error al eliminar:', error);
+      alert('Error al eliminar el abono. Intenta nuevamente.');
     } finally {
       setProcesando(false);
     }
   };
 
-  return null; // Todo se maneja con Swal, no necesita renderizar nada
+  return (
+    <div className="modal-eliminar-overlay" onClick={alCerrar}>
+      <div className="modal-eliminar-contenedor" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-eliminar-header">
+          <div className="modal-eliminar-icono-header">
+            <Trash2 size={24} />
+          </div>
+          <div className="modal-eliminar-titulo-seccion">
+            <h2 className="modal-eliminar-titulo">Eliminar Definitivamente</h2>
+            <p className="modal-eliminar-subtitulo">Acción permanente e irreversible</p>
+          </div>
+          <button className="modal-eliminar-boton-cerrar" onClick={alCerrar} aria-label="Cerrar">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="modal-eliminar-contenido">
+          <div className="modal-eliminar-alerta">
+            <AlertTriangle size={20} />
+            <div>
+              <p className="modal-eliminar-alerta-titulo">⚠️ Advertencia crítica</p>
+              <p className="modal-eliminar-alerta-texto">
+                Esta acción eliminará el abono permanentemente de la base de datos.
+                No podrá ser recuperado después de esta operación.
+              </p>
+            </div>
+          </div>
+
+          <div className="modal-eliminar-abono-info">
+            <div className="modal-eliminar-info-item">
+              <span className="modal-eliminar-info-label">Cliente:</span>
+              <span className="modal-eliminar-info-value">{abono.cliente.nombre}</span>
+            </div>
+            <div className="modal-eliminar-info-item">
+              <span className="modal-eliminar-info-label">Monto:</span>
+              <span className="modal-eliminar-info-value modal-eliminar-destacado">
+                {formatearMoneda(abono.planPago.montoTotal)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="modal-eliminar-footer">
+          <button
+            className="modal-eliminar-boton-secundario"
+            onClick={alCerrar}
+            disabled={procesando}
+          >
+            Cancelar
+          </button>
+          <button
+            className="modal-eliminar-boton-principal"
+            onClick={manejarEliminar}
+            disabled={procesando}
+          >
+            {procesando ? (
+              <>
+                <Trash2 size={16} className="modal-eliminar-icono-girando" />
+                Eliminando...
+              </>
+            ) : (
+              <>
+                <Trash2 size={16} />
+                Eliminar Definitivo
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ModalEliminarDefinitivoAbono;

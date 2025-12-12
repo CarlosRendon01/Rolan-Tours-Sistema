@@ -1,164 +1,260 @@
-.modal-overlay-simple {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.2s ease;
+/* ========================================
+   ESTILOS PARA SWEETALERT2 - MODAL ELIMINAR ORDEN
+   Prefijo: eliminar-ord- para evitar conflictos
+   ======================================== */
+
+/* Popup principal */
+.eliminar-ord-popup {
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  font-family: inherit !important;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+.eliminar-ord-popup-cargando {
+  border-radius: 16px !important;
+  padding: 2rem !important;
 }
 
-.modal-container-simple {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 420px;
-  width: 90%;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  animation: slideUp 0.3s ease;
+/* Títulos */
+.eliminar-ord-titulo {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  margin-bottom: 0.25rem !important;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.eliminar-ord-titulo-exito {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #059669 !important;
+  margin-bottom: 0 !important;
 }
 
-.modal-close-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  color: #6c757d;
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.eliminar-ord-titulo-error {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: #dc2626 !important;
+  margin-bottom: 0.5rem !important;
 }
 
-.modal-close-btn:hover {
-  background: #f8f9fa;
-  color: #495057;
+.eliminar-ord-titulo-cargando {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #4b5563 !important;
 }
 
-.modal-icon-simple {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1.25rem;
-  color: #dc3545;
+/* Contenedor HTML */
+.eliminar-ord-html {
+  margin: 0 !important;
+  padding: 0.5rem 0 !important;
 }
 
-.modal-title-simple {
-  font-size: 1.4rem;
+/* Contenido principal */
+.eliminar-ord-contenido {
+  text-align: center;
+}
+
+.eliminar-ord-texto {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.eliminar-ord-orden {
+  font-size: 1rem;
+  color: #1f2937;
+  margin: 0.5rem 0;
   font-weight: 600;
-  color: #2c3e50;
-  text-align: center;
-  margin-bottom: 0.75rem;
 }
 
-.modal-message-simple {
-  text-align: center;
-  color: #6c757d;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
-}
-
-.modal-buttons-simple {
+/* Advertencia */
+.eliminar-ord-advertencia {
   display: flex;
-  gap: 0.75rem;
-  justify-content: center;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.75rem;
+  background: #fef3c7;
+  border: 2px solid #fbbf24;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+  margin: 1rem 0 0.75rem 0;
+  text-align: left;
 }
 
-.btn-simple {
-  padding: 0.625rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
+.eliminar-ord-advertencia-icono {
+  width: 18px;
+  height: 18px;
+  color: #b45309;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.eliminar-ord-advertencia p {
+  font-size: 0.8125rem;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+/* Contenido de éxito */
+.eliminar-ord-exito-contenido {
+  text-align: center;
+}
+
+.eliminar-ord-exito-texto {
+  font-size: 1rem;
+  color: #059669;
+  margin-bottom: 0.5rem;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 110px;
 }
 
-.btn-cancel-simple {
-  background: #f8f9fa;
-  color: #495057;
-  border: 1px solid #dee2e6;
+.eliminar-ord-exito-detalle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
 }
 
-.btn-cancel-simple:hover {
-  background: #e9ecef;
-  border-color: #adb5bd;
+/* Iconos */
+.eliminar-ord-icono {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+  font-size: 2.5rem !important;
+  margin: 0.5rem auto !important;
 }
 
-.btn-confirm-simple {
-  background: linear-gradient(135deg, #dc3545, #c82333);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+.eliminar-ord-icono-exito {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
 }
 
-.btn-confirm-simple:hover {
-  background: linear-gradient(135deg, #c82333, #b21f2d);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+.eliminar-ord-icono-error {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
 }
 
-.btn-simple:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none !important;
+/* Botones */
+.eliminar-ord-acciones {
+  margin-top: 1rem !important;
 }
 
-@media (max-width: 768px) {
-  .modal-container-simple {
-    padding: 1.5rem;
-    width: 95%;
+.eliminar-ord-boton-confirmar {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+}
+
+.eliminar-ord-boton-confirmar:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+.eliminar-ord-boton-cancelar {
+  background: white !important;
+  color: #6b7280 !important;
+  border: 1.5px solid #e5e7eb !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  margin-right: 0.5rem !important;
+}
+
+.eliminar-ord-boton-cancelar:hover {
+  background: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+
+.eliminar-ord-boton-exito {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.625rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) !important;
+}
+
+.eliminar-ord-boton-exito:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4) !important;
+}
+
+.eliminar-ord-boton-error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.9375rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Timer progress bar */
+.swal2-timer-progress-bar {
+  background: #10b981 !important;
+}
+
+/* Animaciones suaves */
+.swal2-show {
+  animation: swal2-show 0.3s !important;
+}
+
+.swal2-hide {
+  animation: swal2-hide 0.2s !important;
+}
+
+/* Loading spinner personalizado */
+.swal2-loading {
+  border-color: #3b82f6 transparent #3b82f6 transparent !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .eliminar-ord-popup {
+    padding: 1.25rem !important;
+    width: 90% !important;
+    max-width: 350px !important;
   }
 
-  .modal-title-simple {
-    font-size: 1.2rem;
+  .eliminar-ord-titulo,
+  .eliminar-ord-titulo-exito {
+    font-size: 1.125rem !important;
   }
 
-  .modal-message-simple {
-    font-size: 0.9rem;
+  .eliminar-ord-orden {
+    font-size: 0.9375rem !important;
   }
 
-  .modal-buttons-simple {
-    flex-direction: column;
+  .eliminar-ord-advertencia {
+    padding: 0.625rem;
+    gap: 0.5rem;
   }
 
-  .btn-simple {
-    width: 100%;
+  .eliminar-ord-advertencia p {
+    font-size: 0.75rem;
+  }
+
+  .eliminar-ord-boton-confirmar,
+  .eliminar-ord-boton-cancelar,
+  .eliminar-ord-boton-exito {
+    padding: 0.5rem 1.25rem !important;
+    font-size: 0.8125rem !important;
   }
 }

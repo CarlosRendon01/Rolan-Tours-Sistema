@@ -40,22 +40,24 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
 
 .modal-recibo-contenedor {
-  background: var(--recibo-bg-white) !important;
-  border-radius: 12px !important;
-  width: 100% !important;
-  max-width: 900px !important;
+  background: white !important;
+  border-radius: 16px !important;
+  width: 90% !important;
+  max-width: 1100px !important;
   max-height: 90vh !important;
   display: flex !important;
   flex-direction: column !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  animation: modalReciboSlideUp 0.3s ease-out !important;
-  overflow: hidden !important;
+  animation: slideUp 0.3s ease-out !important;
+  position: relative !important;
+  transform: scale(0.90) !important;
 }
 
 @keyframes modalReciboSlideUp {
@@ -63,6 +65,7 @@
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -561,8 +564,9 @@
 }
 
 .modal-recibo-boton-secundario:hover:not(:disabled) {
-  background: var(--recibo-border) !important;
-  border-color: var(--recibo-text-tertiary) !important;
+  background: #da0c0c !important;
+  border-color: #eeeff1 !important;
+  color: #ffffff !important;
 }
 
 .modal-recibo-boton-primario {
@@ -805,7 +809,7 @@
   .modal-recibo-contenedor {
     border: 2px solid var(--recibo-text-primary) !important;
   }
-  
+
   .recibo-documento {
     border: 1px solid var(--recibo-border) !important;
   }
@@ -813,6 +817,7 @@
 
 /* Reducir movimiento para usuarios que lo prefieren */
 @media (prefers-reduced-motion: reduce) {
+
   .modal-recibo-overlay,
   .modal-recibo-contenedor,
   .modal-recibo-boton,

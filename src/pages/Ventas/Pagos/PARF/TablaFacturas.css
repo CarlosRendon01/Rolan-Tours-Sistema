@@ -5,14 +5,13 @@
 
 /* Contenedor Principal */
 .facturas-contenedor-principal {
-  width: 100%;
-  background: #ffffff;
-  border-radius: 12px;
+  width: 100% !important;
+  background: #ffffff !important;
+  border-radius: 12px !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  margin: 1rem;
-  animation: fac-fadeIn 0.4s ease-out;
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  overflow: hidden !important;
+  margin: 1rem !important;
 }
 
 .recibos-boton-accion.recibos-excel {
@@ -39,14 +38,7 @@
 }
 
 .facturas-encabezado::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid-fac" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid-fac)"/></svg>');
-  opacity: 0.5;
+   content: none;
 }
 
 .facturas-seccion-logo {
@@ -111,11 +103,9 @@
 }
 
 .facturas-tarjeta-estadistica.total {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.2),
-    rgba(29, 78, 216, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.2),
+      rgba(29, 78, 216, 0.3));
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
@@ -126,11 +116,9 @@
 }
 
 .facturas-tarjeta-estadistica.pagados {
-  background: linear-gradient(
-    135deg,
-    rgba(16, 185, 129, 0.2),
-    rgba(5, 150, 105, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(16, 185, 129, 0.2),
+      rgba(5, 150, 105, 0.3));
   border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
@@ -141,11 +129,9 @@
 }
 
 .facturas-tarjeta-estadistica.pendientes {
-  background: linear-gradient(
-    135deg,
-    rgba(245, 158, 11, 0.2),
-    rgba(217, 119, 6, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(245, 158, 11, 0.2),
+      rgba(217, 119, 6, 0.3));
   border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
@@ -156,11 +142,9 @@
 }
 
 .facturas-tarjeta-estadistica.vencidos {
-  background: linear-gradient(
-    135deg,
-    rgba(239, 68, 68, 0.2),
-    rgba(220, 38, 38, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(239, 68, 68, 0.2),
+      rgba(220, 38, 38, 0.3));
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
@@ -385,9 +369,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.facturas-fila-pago {
-  animation: fac-fadeIn 0.3s ease-out;
-}
 
 .facturas-fila-pago td {
   padding: 1rem 1.5rem;
@@ -900,14 +881,15 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-left: 1rem;
-  animation: facturas-badge-pulse 2s ease-in-out infinite;
 }
 
 @keyframes facturas-badge-pulse {
+
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
   }
+
   50% {
     box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
   }
@@ -915,11 +897,9 @@
 
 /* Tarjeta de Estadística - Eliminados */
 .facturas-tarjeta-estadistica.eliminados {
-  background: linear-gradient(
-    135deg,
-    rgba(251, 146, 60, 0.2),
-    rgba(249, 115, 22, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(251, 146, 60, 0.2),
+      rgba(249, 115, 22, 0.3));
   border: 1px solid rgba(251, 146, 60, 0.4);
 }
 
@@ -1059,9 +1039,11 @@
   0% {
     background: #fef3c7;
   }
+
   50% {
     background: #fde68a;
   }
+
   100% {
     background: #fef3c7;
   }

@@ -82,13 +82,17 @@ const TablaFacturas = ({
   // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
     if (rolUsuario === "admin") {
-      if (mostrarEliminados) {
+      if (mostrarEliminados === true) {
         return datosFacturas.filter((f) => f.activo === false);
       }
-      return datosFacturas;
+      if (mostrarEliminados === false) {
+        return datosFacturas.filter((f) => f.activo === true);
+      }
+      return datosFacturas; // opción "todos"
     } else {
       return datosFacturas.filter((f) => f.activo === true);
     }
+
   }, [datosFacturas, rolUsuario, mostrarEliminados]);
 
   // Cálculo de estadísticas
@@ -268,8 +272,8 @@ const TablaFacturas = ({
             if (emailCliente && emailCliente.includes("@")) {
               alert(
                 `✉️ Factura enviada correctamente a:\n${emailCliente}\n\n` +
-                  `Factura: ${factura.numeroFactura}\n` +
-                  `Cliente: ${factura.cliente}`
+                `Factura: ${factura.numeroFactura}\n` +
+                `Cliente: ${factura.cliente}`
               );
             } else if (emailCliente) {
               alert("❌ Correo inválido. Por favor ingresa un correo válido.");
@@ -354,9 +358,8 @@ const TablaFacturas = ({
 
   return (
     <div
-      className={`facturas-contenedor-principal ${
-        cargando ? "facturas-cargando" : ""
-      }`}
+      className={`facturas-contenedor-principal ${cargando ? "facturas-cargando" : ""
+        }`}
     >
       {/* Header */}
       <div className="facturas-encabezado">
@@ -469,19 +472,25 @@ const TablaFacturas = ({
             </select>
           </div>
           {rolUsuario === "admin" && (
-            <button
-              className={`facturas-boton-toggle-eliminados ${
-                mostrarEliminados ? "activo" : ""
-              }`}
-              onClick={() => setMostrarEliminados(!mostrarEliminados)}
-              title={
-                mostrarEliminados ? "Ocultar eliminadas" : "Ver eliminadas"
-              }
-            >
-              {mostrarEliminados ? <Eye size={16} /> : <EyeOff size={16} />}
-              {mostrarEliminados ? "Ver Activas" : "Ver Eliminadas"}
-            </button>
+            <div className="facturas-filtro-estado">
+              <Filter size={16} />
+              <label htmlFor="filtro-activo">Mostrar:</label>
+              <select
+                id="filtro-activo"
+                value={mostrarEliminados ? "eliminados" : "activos"}
+                onChange={(e) => {
+                  const valor = e.target.value;
+                  setMostrarEliminados(valor === "eliminados");
+                }}
+                className="facturas-selector-filtro"
+              >
+                <option value="todos">Todos</option>
+                <option value="activos">Activos</option>
+                <option value="eliminados">Eliminados</option>
+              </select>
+            </div>
           )}
+
         </div>
 
         <div className="facturas-seccion-derecha">
@@ -513,8 +522,8 @@ const TablaFacturas = ({
               {terminoBusqueda || filtroEstado !== "todos"
                 ? "Intenta ajustar los filtros de búsqueda"
                 : mostrarEliminados
-                ? "No hay facturas eliminadas en el sistema"
-                : "No hay facturas registradas en el sistema"}
+                  ? "No hay facturas eliminadas en el sistema"
+                  : "No hay facturas registradas en el sistema"}
             </p>
           </div>
         ) : (
@@ -535,9 +544,8 @@ const TablaFacturas = ({
               {datosPaginados.map((factura, indice) => (
                 <tr
                   key={factura.id}
-                  className={`facturas-fila-pago ${
-                    !factura.activo ? "facturas-fila-eliminada" : ""
-                  }`}
+                  className={`facturas-fila-pago ${!factura.activo ? "facturas-fila-eliminada" : ""
+                    }`}
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Factura" className="facturas-columna-factura">
@@ -642,7 +650,7 @@ const TablaFacturas = ({
                       {factura.activo === true ? (
                         <>
 
-                        
+
                           <button
                             className="facturas-boton-accion facturas-ver"
                             onClick={() => manejarAccion("descargar", factura)}
@@ -651,7 +659,7 @@ const TablaFacturas = ({
                           >
                             <Download size={14} />
                           </button>
-                          
+
 
                           <button
                             className="recibos-boton-accion recibos-excel"
@@ -666,7 +674,7 @@ const TablaFacturas = ({
 
                           {factura.estado === ESTADOS_FACTURA.TIMBRADA && (
                             <>
-                            {/*  
+                              {/*  
                               <button
                                 className="facturas-boton-accion facturas-editar"
                                 onClick={() => manejarAccion("enviar", factura)}
@@ -692,7 +700,7 @@ const TablaFacturas = ({
 
                           {factura.estado === ESTADOS_FACTURA.CANCELADA && (
                             <>
-                             {/*  
+                              {/*  
                               <button
                                 className="facturas-boton-accion facturas-editar"
                                 onClick={() => manejarAccion("enviar", factura)}
@@ -783,9 +791,8 @@ const TablaFacturas = ({
                 ) : (
                   <button
                     key={numero}
-                    className={`facturas-numero-pagina ${
-                      paginaActual === numero ? "facturas-activo" : ""
-                    }`}
+                    className={`facturas-numero-pagina ${paginaActual === numero ? "facturas-activo" : ""
+                      }`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
                   >

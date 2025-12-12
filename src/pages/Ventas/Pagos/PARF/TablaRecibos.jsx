@@ -33,7 +33,7 @@ import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
 const TablaRecibos = ({
   datosIniciales = [],
   vistaActual = "recibos",
-  onCambiarVista = () => {},
+  onCambiarVista = () => { },
   onEliminar = null,
   onDescargar = null,
   onImprimir = null,
@@ -46,6 +46,8 @@ const TablaRecibos = ({
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
+  const [filtroEstado, setFiltroEstado] = useState("todos");
+
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
   // Estados para modales
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
@@ -111,16 +113,20 @@ const TablaRecibos = ({
 
   // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
-    if (rolUsuario === "admin") {
-      if (mostrarEliminados) {
-        return datosRecibos.filter((r) => r.activo === false);
-      }
-      return datosRecibos;
-    } else {
-      // Vendedor solo ve recibos no eliminados
-      return datosRecibos.filter((r) => r.activo === true);
+    if (rolUsuario !== "admin") {
+      // Vendedor solo ve activos
+      return datosRecibos.filter(r => r.activo === true);
     }
-  }, [datosRecibos, rolUsuario, mostrarEliminados]);
+
+    switch (filtroEstado) {
+      case "activos":
+        return datosRecibos.filter(r => r.activo === true);
+      case "eliminados":
+        return datosRecibos.filter(r => r.activo === false);
+      default:
+        return datosRecibos; // todos
+    }
+  }, [datosRecibos, rolUsuario, filtroEstado]);
 
   // Cálculo de estadísticas
   const estadisticas = useMemo(() => {
@@ -551,9 +557,8 @@ const TablaRecibos = ({
 
   return (
     <div
-      className={`recibos-contenedor-principal ${
-        cargando ? "recibos-cargando" : ""
-      }`}
+      className={`recibos-contenedor-principal ${cargando ? "recibos-cargando" : ""
+        }`}
     >
       {/* Header */}
       <div className="recibos-encabezado">
@@ -655,21 +660,24 @@ const TablaRecibos = ({
 
           {/* Filtro para admin */}
           {rolUsuario === "admin" && (
-            <div className="recibos-filtro-eliminados">
-              <label className="recibos-switch">
-                <input
-                  type="checkbox"
-                  checked={mostrarEliminados}
-                  onChange={(e) => {
-                    setMostrarEliminados(e.target.checked);
-                    setPaginaActual(1);
-                  }}
-                />
-                <span className="recibos-slider"></span>
-                <span className="recibos-label-text">Ver solo eliminados</span>
-              </label>
+            <div className="recibos-filtro-estado-eliminados">
+              <label style={{ marginRight: "8px" }}>Mostrar:</label>
+              <select
+                id="filtro-eliminados"
+                value={filtroEstado}
+                onChange={(e) => {
+                  setFiltroEstado(e.target.value);
+                  setPaginaActual(1);
+                }}
+                className="recibos-selector-filtro"
+              >
+                <option value="todos">Todos</option>
+                <option value="activos">Activos</option>
+                <option value="eliminados">Eliminados</option>
+              </select>
             </div>
           )}
+
         </div>
 
         <div className="recibos-seccion-derecha">
@@ -718,10 +726,13 @@ const TablaRecibos = ({
             <p className="recibos-submensaje-vacio">
               {terminoBusqueda
                 ? "Intenta ajustar los filtros de búsqueda"
-                : mostrarEliminados
-                ? "No hay recibos eliminados en el sistema"
-                : "No hay recibos registrados en el sistema"}
+                : filtroEstado === "eliminados"
+                  ? "No hay recibos eliminados en el sistema"
+                  : filtroEstado === "activos"
+                    ? "No hay recibos activos registrados"
+                    : "No hay recibos registrados en el sistema"}
             </p>
+
           </div>
         ) : (
           <table className="recibos-tabla">
@@ -747,9 +758,8 @@ const TablaRecibos = ({
               {datosPaginados.map((recibo, indice) => (
                 <tr
                   key={recibo.id}
-                  className={`recibos-fila-pago ${
-                    recibo.activo === false ? "recibos-fila-eliminada" : ""
-                  }`}
+                  className={`recibos-fila-pago ${recibo.activo === false ? "recibos-fila-eliminada" : ""
+                    }`}
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Recibo" className="recibos-columna-factura">
@@ -902,9 +912,8 @@ const TablaRecibos = ({
                 ) : (
                   <button
                     key={numero}
-                    className={`recibos-numero-pagina ${
-                      paginaActual === numero ? "recibos-activo" : ""
-                    }`}
+                    className={`recibos-numero-pagina ${paginaActual === numero ? "recibos-activo" : ""
+                      }`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
                     aria-label={`Página ${numero}`}

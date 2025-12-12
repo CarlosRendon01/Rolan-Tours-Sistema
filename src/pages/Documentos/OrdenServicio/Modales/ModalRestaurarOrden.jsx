@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { RotateCcw, X, CheckCircle } from "lucide-react";
+import { RotateCcw, X, Info } from "lucide-react";
 import "./ModalRestaurarOrden.css";
 
 const ModalRestaurarOrden = ({ orden, alConfirmar, alCancelar }) => {
@@ -49,6 +49,7 @@ const ModalRestaurarOrden = ({ orden, alConfirmar, alCancelar }) => {
       await alConfirmar(orden);
 
       setRestaurando(false);
+      alCancelar();
 
       mostrarNotificacionExito();
     } catch (error) {
@@ -86,54 +87,71 @@ const ModalRestaurarOrden = ({ orden, alConfirmar, alCancelar }) => {
   return (
     <div className="modal-restaurar-overlay" onClick={manejarCancelar}>
       <div
-        className="modal-restaurar-contenido"
+        className="modal-restaurar-contenedor"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          className="modal-restaurar-cerrar"
-          onClick={manejarCancelar}
-          disabled={restaurando}
-          aria-label="Cerrar"
-        >
-          <X size={24} />
-        </button>
-
-        <div className="modal-restaurar-icono">
-          <RotateCcw size={48} />
-        </div>
-
-        <h2 className="modal-restaurar-titulo">¿Restaurar Orden?</h2>
-
-        <div className="modal-restaurar-mensaje-exito">
-          <CheckCircle size={20} />
-          <span>
-            El orden volverá a estar activo y visible para todos los usuarios.
-          </span>
-        </div>
-
-        <div className="modal-restaurar-botones">
+        <div className="modal-restaurar-header">
+          <div className="modal-restaurar-icono-header">
+            <RotateCcw size={24} />
+          </div>
+          <div className="modal-restaurar-titulo-seccion">
+            <h2 className="modal-restaurar-titulo">Restaurar Orden</h2>
+            <p className="modal-restaurar-subtitulo">Reactivar orden eliminada</p>
+          </div>
           <button
-            className="modal-restaurar-btn-cancelar"
+            className="modal-restaurar-boton-cerrar"
+            onClick={manejarCancelar}
+            disabled={restaurando}
+            aria-label="Cerrar"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="modal-restaurar-contenido">
+          <div className="modal-restaurar-alerta">
+            <Info size={20} />
+            <div>
+              <p className="modal-restaurar-alerta-titulo">Acción de administrador</p>
+              <p className="modal-restaurar-alerta-texto">
+                Esta orden fue eliminada visualmente. Al restaurarla,
+                volverá a estar visible y activa para todos los usuarios.
+              </p>
+            </div>
+          </div>
+
+          <div className="modal-restaurar-orden-info">
+            <div className="modal-restaurar-info-item">
+              <span className="modal-restaurar-info-label">ID de Orden:</span>
+              <span className="modal-restaurar-info-value modal-restaurar-destacado">
+                #{orden.id}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="modal-restaurar-footer">
+          <button
+            className="modal-restaurar-boton-secundario"
             onClick={manejarCancelar}
             disabled={restaurando}
           >
-            <X size={18} />
             Cancelar
           </button>
           <button
-            className="modal-restaurar-btn-confirmar"
+            className="modal-restaurar-boton-principal"
             onClick={manejarConfirmar}
             disabled={restaurando}
           >
             {restaurando ? (
               <>
-                <span className="spinner-restaurar"></span>
+                <RotateCcw size={16} className="modal-restaurar-icono-girando" />
                 Restaurando...
               </>
             ) : (
               <>
-                <RotateCcw size={18} />
-                Sí, Restaurar
+                <RotateCcw size={16} />
+                Restaurar Orden
               </>
             )}
           </button>
