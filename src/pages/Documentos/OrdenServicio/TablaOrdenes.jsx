@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import {
   Search,
   Edit,
@@ -22,7 +22,9 @@ import ModalVisualizarPDF from "./Modales/ModalVisualizarPDF";
 import "./TablaOrdenes.css";
 
 const TablaOrdenes = () => {
-  const [rolUsuario, setRolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
+  const [rolUsuario, setRolUsuario] = useState(
+    localStorage.getItem("rol") || "vendedor"
+  );
   const [vehiculosDisponibles, setVehiculosDisponibles] = useState([]);
   const [conductoresDisponibles, setConductoresDisponibles] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
@@ -55,32 +57,47 @@ const TablaOrdenes = () => {
       // Cargar órdenes, vehículos y conductores en paralelo
       const [ordenesRes, vehiculosRes, conductoresRes] = await Promise.all([
         axios.get("http://127.0.0.1:8000/api/ordenes-servicio", {
-          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
         }),
-        axios.get("http://127.0.0.1:8000/api/ordenes-servicio/vehiculos/disponibles", {
-          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
-        }),
-        axios.get("http://127.0.0.1:8000/api/ordenes-servicio/conductores/disponibles", {
-          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
-        })
+        axios.get(
+          "http://127.0.0.1:8000/api/ordenes-servicio/vehiculos/disponibles",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        ),
+        axios.get(
+          "http://127.0.0.1:8000/api/ordenes-servicio/conductores/disponibles",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        ),
       ]);
 
       setDatosOrdenes(ordenesRes.data);
       setVehiculosDisponibles(vehiculosRes.data);
       setConductoresDisponibles(conductoresRes.data);
 
-      console.log('✅ Datos cargados:', {
+      console.log("✅ Datos cargados:", {
         ordenes: ordenesRes.data.length,
         vehiculos: vehiculosRes.data.length,
-        conductores: conductoresRes.data.length
+        conductores: conductoresRes.data.length,
       });
     } catch (error) {
-      console.error('❌ Error al cargar datos:', error);
+      console.error("❌ Error al cargar datos:", error);
     }
   };
 
   const ordenesFiltrados = datosOrdenes.filter((orden) => {
-    if (rolUsuario === 'admin' && !orden.activo) {
+    if (rolUsuario === "admin" && !orden.activo) {
       return true;
     }
 
@@ -139,7 +156,7 @@ const TablaOrdenes = () => {
         visualizarPDF(orden);
         break;
       case "eliminar":
-        if (rolUsuario === 'admin' && !orden.activo) {
+        if (rolUsuario === "admin" && !orden.activo) {
           setOrdenAEliminarDefinitivo(orden);
         } else {
           setOrdenAEliminar(orden);
@@ -199,13 +216,16 @@ const TablaOrdenes = () => {
       const datosOrden = {
         folio: datosActualizados.folio,
         fecha_orden_servicio: datosActualizados.fecha_orden_servicio,
-        nombre_prestador: datosActualizados.nombre_prestador || 'Antonio Alonso Meza',
+        nombre_prestador:
+          datosActualizados.nombre_prestador || "Antonio Alonso Meza",
 
         // Conductor
         conductor_id: datosActualizados.conductor_id,
         nombre_conductor: datosActualizados.nombre_conductor,
-        apellido_paterno_conductor: datosActualizados.apellido_paterno_conductor,
-        apellido_materno_conductor: datosActualizados.apellido_materno_conductor,
+        apellido_paterno_conductor:
+          datosActualizados.apellido_paterno_conductor,
+        apellido_materno_conductor:
+          datosActualizados.apellido_materno_conductor,
         telefono_conductor: datosActualizados.telefono_conductor,
         licencia_conductor: datosActualizados.licencia_conductor,
 
@@ -217,9 +237,13 @@ const TablaOrdenes = () => {
         destino: datosActualizados.destino,
         numero_pasajeros: datosActualizados.numero_pasajeros,
         fecha_inicio_servicio: datosActualizados.fecha_inicio_servicio,
-        horario_inicio_servicio: fixHora(datosActualizados.horario_inicio_servicio),
+        horario_inicio_servicio: fixHora(
+          datosActualizados.horario_inicio_servicio
+        ),
         fecha_final_servicio: datosActualizados.fecha_final_servicio,
-        horario_final_servicio: fixHora(datosActualizados.horario_final_servicio),
+        horario_final_servicio: fixHora(
+          datosActualizados.horario_final_servicio
+        ),
         horario_final_real: fixHora(datosActualizados.horario_final_real),
         itinerario_detallado: datosActualizados.itinerario_detallado,
         direccion_retorno: datosActualizados.direccion_retorno,
@@ -243,8 +267,8 @@ const TablaOrdenes = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -269,12 +293,15 @@ const TablaOrdenes = () => {
       const token = localStorage.getItem("token");
 
       // ⭐ AGREGAR: Eliminar en backend
-      await axios.delete(`http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+      await axios.delete(
+        `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
         }
-      });
+      );
 
       // ⭐ AGREGAR: Recargar datos
       await cargarDatos();
@@ -301,7 +328,7 @@ const TablaOrdenes = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-          }
+          },
         }
       );
 
@@ -326,7 +353,7 @@ const TablaOrdenes = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-          }
+          },
         }
       );
 
@@ -354,6 +381,24 @@ const TablaOrdenes = () => {
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
+      const dividirTexto = (texto, ancho) => {
+        const palabras = texto.split(" ");
+        const lineas = [];
+        let actual = "";
+
+        palabras.forEach((palabra) => {
+          const prueba = actual ? `${actual} ${palabra}` : palabra;
+          if (font.widthOfTextAtSize(prueba, 9) > ancho && actual) {
+            lineas.push(actual);
+            actual = palabra;
+          } else {
+            actual = prueba;
+          }
+        });
+        if (actual) lineas.push(actual);
+        return lineas;
+      };
+
       firstPage.drawText(
         new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX"),
         {
@@ -364,14 +409,6 @@ const TablaOrdenes = () => {
           color: rgb(0, 0, 0),
         }
       );
-
-      firstPage.drawText(orden.nombre_prestador || "", {
-        x: 220,
-        y: 250,
-        size: 9,
-        font: fontBold,
-        color: rgb(0, 0, 0),
-      });
 
       firstPage.drawText(orden.folio.toString(), {
         x: 530,
@@ -475,12 +512,16 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.itinerario_detallado, {
-        x: 100,
-        y: 528,
-        size: 9,
-        font: font,
-        color: rgb(0, 0, 0),
+      // Itinerario con saltos de línea automáticos
+      const lineas = dividirTexto(orden.itinerario_detallado, 450);
+      lineas.forEach((linea, i) => {
+        firstPage.drawText(linea, {
+          x: 100,
+          y: 528 - i * 12,
+          size: 9,
+          font: font,
+          color: rgb(0, 0, 0),
+        });
       });
 
       firstPage.drawText(orden.direccion_retorno, {
@@ -491,8 +532,9 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      const nombreCompletoConduct = `${orden.nombre_conductor || ""} ${orden.apellido_paterno_conductor || ""
-        } ${orden.apellido_materno_conductor || ""}`.trim();
+      const nombreCompletoConduct = `${orden.nombre_conductor || ""} ${
+        orden.apellido_paterno_conductor || ""
+      } ${orden.apellido_materno_conductor || ""}`.trim();
 
       firstPage.drawText(nombreCompletoConduct, {
         x: 130,
@@ -510,40 +552,43 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.modelo, {
-        x: 170,
-        y: 392,
-        size: 9,
-        font: font,
-        color: rgb(0, 0, 0),
-      });
-
       firstPage.drawText(orden.placa, {
         x: 213,
         y: 392,
-        size: 9,
+        size: 7,
         font: font,
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.km_inicial.toString(), {
-        x: 140,
-        y: 377,
-        size: 9,
+      firstPage.drawText(`${Math.trunc(orden.km_inicial)} Km`, {
+        x: 130,
+        y: 379,
+        size: 8,
         font: font,
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.km_final.toString(), {
-        x: 213,
-        y: 377,
-        size: 9,
+      firstPage.drawText(`${Math.trunc(orden.km_final)} Km`, {
+        x: 205,
+        y: 379,
+        size: 8,
         font: font,
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.litros_consumidos.toString(), {
-        x: 140,
+      firstPage.drawText(
+        `${Math.trunc(orden.km_final - orden.km_inicial)} Km`,
+        {
+          x: 130,
+          y: 365,
+          size: 8,
+          font: font,
+          color: rgb(0, 0, 0),
+        }
+      );
+
+      firstPage.drawText(`${Math.trunc(orden.litros_consumidos)} Litros`, {
+        x: 130,
         y: 350,
         size: 9,
         font: font,
@@ -620,7 +665,7 @@ const TablaOrdenes = () => {
             </div>
           </div>
 
-          {rolUsuario === 'admin' && (
+          {rolUsuario === "admin" && (
             <div className="Ordenes-estadistica">
               <div className="Ordenes-icono-estadistica-cuadrado">
                 <BarChart3 size={20} />
@@ -688,8 +733,9 @@ const TablaOrdenes = () => {
             {ordenesPaginados.map((orden, index) => (
               <tr
                 key={orden.id}
-                className={`Ordenes-fila-orden ${!orden.activo ? "Ordenes-fila-inactiva" : ""
-                  }`}
+                className={`Ordenes-fila-orden ${
+                  !orden.activo ? "Ordenes-fila-inactiva" : ""
+                }`}
               >
                 <td data-label="Folio" className="Ordenes-columna-fecha">
                   <span className="Ordenes-badge-lead">{orden.folio}</span>
@@ -750,7 +796,7 @@ const TablaOrdenes = () => {
                       <Edit size={16} />
                     </button>
 
-                    {rolUsuario === 'admin' && !orden.activo && (
+                    {rolUsuario === "admin" && !orden.activo && (
                       <button
                         className="Ordenes-boton-accion Ordenes-restaurar"
                         onClick={() => manejarAccion("restaurar", orden)}
@@ -764,7 +810,7 @@ const TablaOrdenes = () => {
                       className="Ordenes-boton-accion Ordenes-eliminar"
                       onClick={() => manejarAccion("eliminar", orden)}
                       title={
-                        rolUsuario === 'admin' && !orden.activo
+                        rolUsuario === "admin" && !orden.activo
                           ? "Eliminar definitivamente"
                           : "Desactivar orden"
                       }
@@ -806,8 +852,9 @@ const TablaOrdenes = () => {
               (numero) => (
                 <button
                   key={numero}
-                  className={`Ordenes-numero-pagina ${paginaActual === numero ? "Ordenes-activo" : ""
-                    }`}
+                  className={`Ordenes-numero-pagina ${
+                    paginaActual === numero ? "Ordenes-activo" : ""
+                  }`}
                   onClick={() => cambiarPagina(numero)}
                 >
                   {numero}
