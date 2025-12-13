@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";  // ⭐ Agregar useEffect
-import axios from 'axios';
+import React, { useState, useEffect } from "react"; // ⭐ Agregar useEffect
+import axios from "axios";
 import {
   Search,
   Edit,
@@ -13,6 +13,7 @@ import {
   FileText,
 } from "lucide-react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import writtenNumber from "written-number";
 import ModalVerContrato from "./Modales/ModalVerContrato";
 import ModalEditarContrato from "./Modales/ModalEditarContrato";
 import ModalEliminarContrato from "./Modales/ModalEliminarContrato";
@@ -22,7 +23,9 @@ import ModalVisualizarPDF from "../Contratos/Modales/ModalVisualizarPDF";
 import "./TablaContratos.css";
 
 const TablaContratos = () => {
-  const [rolUsuario, setRolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
+  const [rolUsuario, setRolUsuario] = useState(
+    localStorage.getItem("rol") || "vendedor"
+  );
 
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
@@ -53,18 +56,18 @@ const TablaContratos = () => {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
       });
 
       setDatosContratos(response.data);
-      console.log('✅ Contratos cargados:', response.data.length);
+      console.log("✅ Contratos cargados:", response.data.length);
     } catch (error) {
-      console.error('❌ Error al cargar contratos:', error);
+      console.error("❌ Error al cargar contratos:", error);
     }
   };
 
   const contratosFiltrados = datosContratos.filter((contrato) => {
-    if (rolUsuario === 'admin' && !contrato.activo) {
+    if (rolUsuario === "admin" && !contrato.activo) {
       return true;
     }
 
@@ -124,7 +127,7 @@ const TablaContratos = () => {
         visualizarPDF(contrato);
         break;
       case "eliminar":
-        if (rolUsuario === 'admin' && !contrato.activo) {
+        if (rolUsuario === "admin" && !contrato.activo) {
           setContratoAEliminarDefinitivo(contrato);
         } else {
           setContratoAEliminar(contrato);
@@ -194,9 +197,98 @@ const TablaContratos = () => {
           });
         }
       };
+
+      // Función para dibujar texto ajustable en primera página
+      const dibujarTextoAjustable = (
+        texto,
+        x,
+        y,
+        maxAncho,
+        sizeInicial = 9,
+        sizeMinimo = 5,
+        centrar = false
+      ) => {
+        if (!texto) return;
+
+        const textoStr = texto.toString();
+        let size = sizeInicial;
+        let anchoEstimado = textoStr.length * size * 0.5;
+
+        while (anchoEstimado > maxAncho && size > sizeMinimo) {
+          size -= 0.5;
+          anchoEstimado = textoStr.length * size * 0.5;
+        }
+
+        // Calcular posición X si se requiere centrado
+        let posX = x;
+        if (centrar) {
+          const anchoTexto = textoStr.length * size * 0.5;
+          posX = x + (maxAncho - anchoTexto) / 2;
+        }
+
+        firstPage.drawText(textoStr, {
+          x: posX,
+          y,
+          size,
+          font,
+          color: rgb(0, 0, 0),
+        });
+      };
+
+      // Función para dibujar texto ajustable en segunda página
+      const dibujarTextoAjustableSegundaPagina = (
+        texto,
+        x,
+        y,
+        maxAncho,
+        sizeInicial = 9,
+        sizeMinimo = 5,
+        centrar = false
+      ) => {
+        if (!texto) return;
+
+        const textoStr = texto.toString();
+        let size = sizeInicial;
+        let anchoEstimado = textoStr.length * size * 0.5;
+
+        while (anchoEstimado > maxAncho && size > sizeMinimo) {
+          size -= 0.5;
+          anchoEstimado = textoStr.length * size * 0.5;
+        }
+
+        // Calcular posición X si se requiere centrado
+        let posX = x;
+        if (centrar) {
+          const anchoTexto = textoStr.length * size * 0.5;
+          posX = x + (maxAncho - anchoTexto) / 2;
+        }
+
+        secondPage.drawText(textoStr, {
+          x: posX,
+          y,
+          size,
+          font,
+          color: rgb(0, 0, 0),
+        });
+      };
+
+      function capitalize(text) {
+        if (!text) return "";
+        return text.charAt(0).toUpperCase() + text.slice(1);
+      }
+
+      function numeroAMonedaTexto(valor) {
+        const entero = Math.floor(valor);
+        const centavos = Math.round((valor - entero) * 100)
+          .toString()
+          .padStart(2, "0");
+        const texto = writtenNumber(entero, { lang: "es" });
+        return `${texto} pesos ${centavos}/100 M.N.`;
+      }
+
       const fechaActual = new Date();
       const formatoActual = {
-        weeyday: "long",
+        weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -209,47 +301,246 @@ const TablaContratos = () => {
       const formatearFecha = (fecha) =>
         new Date(fecha).toLocaleDateString("es-MX");
 
+      const formatoNombre = (nombre) => {
+        return nombre
+          .toLowerCase()
+          .split(" ")
+          .map((palabra) => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+          .join(" ");
+      };
+
       const campos = [
-        { valor: contrato.representante_empresa, x: 330, y: 700 },
-        { valor: contrato.nombre_cliente, x: 200, y: 680 },
+        {
+          valor: formatoNombre(contrato.representante_empresa),
+          x: 330,
+          y: 700,
+        },
+        { valor: formatoNombre(contrato.nombre_cliente), x: 150, y: 680 },
         { valor: contrato.nacionalidad, x: 260, y: 460 },
-        { valor: contrato.rfc, x: 110, y: 440 },
-        { valor: contrato.domicilio, x: 110, y: 408 },
-        { valor: contrato.telefono_cliente, x: 370, y: 398 },
-        { valor: contrato.nombre_cliente, x: 170, y: 304 },
         { valor: contrato.punto_intermedio, x: 186, y: 289 },
-        { valor: contrato.telefono_cliente, x: 186, y: 276 },
         { valor: contrato.n_unidades_contratadas, x: 220, y: 262 },
         { valor: contrato.numero_pasajeros, x: 170, y: 226 },
+      ];
+
+      const campos2 = [{ valor: contrato.capacidad_vehiculo, x: 240, y: 595 }];
+
+      campos.forEach(({ valor, x, y }) => dibujar(valor, x, y));
+      campos2.forEach(({ valor, x, y }) => dibujarSegundaPagina(valor, x, y));
+
+      const camposAjustables = [
+        {
+          valor: contrato.fecha_liquidacion,
+          x: 190,
+          y: 79,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
+        {
+          valor: contrato.domicilio,
+          x: 110,
+          y: 408,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
+        {
+          valor: `$ ${contrato.importe_servicio}`,
+          x: 200,
+          y: 119,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
+        {
+          valor: `${capitalize(numeroAMonedaTexto(contrato.importe_servicio))}`,
+          x: 170,
+          y: 106,
+          maxAncho: 140,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
+        {
+          valor: `$ ${contrato.anticipo}`,
+          x: 190,
+          y: 92,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
         {
           valor: formatearFecha(contrato.fecha_inicio_servicio),
           x: 157,
           y: 212,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
         },
-        { valor: contrato.horario_inicio_servicio, x: 275, y: 212 },
+        {
+          valor: contrato.horario_inicio_servicio,
+          x: 275,
+          y: 212,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
         {
           valor: formatearFecha(contrato.fecha_final_servicio),
           x: 157,
           y: 200,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
         },
-        { valor: contrato.horario_final_servicio, x: 275, y: 200 },
-        { valor: contrato.itinerario_detallado, x: 160, y: 187 },
-        { valor: contrato.importe_servicio, x: 190, y: 119 },
-        { valor: contrato.anticipo, x: 190, y: 92 },
-        { valor: contrato.fecha_liquidacion, x: 190, y: 79 },
-      ];
-      const campos2 = [
-        { valor: contrato.modelo_vehiculo, x: 125, y: 595 },
-        { valor: contrato.placa_vehiculo, x: 125, y: 585 },
-        { valor: contrato.marca_vehiculo, x: 125, y: 575 },
-        { valor: contrato.capacidad_vehiculo, x: 240, y: 595 },
-        { valor: fechaCompleta, x: 313, y: 120 },
-        { valor: contrato.nombre_cliente, x: 190, y: 70 },
-        { valor: contrato.representante_empresa, x: 320, y: 70 },
+        {
+          valor: contrato.horario_final_servicio,
+          x: 275,
+          y: 199,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
+        {
+          valor: contrato.rfc,
+          x: 100,
+          y: 439,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
+        {
+          valor: contrato.nombre_cliente,
+          x: 170,
+          y: 304,
+          maxAncho: 100,
+          sizeInicial: 8,
+          sizeMinimo: 7,
+          centrar: false,
+        },
+        {
+          valor: contrato.telefono_cliente,
+          x: 370,
+          y: 398,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
+        {
+          valor: contrato.telefono_cliente,
+          x: 186,
+          y: 276,
+          maxAncho: 450,
+          sizeInicial: 8,
+          sizeMinimo: 5,
+          centrar: false,
+        },
+        {
+          valor: contrato.itinerario_detallado,
+          x: 160,
+          y: 187,
+          maxAncho: 400,
+          sizeInicial: 9,
+          sizeMinimo: 5,
+          centrar: false,
+        },
       ];
 
-      campos.forEach(({ valor, x, y }) => dibujar(valor, x, y));
-      campos2.forEach(({ valor, x, y }) => dibujarSegundaPagina(valor, x, y));
+      // Campos ajustables de la segunda página
+      const camposAjustablesSegundaPagina = [
+        {
+          valor: fechaCompleta,
+          x: 313,
+          y: 120,
+          maxAncho: 150,
+          sizeInicial: 8,
+          sizeMinimo: 7,
+          centrar: false,
+        },
+        {
+          valor: formatoNombre(contrato.nombre_cliente),
+          x: 160,
+          y: 70,
+          maxAncho: 150,
+          sizeInicial: 8,
+          sizeMinimo: 7,
+          centrar: true,
+        },
+        {
+          valor: formatoNombre(contrato.representante_empresa),
+          x: 320,
+          y: 70,
+          maxAncho: 120,
+          sizeInicial: 8,
+          sizeMinimo: 7,
+          centrar: true,
+        },
+        {
+          valor: contrato.marca_vehiculo,
+          x: 122,
+          y: 576,
+          maxAncho: 50,
+          sizeInicial: 8,
+          sizeMinimo: 6,
+          centrar: true,
+        },
+        {
+          valor: contrato.modelo_vehiculo,
+          x: 122,
+          y: 595,
+          maxAncho: 50,
+          sizeInicial: 8,
+          sizeMinimo: 6,
+          centrar: true,
+        },
+        {
+          valor: contrato.placa_vehiculo,
+          x: 122,
+          y: 585,
+          maxAncho: 50,
+          sizeInicial: 8,
+          sizeMinimo: 6,
+          centrar: true,
+        },
+      ];
+
+      camposAjustables.forEach(
+        ({ valor, x, y, maxAncho, sizeInicial, sizeMinimo, centrar }) => {
+          dibujarTextoAjustable(
+            valor,
+            x,
+            y,
+            maxAncho,
+            sizeInicial,
+            sizeMinimo,
+            centrar
+          );
+        }
+      );
+
+      camposAjustablesSegundaPagina.forEach(
+        ({ valor, x, y, maxAncho, sizeInicial, sizeMinimo, centrar }) => {
+          dibujarTextoAjustableSegundaPagina(
+            valor,
+            x,
+            y,
+            maxAncho,
+            sizeInicial,
+            sizeMinimo,
+            centrar
+          );
+        }
+      );
 
       const coordenadasTipoPasaje = {
         "Turismo Estatal": { x: 148, y: 235 },
@@ -259,7 +550,7 @@ const TablaContratos = () => {
       };
 
       if (contrato.tipo_pasaje === "Otro") {
-        dibujar(contrato.otro_tipo_pasaje_especificacion, 381, 236);
+        dibujar(contrato.otro_tipo_pasaje_especificacion, 381, 236, 7);
       } else if (coordenadasTipoPasaje[contrato.tipo_pasaje]) {
         const { x, y } = coordenadasTipoPasaje[contrato.tipo_pasaje];
         dibujar("X", x, y);
@@ -321,7 +612,6 @@ const TablaContratos = () => {
       throw error;
     }
   };
-
   const fixHora = (h) => {
     if (!h || typeof h !== "string") return null;
     if (h.includes("AM") || h.includes("PM")) {
@@ -344,7 +634,7 @@ const TablaContratos = () => {
   const fixArray = (value) => {
     if (!value) return [];
     if (Array.isArray(value)) return value;
-    return value.split(",").map(v => v.trim());
+    return value.split(",").map((v) => v.trim());
   };
 
   const manejarGuardarContrato = async (datosActualizados) => {
@@ -367,13 +657,18 @@ const TablaContratos = () => {
         punto_intermedio: datosActualizados.punto_intermedio,
         destino: datosActualizados.destino,
         tipo_pasaje: datosActualizados.tipo_pasaje,
-        otro_tipo_pasaje_especificacion: datosActualizados.otro_tipo_pasaje_especificacion,
+        otro_tipo_pasaje_especificacion:
+          datosActualizados.otro_tipo_pasaje_especificacion,
         n_unidades_contratadas: datosActualizados.n_unidades_contratadas,
         numero_pasajeros: datosActualizados.numero_pasajeros,
         fecha_inicio_servicio: datosActualizados.fecha_inicio_servicio,
-        horario_inicio_servicio: fixHora(datosActualizados.horario_inicio_servicio),
+        horario_inicio_servicio: fixHora(
+          datosActualizados.horario_inicio_servicio
+        ),
         fecha_final_servicio: datosActualizados.fecha_final_servicio,
-        horario_final_servicio: fixHora(datosActualizados.horario_final_servicio),
+        horario_final_servicio: fixHora(
+          datosActualizados.horario_final_servicio
+        ),
         itinerario_detallado: datosActualizados.itinerario_detallado,
 
         // Costos
@@ -401,8 +696,8 @@ const TablaContratos = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -431,7 +726,7 @@ const TablaContratos = () => {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
       });
 
       // ⭐ AGREGAR: Recargar datos
@@ -459,7 +754,7 @@ const TablaContratos = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-          }
+          },
         }
       );
 
@@ -484,7 +779,7 @@ const TablaContratos = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-          }
+          },
         }
       );
 
@@ -560,7 +855,7 @@ const TablaContratos = () => {
             </div>
           </div>
 
-          {rolUsuario === 'admin' && (
+          {rolUsuario === "admin" && (
             <div className="Contratos-estadistica">
               <div className="Contratos-icono-estadistica-cuadrado">
                 <BarChart3 size={20} />
@@ -700,7 +995,7 @@ const TablaContratos = () => {
                       <Edit size={16} />
                     </button>
 
-                    {rolUsuario === 'admin' && !contrato.activo && (
+                    {rolUsuario === "admin" && !contrato.activo && (
                       <button
                         className="Contratos-boton-accion Contratos-restaurar"
                         onClick={() => manejarAccion("restaurar", contrato)}
@@ -719,7 +1014,7 @@ const TablaContratos = () => {
                       className="Contratos-boton-accion Contratos-eliminar"
                       onClick={() => manejarAccion("eliminar", contrato)}
                       title={
-                        rolUsuario === 'admin' && !contrato.activo
+                        rolUsuario === "admin" && !contrato.activo
                           ? "Eliminar definitivamente"
                           : "Desactivar contrato"
                       }
@@ -761,8 +1056,9 @@ const TablaContratos = () => {
               (numero) => (
                 <button
                   key={numero}
-                  className={`Contratos-numero-pagina ${paginaActual === numero ? "Contratos-activo" : ""
-                    }`}
+                  className={`Contratos-numero-pagina ${
+                    paginaActual === numero ? "Contratos-activo" : ""
+                  }`}
                   onClick={() => cambiarPagina(numero)}
                 >
                   {numero}
