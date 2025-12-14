@@ -33,7 +33,7 @@ import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
 const TablaRecibos = ({
   datosIniciales = [],
   vistaActual = "recibos",
-  onCambiarVista = () => { },
+  onCambiarVista = () => {},
   onEliminar = null,
   onDescargar = null,
   onImprimir = null,
@@ -115,14 +115,14 @@ const TablaRecibos = ({
   const datosSegunRol = useMemo(() => {
     if (rolUsuario !== "admin") {
       // Vendedor solo ve activos
-      return datosRecibos.filter(r => r.activo === true);
+      return datosRecibos.filter((r) => r.activo === true);
     }
 
     switch (filtroEstado) {
       case "activos":
-        return datosRecibos.filter(r => r.activo === true);
+        return datosRecibos.filter((r) => r.activo === true);
       case "eliminados":
-        return datosRecibos.filter(r => r.activo === false);
+        return datosRecibos.filter((r) => r.activo === false);
       default:
         return datosRecibos; // todos
     }
@@ -407,7 +407,7 @@ const TablaRecibos = ({
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      const dibujar = (texto, x, y, size = 9) => {
+      const dibujar = (texto, x, y, size) => {
         if (texto) {
           firstPage.drawText(texto.toString(), {
             x,
@@ -446,24 +446,26 @@ const TablaRecibos = ({
       );
 
       const campos = [
-        { valor: recibo?.cliente, x: 110, y: 248 },
-        { valor: recibo?.numeroRecibo, x: 500, y: 299 },
-        { valor: recibo?.id, x: 230, y: 299 },
-        { valor: recibo?.concepto, x: 180, y: 155 },
-        { valor: `$ ${recibo?.monto}`, x: 470, y: 153 },
-        { valor: `$ ${recibo?.monto}`, x: 470, y: 88 },
-        { valor: `1`, x: 70, y: 153 },
-        { valor: recibo.cliente?.telefono, x: 100, y: 197 },
+        { valor: recibo?.cliente, x: 110, y: 247, z: 10 },
+        { valor: recibo?.numeroRecibo, x: 500, y: 299, z: 10 },
+        { valor: recibo?.id, x: 230, y: 299, z: 10 },
+        { valor: recibo?.concepto, x: 180, y: 155, z: 9 },
+        { valor: `$ ${recibo?.monto}`, x: 470, y: 153, z: 9 },
+        { valor: `$ ${recibo?.monto}`, x: 470, y: 88, z: 9 },
+        { valor: `1`, x: 70, y: 153, z: 9 },
+        { valor: recibo.cliente?.telefono, x: 100, y: 197, z: 9 },
         {
           valor: `${capitalize(numeroAMonedaTexto(recibo?.monto))}`,
           x: 140,
           y: 88,
+          z: 9,
         },
 
         {
           valor: `Oaxaca de Juárez, Oaxaca a ${fechaCompleta}`,
           x: 290,
           y: 272,
+          z: 10,
         },
 
         //Se dejó los valores de dirección para cuando esté normalizada en un futuro
@@ -473,7 +475,7 @@ const TablaRecibos = ({
         // { valor: recibo.ciudad, x: 180, y: 155 },
       ];
 
-      campos.forEach(({ valor, x, y }) => dibujar(valor, x, y));
+      campos.forEach(({ valor, x, y, z }) => dibujar(valor, x, y, z));
 
       const pdfBytes = await pdfDoc.save();
       return pdfBytes;
@@ -557,8 +559,9 @@ const TablaRecibos = ({
 
   return (
     <div
-      className={`recibos-contenedor-principal ${cargando ? "recibos-cargando" : ""
-        }`}
+      className={`recibos-contenedor-principal ${
+        cargando ? "recibos-cargando" : ""
+      }`}
     >
       {/* Header */}
       <div className="recibos-encabezado">
@@ -677,7 +680,6 @@ const TablaRecibos = ({
               </select>
             </div>
           )}
-
         </div>
 
         <div className="recibos-seccion-derecha">
@@ -727,12 +729,11 @@ const TablaRecibos = ({
               {terminoBusqueda
                 ? "Intenta ajustar los filtros de búsqueda"
                 : filtroEstado === "eliminados"
-                  ? "No hay recibos eliminados en el sistema"
-                  : filtroEstado === "activos"
-                    ? "No hay recibos activos registrados"
-                    : "No hay recibos registrados en el sistema"}
+                ? "No hay recibos eliminados en el sistema"
+                : filtroEstado === "activos"
+                ? "No hay recibos activos registrados"
+                : "No hay recibos registrados en el sistema"}
             </p>
-
           </div>
         ) : (
           <table className="recibos-tabla">
@@ -758,8 +759,9 @@ const TablaRecibos = ({
               {datosPaginados.map((recibo, indice) => (
                 <tr
                   key={recibo.id}
-                  className={`recibos-fila-pago ${recibo.activo === false ? "recibos-fila-eliminada" : ""
-                    }`}
+                  className={`recibos-fila-pago ${
+                    recibo.activo === false ? "recibos-fila-eliminada" : ""
+                  }`}
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Recibo" className="recibos-columna-factura">
@@ -912,8 +914,9 @@ const TablaRecibos = ({
                 ) : (
                   <button
                     key={numero}
-                    className={`recibos-numero-pagina ${paginaActual === numero ? "recibos-activo" : ""
-                      }`}
+                    className={`recibos-numero-pagina ${
+                      paginaActual === numero ? "recibos-activo" : ""
+                    }`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
                     aria-label={`Página ${numero}`}
