@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import {
   Search,
   Edit,
@@ -44,13 +44,13 @@ const TablaReservas = () => {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
       });
 
       setReservasDatos(response.data);
-      console.log('✅ Reservas cargadas:', response.data.length);
+      console.log("✅ Reservas cargadas:", response.data.length);
     } catch (error) {
-      console.error('❌ Error al cargar reservas:', error);
+      console.error("❌ Error al cargar reservas:", error);
     }
   };
 
@@ -174,7 +174,7 @@ const TablaReservas = () => {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
       });
 
       // ⭐ AGREGAR: Recargar desde backend
@@ -209,28 +209,32 @@ const TablaReservas = () => {
 
       // ⭐ AGREGAR: Crear FormData para enviar al backend
       const formData = new FormData();
-      formData.append('_method', 'PUT');
+      formData.append("_method", "PUT");
 
       // Mapear campos camelCase → snake_case
       const mapeo = {
-        'folio': 'folio',
-        'fechaReserva': 'fecha_reserva',
-        'numHabitantes': 'num_habitantes',
-        'nombreCliente': 'nombre_cliente',
-        'numPasajeros': 'num_pasajeros',
-        'telefono': 'telefono',
-        'importe': 'importe',
-        'servicio': 'servicio',
-        'incluye': 'incluye',
-        'noIncluye': 'no_incluye',
-        'formaPago': 'forma_pago',
-        'pagado': 'pagado',
-        'fotoTransferencia': 'foto_transferencia'
+        folio: "folio",
+        fechaReserva: "fecha_reserva",
+        numHabitantes: "num_habitantes",
+        nombreCliente: "nombre_cliente",
+        numPasajeros: "num_pasajeros",
+        telefono: "telefono",
+        importe: "importe",
+        servicio: "servicio",
+        incluye: "incluye",
+        noIncluye: "no_incluye",
+        formaPago: "forma_pago",
+        pagado: "pagado",
+        fotoTransferencia: "foto_transferencia",
       };
 
-      Object.keys(datosActualizados).forEach(key => {
+      Object.keys(datosActualizados).forEach((key) => {
         const backendKey = mapeo[key] || key;
-        if (datosActualizados[key] !== null && datosActualizados[key] !== undefined && key !== 'activo') {
+        if (
+          datosActualizados[key] !== null &&
+          datosActualizados[key] !== undefined &&
+          key !== "activo"
+        ) {
           formData.append(backendKey, datosActualizados[key]);
         }
       });
@@ -243,8 +247,8 @@ const TablaReservas = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-            'Content-Type': 'multipart/form-data',
-          }
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
@@ -273,7 +277,7 @@ const TablaReservas = () => {
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      const dibujar = (texto, x, y, size = 9) => {
+      const dibujar = (texto, x, y, size) => {
         if (texto) {
           firstPage.drawText(texto.toString(), {
             x,
@@ -301,32 +305,35 @@ const TablaReservas = () => {
         new Date(fecha).toLocaleDateString("es-MX");
       const formatearFecha2 = (fecha) =>
         new Date(fecha).toLocaleDateString("es-ES", formatoActual);
+      const convercionLetraMayuscula=(cadena)=>{
+        return `${cadena.charAt(0).toUpperCase()}${cadena.slice(1)}`;
+      }
 
       const campos = [
-        { valor: reserva.folio.toString(), x: 495, y: 325 },
-        { valor: formatearFecha2(reserva.fechaReserva), x: 190, y: 273 },
-        { valor: reserva.numHabitantes.toString(), x: 490, y: 273 },
-        { valor: reserva.numPasajeros.toString(), x: 110, y: 208 },
-        { valor: reserva.telefono, x: 240, y: 208 },
-        { valor: reserva.importe.toString(), x: 450, y: 208 },
-        { valor: reserva.nombreCliente, x: 108, y: 240 },
-        { valor: reserva.servicio, x: 110, y: 143 },
-        { valor: reserva.incluye, x: 118, y: 175 },
-        { valor: reserva.noIncluye, x: 120, y: 107 },
+        { valor: reserva.folio.toString(), x: 495, y: 325, z: 12 },
+        { valor: formatearFecha2(reserva.fechaReserva), x: 190, y: 272, z: 11 },
+        { valor: reserva.numHabitantes.toString(), x: 486, y: 273, z: 11 },
+        { valor: reserva.numPasajeros.toString(), x: 110, y: 208, z: 11 },
+        { valor: reserva.telefono, x: 230, y: 208, z: 11 },
+        { valor: `$ ${reserva.importe}`, x: 450, y: 208, z: 11 },
+        { valor: reserva.nombreCliente, x: 108, y: 240, z: 11 },
+        { valor: reserva.servicio, x: 120, y: 174, z: 9 },//143
+        { valor: reserva.incluye, x: 128, y: 142 , z: 9 },
+        { valor: reserva.noIncluye, x: 130, y: 108, z: 9 },
       ];
 
-      campos.forEach(({ valor, x, y }) => dibujar(valor, x, y));
+      campos.forEach(({ valor, x, y, z }) => dibujar(valor, x, y, z));
 
       if (reserva.formaPago === "transferencia") {
-        dibujar(reserva.formaPago, 158, 76);
+        dibujar(convercionLetraMayuscula(reserva.formaPago), 158, 76, 11);
       } else if (reserva.formaPago === "efectivo") {
-        dibujar(reserva.formaPago, 158, 76);
+        dibujar(convercionLetraMayuscula(reserva.formaPago), 158, 76, 11);
       }
 
       if (reserva.pagado === "pagado") {
-        dibujar(reserva.pagado, 258, 76);
+        dibujar(convercionLetraMayuscula(reserva.pagado), 358, 75,11);
       } else if (reserva.pagado === "no pagado") {
-        dibujar(reserva.pagado, 358, 76);
+        dibujar(convercionLetraMayuscula(reserva.pagado), 358, 75, 11);
       }
 
       const pdfBytes = await pdfDoc.save();
@@ -538,10 +545,11 @@ const TablaReservas = () => {
                     >
                       <div className="reservas-badge-idiomas">
                         <span
-                          className={`reservas-idioma-tag ${reserva.pagado === "pagado"
-                            ? "reservas-pagado"
-                            : "reservas-no-pagado"
-                            }`}
+                          className={`reservas-idioma-tag ${
+                            reserva.pagado === "pagado"
+                              ? "reservas-pagado"
+                              : "reservas-no-pagado"
+                          }`}
                         >
                           {reserva.pagado === "pagado" ? (
                             <>
@@ -634,8 +642,9 @@ const TablaReservas = () => {
                   (numero) => (
                     <button
                       key={numero}
-                      className={`reservas-numero-pagina ${paginaActual === numero ? "reservas-activo" : ""
-                        }`}
+                      className={`reservas-numero-pagina ${
+                        paginaActual === numero ? "reservas-activo" : ""
+                      }`}
                       onClick={() => cambiarPagina(numero)}
                     >
                       {numero}
