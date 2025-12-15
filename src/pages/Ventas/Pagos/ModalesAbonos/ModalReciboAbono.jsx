@@ -123,7 +123,12 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
         { valor: datosRecibo?.cliente, x: 110, y: 247, z: 10 },
         { valor: datosRecibo?.numeroRecibo, x: 500, y: 299, z: 10 },
         { valor: datosRecibo?.id, x: 230, y: 299, z: 10 },
-        { valor: datosRecibo?.concepto, x: 180, y: 155, z: 9 },
+        {
+          valor: `Abono número ${datosRecibo?.numeroAbono}`,
+          x: 180,
+          y: 155,
+          z: 9,
+        },
         { valor: `$ ${montoNumerico}`, x: 470, y: 153, z: 9 },
         { valor: `$ ${montoNumerico}`, x: 470, y: 88, z: 9 },
         { valor: `1`, x: 70, y: 153, z: 9 },
