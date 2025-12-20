@@ -42,7 +42,7 @@ const NuevaCotizacion = ({
     restaurante: "",
     tour: "",
     hospedaje: "",
-    extras: [],
+    servicios: [],
     total: "",
     totalLetra: "",
     lista: [],
@@ -81,32 +81,61 @@ const NuevaCotizacion = ({
   }, [mostrarModal]);
 
   useEffect(() => {
-    const fetchExtras = async () => {
+    const fetchServicios = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://127.0.0.1:8000/api/extras", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
+
+        const [transporte, restaurante, tour, hospedaje] = await Promise.all([
+          axios.get("http://127.0.0.1:8000/api/transportes", {
+            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+          }),
+          axios.get("http://127.0.0.1:8000/api/restaurantes", {
+            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+          }),
+          axios.get("http://127.0.0.1:8000/api/tours", {
+            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+          }),
+          axios.get("http://127.0.0.1:8000/api/hospedajes", {
+            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+          })
+        ]);
+
+        setOpcionesExtras({
+          transporte: transporte.data.map(s => ({
+            id: s.id,
+            tipo: 'transporte',
+            nombre: s.nombre_servicio,
+            precio: s.precio_base,
+            proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+          })),
+          restaurante: restaurante.data.map(s => ({
+            id: s.id,
+            tipo: 'restaurante',
+            nombre: s.nombre_servicio,
+            precio: s.precio_base,
+            proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+          })),
+          tour: tour.data.map(s => ({
+            id: s.id,
+            tipo: 'tour',
+            nombre: s.nombre_tour,
+            precio: s.precio_base,
+            proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+          })),
+          hospedaje: hospedaje.data.map(s => ({
+            id: s.id,
+            tipo: 'hospedaje',
+            nombre: s.nombre_servicio,
+            precio: s.precio_base,
+            proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+          }))
         });
-
-        const data = response.data;
-
-        // Agrupar por tipo
-        const transporte = data.filter((e) => e.tipo === "transporte");
-        const restaurante = data.filter((e) => e.tipo === "restaurante");
-        const tour = data.filter((e) => e.tipo === "tour");
-        const hospedaje = data.filter((e) => e.tipo === "hospedaje");
-
-        setOpcionesExtras({ transporte, restaurante, tour, hospedaje });
-        console.log("Extras cargados:", data);
       } catch (error) {
-        console.error("Error al cargar extras:", error);
+        console.error("Error al cargar servicios:", error);
       }
     };
 
-    fetchExtras();
+    fetchServicios();
   }, []);
 
   const generarIdCliente = useCallback(() => {
@@ -343,7 +372,7 @@ const NuevaCotizacion = ({
       restaurante: "",
       tour: "",
       hospedaje: "",
-      extras: [],
+      servicios: [],
       total: "",
       totalLetra: "",
       lista: [],
@@ -357,8 +386,19 @@ const NuevaCotizacion = ({
 
   useEffect(() => {
     if (cotizacionEditar) {
+      console.log("🔍 cotizacionEditar.servicios:", cotizacionEditar.servicios);
+
       document.body.style.overflow = "hidden";
       setModoEdicion(true);
+
+      // ✅ GUARDAR IDS TAL CUAL (se convertirán después)
+      let serviciosParaFormulario = [];
+      if (cotizacionEditar.servicios && Array.isArray(cotizacionEditar.servicios)) {
+        serviciosParaFormulario = cotizacionEditar.servicios;
+      }
+
+      console.log("🎯 serviciosParaFormulario (IDs):", serviciosParaFormulario);
+
       setFormData({
         folio: cotizacionEditar.folio || "",
         fecha_salida: cotizacionEditar.fecha_salida || "",
@@ -380,11 +420,11 @@ const NuevaCotizacion = ({
         fecha: cotizacionEditar.fecha || new Date().toISOString().split("T")[0],
         tipo_cliente: cotizacionEditar.tipo_cliente || "solo_una_vez",
         descripcion: cotizacionEditar.descripcion || "",
-        transporte: cotizacionEditar.transporte || "",
-        restaurante: cotizacionEditar.restaurante || "",
-        tour: cotizacionEditar.tour || "",
-        hospedaje: cotizacionEditar.hospedaje || "",
-        extras: cotizacionEditar.extras || [],
+        transporte: "",
+        restaurante: "",
+        tour: "",
+        hospedaje: "",
+        servicios: serviciosParaFormulario, // ✅ IDs directos
         total: cotizacionEditar.total || "",
         totalLetra: cotizacionEditar.totalLetra || "",
         lista: cotizacionEditar.lista || [],
@@ -403,6 +443,44 @@ const NuevaCotizacion = ({
       limpiarTodosErrores();
     }
   }, [cotizacionEditar, limpiarTodosErrores]);
+
+  useEffect(() => {
+    if (
+      modoEdicion &&
+      formData.servicios.length > 0 &&
+      typeof formData.servicios[0] === 'number'
+    ) {
+      console.log("🔄 Convirtiendo IDs a servicios completos...");
+      console.log("📦 opcionesExtras disponibles:", opcionesExtras);
+
+      const tieneOpciones = Object.values(opcionesExtras).some(arr => arr.length > 0);
+
+      if (!tieneOpciones) {
+        console.log("⏳ Esperando que opcionesExtras se cargue...");
+        return;
+      }
+
+      const serviciosCompletos = formData.servicios.map(servicioId => {
+        for (const categoria in opcionesExtras) {
+          const servicio = opcionesExtras[categoria].find(s => s.id === servicioId);
+          if (servicio) {
+            console.log("✅ Servicio encontrado:", servicio);
+            return servicio;
+          }
+        }
+        console.log("❌ No se encontró servicio con ID:", servicioId);
+        return null;
+      }).filter(s => s !== null);
+
+      if (serviciosCompletos.length > 0) {
+        console.log("✅ Actualizando servicios completos:", serviciosCompletos);
+        setFormData(prev => ({
+          ...prev,
+          servicios: serviciosCompletos
+        }));
+      }
+    }
+  }, [opcionesExtras, modoEdicion]);
 
   useEffect(() => {
     if (cotizacionEditar && cotizacionEditar.lista) {
@@ -453,7 +531,7 @@ const NuevaCotizacion = ({
       restaurante: "",
       tour: "",
       hospedaje: "",
-      extras: [],
+      servicios: [],
       total: "",
       totalLetra: "",
       lista: [],
@@ -525,52 +603,44 @@ const NuevaCotizacion = ({
     }));
   };
 
-  const handleExtraChange = (e) => {
+  const handleServicioChange = (e) => {
     const { name, value } = e.target;
     if (!value) return;
 
-    const selected = opcionesExtras[name].find(
-      (extra) => extra.nombre === value
-    );
+    const selected = opcionesExtras[name].find(s => s.id === parseInt(value));
     if (!selected) return;
 
     setFormData((prev) => {
-      // Evitar duplicados exactos
-      const yaExiste = prev.extras.find(
-        (item) => item.tipo === name && item.valor === selected.nombre
-      );
+      // Evitar duplicados
+      const yaExiste = prev.servicios.find(s => s.id === selected.id);
       if (yaExiste) return prev;
 
-      // Agregar el nuevo extra
-      const nuevosExtras = [
-        ...prev.extras,
-        { tipo: name, valor: selected.nombre, costo: selected.costo },
-      ];
+      const nuevosServicios = [...prev.servicios, selected];
 
-      // Recalcular total
-      const totalExtras = nuevosExtras.reduce(
-        (acc, curr) => acc + curr.costo,
-        0
-      );
+      const totalServicios = nuevosServicios.reduce((acc, curr) => acc + parseFloat(curr.precio), 0);
+
       return {
         ...prev,
-        extras: nuevosExtras,
-        total: totalExtras.toFixed(2),
+        servicios: nuevosServicios,
+        total: totalServicios.toFixed(2),
+        transporte: "",
+        restaurante: "",
+        tour: "",
+        hospedaje: "",
       };
     });
+    e.target.value = "";
   };
 
-  const handleEliminarExtra = (index) => {
+  const handleEliminarServicio = (servicioId) => {
     setFormData((prev) => {
-      const nuevosExtras = prev.extras.filter((_, i) => i !== index);
-      const totalExtras = nuevosExtras.reduce(
-        (acc, curr) => acc + curr.costo,
-        0
-      );
+      const nuevosServicios = prev.servicios.filter(s => s.id !== servicioId);
+      const totalServicios = nuevosServicios.reduce((acc, curr) => acc + parseFloat(curr.precio), 0);
+
       return {
         ...prev,
-        extras: nuevosExtras,
-        total: totalExtras.toFixed(2),
+        servicios: nuevosServicios,
+        total: totalServicios.toFixed(2),
       };
     });
   };
@@ -609,6 +679,7 @@ const NuevaCotizacion = ({
       const cotizacionCompleta = {
         ...formData,
         ...datosCliente,
+        servicios: formData.servicios.map(s => s.id),
         id: modoEdicion ? formData.id : generarIdCliente(),
       };
 
@@ -647,7 +718,7 @@ const NuevaCotizacion = ({
         restaurante: "",
         tour: "",
         hospedaje: "",
-        extras: [],
+        servicios: [],
         total: "",
         totalLetra: "",
         lista: [],
@@ -703,45 +774,40 @@ const NuevaCotizacion = ({
             <div className="cotizacion-tabs">
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 1 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 1 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(1)}
               >
                 Información General
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 2 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 2 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(2)}
               >
                 Datos del Cliente
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 3 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 3 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(3)}
               >
                 Datos del Servicio
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 4 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 4 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(4)}
               >
                 Detalles del Viaje
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 5 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 5 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(5)}
               >
                 Extras y Total
@@ -1177,12 +1243,12 @@ const NuevaCotizacion = ({
                       <select
                         name="transporte"
                         value={formData.transporte}
-                        onChange={handleExtraChange}
+                        onChange={handleServicioChange}
                       >
                         <option value="">Seleccionar...</option>
-                        {opcionesExtras.transporte.map((extra) => (
-                          <option key={extra.id} value={extra.nombre}>
-                            {extra.nombre} - ${extra.costo}
+                        {opcionesExtras.transporte.map((servicio) => (
+                          <option key={servicio.id} value={servicio.id}>
+                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
                           </option>
                         ))}
                       </select>
@@ -1193,12 +1259,12 @@ const NuevaCotizacion = ({
                       <select
                         name="restaurante"
                         value={formData.restaurante}
-                        onChange={handleExtraChange}
+                        onChange={handleServicioChange}
                       >
                         <option value="">Seleccionar...</option>
-                        {opcionesExtras.restaurante.map((extra) => (
-                          <option key={extra.id} value={extra.nombre}>
-                            {extra.nombre} - ${extra.costo}
+                        {opcionesExtras.restaurante.map((servicio) => (
+                          <option key={servicio.id} value={servicio.id}>
+                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
                           </option>
                         ))}
                       </select>
@@ -1209,12 +1275,12 @@ const NuevaCotizacion = ({
                       <select
                         name="tour"
                         value={formData.tour}
-                        onChange={handleExtraChange}
+                        onChange={handleServicioChange}
                       >
                         <option value="">Seleccionar...</option>
-                        {opcionesExtras.tour.map((extra) => (
-                          <option key={extra.id} value={extra.nombre}>
-                            {extra.nombre} - ${extra.costo}
+                        {opcionesExtras.tour.map((servicio) => (
+                          <option key={servicio.id} value={servicio.id}>
+                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
                           </option>
                         ))}
                       </select>
@@ -1225,12 +1291,12 @@ const NuevaCotizacion = ({
                       <select
                         name="hospedaje"
                         value={formData.hospedaje}
-                        onChange={handleExtraChange}
+                        onChange={handleServicioChange}
                       >
                         <option value="">Seleccionar...</option>
-                        {opcionesExtras.hospedaje.map((extra) => (
-                          <option key={extra.id} value={extra.nombre}>
-                            {extra.nombre} - ${extra.costo}
+                        {opcionesExtras.hospedaje.map((servicio) => (
+                          <option key={servicio.id} value={servicio.id}>
+                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
                           </option>
                         ))}
                       </select>
@@ -1240,16 +1306,17 @@ const NuevaCotizacion = ({
                   <div className="extras-seleccionados">
                     <h4>Extras:</h4>
                     <div className="extras-lista">
-                      {formData.extras.length > 0 ? (
-                        formData.extras.map((extra, index) => (
-                          <div key={index} className="extra-item">
-                            <span className="extra-tipo">{extra.tipo}:</span>
-                            <span className="extra-valor">{extra.valor}</span>
-                            <span className="extra-costo">{extra.costo}</span>
+                      {formData.servicios.length > 0 ? (
+                        formData.servicios.map((servicio) => (
+                          <div key={servicio.id} className="extra-item">
+                            <span className="extra-tipo">{servicio.tipo}:</span>
+                            <span className="extra-valor">{servicio.nombre}</span>
+                            <span className="extra-proveedor">({servicio.proveedor})</span>
+                            <span className="extra-costo">${servicio.precio}</span>
                             <button
                               type="button"
                               className="btn-eliminar-extra"
-                              onClick={() => handleEliminarExtra(index)}
+                              onClick={() => handleEliminarServicio(servicio.id)}
                             >
                               ❌
                             </button>

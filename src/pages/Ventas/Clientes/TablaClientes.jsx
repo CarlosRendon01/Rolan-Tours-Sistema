@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw } from 'lucide-react';
+import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw, Filter, CheckCircle, XCircle, Clock, FileText } from 'lucide-react';
 import ModalVerCliente from './Modales/ModalVerCliente';
 import ModalEditarCliente from './Modales/ModalEditarCliente';
 import ModalEliminarCliente from './Modales/ModalEliminarCliente';
 import ModalRestaurarCliente from './Modales/ModalRestaurarCliente';
 import ModalEliminarDefinitivo from './Modales/ModalEliminarDefinitivo';
+import ModalCrearCotizacion from './Modales/ModalCrearCotizacion';
 import './TablaClientes.css';
 
 const TablaClientes = () => {
   const [permisos, setPermisos] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [datosClientes, setDatosClientes] = useState([]);
+  const [pipelines, setPipelines] = useState([]);
 
+  // Filtros
+  const [filtroActivo, setFiltroActivo] = useState({
+    pipeline_id: null,
+    etapa_id: null,
+    estado_lead: null
+  });
+  const [mostrarTodos, setMostrarTodos] = useState(true);
+
+  // Paginación y búsqueda
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
@@ -20,15 +32,13 @@ const TablaClientes = () => {
   // Estados para los modales
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
+  const [modalCotizarAbierto, setModalCotizarAbierto] = useState(false);
   const [clienteAEliminar, setClienteAEliminar] = useState(null);
   const [clienteARestaurar, setClienteARestaurar] = useState(null);
   const [clienteAEliminarDefinitivo, setClienteAEliminarDefinitivo] = useState(null);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
 
-  // Estado para los datos de clientes - AHORA CON CAMPO "activo"
-  const [datosClientes, setDatosClientes] = useState([]);
-
-  // ✅ Cargar permisos y roles del usuario al montar el componente
+  // ✅ Cargar permisos y configuración al montar
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -39,25 +49,45 @@ const TablaClientes = () => {
 
     try {
       const userData = JSON.parse(localStorage.getItem('user') || '{}');
-      console.log('Datos del usuario:', userData); // ✅ Para debugging
       setPermisos(userData.permisos || []);
       setRoles(userData.roles || []);
-      cargarClientes();
+
+      // Cargar configuración de pipelines primero
+      cargarConfiguracionPipelines();
     } catch (error) {
       console.error('Error al parsear usuario de localStorage:', error);
       setCargando(false);
     }
   }, []);
 
-  // ✅ Función para verificar si el usuario tiene un permiso
-  const tienePermiso = (permiso) => {
-    return permisos.includes(permiso);
-  };
+  // ✅ Cargar clientes cuando cambia el filtro O cuando se cargan los pipelines
+  useEffect(() => {
+    if (pipelines.length > 0) {
+      cargarClientes();
+    }
+  }, [filtroActivo, mostrarTodos, pipelines]);
 
-  // ✅ Verificar si el usuario es administrador
+  const tienePermiso = (permiso) => permisos.includes(permiso);
   const esAdministrador = roles.includes('admin');
 
-  // ✅ Cargar clientes desde el backend
+  // ✅ Cargar configuración de pipelines
+  const cargarConfiguracionPipelines = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://127.0.0.1:8000/api/leads/pipelines-config', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      setPipelines(response.data.pipelines);
+    } catch (error) {
+      console.error('Error al cargar pipelines:', error);
+    }
+  };
+
+  // ✅ Cargar clientes (con o sin filtro)
   const cargarClientes = async () => {
     try {
       setCargando(true);
@@ -69,22 +99,37 @@ const TablaClientes = () => {
         return;
       }
 
-      const response = await axios.get('http://127.0.0.1:8000/api/clientes', {
+      let url = 'http://127.0.0.1:8000/api/clientes';
+      const params = new URLSearchParams();
+
+      // Si NO es "mostrar todos", aplicar filtros específicos
+      if (!mostrarTodos && filtroActivo.pipeline_id) {
+        url = 'http://127.0.0.1:8000/api/clientes/clientes-por-filtro';
+        params.append('pipeline_id', filtroActivo.pipeline_id);
+        params.append('etapa_id', filtroActivo.etapa_id);
+        if (filtroActivo.estado_lead) {
+          params.append('estado_lead', filtroActivo.estado_lead);
+        }
+      }
+
+      const urlConParams = params.toString() ? `${url}?${params}` : url;
+
+      const response = await axios.get(urlConParams, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json'
         }
       });
 
-      console.log('Clientes cargados:', response.data);
-      setDatosClientes(response.data);
+      // Si viene con estructura {clientes: [], total: X}, extraer clientes
+      const clientes = response.data.clientes || response.data;
+      setDatosClientes(clientes);
     } catch (error) {
       console.error('Error al cargar clientes:', error);
       if (error.response?.status === 401) {
-        // Token inválido o expirado
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = '/login'; // Redirigir al login
+        window.location.href = '/login';
       } else {
         alert('Error al cargar clientes: ' + (error.response?.data?.error || error.message));
       }
@@ -93,10 +138,54 @@ const TablaClientes = () => {
     }
   };
 
+  // ✅ Seleccionar pipeline específico
+  const seleccionarPipeline = (pipeline) => {
+    setFiltroActivo({
+      pipeline_id: pipeline.pipeline_id,
+      etapa_id: pipeline.etapa_id,
+      estado_lead: pipeline.estado
+    });
+    setMostrarTodos(false);
+    setPaginaActual(1);
+  };
+
+  // ✅ Mostrar todos los clientes (de los 3 pipelines)
+  const mostrarTodosLosPipelines = () => {
+    setMostrarTodos(true);
+    setFiltroActivo({
+      pipeline_id: null,
+      etapa_id: null,
+      estado_lead: null
+    });
+    setPaginaActual(1);
+  };
+
+  // ✅ Cambiar estado de un lead
+  const cambiarEstadoLead = async (leadId, nuevoEstado) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.patch(
+        `http://127.0.0.1:8000/api/leads/${leadId}/estado`,
+        { estado_lead: nuevoEstado },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      await cargarClientes();
+    } catch (error) {
+      console.error('Error al actualizar estado:', error);
+      alert('Error al actualizar estado del lead');
+    }
+  };
+
   const manejarGuardarCliente = async (datosActualizados) => {
     try {
       const token = localStorage.getItem('token');
-
       await axios.put(
         `http://127.0.0.1:8000/api/clientes/${datosActualizados.id}`,
         datosActualizados,
@@ -106,8 +195,6 @@ const TablaClientes = () => {
           }
         }
       );
-
-      // Recargar clientes después de actualizar
       await cargarClientes();
       cerrarModalEditar();
     } catch (error) {
@@ -117,7 +204,6 @@ const TablaClientes = () => {
     }
   };
 
-  // ✅ Desactivar cliente (Soft Delete)
   const manejarEliminarCliente = async (cliente) => {
     if (!cliente) {
       setClienteAEliminar(null);
@@ -126,7 +212,6 @@ const TablaClientes = () => {
 
     try {
       const token = localStorage.getItem('token');
-
       await axios.delete(
         `http://127.0.0.1:8000/api/clientes/${cliente.id}`,
         {
@@ -135,7 +220,6 @@ const TablaClientes = () => {
           }
         }
       );
-
       setClienteAEliminar(null);
       await cargarClientes();
     } catch (error) {
@@ -146,11 +230,9 @@ const TablaClientes = () => {
     }
   };
 
-  // ✅ Restaurar cliente
   const manejarRestaurar = async (cliente) => {
     try {
       const token = localStorage.getItem('token');
-
       await axios.post(
         `http://127.0.0.1:8000/api/clientes/${cliente.id}/restore`,
         {},
@@ -160,7 +242,6 @@ const TablaClientes = () => {
           }
         }
       );
-
       setClienteARestaurar(null);
       await cargarClientes();
     } catch (error) {
@@ -169,11 +250,9 @@ const TablaClientes = () => {
     }
   };
 
-  // ✅ Eliminar definitivamente
   const manejarEliminarDefinitivo = async (cliente) => {
     try {
       const token = localStorage.getItem('token');
-
       await axios.delete(
         `http://127.0.0.1:8000/api/clientes/${cliente.id}/force`,
         {
@@ -182,7 +261,6 @@ const TablaClientes = () => {
           }
         }
       );
-
       setClienteAEliminarDefinitivo(null);
       await cargarClientes();
     } catch (error) {
@@ -191,17 +269,18 @@ const TablaClientes = () => {
     }
   };
 
-  // Filtrar clientes según rol y búsqueda
+  // ✅ Filtrar clientes por búsqueda
   const clientesFiltrados = datosClientes.filter(cliente => {
     if (!cliente || !cliente.nombre) return false;
-    // FILTRO POR ROL
+
+    // Filtro por rol
     if (!esAdministrador && !cliente.activo) {
-      // Los clientes normales NO ven los inactivos
       return false;
     }
-    // Si es admin, ve TODOS (activos e inactivos juntos)
 
-    // FILTRO DE BÚSQUEDA
+    // Filtro de búsqueda
+    if (!terminoBusqueda) return true;
+
     const busqueda = terminoBusqueda.toLowerCase();
     return (
       cliente.nombre.toLowerCase().includes(busqueda) ||
@@ -213,16 +292,17 @@ const TablaClientes = () => {
     );
   });
 
-  // Calcular paginación
+  // Paginación
   const totalRegistros = clientesFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const clientesPaginados = clientesFiltrados.slice(indiceInicio, indiceFin);
 
-  // Calcular estadísticas
+  // Estadísticas
   const clientesActivos = datosClientes.filter(c => c.activo).length;
   const clientesInactivos = datosClientes.filter(c => !c.activo).length;
+  const totalLeads = datosClientes.reduce((sum, c) => sum + (c.leads?.length || 0), 0);
 
   const cambiarPagina = (nuevaPagina) => {
     if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
@@ -250,12 +330,14 @@ const TablaClientes = () => {
         setClienteSeleccionado(cliente);
         setModalEditarAbierto(true);
         break;
+      case 'cotizar':
+        setClienteSeleccionado(cliente);
+        setModalCotizarAbierto(true);
+        break;
       case 'eliminar':
-        // Si es admin y el cliente está inactivo, mostrar modal de eliminar definitivo
         if (esAdministrador && !cliente.activo) {
           setClienteAEliminarDefinitivo(cliente);
         } else {
-          // Si no, mostrar modal de desactivar (ModalEliminarCliente)
           setClienteAEliminar(cliente);
         }
         break;
@@ -277,8 +359,29 @@ const TablaClientes = () => {
     setClienteSeleccionado(null);
   };
 
+  const cerrarModalCotizar = () => {
+    setModalCotizarAbierto(false);
+    setClienteSeleccionado(null);
+  };
 
-  // ✅ Si no hay token, mostrar mensaje
+  const getEstadoColor = (estado) => {
+    switch (estado) {
+      case 'contactado': return '#3b82f6';
+      case 'ganado': return '#10b981';
+      case 'perdido': return '#ef4444';
+      default: return '#6b7280';
+    }
+  };
+
+  const getEstadoIcon = (estado) => {
+    switch (estado) {
+      case 'contactado': return <Clock size={14} />;
+      case 'ganado': return <CheckCircle size={14} />;
+      case 'perdido': return <XCircle size={14} />;
+      default: return <Clock size={14} />;
+    }
+  };
+
   if (!localStorage.getItem('token')) {
     return (
       <div style={{
@@ -308,7 +411,7 @@ const TablaClientes = () => {
             <div className="clientes-linea clientes-verde"></div>
             <div className="clientes-linea clientes-amarilla"></div>
           </div>
-          <h1 className="clientes-titulo">Gestión de Clientes</h1>
+          <h1 className="clientes-titulo">Gestión de Clientes y Leads</h1>
         </div>
 
         {/* Estadísticas */}
@@ -318,7 +421,15 @@ const TablaClientes = () => {
               <Users size={20} />
             </div>
             <div className="clientes-info-estadistica">
-              <span className="clientes-label-estadistica">ACTIVOS: {clientesActivos}</span>
+              <span className="clientes-label-estadistica">CLIENTES: {clientesActivos}</span>
+            </div>
+          </div>
+          <div className="clientes-estadistica">
+            <div className="clientes-icono-estadistica-cuadrado">
+              <BarChart3 size={20} />
+            </div>
+            <div className="clientes-info-estadistica">
+              <span className="clientes-label-estadistica">LEADS: {totalLeads}</span>
             </div>
           </div>
           {esAdministrador && (
@@ -334,10 +445,80 @@ const TablaClientes = () => {
         </div>
       </div>
 
+      {/* ✅ Filtros de Pipeline */}
+      <div style={{
+        display: 'flex',
+        gap: '1rem',
+        marginBottom: '1.5rem',
+        flexWrap: 'wrap',
+        padding: '1rem',
+        backgroundColor: 'white',
+        borderRadius: '10px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+      }}>
+        {/* Botón Mostrar Todos */}
+        <button
+          onClick={mostrarTodosLosPipelines}
+          className={mostrarTodos ? 'clientes-filtro-activo' : 'clientes-filtro-inactivo'}
+          style={{
+            padding: '0.75rem 1.5rem',
+            borderRadius: '8px',
+            border: mostrarTodos ? '2px solid #667eea' : '2px solid #e5e7eb',
+            background: mostrarTodos ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'white',
+            color: mostrarTodos ? 'white' : '#374151',
+            fontSize: '0.95rem',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}
+        >
+          <Filter size={16} />
+          Todos los Pipelines
+        </button>
+
+        {/* Botones por Pipeline */}
+        {pipelines.map((pipeline) => {
+          const esActivo = !mostrarTodos && filtroActivo.pipeline_id === pipeline.pipeline_id;
+          return (
+            <button
+              key={pipeline.pipeline_id}
+              onClick={() => seleccionarPipeline(pipeline)}
+              className={esActivo ? 'clientes-filtro-activo' : 'clientes-filtro-inactivo'}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '8px',
+                border: esActivo ? '2px solid #667eea' : '2px solid #e5e7eb',
+                background: esActivo ?
+                  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
+                  'white',
+                color: esActivo ? 'white' : '#374151',
+                fontSize: '0.95rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                <span>{pipeline.nombre}</span>
+                <span style={{
+                  fontSize: '0.75rem',
+                  opacity: esActivo ? 1 : 0.7,
+                  marginTop: '0.25rem'
+                }}>
+                  Estado: {pipeline.estado}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Controles */}
       <div className="clientes-controles">
         <div className="clientes-control-registros">
-          {/* BOTÓN PARA CAMBIAR DE ROL (SOLO PARA PRUEBAS - ELIMINAR EN PRODUCCIÓN) */}
           <label htmlFor="registros">Mostrar</label>
           <select
             id="registros"
@@ -378,107 +559,166 @@ const TablaClientes = () => {
             <tr className="clientes-fila-encabezado">
               <th>ID</th>
               <th>NOMBRE</th>
-              {/* <th>EMAIL</th> */}
               <th>TELÉFONO</th>
-              <th>NÚMERO LEAD</th>
               <th>CANAL CONTACTO</th>
-              <th>FECHA REGISTRO</th>
+              <th>LEADS</th>
+              <th>ESTADO LEAD</th>
               <th>ACCIONES</th>
             </tr>
           </thead>
           <tbody>
-            {clientesPaginados.map((cliente, index) => (
-              <tr
-                key={cliente.id}
-                className="clientes-fila-cliente"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                  background: cliente.activo ? 'white' : '#f8d7da'
-                }}
-              >
-                <td data-label="ID" className="clientes-columna-id">
-                  <span className="clientes-badge-id">#{cliente.id.toString().padStart(3, '0')}</span>
-                </td>
-                <td data-label="Nombre" className="clientes-columna-nombre">
-                  <div className="clientes-info-usuario">
-                    <div className="clientes-avatar">
-                      <Users size={16} />
-                    </div>
-                    <div className="clientes-datos-usuario">
-                      <span className="clientes-nombre-principal">{cliente.nombre}</span>
-                      <span className="clientes-subtexto">
-                        {cliente.activo ? 'Cliente activo' : 'Cliente inactivo'}
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                {/* <td data-label="Email" className="clientes-columna-email">
-                  <a href={`mailto:${cliente.email}`} className="clientes-enlace-email">
-                    {cliente.email}
-                  </a>
-                </td> */}
-                <td data-label="Teléfono" className="clientes-columna-telefono">
-                  <span className="clientes-telefono">{cliente.telefono}</span>
-                </td>
-                <td data-label="Número Lead" className="clientes-columna-lead">
-                  <span className="clientes-badge-lead">{cliente.numero_lead}</span>
-                </td>
-                <td data-label="Canal Contacto" className="clientes-columna-canal">
-                  <span className={`clientes-badge-canal ${cliente.canal_contacto ? `clientes-canal-${cliente.canal_contacto.toLowerCase().replace(' ', '-')}` : 'clientes-canal-sin-datos'}`}>
-                    {cliente.canal_contacto || 'Sin canal'}
-                  </span>
-                </td>
-                <td data-label="Fecha Registro" className="clientes-columna-fecha">
-                  <span className="clientes-fecha">{cliente.fecha_registro}</span>
-                </td>
-                <td data-label="Acciones" className="clientes-columna-acciones">
-                  <div className="clientes-botones-accion">
-                    <button
-                      className="clientes-boton-accion clientes-ver"
-                      onClick={() => manejarAccion('ver', cliente)}
-                      title="Ver cliente"
-                    >
-                      <Eye size={16} />
-                    </button>
-                    <button
-                      className="clientes-boton-accion clientes-editar"
-                      onClick={() => manejarAccion('editar', cliente)}
-                      title="Editar cliente"
-                    >
-                      <Edit size={16} />
-                    </button>
+            {clientesPaginados.map((cliente, index) => {
+              const leads = cliente.leads || [];
+              const numLeads = leads.length;
 
-                    {/* Botón RESTAURAR solo para admin con clientes inactivos */}
-                    {esAdministrador && !cliente.activo && (
-                      <button
-                        className="clientes-boton-accion clientes-restaurar"
-                        onClick={() => manejarAccion('restaurar', cliente)}
-                        title="Restaurar cliente"
-                        style={{
-                          background: 'linear-gradient(45deg, #28a745, #218838)',
-                          color: 'white'
-                        }}
-                      >
-                        <RotateCcw size={16} />
-                      </button>
+              return leads.length > 0 ? (
+                leads.map((lead, leadIndex) => (
+                  <tr
+                    key={`${cliente.id}-${lead.id}`}
+                    className="clientes-fila-cliente"
+                    style={{
+                      animationDelay: `${(index + leadIndex) * 0.05}s`,
+                      background: cliente.activo ? 'white' : '#f8d7da'
+                    }}
+                  >
+                    {/* Cliente - Solo en primera fila */}
+                    {leadIndex === 0 && (
+                      <>
+                        <td data-label="ID" className="clientes-columna-id" rowSpan={numLeads}>
+                          <span className="clientes-badge-id">#{cliente.id.toString().padStart(3, '0')}</span>
+                        </td>
+                        <td data-label="Nombre" className="clientes-columna-nombre" rowSpan={numLeads}>
+                          <div className="clientes-info-usuario">
+                            <div className="clientes-avatar">
+                              <Users size={16} />
+                            </div>
+                            <div className="clientes-datos-usuario">
+                              <span className="clientes-nombre-principal">{cliente.nombre}</span>
+                              <span className="clientes-subtexto">
+                                {cliente.activo ? 'Cliente activo' : 'Cliente inactivo'}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td data-label="Teléfono" className="clientes-columna-telefono" rowSpan={numLeads}>
+                          <span className="clientes-telefono">{cliente.telefono}</span>
+                        </td>
+                        <td data-label="Canal Contacto" className="clientes-columna-canal" rowSpan={numLeads}>
+                          <span className={`clientes-badge-canal ${cliente.canal_contacto ? `clientes-canal-${cliente.canal_contacto.toLowerCase().replace(' ', '-')}` : 'clientes-canal-sin-datos'}`}>
+                            {cliente.canal_contacto || 'Sin canal'}
+                          </span>
+                        </td>
+                      </>
                     )}
 
-                    <button
-                      className="clientes-boton-accion clientes-eliminar"
-                      onClick={() => manejarAccion('eliminar', cliente)}
-                      title={esAdministrador && !cliente.activo ? 'Eliminar definitivamente' : 'Desactivar cliente'}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                    {/* Lead Info */}
+                    <td data-label="Lead" className="clientes-columna-lead">
+                      <div style={{ fontSize: '0.9rem' }}>
+                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{lead.nombre}</div>
+                        <div style={{ fontSize: '0.8rem', color: '#6b7280' }}>
+                          Pipeline: {lead.pipeline_id} | Etapa: {lead.etapa_id}
+                        </div>
+                        {lead.precio && (
+                          <div style={{ fontSize: '0.85rem', color: '#10b981', fontWeight: '600' }}>
+                            ${lead.precio.toLocaleString()}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Estado Lead */}
+                    <td data-label="Estado Lead" className="clientes-columna-estado">
+                      <select
+                        value={lead.estado_lead || 'contactado'}
+                        onChange={(e) => cambiarEstadoLead(lead.id, e.target.value)}
+                        style={{
+                          padding: '0.5rem',
+                          borderRadius: '6px',
+                          border: `2px solid ${getEstadoColor(lead.estado_lead)}`,
+                          backgroundColor: `${getEstadoColor(lead.estado_lead)}15`,
+                          color: getEstadoColor(lead.estado_lead),
+                          fontWeight: '600',
+                          fontSize: '0.85rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <option value="contactado">Contactado</option>
+                        <option value="ganado">Ganado</option>
+                        <option value="perdido">Perdido</option>
+                      </select>
+                    </td>
+
+                    {/* Acciones - Solo en primera fila */}
+                    {leadIndex === 0 && (
+                      <td data-label="Acciones" className="clientes-columna-acciones" rowSpan={numLeads}>
+                        <div className="clientes-botones-accion">
+                          <button
+                            className="clientes-boton-accion clientes-ver"
+                            onClick={() => manejarAccion('ver', cliente)}
+                            title="Ver cliente"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            className="clientes-boton-accion clientes-editar"
+                            onClick={() => manejarAccion('editar', cliente)}
+                            title="Editar cliente"
+                          >
+                            <Edit size={16} />
+                          </button>
+
+                          {esAdministrador && !cliente.activo && (
+                            <button
+                              className="clientes-boton-accion clientes-restaurar"
+                              onClick={() => manejarAccion('restaurar', cliente)}
+                              title="Restaurar cliente"
+                              style={{
+                                background: 'linear-gradient(45deg, #28a745, #218838)',
+                                color: 'white'
+                              }}
+                            >
+                              <RotateCcw size={16} />
+                            </button>
+                          )}
+
+                          <button
+                            className="clientes-boton-accion clientes-eliminar"
+                            onClick={() => manejarAccion('eliminar', cliente)}
+                            title={esAdministrador && !cliente.activo ? 'Eliminar definitivamente' : 'Desactivar cliente'}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+
+                           <button
+                          className="clientes-boton-accion clientes-cotizar"
+                          onClick={() => manejarAccion('cotizar', cliente)}
+                          title="Crear cotización"
+                          style={{
+                            background: 'linear-gradient(45deg, #10b981, #059669)',
+                            color: 'white'
+                          }}
+                        >
+                          <FileText size={16} />
+                        </button>
+                        </div>                       
+                      </td>
+                    )}
+                  </tr>
+                ))
+              ) : (
+                // Fallback si no tiene leads (no debería pasar)
+                <tr key={cliente.id} className="clientes-fila-cliente" style={{ background: '#fff3cd' }}>
+                  <td colSpan="7" style={{ textAlign: 'center', padding: '1rem' }}>
+                    Cliente sin leads en los pipelines configurados
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      {/* Información de paginación y controles */}
+      {/* Paginación */}
       <div className="clientes-pie-tabla">
         <div className="clientes-informacion-registros">
           Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
@@ -505,12 +745,10 @@ const TablaClientes = () => {
               const bloqueActual = Math.floor((paginaActual - 1) / botonesPorBloque);
               const inicio = bloqueActual * botonesPorBloque + 1;
               const fin = Math.min(inicio + botonesPorBloque - 1, totalPaginas);
-
               const paginasVisibles = Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
 
               return (
                 <>
-                  {/* Botón para retroceder bloques */}
                   {inicio > 1 && (
                     <button
                       className="clientes-numero-pagina"
@@ -519,8 +757,6 @@ const TablaClientes = () => {
                       ...
                     </button>
                   )}
-
-                  {/* Botones de las páginas visibles */}
                   {paginasVisibles.map((numero) => (
                     <button
                       key={numero}
@@ -530,8 +766,6 @@ const TablaClientes = () => {
                       {numero}
                     </button>
                   ))}
-
-                  {/* Botón para avanzar bloques */}
                   {fin < totalPaginas && (
                     <button
                       className="clientes-numero-pagina"
@@ -556,14 +790,13 @@ const TablaClientes = () => {
         </div>
       </div>
 
-      {/* Modal Ver Cliente */}
+      {/* Modales */}
       <ModalVerCliente
         estaAbierto={modalVerAbierto}
         cliente={clienteSeleccionado}
         alCerrar={cerrarModalVer}
       />
 
-      {/* Modal Editar Cliente */}
       <ModalEditarCliente
         estaAbierto={modalEditarAbierto}
         cliente={clienteSeleccionado}
@@ -571,7 +804,6 @@ const TablaClientes = () => {
         alGuardar={manejarGuardarCliente}
       />
 
-      {/* Modal Eliminar Cliente (Desactivar) */}
       {clienteAEliminar && (
         <ModalEliminarCliente
           cliente={clienteAEliminar}
@@ -580,7 +812,6 @@ const TablaClientes = () => {
         />
       )}
 
-      {/* Modal Restaurar Cliente */}
       {clienteARestaurar && (
         <ModalRestaurarCliente
           cliente={clienteARestaurar}
@@ -589,12 +820,19 @@ const TablaClientes = () => {
         />
       )}
 
-      {/* Modal Eliminar Definitivamente */}
       {clienteAEliminarDefinitivo && (
         <ModalEliminarDefinitivo
           cliente={clienteAEliminarDefinitivo}
           alConfirmar={manejarEliminarDefinitivo}
           alCancelar={() => setClienteAEliminarDefinitivo(null)}
+        />
+      )}
+
+      {modalCotizarAbierto && clienteSeleccionado && (
+        <ModalCrearCotizacion
+          estaAbierto={modalCotizarAbierto}
+          cliente={clienteSeleccionado}
+          alCerrar={cerrarModalCotizar}
         />
       )}
     </div>

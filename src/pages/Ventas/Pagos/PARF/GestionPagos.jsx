@@ -23,6 +23,7 @@ import ModalEditarPago from '../Modales/ModalEditarPago';
 import ModalReactivarPago from '../Modales/ModalReactivarPago';
 import ModalEliminarDefinitivo from '../Modales/ModalEliminarDefinitivo';
 import { modalEliminarPago } from '../Modales/modalEliminarPago';
+import ModalCrearTodosDesdePago from '../Modales/ModalCrearTodosDesdePago';
 
 // Reducer para manejo de estado
 const estadoInicial = {
@@ -58,7 +59,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
   const [estado, despachar] = useReducer(reductor, estadoInicial);
   const { paginaActual, registrosPorPagina, terminoBusqueda, filtroEstado, filtroVisibilidad, cargando } = estado;
 
-  const [rolUsuario, setRolUsuario] = useState(localStorage.getItem('rol') || 'vendedor');
+  const [rolUsuario, setRolUsuario] = useState(localStorage.getItem('rol') || 'Vendedor');
 
   // Estados para los modales
   const [modalAbierto, establecerModalAbierto] = useState(false);
@@ -66,6 +67,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
   const [modalReactivarAbierto, establecerModalReactivarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, establecerModalEliminarDefinitivoAbierto] = useState(false);
   const [pagoSeleccionado, establecerPagoSeleccionado] = useState(null);
+  const [modalTodosAbierto, setModalTodosAbierto] = useState(false);
 
   // Estado para los datos de pagos
   const [datosPagos, establecerDatosPagos] = useState([]);
@@ -93,7 +95,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
   };
 
   const estadisticas = useMemo(() => {
-    const pagosVisibles = rolUsuario === 'vendedor'
+    const pagosVisibles = rolUsuario === 'Vendedor'
       ? datosPagos.filter(p => p.activo)
       : datosPagos.filter(p => {
         if (filtroVisibilidad === 'activos') return p.activo;
@@ -109,7 +111,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
 
   const datosFiltrados = useMemo(() => {
     return datosPagos.filter(pago => {
-      if (rolUsuario === 'vendedor' && !pago.activo) return false;
+      if (rolUsuario === 'Vendedor' && !pago.activo) return false;
       if (rolUsuario === 'admin') {
         if (filtroVisibilidad === 'activos' && !pago.activo) return false;
         if (filtroVisibilidad === 'eliminados' && pago.activo) return false;
@@ -188,6 +190,10 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
           // Abrir modal de eliminación definitiva
           establecerPagoSeleccionado(pago);
           establecerModalEliminarDefinitivoAbierto(true);
+          break;
+        case 'crearTodos':
+          establecerPagoSeleccionado(pago);
+          setModalTodosAbierto(true);
           break;
         default:
           console.warn('Acción no reconocida:', accion);
@@ -470,7 +476,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           </button>
                         )}
 
-                        {rolUsuario === 'vendedor' && pago.activo && (
+                        {rolUsuario === 'Vendedor' && pago.activo && (
                           <button
                             className="pagos-boton-accion pagos-eliminar"
                             onClick={() => manejarAccion('eliminar', pago)}
@@ -507,6 +513,21 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                               <Trash2 size={14} />
                             </button>
                           </>
+                        )}
+                        {pago.activo && (
+                          <button
+                            className="pagos-boton-accion"
+                            onClick={() => manejarAccion('crearTodos', pago)}
+                            title="Crear Orden + Contrato + Reserva"
+                            disabled={cargando}
+                            style={{
+                              background: '#8b5cf6',
+                              color: 'white',
+                              border: '1px solid #c4b5fd'
+                            }}
+                          >
+                            <Plus size={14} />
+                          </button>
                         )}
                       </div>
                     </td>
@@ -595,6 +616,12 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
         alCerrar={() => establecerModalEliminarDefinitivoAbierto(false)}
         pago={pagoSeleccionado}
         alEliminar={manejarEliminarDefinitivo}
+      />
+
+      <ModalCrearTodosDesdePago
+        estaAbierto={modalTodosAbierto}
+        alCerrar={() => setModalTodosAbierto(false)}
+        pago={pagoSeleccionado}
       />
     </>
   );

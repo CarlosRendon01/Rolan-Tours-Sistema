@@ -8,12 +8,14 @@ import {
   Trash2,
   FileText,
   BarChart3,
+  DollarSign
 } from "lucide-react";
 import PropTypes from "prop-types";
 import ModalVerCotizacion from "../Modales/ModalVerCotizacion";
 import ModalEliminarCotizacion from "../Modales/ModalEliminarCotizacion";
 import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import ModalCrearPagoDesdeCotizacion from "../Modales/ModalCrearPagoDesdeCotizacion";
 
 import "./tablaCotizacion.css";
 
@@ -34,6 +36,8 @@ const TablaCotizacion = ({
   const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [cotizacionPDFActual, setCotizacionPDFActual] = useState(null);
+  const [modalPagoAbierto, setModalPagoAbierto] = useState(false);
+  const [cotizacionParaPago, setCotizacionParaPago] = useState(null);
 
   useEffect(() => {
     setPaginaActual(1);
@@ -63,6 +67,12 @@ const TablaCotizacion = ({
     },
     [onEditar]
   );
+
+  const manejarAccionCrearPago = useCallback((cotizacion) => {
+    console.log('Abriendo modal de pago para cotización:', cotizacion);
+    setCotizacionParaPago(cotizacion);
+    setModalPagoAbierto(true);
+  }, []);
 
   const cotizacionesFiltradas = useMemo(() => {
     if (!terminoBusqueda.trim()) return cotizaciones;
@@ -387,6 +397,15 @@ const TablaCotizacion = ({
     return Array.from({ length: totalPaginas }, (_, i) => i + 1);
   }, [datosePaginacion.totalPaginas]);
 
+  const cerrarModalPago = useCallback(() => {
+    setModalPagoAbierto(false);
+    setCotizacionParaPago(null);
+  }, []);
+
+  const alGuardarPago = useCallback(() => {
+    console.log('Pago guardado exitosamente');
+  }, []);
+
   return (
     <main className="cotizaciones-contenedor-principal" role="main">
       <header className="cotizaciones-encabezado">
@@ -552,9 +571,8 @@ const TablaCotizacion = ({
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-ver"
                             onClick={() => manejarAccionVer(cotizacion)}
-                            aria-label={`Ver cotización ${
-                              cotizacion.folio || cotizacion.id
-                            }`}
+                            aria-label={`Ver cotización ${cotizacion.folio || cotizacion.id
+                              }`}
                             title="Ver cotización"
                           >
                             <Eye size={16} aria-hidden="true" />
@@ -564,9 +582,8 @@ const TablaCotizacion = ({
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-descargar"
                             onClick={() => manejarAccionPDF(cotizacion)}
-                            aria-label={`Previsualizar y descargar cotización ${
-                              cotizacion.folio || cotizacion.id
-                            }`}
+                            aria-label={`Previsualizar y descargar cotización ${cotizacion.folio || cotizacion.id
+                              }`}
                             title="Previsualizar y descargar cotización"
                           >
                             <FileText size={16} aria-hidden="true" />
@@ -576,9 +593,8 @@ const TablaCotizacion = ({
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-editar"
                             onClick={() => manejarAccionEditar(cotizacion)}
-                            aria-label={`Editar cotización ${
-                              cotizacion.folio || cotizacion.id
-                            }`}
+                            aria-label={`Editar cotización ${cotizacion.folio || cotizacion.id
+                              }`}
                             title="Editar cotización"
                           >
                             <Edit size={16} aria-hidden="true" />
@@ -588,13 +604,24 @@ const TablaCotizacion = ({
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-eliminar"
                             onClick={() => manejarAccionEliminar(cotizacion)}
-                            aria-label={`Eliminar cotización ${
-                              cotizacion.folio || cotizacion.id
-                            }`}
+                            aria-label={`Eliminar cotización ${cotizacion.folio || cotizacion.id
+                              }`}
                             title="Eliminar cotización"
                           >
                             <Trash2 size={16} aria-hidden="true" />
                             <span className="sr-only">Eliminar</span>
+                          </button>
+
+                          <button
+                            className="cotizaciones-boton-accion cotizaciones-pago"
+                            onClick={() => manejarAccionCrearPago(cotizacion)}
+                            title="Crear plan de pago"
+                            style={{
+                              background: 'linear-gradient(45deg, #10b981, #059669)',
+                              color: 'white'
+                            }}
+                          >
+                            <DollarSign size={16} />
                           </button>
                         </div>
                       </td>
@@ -648,9 +675,8 @@ const TablaCotizacion = ({
                   <button
                     key={`pagina-${numero}`}
                     type="button"
-                    className={`cotizaciones-numero-pagina ${
-                      paginaActual === numero ? "cotizaciones-activo" : ""
-                    }`}
+                    className={`cotizaciones-numero-pagina ${paginaActual === numero ? "cotizaciones-activo" : ""
+                      }`}
                     onClick={() => cambiarPagina(numero)}
                     aria-label={`Ir a página ${numero}`}
                     aria-current={paginaActual === numero ? "page" : undefined}
@@ -753,6 +779,13 @@ const TablaCotizacion = ({
           alConfirmar={manejarEliminarCotizacion}
         />
       )}
+
+      <ModalCrearPagoDesdeCotizacion
+        estaAbierto={modalPagoAbierto}
+        cotizacion={cotizacionParaPago}
+        alCerrar={cerrarModalPago}
+        alGuardar={alGuardarPago}
+      />
     </main>
   );
 };

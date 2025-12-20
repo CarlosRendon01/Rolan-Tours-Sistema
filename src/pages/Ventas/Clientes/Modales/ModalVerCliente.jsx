@@ -1,13 +1,13 @@
 import React from 'react';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  FileText, 
-  Calendar, 
-  Globe, 
-  MapPin, 
-  X, 
+import {
+  User,
+  Mail,
+  Phone,
+  FileText,
+  Calendar,
+  Globe,
+  MapPin,
+  X,
   IdCard,
   Hash,
   Building,
@@ -29,13 +29,13 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
     alCerrar();
   }, [alCerrar, restaurarScroll]);
 
-  if (!estaAbierto || !cliente) {
-    // Restaurar scroll cuando el modal no está visible
-    React.useEffect(() => {
+  React.useEffect(() => {
+    if (estaAbierto) {
+      document.body.style.overflow = 'hidden';
+    } else {
       restaurarScroll();
-    });
-    return null;
-  }
+    }
+  }, [estaAbierto, restaurarScroll]);
 
   // Función para formatear fechas
   const formatearFecha = (fecha) => {
@@ -71,22 +71,24 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
 
     if (estaAbierto) {
       document.addEventListener('keydown', manejarTeclaEscape);
-      document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', manejarTeclaEscape);
-      restaurarScroll();
     };
-  }, [estaAbierto, manejarCierre, restaurarScroll]);
+  }, [estaAbierto, manejarCierre]);
+
+  if (!estaAbierto || !cliente) {
+    return null;
+  }
 
   return (
     <div className="superposicion-modal-ver" onClick={manejarCierre}>
       <div className="contenido-modal-ver" onClick={(e) => e.stopPropagation()}>
         <div className="encabezado-modal-ver">
-          <button 
-            className="boton-cerrar-modal-ver" 
-            onClick={manejarCierre} 
+          <button
+            className="boton-cerrar-modal-ver"
+            onClick={manejarCierre}
             aria-label="Cerrar modal"
             type="button"
           >
@@ -97,7 +99,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
             Información del Cliente
           </h2>
         </div>
-        
+
         <div className="cuerpo-modal-ver">
           <div className="lista-informacion-cliente-ver">
             {/* ID del Cliente */}
@@ -110,7 +112,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 #{cliente.id || 'No disponible'}
               </div>
             </div>
-            
+
             {/* Nombre Completo */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
@@ -121,7 +123,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 {cliente.nombre || 'No disponible'}
               </div>
             </div>
-            
+
             {/* Email */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
@@ -132,7 +134,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 {cliente.email || 'No disponible'}
               </div>
             </div>
-            
+
             {/* Teléfono */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
@@ -143,7 +145,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 {formatearTelefono(cliente.telefono)}
               </div>
             </div>
-            
+
             {/* Número Lead */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
@@ -154,7 +156,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 {cliente.numero_lead || 'No asignado'}
               </div>
             </div>
-            
+
             {/* Canal de Contacto */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
@@ -165,7 +167,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 {cliente.canal_contacto || 'No especificado'}
               </div>
             </div>
-            
+
             {/* RFC */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
@@ -176,7 +178,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 {cliente.rfc || 'No disponible'}
               </div>
             </div>
-            
+
             {/* Dirección */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
@@ -187,7 +189,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 {cliente.direccion || 'No especificada'}
               </div>
             </div>
-            
+
             {/* Fecha de Registro */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
@@ -199,11 +201,11 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
               </div>
             </div>
           </div>
-          
+
           {/* Botón de cerrar en la parte inferior */}
           <div className="contenedor-boton-inferior-ver">
-            <button 
-              className="boton-cerrar-inferior-ver" 
+            <button
+              className="boton-cerrar-inferior-ver"
               onClick={manejarCierre}
               type="button"
             >
