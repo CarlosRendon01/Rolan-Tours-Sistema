@@ -109,6 +109,15 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
     }
   }
 
+  const obtenerServicios = () => {
+    if (cotizacion.servicios_completos && Array.isArray(cotizacion.servicios_completos)) {
+      return cotizacion.servicios_completos;
+    }
+    return [];
+  };
+
+  const servicios = obtenerServicios();
+
   return (
     <div className="superposicion-modal-ver" onClick={manejarCierre}>
       <div
@@ -132,9 +141,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
 
         <div className="modal-tabs">
           <button
-            className={`tab-button ${
-              pestanaActiva === "informacion" ? "active" : ""
-            }`}
+            className={`tab-button ${pestanaActiva === "informacion" ? "active" : ""
+              }`}
             onClick={() => setPestanaActiva("informacion")}
             type="button"
           >
@@ -142,9 +150,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
             Información General
           </button>
           <button
-            className={`tab-button ${
-              pestanaActiva === "cotizaciones" ? "active" : ""
-            }`}
+            className={`tab-button ${pestanaActiva === "cotizaciones" ? "active" : ""
+              }`}
             onClick={() => setPestanaActiva("cotizaciones")}
             type="button"
           >
@@ -246,43 +253,25 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                 valor={cotizacion.cliente?.canal_contacto || "No especificado"}
               />
 
+              {/* ✅ SERVICIOS CORREGIDO */}
               <div className="elemento-informacion-ver form-group-full">
                 <div className="etiqueta-informacion-ver">
                   <PackagePlus size={18} />
-                  Extras
+                  Servicios Adicionales
                 </div>
                 <div className="valor-informacion-ver">
-                  {(() => {
-                    let extrasData = [];
-
-                    if (cotizacion.extra) {
-                      try {
-                        const parsed =
-                          typeof cotizacion.extra === "string"
-                            ? JSON.parse(cotizacion.extra)
-                            : cotizacion.extra;
-
-                        extrasData = parsed.extras_seleccionados || [];
-                      } catch (error) {
-                        console.error("Error al parsear extras:", error);
-                      }
-                    }
-
-                    if (extrasData.length === 0) {
-                      return <span>No hay extras seleccionados</span>;
-                    }
-
-                    return (
-                      <ul className="lista-extras-ver">
-                        {extrasData.map((extra, i) => (
-                          <li key={i}>
-                            <strong>{extra.tipo}</strong>: {extra.valor} — $
-                            {extra.costo}
-                          </li>
-                        ))}
-                      </ul>
-                    );
-                  })()}
+                  {servicios.length === 0 ? (
+                    <span>No hay servicios adicionales</span>
+                  ) : (
+                    <ul className="lista-extras-ver">
+                      {servicios.map((servicio, i) => (
+                        <li key={i}>
+                          <strong>{servicio.nombre}</strong>
+                          {servicio.precio > 0 && ` — $${servicio.precio.toLocaleString('es-MX')}`}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
 

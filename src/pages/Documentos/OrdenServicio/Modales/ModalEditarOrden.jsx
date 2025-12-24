@@ -11,7 +11,7 @@ import {
   Clock,
   Users,
 } from "lucide-react";
-
+import axios from 'axios';
 import "./ModalEditarOrden.css";
 
 const ModalEditarOrden = ({
@@ -60,11 +60,19 @@ const ModalEditarOrden = ({
     km_final: "",
     litros_consumidos: "",
     rendimiento: "",
+
+    coordinador_id: '',
+    nombre_coordinador: '',
+
+    guia_id: '',
+    nombre_guia: '',
   });
 
   const [seccionActiva, setSeccionActiva] = useState("orden");
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
+  const [coordinadoresDisponibles, setCoordinadoresDisponibles] = useState([]);
+  const [guiasDisponibles, setGuiasDisponibles] = useState([]);
 
   useEffect(() => {
     if (estaAbierto && orden) {
@@ -101,10 +109,41 @@ const ModalEditarOrden = ({
         km_final: orden.km_final || "",
         litros_consumidos: orden.litros_consumidos || "",
         rendimiento: orden.rendimiento || "",
+
+        coordinador_id: orden.coordinador_id || '',
+        nombre_coordinador: orden.nombre_coordinador || '',
+        guia_id: orden.guia_id || '',
+        nombre_guia: orden.nombre_guia || '',
       });
       setErrores({});
     }
   }, [estaAbierto, orden]);
+
+  useEffect(() => {
+    const cargarExtras = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+        const [coordinadores, guias] = await Promise.all([
+          axios.get('http://127.0.0.1:8000/api/coordinadores', {
+            headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+          }),
+          axios.get('http://127.0.0.1:8000/api/guias', {
+            headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+          })
+        ]);
+
+        setCoordinadoresDisponibles(coordinadores.data || []);
+        setGuiasDisponibles(guias.data || []);
+      } catch (error) {
+        console.error('Error al cargar coordinadores/guías:', error);
+      }
+    };
+
+    if (estaAbierto) {
+      cargarExtras();
+    }
+  }, [estaAbierto]);
 
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
@@ -420,13 +459,22 @@ const ModalEditarOrden = ({
                 ...prev,
                 conductor_id: e.target.value,
                 nombre_conductor: conductorSeleccionado.nombre_conductor,
-                apellido_paterno_conductor:
-                  conductorSeleccionado.apellido_paterno_conductor,
-                apellido_materno_conductor:
-                  conductorSeleccionado.apellido_materno_conductor,
+                apellido_paterno_conductor: conductorSeleccionado.apellido_paterno_conductor,
+                apellido_materno_conductor: conductorSeleccionado.apellido_materno_conductor,
+                telefono_conductor: conductorSeleccionado.telefono_conductor, // ✅ NUEVO
+                licencia_conductor: conductorSeleccionado.licencia_conductor, // ✅ NUEVO
               }));
             } else {
-              manejarCambioFormulario(e);
+              // ✅ NUEVO - Limpiar todos los campos si se deselecciona
+              setDatosFormulario((prev) => ({
+                ...prev,
+                conductor_id: '',
+                nombre_conductor: '',
+                apellido_paterno_conductor: '',
+                apellido_materno_conductor: '',
+                telefono_conductor: '',
+                licencia_conductor: '',
+              }));
             }
           }}
           disabled={guardando}
@@ -519,6 +567,122 @@ const ModalEditarOrden = ({
           readOnly
         />
       </div>
+    </div>
+  );
+
+  const renderSeccionExtras = () => (
+    <div className="meo-form-grid">
+      {/* Coordinador */}
+      <div className="meo-form-group form-group-full">
+        <label htmlFor="coordinador_id">
+          <Users size={18} />
+          Coordinador (Opcional)
+        </label>
+        <select
+          id="coordinador_id"
+          name="coordinador_id"
+          value={datosFormulario.coordinador_id}
+          onChange={(e) => {
+            const coordinadorSel = coordinadoresDisponibles.find(
+              (c) => c.id === parseInt(e.target.value)
+            );
+
+            if (coordinadorSel) {
+              setDatosFormulario((prev) => ({
+                ...prev,
+                coordinador_id: e.target.value,
+                nombre_coordinador: `${coordinadorSel.nombre} ${coordinadorSel.apellido_paterno}`,
+              }));
+            } else {
+              setDatosFormulario((prev) => ({
+                ...prev,
+                coordinador_id: '',
+                nombre_coordinador: '',
+              }));
+            }
+          }}
+          disabled={guardando}
+          className="Ordenes-selector-registros"
+        >
+          <option value="">-- Sin coordinador --</option>
+          {coordinadoresDisponibles.map((coord) => (
+            <option key={coord.id} value={coord.id}>
+              {coord.nombre} {coord.apellido_paterno} {coord.apellido_materno}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {datosFormulario.coordinador_id && (
+        <div className="meo-form-group form-group-full">
+          <label htmlFor="nombre_coordinador">Nombre Completo</label>
+          <input
+            type="text"
+            id="nombre_coordinador"
+            name="nombre_coordinador"
+            value={datosFormulario.nombre_coordinador}
+            readOnly
+            disabled={guardando}
+            style={{ backgroundColor: '#f9fafb' }}
+          />
+        </div>
+      )}
+
+      {/* Guía */}
+      <div className="meo-form-group form-group-full">
+        <label htmlFor="guia_id">
+          <User size={18} />
+          Guía Turístico (Opcional)
+        </label>
+        <select
+          id="guia_id"
+          name="guia_id"
+          value={datosFormulario.guia_id}
+          onChange={(e) => {
+            const guiaSel = guiasDisponibles.find(
+              (g) => g.id === parseInt(e.target.value)
+            );
+
+            if (guiaSel) {
+              setDatosFormulario((prev) => ({
+                ...prev,
+                guia_id: e.target.value,
+                nombre_guia: `${guiaSel.nombre} ${guiaSel.apellido_paterno}`,
+              }));
+            } else {
+              setDatosFormulario((prev) => ({
+                ...prev,
+                guia_id: '',
+                nombre_guia: '',
+              }));
+            }
+          }}
+          disabled={guardando}
+          className="Ordenes-selector-registros"
+        >
+          <option value="">-- Sin guía --</option>
+          {guiasDisponibles.map((guia) => (
+            <option key={guia.id} value={guia.id}>
+              {guia.nombre} {guia.apellido_paterno} {guia.apellido_materno}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {datosFormulario.guia_id && (
+        <div className="meo-form-group form-group-full">
+          <label htmlFor="nombre_guia">Nombre Completo</label>
+          <input
+            type="text"
+            id="nombre_guia"
+            name="nombre_guia"
+            value={datosFormulario.nombre_guia}
+            readOnly
+            disabled={guardando}
+            style={{ backgroundColor: '#f9fafb' }}
+          />
+        </div>
+      )}
     </div>
   );
 
@@ -758,7 +922,13 @@ const ModalEditarOrden = ({
                 placa: vehiculoSeleccionado.numero_placa,
               }));
             } else {
-              manejarCambioFormulario(e);
+              setDatosFormulario((prev) => ({
+                ...prev,
+                vehiculo_id: '',
+                marca: '',
+                modelo: '',
+                placa: '',
+              }));
             }
           }}
           disabled={guardando}
@@ -954,6 +1124,14 @@ const ModalEditarOrden = ({
             <Car size={18} />
             Vehículo
           </button>
+          <button
+            className={`meo-tab-button ${seccionActiva === "extras" ? "active" : ""}`}
+            onClick={() => setSeccionActiva("extras")}
+            type="button"
+          >
+            <Users size={18} />
+            Coordinador / Guía
+          </button>
         </div>
 
         {/* Formulario (scrolleable) */}
@@ -962,6 +1140,7 @@ const ModalEditarOrden = ({
           {seccionActiva === "conductor" && renderSeccionConductor()}
           {seccionActiva === "servicio" && renderSeccionServicio()}
           {seccionActiva === "vehiculo" && renderSeccionVehiculo()}
+          {seccionActiva === "extras" && renderSeccionExtras()}
         </form>
 
         {/* Footer */}

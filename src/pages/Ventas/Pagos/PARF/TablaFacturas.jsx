@@ -260,10 +260,71 @@ const TablaFacturas = ({
             await generarPDFFacturaTimbrada(factura);
             break;
 
+          // Add this improved error handling in the descargarExcel case
+
           case "descargarExcel":
-            setCargando(false);
-            await descargarPlantillaExcel();
-            return;
+            try {
+              console.log('🔍 Iniciando descarga de Excel...');
+              console.log('🔍 ID de factura:', factura.id);
+
+              const token = localStorage.getItem("token");
+
+              const response = await axios.get(
+                `http://127.0.0.1:8000/api/facturas/${factura.id}/descargar-excel`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                  responseType: 'blob' // ✅ Esto es correcto
+                }
+              );
+
+              console.log('✅ Respuesta recibida:', response.status);
+              console.log('✅ Content-Type:', response.headers['content-type']);
+              console.log('✅ Tamaño:', response.data.size, 'bytes');
+
+              // ✅ FIX: Crear el blob con el tipo MIME correcto
+              const blob = new Blob([response.data], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+              });
+
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+
+              // ✅ Asegurar extensión .xlsx
+              const fileName = `Factura_${factura.numeroFactura}.xlsx`;
+              link.setAttribute('download', fileName);
+
+              document.body.appendChild(link);
+              link.click();
+
+              // ✅ Cleanup
+              document.body.removeChild(link);
+              window.URL.revokeObjectURL(url);
+
+              console.log('✅ Descarga completada:', fileName);
+
+              // ✅ Notificar al usuario
+              alert(`✅ Excel descargado exitosamente:\n${fileName}`);
+
+            } catch (error) {
+              console.error("❌ Error al descargar Excel:", error);
+
+              if (error.response?.data instanceof Blob) {
+                const text = await error.response.data.text();
+                console.error("❌ Error del servidor:", text);
+                try {
+                  const errorJson = JSON.parse(text);
+                  alert(`Error: ${errorJson.message || errorJson.error || text}`);
+                } catch {
+                  alert(`Error al descargar: ${text}`);
+                }
+              } else {
+                alert("Error al descargar el archivo Excel: " + (error.response?.data?.message || error.message));
+              }
+            }
+            break;
 
           case "enviar":
             const emailCliente = prompt(

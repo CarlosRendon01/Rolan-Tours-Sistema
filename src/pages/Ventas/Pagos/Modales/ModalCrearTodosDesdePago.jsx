@@ -11,6 +11,10 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
     const [errores, setErrores] = useState({});
     const [seccionActiva, setSeccionActiva] = useState('orden');
     const [cargandoFolios, setCargandoFolios] = useState(false);
+    const [conductoresDisponibles, setConductoresDisponibles] = useState([]);
+    const [vehiculosDisponibles, setVehiculosDisponibles] = useState([]);
+    const [coordinadoresDisponibles, setCoordinadoresDisponibles] = useState([]);
+    const [guiasDisponibles, setGuiasDisponibles] = useState([]);
 
     const [formulario, setFormulario] = useState({
         // Orden
@@ -32,6 +36,9 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
         servicio: '',
         forma_pago: 'efectivo',
         pagado: 'no pagado',
+
+        coordinador_id: '',
+        guia_id: '',
     });
 
     // Función para obtener el siguiente folio disponible
@@ -71,12 +78,45 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
 
     // Cargar folios al abrir el modal
     useEffect(() => {
-        if (estaAbierto && pago) {
+        const cargarDatos = async () => {
+            if (!estaAbierto || !pago) return;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                // Cargar todas las listas en paralelo
+                const [conductores, vehiculos, coordinadores, guias] = await Promise.all([
+                    axios.get('http://127.0.0.1:8000/api/ordenes-servicio/conductores/disponibles', {
+                        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+                    }),
+                    axios.get('http://127.0.0.1:8000/api/ordenes-servicio/vehiculos/disponibles', {
+                        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+                    }),
+                    axios.get('http://127.0.0.1:8000/api/coordinadores', {
+                        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+                    }),
+                    axios.get('http://127.0.0.1:8000/api/guias', {
+                        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+                    })
+                ]);
+
+                setConductoresDisponibles(conductores.data || []);
+                setVehiculosDisponibles(vehiculos.data || []);
+                setCoordinadoresDisponibles(coordinadores.data || []);
+                setGuiasDisponibles(guias.data || []);
+
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+            }
+
+            // Resetear formulario
             setFormulario({
                 folio_orden: '',
                 fecha_orden_servicio: new Date().toISOString().split('T')[0],
                 conductor_id: '',
                 vehiculo_id: '',
+                coordinador_id: '',
+                guia_id: '',
                 domicilio: '',
                 rfc: pago.cotizacion?.cliente?.rfc || '',
                 tipo_pasaje: 'Turismo Estatal',
@@ -90,9 +130,11 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
             });
             setErrores({});
 
-            // Obtener folios automáticamente
+            // Obtener folios
             obtenerSiguienteFolio();
-        }
+        };
+
+        cargarDatos();
     }, [estaAbierto, pago]);
 
     const manejarCambio = (campo, valor) => {
@@ -282,30 +324,88 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                                 </div>
                             </div>
 
-                            <div className="modal-abono-campo-grupo">
-                                <div className="modal-abono-campo">
-                                    <label className="modal-abono-label">Conductor (Opcional)</label>
-                                    <input
-                                        type="number"
-                                        value={formulario.conductor_id}
-                                        onChange={(e) => manejarCambio('conductor_id', e.target.value)}
-                                        className="modal-abono-input"
-                                        disabled={guardando}
-                                        placeholder="ID del conductor"
-                                    />
-                                </div>
+                            {/* Conductor */}
+                            <div className="modal-abono-campo">
+                                <label className="modal-abono-label">
+                                    <User size={16} style={{ display: 'inline', marginRight: '0.25rem' }} />
+                                    Conductor (Opcional)
+                                </label>
+                                <select
+                                    value={formulario.conductor_id}
+                                    onChange={(e) => manejarCambio('conductor_id', e.target.value)}
+                                    className="modal-abono-select"
+                                    disabled={guardando}
+                                >
+                                    <option value="">-- Sin conductor --</option>
+                                    {conductoresDisponibles.map((conductor) => (
+                                        <option key={conductor.id} value={conductor.id}>
+                                            {conductor.nombre_conductor} {conductor.apellido_paterno_conductor} {conductor.apellido_materno_conductor}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
-                                <div className="modal-abono-campo">
-                                    <label className="modal-abono-label">Vehículo (Opcional)</label>
-                                    <input
-                                        type="number"
-                                        value={formulario.vehiculo_id}
-                                        onChange={(e) => manejarCambio('vehiculo_id', e.target.value)}
-                                        className="modal-abono-input"
-                                        disabled={guardando}
-                                        placeholder="ID del vehículo"
-                                    />
-                                </div>
+                            {/* Vehículo */}
+                            <div className="modal-abono-campo">
+                                <label className="modal-abono-label">
+                                    <Car size={16} style={{ display: 'inline', marginRight: '0.25rem' }} />
+                                    Vehículo (Opcional)
+                                </label>
+                                <select
+                                    value={formulario.vehiculo_id}
+                                    onChange={(e) => manejarCambio('vehiculo_id', e.target.value)}
+                                    className="modal-abono-select"
+                                    disabled={guardando}
+                                >
+                                    <option value="">-- Sin vehículo --</option>
+                                    {vehiculosDisponibles.map((vehiculo) => (
+                                        <option key={vehiculo.id} value={vehiculo.id}>
+                                            {vehiculo.nombre} - {vehiculo.numero_placa} ({vehiculo.marca} {vehiculo.modelo})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Coordinador */}
+                            <div className="modal-abono-campo">
+                                <label className="modal-abono-label">
+                                    <Users size={16} style={{ display: 'inline', marginRight: '0.25rem' }} />
+                                    Coordinador (Opcional)
+                                </label>
+                                <select
+                                    value={formulario.coordinador_id}
+                                    onChange={(e) => manejarCambio('coordinador_id', e.target.value)}
+                                    className="modal-abono-select"
+                                    disabled={guardando}
+                                >
+                                    <option value="">-- Sin coordinador --</option>
+                                    {coordinadoresDisponibles.map((coord) => (
+                                        <option key={coord.id} value={coord.id}>
+                                            {coord.nombre} {coord.apellido_paterno} {coord.apellido_materno}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Guía */}
+                            <div className="modal-abono-campo">
+                                <label className="modal-abono-label">
+                                    <User size={16} style={{ display: 'inline', marginRight: '0.25rem' }} />
+                                    Guía Turístico (Opcional)
+                                </label>
+                                <select
+                                    value={formulario.guia_id}
+                                    onChange={(e) => manejarCambio('guia_id', e.target.value)}
+                                    className="modal-abono-select"
+                                    disabled={guardando}
+                                >
+                                    <option value="">-- Sin guía --</option>
+                                    {guiasDisponibles.map((guia) => (
+                                        <option key={guia.id} value={guia.id}>
+                                            {guia.nombre} {guia.apellido_paterno} {guia.apellido_materno}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     )}

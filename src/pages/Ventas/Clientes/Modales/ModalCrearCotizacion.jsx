@@ -54,7 +54,7 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
         restaurante: '',
         tour: '',
         hospedaje: '',
-        extras: [],
+        servicios: [],
         total: '',
         totalLetra: '',
         lista: []
@@ -62,30 +62,62 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
 
     // ✅ Cargar extras desde el backend
     useEffect(() => {
-        const fetchExtras = async () => {
+        const fetchServicios = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const response = await axios.get('http://127.0.0.1:8000/api/extras', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: 'application/json',
-                    },
+                const token = localStorage.getItem("token");
+
+                const [transporte, restaurante, tour, hospedaje] = await Promise.all([
+                    axios.get("http://127.0.0.1:8000/api/transportes", {
+                        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+                    }),
+                    axios.get("http://127.0.0.1:8000/api/restaurantes", {
+                        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+                    }),
+                    axios.get("http://127.0.0.1:8000/api/tours", {
+                        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+                    }),
+                    axios.get("http://127.0.0.1:8000/api/hospedajes", {
+                        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+                    })
+                ]);
+
+                setOpcionesExtras({
+                    transporte: transporte.data.map(s => ({
+                        id: s.id,
+                        tipo: 'transporte',
+                        nombre: s.nombre_servicio,
+                        precio: s.precio_base,
+                        proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+                    })),
+                    restaurante: restaurante.data.map(s => ({
+                        id: s.id,
+                        tipo: 'restaurante',
+                        nombre: s.nombre_servicio,
+                        precio: s.precio_base,
+                        proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+                    })),
+                    tour: tour.data.map(s => ({
+                        id: s.id,
+                        tipo: 'tour',
+                        nombre: s.nombre_tour,
+                        precio: s.precio_base,
+                        proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+                    })),
+                    hospedaje: hospedaje.data.map(s => ({
+                        id: s.id,
+                        tipo: 'hospedaje',
+                        nombre: s.nombre_servicio,
+                        precio: s.precio_base,
+                        proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+                    }))
                 });
-
-                const data = response.data;
-                const transporte = data.filter((e) => e.tipo === 'transporte');
-                const restaurante = data.filter((e) => e.tipo === 'restaurante');
-                const tour = data.filter((e) => e.tipo === 'tour');
-                const hospedaje = data.filter((e) => e.tipo === 'hospedaje');
-
-                setOpcionesExtras({ transporte, restaurante, tour, hospedaje });
             } catch (error) {
-                console.error('Error al cargar extras:', error);
+                console.error("Error al cargar servicios:", error);
             }
         };
 
         if (estaAbierto) {
-            fetchExtras();
+            fetchServicios();
         }
     }, [estaAbierto]);
 
@@ -130,41 +162,43 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
         }));
     };
 
-    const handleExtraChange = (e) => {
+    const handleServicioChange = (e) => {
         const { name, value } = e.target;
         if (!value) return;
 
-        const selected = opcionesExtras[name].find((extra) => extra.nombre === value);
+        const selected = opcionesExtras[name].find(s => s.id === parseInt(value));
         if (!selected) return;
 
         setFormData((prev) => {
-            const yaExiste = prev.extras.find(
-                (item) => item.tipo === name && item.valor === selected.nombre
-            );
+            // Evitar duplicados
+            const yaExiste = prev.servicios.find(s => s.id === selected.id);
             if (yaExiste) return prev;
 
-            const nuevosExtras = [
-                ...prev.extras,
-                { tipo: name, valor: selected.nombre, costo: selected.costo },
-            ];
+            const nuevosServicios = [...prev.servicios, selected];
+            const totalServicios = nuevosServicios.reduce((acc, curr) => acc + parseFloat(curr.precio), 0);
 
-            const totalExtras = nuevosExtras.reduce((acc, curr) => acc + curr.costo, 0);
             return {
                 ...prev,
-                extras: nuevosExtras,
-                total: totalExtras.toFixed(2),
+                servicios: nuevosServicios,
+                total: totalServicios.toFixed(2),
+                transporte: "",
+                restaurante: "",
+                tour: "",
+                hospedaje: "",
             };
         });
+        e.target.value = "";
     };
 
-    const handleEliminarExtra = (index) => {
+    const handleEliminarServicio = (servicioId) => {
         setFormData((prev) => {
-            const nuevosExtras = prev.extras.filter((_, i) => i !== index);
-            const totalExtras = nuevosExtras.reduce((acc, curr) => acc + curr.costo, 0);
+            const nuevosServicios = prev.servicios.filter(s => s.id !== servicioId);
+            const totalServicios = nuevosServicios.reduce((acc, curr) => acc + parseFloat(curr.precio), 0);
+
             return {
                 ...prev,
-                extras: nuevosExtras,
-                total: totalExtras.toFixed(2),
+                servicios: nuevosServicios,
+                total: totalServicios.toFixed(2),
             };
         });
     };
@@ -218,7 +252,10 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
 
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/cotizaciones',
-                formData,
+                {
+                    ...formData,
+                    servicios: formData.servicios.map(s => s.id)
+                },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -469,12 +506,12 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
                                 <select
                                     name="transporte"
                                     value={formData.transporte}
-                                    onChange={handleExtraChange}
+                                    onChange={handleServicioChange}
                                 >
                                     <option value="">Seleccionar...</option>
-                                    {opcionesExtras.transporte.map((extra) => (
-                                        <option key={extra.id} value={extra.nombre}>
-                                            {extra.nombre} - ${extra.costo}
+                                    {opcionesExtras.transporte.map((servicio) => (
+                                        <option key={servicio.id} value={servicio.id}>
+                                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
                                         </option>
                                     ))}
                                 </select>
@@ -485,12 +522,12 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
                                 <select
                                     name="restaurante"
                                     value={formData.restaurante}
-                                    onChange={handleExtraChange}
+                                    onChange={handleServicioChange}
                                 >
                                     <option value="">Seleccionar...</option>
-                                    {opcionesExtras.restaurante.map((extra) => (
-                                        <option key={extra.id} value={extra.nombre}>
-                                            {extra.nombre} - ${extra.costo}
+                                    {opcionesExtras.restaurante.map((servicio) => (
+                                        <option key={servicio.id} value={servicio.id}>
+                                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
                                         </option>
                                     ))}
                                 </select>
@@ -501,12 +538,12 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
                                 <select
                                     name="tour"
                                     value={formData.tour}
-                                    onChange={handleExtraChange}
+                                    onChange={handleServicioChange}
                                 >
                                     <option value="">Seleccionar...</option>
-                                    {opcionesExtras.tour.map((extra) => (
-                                        <option key={extra.id} value={extra.nombre}>
-                                            {extra.nombre} - ${extra.costo}
+                                    {opcionesExtras.tour.map((servicio) => (
+                                        <option key={servicio.id} value={servicio.id}>
+                                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
                                         </option>
                                     ))}
                                 </select>
@@ -517,12 +554,12 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
                                 <select
                                     name="hospedaje"
                                     value={formData.hospedaje}
-                                    onChange={handleExtraChange}
+                                    onChange={handleServicioChange}
                                 >
                                     <option value="">Seleccionar...</option>
-                                    {opcionesExtras.hospedaje.map((extra) => (
-                                        <option key={extra.id} value={extra.nombre}>
-                                            {extra.nombre} - ${extra.costo}
+                                    {opcionesExtras.hospedaje.map((servicio) => (
+                                        <option key={servicio.id} value={servicio.id}>
+                                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
                                         </option>
                                     ))}
                                 </select>
@@ -530,19 +567,20 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
                         </div>
 
                         {/* Extras seleccionados */}
-                        {formData.extras.length > 0 && (
+                        {formData.servicios.length > 0 && (
                             <div className="extras-seleccionados">
-                                <h4>Extras Seleccionados:</h4>
+                                <h4>Extras:</h4>
                                 <div className="extras-lista">
-                                    {formData.extras.map((extra, index) => (
-                                        <div key={index} className="extra-item">
-                                            <span className="extra-tipo">{extra.tipo}:</span>
-                                            <span className="extra-valor">{extra.valor}</span>
-                                            <span className="extra-costo">${extra.costo}</span>
+                                    {formData.servicios.map((servicio) => (
+                                        <div key={servicio.id} className="extra-item">
+                                            <span className="extra-tipo">{servicio.tipo}:</span>
+                                            <span className="extra-valor">{servicio.nombre}</span>
+                                            <span className="extra-proveedor">({servicio.proveedor})</span>
+                                            <span className="extra-costo">${servicio.precio}</span>
                                             <button
                                                 type="button"
                                                 className="btn-eliminar-extra"
-                                                onClick={() => handleEliminarExtra(index)}
+                                                onClick={() => handleEliminarServicio(servicio.id)}
                                             >
                                                 ❌
                                             </button>

@@ -257,6 +257,9 @@ const TablaOrdenes = () => {
         km_final: datosActualizados.km_final,
         litros_consumidos: datosActualizados.litros_consumidos,
         rendimiento: datosActualizados.rendimiento,
+
+        coordinador_id: datosActualizados.coordinador_id,
+        guia_id: datosActualizados.guia_id,
       };
 
       // ⭐ AGREGAR: Actualizar en backend
@@ -367,6 +370,8 @@ const TablaOrdenes = () => {
     }
   };
 
+  // 🔧 FUNCIÓN CORREGIDA - generarPDF con manejo de valores null
+
   const generarPDF = async (orden) => {
     try {
       const plantillaUrl = "/ORDENSERVICIO.pdf";
@@ -381,7 +386,22 @@ const TablaOrdenes = () => {
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
+      // ✅ FUNCIÓN AUXILIAR - Convierte null/undefined a string vacío
+      const toStr = (value) => {
+        if (value === null || value === undefined) return "";
+        return String(value);
+      };
+
+      // ✅ FUNCIÓN AUXILIAR - Convierte números a string, maneja null
+      const toNum = (value) => {
+        if (value === null || value === undefined || value === "") return "0";
+        const num = Number(value);
+        return isNaN(num) ? "0" : String(Math.trunc(num));
+      };
+
       const dividirTexto = (texto, ancho) => {
+        if (!texto) return [""]; // ✅ Manejar texto vacío
+
         const palabras = texto.split(" ");
         const lineas = [];
         let actual = "";
@@ -396,21 +416,24 @@ const TablaOrdenes = () => {
           }
         });
         if (actual) lineas.push(actual);
-        return lineas;
+        return lineas.length > 0 ? lineas : [""];
       };
 
-      firstPage.drawText(
-        new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX"),
-        {
-          x: 70,
-          y: 737,
-          size: 9,
-          font: font,
-          color: rgb(0, 0, 0),
-        }
-      );
+      // ✅ FECHA ORDEN (con validación)
+      const fechaOrden = orden.fecha_inicio_servicio
+        ? new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX")
+        : "";
 
-      firstPage.drawText(orden.folio.toString(), {
+      firstPage.drawText(fechaOrden, {
+        x: 70,
+        y: 737,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
+
+      // ✅ FOLIO (convertir a string)
+      firstPage.drawText(toStr(orden.folio), {
         x: 530,
         y: 718.5,
         size: 9,
@@ -418,7 +441,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.telefono_conductor.toString(), {
+      // ✅ TELÉFONO CONDUCTOR (manejar null)
+      firstPage.drawText(toStr(orden.telefono_conductor), {
         x: 110,
         y: 668,
         size: 9,
@@ -426,7 +450,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.licencia_conductor.toString(), {
+      // ✅ LICENCIA CONDUCTOR (manejar null)
+      firstPage.drawText(toStr(orden.licencia_conductor), {
         x: 330,
         y: 671,
         size: 9,
@@ -434,7 +459,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.nombre_cliente, {
+      // ✅ NOMBRE CLIENTE (manejar null)
+      firstPage.drawText(toStr(orden.nombre_cliente), {
         x: 120,
         y: 641,
         size: 9,
@@ -442,7 +468,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.telefono_cliente.toString(), {
+      // ✅ TELÉFONO CLIENTE (manejar null)
+      firstPage.drawText(toStr(orden.telefono_cliente), {
         x: 435,
         y: 639,
         size: 9,
@@ -450,7 +477,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.ciudad_origen, {
+      // ✅ CIUDAD ORIGEN (manejar null)
+      firstPage.drawText(toStr(orden.ciudad_origen), {
         x: 88,
         y: 606,
         size: 9,
@@ -458,7 +486,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.destino, {
+      // ✅ DESTINO (manejar null)
+      firstPage.drawText(toStr(orden.destino), {
         x: 285,
         y: 606,
         size: 9,
@@ -466,7 +495,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.numero_pasajeros.toString(), {
+      // ✅ NÚMERO PASAJEROS (manejar null)
+      firstPage.drawText(toNum(orden.numero_pasajeros), {
         x: 478,
         y: 606,
         size: 9,
@@ -474,18 +504,21 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(
-        new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX"),
-        {
-          x: 160,
-          y: 587,
-          size: 9,
-          font: font,
-          color: rgb(0, 0, 0),
-        }
-      );
+      // ✅ FECHA INICIO SERVICIO (con validación)
+      const fechaInicio = orden.fecha_inicio_servicio
+        ? new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX")
+        : "";
 
-      firstPage.drawText(orden.horario_inicio_servicio, {
+      firstPage.drawText(fechaInicio, {
+        x: 160,
+        y: 587,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
+
+      // ✅ HORARIO INICIO SERVICIO (manejar null)
+      firstPage.drawText(toStr(orden.horario_inicio_servicio), {
         x: 330,
         y: 586,
         size: 9,
@@ -493,18 +526,21 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(
-        new Date(orden.fecha_final_servicio).toLocaleDateString("es-MX"),
-        {
-          x: 160,
-          y: 570,
-          size: 9,
-          font: font,
-          color: rgb(0, 0, 0),
-        }
-      );
+      // ✅ FECHA FINAL SERVICIO (con validación)
+      const fechaFinal = orden.fecha_final_servicio
+        ? new Date(orden.fecha_final_servicio).toLocaleDateString("es-MX")
+        : "";
 
-      firstPage.drawText(orden.punto_intermedio, {
+      firstPage.drawText(fechaFinal, {
+        x: 160,
+        y: 570,
+        size: 9,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
+
+      // ✅ PUNTO INTERMEDIO (manejar null)
+      firstPage.drawText(toStr(orden.punto_intermedio), {
         x: 150,
         y: 548,
         size: 9,
@@ -512,8 +548,9 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // Itinerario con saltos de línea automáticos
-      const lineas = dividirTexto(orden.itinerario_detallado, 450);
+      // ✅ ITINERARIO con saltos de línea (manejar null)
+      const itinerario = toStr(orden.itinerario_detallado);
+      const lineas = dividirTexto(itinerario, 450);
       lineas.forEach((linea, i) => {
         firstPage.drawText(linea, {
           x: 100,
@@ -524,7 +561,8 @@ const TablaOrdenes = () => {
         });
       });
 
-      firstPage.drawText(orden.direccion_retorno, {
+      // ✅ DIRECCIÓN RETORNO (manejar null)
+      firstPage.drawText(toStr(orden.direccion_retorno), {
         x: 150,
         y: 433,
         size: 9,
@@ -532,9 +570,10 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      const nombreCompletoConduct = `${orden.nombre_conductor || ""} ${
-        orden.apellido_paterno_conductor || ""
-      } ${orden.apellido_materno_conductor || ""}`.trim();
+      // ✅ NOMBRE COMPLETO CONDUCTOR (manejar null en cada parte)
+      const nombreCompletoConduct = `${toStr(orden.nombre_conductor)} ${toStr(
+        orden.apellido_paterno_conductor
+      )} ${toStr(orden.apellido_materno_conductor)}`.trim();
 
       firstPage.drawText(nombreCompletoConduct, {
         x: 130,
@@ -544,7 +583,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.marca, {
+      // ✅ MARCA VEHÍCULO (manejar null)
+      firstPage.drawText(toStr(orden.marca), {
         x: 140,
         y: 392,
         size: 9,
@@ -552,7 +592,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(orden.placa, {
+      // ✅ PLACA VEHÍCULO (manejar null)
+      firstPage.drawText(toStr(orden.placa), {
         x: 213,
         y: 392,
         size: 7,
@@ -560,7 +601,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(`${Math.trunc(orden.km_inicial)} Km`, {
+      // ✅ KM INICIAL (manejar null)
+      firstPage.drawText(`${toNum(orden.km_inicial)} Km`, {
         x: 130,
         y: 379,
         size: 8,
@@ -568,7 +610,8 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(`${Math.trunc(orden.km_final)} Km`, {
+      // ✅ KM FINAL (manejar null)
+      firstPage.drawText(`${toNum(orden.km_final)} Km`, {
         x: 205,
         y: 379,
         size: 8,
@@ -576,18 +619,21 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(
-        `${Math.trunc(orden.km_final - orden.km_inicial)} Km`,
-        {
-          x: 130,
-          y: 365,
-          size: 8,
-          font: font,
-          color: rgb(0, 0, 0),
-        }
-      );
+      // ✅ KM RECORRIDOS (manejar null)
+      const kmRecorridos = (orden.km_final && orden.km_inicial)
+        ? Math.trunc(orden.km_final - orden.km_inicial)
+        : 0;
 
-      firstPage.drawText(`${Math.trunc(orden.litros_consumidos)} Litros`, {
+      firstPage.drawText(`${kmRecorridos} Km`, {
+        x: 130,
+        y: 365,
+        size: 8,
+        font: font,
+        color: rgb(0, 0, 0),
+      });
+
+      // ✅ LITROS CONSUMIDOS (manejar null)
+      firstPage.drawText(`${toNum(orden.litros_consumidos)} Litros`, {
         x: 130,
         y: 350,
         size: 9,
@@ -733,9 +779,8 @@ const TablaOrdenes = () => {
             {ordenesPaginados.map((orden, index) => (
               <tr
                 key={orden.id}
-                className={`Ordenes-fila-orden ${
-                  !orden.activo ? "Ordenes-fila-inactiva" : ""
-                }`}
+                className={`Ordenes-fila-orden ${!orden.activo ? "Ordenes-fila-inactiva" : ""
+                  }`}
               >
                 <td data-label="Folio" className="Ordenes-columna-fecha">
                   <span className="Ordenes-badge-lead">{orden.folio}</span>
@@ -852,9 +897,8 @@ const TablaOrdenes = () => {
               (numero) => (
                 <button
                   key={numero}
-                  className={`Ordenes-numero-pagina ${
-                    paginaActual === numero ? "Ordenes-activo" : ""
-                  }`}
+                  className={`Ordenes-numero-pagina ${paginaActual === numero ? "Ordenes-activo" : ""
+                    }`}
                   onClick={() => cambiarPagina(numero)}
                 >
                   {numero}
