@@ -102,6 +102,7 @@ const Cotizacion = () => {
               Accept: "application/json",
             },
           });
+          // mostrarNotificacionExito();
         } else {
           // CREAR
           await axios.post(API_URL, nuevaCotizacion, {
@@ -139,6 +140,7 @@ const Cotizacion = () => {
 
   const handleEditarCotizacion = useCallback((cotizacion) => {
     setCotizacionEditar(cotizacion);
+
     console.log("Editando cotización:", cotizacion);
   }, []);
 

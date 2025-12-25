@@ -11,7 +11,7 @@ import {
   Clock,
   Users,
 } from "lucide-react";
-import axios from 'axios';
+import axios from "axios";
 import "./ModalEditarOrden.css";
 
 const ModalEditarOrden = ({
@@ -21,6 +21,7 @@ const ModalEditarOrden = ({
   alGuardar,
   vehiculosDisponibles = [],
   conductoresDisponibles = [],
+  ordenesExistentes = [],
 }) => {
   const [datosFormulario, setDatosFormulario] = useState({
     // Datos Orden de Servicio
@@ -60,17 +61,19 @@ const ModalEditarOrden = ({
     km_final: "",
     litros_consumidos: "",
     rendimiento: "",
+    vehiculo_dis: "",
 
-    coordinador_id: '',
-    nombre_coordinador: '',
+    coordinador_id: "",
+    nombre_coordinador: "",
 
-    guia_id: '',
-    nombre_guia: '',
+    guia_id: "",
+    nombre_guia: "",
   });
 
   const [seccionActiva, setSeccionActiva] = useState("orden");
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
+  const [vehiculosFiltrados, setVehiculosFiltrados] = useState([]);
   const [coordinadoresDisponibles, setCoordinadoresDisponibles] = useState([]);
   const [guiasDisponibles, setGuiasDisponibles] = useState([]);
 
@@ -109,34 +112,63 @@ const ModalEditarOrden = ({
         km_final: orden.km_final || "",
         litros_consumidos: orden.litros_consumidos || "",
         rendimiento: orden.rendimiento || "",
-
-        coordinador_id: orden.coordinador_id || '',
-        nombre_coordinador: orden.nombre_coordinador || '',
-        guia_id: orden.guia_id || '',
-        nombre_guia: orden.nombre_guia || '',
+        vehiculo_dis: orden.vehiculos_disponible || "",
+        coordinador_id: orden.coordinador_id || "",
+        nombre_coordinador: orden.nombre_coordinador || "",
+        guia_id: orden.guia_id || "",
+        nombre_guia: orden.nombre_guia || "",
       });
       setErrores({});
     }
   }, [estaAbierto, orden]);
 
   useEffect(() => {
+    if (vehiculosDisponibles.length > 0) {
+      // Obtener IDs de vehículos ya asignados en otras órdenes (excluyendo la orden actual)
+      const vehiculosAsignados = ordenesExistentes
+        .filter((o) => o.id !== orden?.id && o.vehiculo_id) // Excluir la orden actual
+        .map((o) => parseInt(o.vehiculo_id));
+
+      // Filtrar vehículos disponibles
+      const vehiculosLibres = vehiculosDisponibles.filter(
+        (v) =>
+          !vehiculosAsignados.includes(v.id) ||
+          v.id === parseInt(datosFormulario.vehiculo_id)
+      );
+
+      setVehiculosFiltrados(vehiculosLibres);
+    }
+  }, [
+    vehiculosDisponibles,
+    ordenesExistentes,
+    orden,
+    datosFormulario.vehiculo_id,
+  ]);
+
+  useEffect(() => {
     const cargarExtras = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
 
         const [coordinadores, guias] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/api/coordinadores', {
-            headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+          axios.get("http://127.0.0.1:8000/api/coordinadores", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
           }),
-          axios.get('http://127.0.0.1:8000/api/guias', {
-            headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
-          })
+          axios.get("http://127.0.0.1:8000/api/guias", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }),
         ]);
 
         setCoordinadoresDisponibles(coordinadores.data || []);
         setGuiasDisponibles(guias.data || []);
       } catch (error) {
-        console.error('Error al cargar coordinadores/guías:', error);
+        console.error("Error al cargar coordinadores/guías:", error);
       }
     };
 
@@ -326,13 +358,16 @@ const ModalEditarOrden = ({
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const limpiaHora = (h) =>
-        h && h.length >= 4 ? h.substring(0, 5) : null;
+      const limpiaHora = (h) => (h && h.length >= 4 ? h.substring(0, 5) : null);
 
       const datosLimpios = {
         ...datosFormulario,
-        horario_inicio_servicio: limpiaHora(datosFormulario.horario_inicio_servicio),
-        horario_final_servicio: limpiaHora(datosFormulario.horario_final_servicio),
+        horario_inicio_servicio: limpiaHora(
+          datosFormulario.horario_inicio_servicio
+        ),
+        horario_final_servicio: limpiaHora(
+          datosFormulario.horario_final_servicio
+        ),
         horario_final_real: limpiaHora(datosFormulario.horario_final_real),
       };
 
@@ -459,8 +494,10 @@ const ModalEditarOrden = ({
                 ...prev,
                 conductor_id: e.target.value,
                 nombre_conductor: conductorSeleccionado.nombre_conductor,
-                apellido_paterno_conductor: conductorSeleccionado.apellido_paterno_conductor,
-                apellido_materno_conductor: conductorSeleccionado.apellido_materno_conductor,
+                apellido_paterno_conductor:
+                  conductorSeleccionado.apellido_paterno_conductor,
+                apellido_materno_conductor:
+                  conductorSeleccionado.apellido_materno_conductor,
                 telefono_conductor: conductorSeleccionado.telefono_conductor, // ✅ NUEVO
                 licencia_conductor: conductorSeleccionado.licencia_conductor, // ✅ NUEVO
               }));
@@ -468,12 +505,12 @@ const ModalEditarOrden = ({
               // ✅ NUEVO - Limpiar todos los campos si se deselecciona
               setDatosFormulario((prev) => ({
                 ...prev,
-                conductor_id: '',
-                nombre_conductor: '',
-                apellido_paterno_conductor: '',
-                apellido_materno_conductor: '',
-                telefono_conductor: '',
-                licencia_conductor: '',
+                conductor_id: "",
+                nombre_conductor: "",
+                apellido_paterno_conductor: "",
+                apellido_materno_conductor: "",
+                telefono_conductor: "",
+                licencia_conductor: "",
               }));
             }
           }}
@@ -483,8 +520,8 @@ const ModalEditarOrden = ({
           <option value="">-- Seleccione un conductor --</option>
           {conductoresDisponibles.map((conductor) => (
             <option key={conductor.id} value={conductor.id}>
-              {conductor.nombre_conductor} { }
-              {conductor.apellido_paterno_conductor} { }
+              {conductor.nombre_conductor} {}
+              {conductor.apellido_paterno_conductor} {}
               {conductor.apellido_materno_conductor}
             </option>
           ))}
@@ -596,8 +633,8 @@ const ModalEditarOrden = ({
             } else {
               setDatosFormulario((prev) => ({
                 ...prev,
-                coordinador_id: '',
-                nombre_coordinador: '',
+                coordinador_id: "",
+                nombre_coordinador: "",
               }));
             }
           }}
@@ -623,7 +660,7 @@ const ModalEditarOrden = ({
             value={datosFormulario.nombre_coordinador}
             readOnly
             disabled={guardando}
-            style={{ backgroundColor: '#f9fafb' }}
+            style={{ backgroundColor: "#f9fafb" }}
           />
         </div>
       )}
@@ -652,8 +689,8 @@ const ModalEditarOrden = ({
             } else {
               setDatosFormulario((prev) => ({
                 ...prev,
-                guia_id: '',
-                nombre_guia: '',
+                guia_id: "",
+                nombre_guia: "",
               }));
             }
           }}
@@ -679,7 +716,7 @@ const ModalEditarOrden = ({
             value={datosFormulario.nombre_guia}
             readOnly
             disabled={guardando}
-            style={{ backgroundColor: '#f9fafb' }}
+            style={{ backgroundColor: "#f9fafb" }}
           />
         </div>
       )}
@@ -909,7 +946,7 @@ const ModalEditarOrden = ({
           name="vehiculo_id"
           value={datosFormulario.vehiculo_id}
           onChange={(e) => {
-            const vehiculoSeleccionado = vehiculosDisponibles.find(
+            const vehiculoSeleccionado = vehiculosFiltrados.find(
               (v) => v.id === parseInt(e.target.value)
             );
 
@@ -924,10 +961,10 @@ const ModalEditarOrden = ({
             } else {
               setDatosFormulario((prev) => ({
                 ...prev,
-                vehiculo_id: '',
-                marca: '',
-                modelo: '',
-                placa: '',
+                vehiculo_id: "",
+                marca: "",
+                modelo: "",
+                placa: "",
               }));
             }
           }}
@@ -935,7 +972,7 @@ const ModalEditarOrden = ({
           className="Ordenes-selector-registros"
         >
           <option value="">-- Seleccione un vehículo --</option>
-          {vehiculosDisponibles.map((vehiculo) => (
+          {vehiculosFiltrados.map((vehiculo) => (
             <option key={vehiculo.id} value={vehiculo.id}>
               {vehiculo.nombre} - {vehiculo.numero_placa}
             </option>
@@ -1089,8 +1126,9 @@ const ModalEditarOrden = ({
         {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${seccionActiva === "orden" ? "active" : ""
-              }`}
+            className={`meo-tab-button ${
+              seccionActiva === "orden" ? "active" : ""
+            }`}
             onClick={() => setSeccionActiva("orden")}
             type="button"
           >
@@ -1098,8 +1136,9 @@ const ModalEditarOrden = ({
             Datos Orden de Servicio
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === "conductor" ? "active" : ""
-              }`}
+            className={`meo-tab-button ${
+              seccionActiva === "conductor" ? "active" : ""
+            }`}
             onClick={() => setSeccionActiva("conductor")}
             type="button"
           >
@@ -1107,8 +1146,9 @@ const ModalEditarOrden = ({
             Datos Conductor
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === "servicio" ? "active" : ""
-              }`}
+            className={`meo-tab-button ${
+              seccionActiva === "servicio" ? "active" : ""
+            }`}
             onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
@@ -1116,8 +1156,9 @@ const ModalEditarOrden = ({
             Datos Servicio
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === "vehiculo" ? "active" : ""
-              }`}
+            className={`meo-tab-button ${
+              seccionActiva === "vehiculo" ? "active" : ""
+            }`}
             onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >
@@ -1125,7 +1166,9 @@ const ModalEditarOrden = ({
             Vehículo
           </button>
           <button
-            className={`meo-tab-button ${seccionActiva === "extras" ? "active" : ""}`}
+            className={`meo-tab-button ${
+              seccionActiva === "extras" ? "active" : ""
+            }`}
             onClick={() => setSeccionActiva("extras")}
             type="button"
           >

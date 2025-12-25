@@ -87,48 +87,60 @@ const NuevaCotizacion = ({
 
         const [transporte, restaurante, tour, hospedaje] = await Promise.all([
           axios.get("http://127.0.0.1:8000/api/transportes", {
-            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
           }),
           axios.get("http://127.0.0.1:8000/api/restaurantes", {
-            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
           }),
           axios.get("http://127.0.0.1:8000/api/tours", {
-            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
           }),
           axios.get("http://127.0.0.1:8000/api/hospedajes", {
-            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
-          })
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }),
         ]);
 
         setOpcionesExtras({
-          transporte: transporte.data.map(s => ({
+          transporte: transporte.data.map((s) => ({
             id: s.id,
-            tipo: 'transporte',
+            tipo: "transporte",
             nombre: s.nombre_servicio,
             precio: s.precio_base,
-            proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+            proveedor: s.proveedor?.nombre_razon_social || "Sin proveedor",
           })),
-          restaurante: restaurante.data.map(s => ({
+          restaurante: restaurante.data.map((s) => ({
             id: s.id,
-            tipo: 'restaurante',
+            tipo: "restaurante",
             nombre: s.nombre_servicio,
             precio: s.precio_base,
-            proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+            proveedor: s.proveedor?.nombre_razon_social || "Sin proveedor",
           })),
-          tour: tour.data.map(s => ({
+          tour: tour.data.map((s) => ({
             id: s.id,
-            tipo: 'tour',
+            tipo: "tour",
             nombre: s.nombre_tour,
             precio: s.precio_base,
-            proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
+            proveedor: s.proveedor?.nombre_razon_social || "Sin proveedor",
           })),
-          hospedaje: hospedaje.data.map(s => ({
+          hospedaje: hospedaje.data.map((s) => ({
             id: s.id,
-            tipo: 'hospedaje',
+            tipo: "hospedaje",
             nombre: s.nombre_servicio,
             precio: s.precio_base,
-            proveedor: s.proveedor?.nombre_razon_social || 'Sin proveedor'
-          }))
+            proveedor: s.proveedor?.nombre_razon_social || "Sin proveedor",
+          })),
         });
       } catch (error) {
         console.error("Error al cargar servicios:", error);
@@ -393,7 +405,10 @@ const NuevaCotizacion = ({
 
       // ✅ GUARDAR IDS TAL CUAL (se convertirán después)
       let serviciosParaFormulario = [];
-      if (cotizacionEditar.servicios && Array.isArray(cotizacionEditar.servicios)) {
+      if (
+        cotizacionEditar.servicios &&
+        Array.isArray(cotizacionEditar.servicios)
+      ) {
         serviciosParaFormulario = cotizacionEditar.servicios;
       }
 
@@ -448,35 +463,41 @@ const NuevaCotizacion = ({
     if (
       modoEdicion &&
       formData.servicios.length > 0 &&
-      typeof formData.servicios[0] === 'number'
+      typeof formData.servicios[0] === "number"
     ) {
       console.log("🔄 Convirtiendo IDs a servicios completos...");
       console.log("📦 opcionesExtras disponibles:", opcionesExtras);
 
-      const tieneOpciones = Object.values(opcionesExtras).some(arr => arr.length > 0);
+      const tieneOpciones = Object.values(opcionesExtras).some(
+        (arr) => arr.length > 0
+      );
 
       if (!tieneOpciones) {
         console.log("⏳ Esperando que opcionesExtras se cargue...");
         return;
       }
 
-      const serviciosCompletos = formData.servicios.map(servicioId => {
-        for (const categoria in opcionesExtras) {
-          const servicio = opcionesExtras[categoria].find(s => s.id === servicioId);
-          if (servicio) {
-            console.log("✅ Servicio encontrado:", servicio);
-            return servicio;
+      const serviciosCompletos = formData.servicios
+        .map((servicioId) => {
+          for (const categoria in opcionesExtras) {
+            const servicio = opcionesExtras[categoria].find(
+              (s) => s.id === servicioId
+            );
+            if (servicio) {
+              console.log("✅ Servicio encontrado:", servicio);
+              return servicio;
+            }
           }
-        }
-        console.log("❌ No se encontró servicio con ID:", servicioId);
-        return null;
-      }).filter(s => s !== null);
+          console.log("❌ No se encontró servicio con ID:", servicioId);
+          return null;
+        })
+        .filter((s) => s !== null);
 
       if (serviciosCompletos.length > 0) {
         console.log("✅ Actualizando servicios completos:", serviciosCompletos);
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          servicios: serviciosCompletos
+          servicios: serviciosCompletos,
         }));
       }
     }
@@ -607,17 +628,20 @@ const NuevaCotizacion = ({
     const { name, value } = e.target;
     if (!value) return;
 
-    const selected = opcionesExtras[name].find(s => s.id === parseInt(value));
+    const selected = opcionesExtras[name].find((s) => s.id === parseInt(value));
     if (!selected) return;
 
     setFormData((prev) => {
       // Evitar duplicados
-      const yaExiste = prev.servicios.find(s => s.id === selected.id);
+      const yaExiste = prev.servicios.find((s) => s.id === selected.id);
       if (yaExiste) return prev;
 
       const nuevosServicios = [...prev.servicios, selected];
 
-      const totalServicios = nuevosServicios.reduce((acc, curr) => acc + parseFloat(curr.precio), 0);
+      const totalServicios = nuevosServicios.reduce(
+        (acc, curr) => acc + parseFloat(curr.precio),
+        0
+      );
 
       return {
         ...prev,
@@ -634,8 +658,11 @@ const NuevaCotizacion = ({
 
   const handleEliminarServicio = (servicioId) => {
     setFormData((prev) => {
-      const nuevosServicios = prev.servicios.filter(s => s.id !== servicioId);
-      const totalServicios = nuevosServicios.reduce((acc, curr) => acc + parseFloat(curr.precio), 0);
+      const nuevosServicios = prev.servicios.filter((s) => s.id !== servicioId);
+      const totalServicios = nuevosServicios.reduce(
+        (acc, curr) => acc + parseFloat(curr.precio),
+        0
+      );
 
       return {
         ...prev,
@@ -651,6 +678,57 @@ const NuevaCotizacion = ({
       ...prev,
       total: value,
     }));
+  };
+
+  const nombreCotizacionOrigen = formData.origen;
+  const nombreCotizacionDestico = formData.destino;
+
+  const mostrarNotificacionAgregar = () => {
+    Swal.fire({
+      icon: "success",
+      title: "Cotización Agregada!",
+      html: `
+        <div style="font-size: 1.1rem; margin-top: 15px;">
+          <strong style="color: #2563eb; font-size: 1.3rem;">"${nombreCotizacionOrigen} a ${nombreCotizacionDestico}"</strong>
+          <p style="margin-top: 10px; color: #64748b;">ha sido registrado correctamente</p>
+        </div>
+      `,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#2563eb",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: true,
+      allowOutsideClick: true,
+      allowEscapeKey: true,
+      width: "500px",
+      padding: "2rem",
+      backdrop: `rgba(0,0,0,0.6)`,
+      customClass: {
+        popup: "swal-popup-custom",
+        title: "swal-title-custom",
+        htmlContainer: "swal-html-custom",
+        confirmButton: "swal-confirm-custom",
+      },
+    });
+  };
+
+  const mostrarNotificacionExito = () => {
+    if (typeof window !== "undefined" && window.Swal) {
+      window.Swal.fire({
+        title: "¡Excelente!",
+        text: "La información de la orden se ha actualizado correctamente",
+        icon: "success",
+        confirmButtonText: "Perfecto",
+        confirmButtonColor: "#2563eb",
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+          popup: "swal-popup-custom-orden",
+          title: "swal-title-custom-orden",
+          confirmButton: "swal-confirm-custom-orden",
+        },
+      });
+    }
   };
 
   const validarFormularioCompleto = useCallback(() => {
@@ -679,18 +757,18 @@ const NuevaCotizacion = ({
       const cotizacionCompleta = {
         ...formData,
         ...datosCliente,
-        servicios: formData.servicios.map(s => s.id),
+        servicios: formData.servicios.map((s) => s.id),
         id: modoEdicion ? formData.id : generarIdCliente(),
       };
 
       // 🆕 Llamar con await para esperar respuesta del API
       await onGuardarCotizacion(cotizacionCompleta, modoEdicion);
-
-      alert(
-        modoEdicion
-          ? "Cotización actualizada exitosamente"
-          : "Cotización guardada exitosamente"
-      );
+      modoEdicion ? mostrarNotificacionExito() : mostrarNotificacionAgregar();
+      // alert(
+      //   modoEdicion
+      //     ? mostrarNotificacionExito()
+      //     : "Cotización guardada exitosamente"
+      // );
 
       // Resetear el formulario
       setFormData({
@@ -774,40 +852,45 @@ const NuevaCotizacion = ({
             <div className="cotizacion-tabs">
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 1 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 1 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(1)}
               >
                 Información General
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 2 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 2 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(2)}
               >
                 Datos del Cliente
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 3 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 3 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(3)}
               >
                 Datos del Servicio
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 4 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 4 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(4)}
               >
                 Detalles del Viaje
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${pasoActual === 5 ? "active" : ""
-                  }`}
+                className={`cotizacion-tab-button ${
+                  pasoActual === 5 ? "active" : ""
+                }`}
                 onClick={() => setPasoActual(5)}
               >
                 Extras y Total
@@ -1248,7 +1331,8 @@ const NuevaCotizacion = ({
                         <option value="">Seleccionar...</option>
                         {opcionesExtras.transporte.map((servicio) => (
                           <option key={servicio.id} value={servicio.id}>
-                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
+                            {servicio.nombre} - ${servicio.precio} - (
+                            {servicio.proveedor})
                           </option>
                         ))}
                       </select>
@@ -1264,7 +1348,8 @@ const NuevaCotizacion = ({
                         <option value="">Seleccionar...</option>
                         {opcionesExtras.restaurante.map((servicio) => (
                           <option key={servicio.id} value={servicio.id}>
-                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
+                            {servicio.nombre} - ${servicio.precio} - (
+                            {servicio.proveedor})
                           </option>
                         ))}
                       </select>
@@ -1280,7 +1365,8 @@ const NuevaCotizacion = ({
                         <option value="">Seleccionar...</option>
                         {opcionesExtras.tour.map((servicio) => (
                           <option key={servicio.id} value={servicio.id}>
-                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
+                            {servicio.nombre} - ${servicio.precio} - (
+                            {servicio.proveedor})
                           </option>
                         ))}
                       </select>
@@ -1296,7 +1382,8 @@ const NuevaCotizacion = ({
                         <option value="">Seleccionar...</option>
                         {opcionesExtras.hospedaje.map((servicio) => (
                           <option key={servicio.id} value={servicio.id}>
-                            {servicio.nombre} - ${servicio.precio} - ({servicio.proveedor})
+                            {servicio.nombre} - ${servicio.precio} - (
+                            {servicio.proveedor})
                           </option>
                         ))}
                       </select>
@@ -1310,13 +1397,21 @@ const NuevaCotizacion = ({
                         formData.servicios.map((servicio) => (
                           <div key={servicio.id} className="extra-item">
                             <span className="extra-tipo">{servicio.tipo}:</span>
-                            <span className="extra-valor">{servicio.nombre}</span>
-                            <span className="extra-proveedor">({servicio.proveedor})</span>
-                            <span className="extra-costo">${servicio.precio}</span>
+                            <span className="extra-valor">
+                              {servicio.nombre}
+                            </span>
+                            <span className="extra-proveedor">
+                              ({servicio.proveedor})
+                            </span>
+                            <span className="extra-costo">
+                              ${servicio.precio}
+                            </span>
                             <button
                               type="button"
                               className="btn-eliminar-extra"
-                              onClick={() => handleEliminarServicio(servicio.id)}
+                              onClick={() =>
+                                handleEliminarServicio(servicio.id)
+                              }
                             >
                               ❌
                             </button>

@@ -620,9 +620,10 @@ const TablaOrdenes = () => {
       });
 
       // ✅ KM RECORRIDOS (manejar null)
-      const kmRecorridos = (orden.km_final && orden.km_inicial)
-        ? Math.trunc(orden.km_final - orden.km_inicial)
-        : 0;
+      const kmRecorridos =
+        orden.km_final && orden.km_inicial
+          ? Math.trunc(orden.km_final - orden.km_inicial)
+          : 0;
 
       firstPage.drawText(`${kmRecorridos} Km`, {
         x: 130,
@@ -779,8 +780,9 @@ const TablaOrdenes = () => {
             {ordenesPaginados.map((orden, index) => (
               <tr
                 key={orden.id}
-                className={`Ordenes-fila-orden ${!orden.activo ? "Ordenes-fila-inactiva" : ""
-                  }`}
+                className={`Ordenes-fila-orden ${
+                  !orden.activo ? "Ordenes-fila-inactiva" : ""
+                }`}
               >
                 <td data-label="Folio" className="Ordenes-columna-fecha">
                   <span className="Ordenes-badge-lead">{orden.folio}</span>
@@ -897,8 +899,9 @@ const TablaOrdenes = () => {
               (numero) => (
                 <button
                   key={numero}
-                  className={`Ordenes-numero-pagina ${paginaActual === numero ? "Ordenes-activo" : ""
-                    }`}
+                  className={`Ordenes-numero-pagina ${
+                    paginaActual === numero ? "Ordenes-activo" : ""
+                  }`}
                   onClick={() => cambiarPagina(numero)}
                 >
                   {numero}
@@ -931,6 +934,7 @@ const TablaOrdenes = () => {
         alGuardar={manejarGuardarOrden}
         vehiculosDisponibles={vehiculosDisponibles}
         conductoresDisponibles={conductoresDisponibles}
+        ordenesExistentes={datosOrdenes}
       />
 
       <ModalVisualizarPDF
