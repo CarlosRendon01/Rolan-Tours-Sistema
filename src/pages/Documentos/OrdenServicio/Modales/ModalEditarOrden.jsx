@@ -30,7 +30,7 @@ const ModalEditarOrden = ({
     nombre_prestador: "Antonio Alonso Meza",
 
     // Datos Conductor
-    conductor_id: "",
+    operador_id: "",
     nombre_conductor: "",
     apellido_paterno_conductor: "",
     apellido_materno_conductor: "",
@@ -74,6 +74,7 @@ const ModalEditarOrden = ({
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
   const [vehiculosFiltrados, setVehiculosFiltrados] = useState([]);
+  const [conductoresFiltrados, setConductoresFiltrados] = useState([]);
   const [coordinadoresDisponibles, setCoordinadoresDisponibles] = useState([]);
   const [guiasDisponibles, setGuiasDisponibles] = useState([]);
 
@@ -83,7 +84,7 @@ const ModalEditarOrden = ({
         folio: orden.folio || "",
         fecha_orden_servicio: orden.fecha_orden_servicio || "",
         nombre_prestador: orden.nombre_prestador || "Antonio Alonso Meza",
-        conductor_id: orden.conductor_id || "",
+        operador_id: orden.operador_id || "",
         nombre_conductor: orden.nombre_conductor || "",
         apellido_paterno_conductor: orden.apellido_paterno_conductor || "",
         apellido_materno_conductor: orden.apellido_materno_conductor || "",
@@ -122,6 +123,7 @@ const ModalEditarOrden = ({
     }
   }, [estaAbierto, orden]);
 
+  // Efecto para filtrar vehículos disponibles
   useEffect(() => {
     if (vehiculosDisponibles.length > 0) {
       // Obtener IDs de vehículos ya asignados en otras órdenes (excluyendo la orden actual)
@@ -143,6 +145,30 @@ const ModalEditarOrden = ({
     ordenesExistentes,
     orden,
     datosFormulario.vehiculo_id,
+  ]);
+
+  // Efecto para filtrar conductores disponibles
+  useEffect(() => {
+    if (conductoresDisponibles.length > 0) {
+      // Obtener IDs de conductores ya asignados en otras órdenes (excluyendo la orden actual)
+      const conductoresAsignados = ordenesExistentes
+        .filter((o) => o.id !== orden?.id && o.operador_id)
+        .map((o) => parseInt(o.operador_id));
+
+      // Filtrar conductores disponibles
+      const conductoresLibres = conductoresDisponibles.filter(
+        (c) =>
+          !conductoresAsignados.includes(c.id) ||
+          c.id === parseInt(datosFormulario.operador_id)
+      );
+
+      setConductoresFiltrados(conductoresLibres);
+    }
+  }, [
+    conductoresDisponibles,
+    ordenesExistentes,
+    orden,
+    datosFormulario.operador_id,
   ]);
 
   useEffect(() => {
@@ -285,7 +311,7 @@ const ModalEditarOrden = ({
 
       const camposOrden = ["folio", "fecha_orden_servicio"];
       const camposConductor = [
-        "conductor_id",
+        "operador_id",
         "nombre_conductor",
         "apellido_paterno_conductor",
         "apellido_materno_conductor",
@@ -374,6 +400,10 @@ const ModalEditarOrden = ({
       const datosActualizados = {
         id: orden.id,
         ...datosLimpios,
+        operador_id: datosLimpios.operador_id ? parseInt(datosLimpios.operador_id) : null, // ✅ Convertir a número o null
+        vehiculo_id: datosLimpios.vehiculo_id ? parseInt(datosLimpios.vehiculo_id) : null, // ✅ Lo mismo para vehiculo
+        coordinador_id: datosLimpios.coordinador_id ? parseInt(datosLimpios.coordinador_id) : null,
+        guia_id: datosLimpios.guia_id ? parseInt(datosLimpios.guia_id) : null,
         fecha_actualizacion: new Date().toISOString(),
       };
 
@@ -476,36 +506,35 @@ const ModalEditarOrden = ({
   const renderSeccionConductor = () => (
     <div className="meo-form-grid">
       <div className="meo-form-group form-group-full">
-        <label htmlFor="conductor_id">
+        <label htmlFor="operador_id">
           <Users size={18} />
           Seleccionar Conductor
         </label>
         <select
-          id="conductor_id"
-          name="conductor_id"
-          value={datosFormulario.conductor_id}
+          id="operador_id"
+          name="operador_id"
+          value={datosFormulario.operador_id}
           onChange={(e) => {
-            const conductorSeleccionado = conductoresDisponibles.find(
-              (v) => v.id === parseInt(e.target.value)
+            const conductorSeleccionado = conductoresFiltrados.find(
+              (c) => c.id === parseInt(e.target.value)
             );
 
             if (conductorSeleccionado) {
               setDatosFormulario((prev) => ({
                 ...prev,
-                conductor_id: e.target.value,
+                operador_id: e.target.value,
                 nombre_conductor: conductorSeleccionado.nombre_conductor,
                 apellido_paterno_conductor:
                   conductorSeleccionado.apellido_paterno_conductor,
                 apellido_materno_conductor:
                   conductorSeleccionado.apellido_materno_conductor,
-                telefono_conductor: conductorSeleccionado.telefono_conductor, // ✅ NUEVO
-                licencia_conductor: conductorSeleccionado.licencia_conductor, // ✅ NUEVO
+                telefono_conductor: conductorSeleccionado.telefono_conductor,
+                licencia_conductor: conductorSeleccionado.licencia_conductor,
               }));
             } else {
-              // ✅ NUEVO - Limpiar todos los campos si se deselecciona
               setDatosFormulario((prev) => ({
                 ...prev,
-                conductor_id: "",
+                operador_id: "",
                 nombre_conductor: "",
                 apellido_paterno_conductor: "",
                 apellido_materno_conductor: "",
@@ -518,10 +547,9 @@ const ModalEditarOrden = ({
           className="Ordenes-selector-registros"
         >
           <option value="">-- Seleccione un conductor --</option>
-          {conductoresDisponibles.map((conductor) => (
+          {conductoresFiltrados.map((conductor) => (
             <option key={conductor.id} value={conductor.id}>
-              {conductor.nombre_conductor} {}
-              {conductor.apellido_paterno_conductor} {}
+              {conductor.nombre_conductor} {conductor.apellido_paterno_conductor}{" "}
               {conductor.apellido_materno_conductor}
             </option>
           ))}
@@ -1126,9 +1154,8 @@ const ModalEditarOrden = ({
         {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "orden" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "orden" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("orden")}
             type="button"
           >
@@ -1136,9 +1163,8 @@ const ModalEditarOrden = ({
             Datos Orden de Servicio
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "conductor" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "conductor" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("conductor")}
             type="button"
           >
@@ -1146,9 +1172,8 @@ const ModalEditarOrden = ({
             Datos Conductor
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "servicio" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "servicio" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("servicio")}
             type="button"
           >
@@ -1156,9 +1181,8 @@ const ModalEditarOrden = ({
             Datos Servicio
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "vehiculo" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "vehiculo" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("vehiculo")}
             type="button"
           >
@@ -1166,9 +1190,8 @@ const ModalEditarOrden = ({
             Vehículo
           </button>
           <button
-            className={`meo-tab-button ${
-              seccionActiva === "extras" ? "active" : ""
-            }`}
+            className={`meo-tab-button ${seccionActiva === "extras" ? "active" : ""
+              }`}
             onClick={() => setSeccionActiva("extras")}
             type="button"
           >

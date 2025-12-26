@@ -220,14 +220,12 @@ const TablaOrdenes = () => {
           datosActualizados.nombre_prestador || "Antonio Alonso Meza",
 
         // Conductor
-        conductor_id: datosActualizados.conductor_id,
-        nombre_conductor: datosActualizados.nombre_conductor,
-        apellido_paterno_conductor:
-          datosActualizados.apellido_paterno_conductor,
-        apellido_materno_conductor:
-          datosActualizados.apellido_materno_conductor,
-        telefono_conductor: datosActualizados.telefono_conductor,
-        licencia_conductor: datosActualizados.licencia_conductor,
+        operador_id: datosActualizados.operador_id || null,
+        nombre_conductor: datosActualizados.nombre_conductor || null,
+        apellido_paterno_conductor: datosActualizados.apellido_paterno_conductor || null,
+        apellido_materno_conductor: datosActualizados.apellido_materno_conductor || null,
+        telefono_conductor: datosActualizados.telefono_conductor || null,
+        licencia_conductor: datosActualizados.licencia_conductor || null,
 
         // Servicio
         nombre_cliente: datosActualizados.nombre_cliente,
@@ -780,9 +778,8 @@ const TablaOrdenes = () => {
             {ordenesPaginados.map((orden, index) => (
               <tr
                 key={orden.id}
-                className={`Ordenes-fila-orden ${
-                  !orden.activo ? "Ordenes-fila-inactiva" : ""
-                }`}
+                className={`Ordenes-fila-orden ${!orden.activo ? "Ordenes-fila-inactiva" : ""
+                  }`}
               >
                 <td data-label="Folio" className="Ordenes-columna-fecha">
                   <span className="Ordenes-badge-lead">{orden.folio}</span>
@@ -899,9 +896,8 @@ const TablaOrdenes = () => {
               (numero) => (
                 <button
                   key={numero}
-                  className={`Ordenes-numero-pagina ${
-                    paginaActual === numero ? "Ordenes-activo" : ""
-                  }`}
+                  className={`Ordenes-numero-pagina ${paginaActual === numero ? "Ordenes-activo" : ""
+                    }`}
                   onClick={() => cambiarPagina(numero)}
                 >
                   {numero}

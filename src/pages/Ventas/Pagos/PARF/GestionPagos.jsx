@@ -277,6 +277,11 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
     return numeros;
   };
 
+  const puedeCrearOrden = (pago) => {
+    const porcentajePagado = (pago.planPago?.montoPagado / pago.planPago?.montoTotal) * 100;
+    return porcentajePagado >= 50;
+  };
+
   return (
     <>
       <div className={`pagos-contenedor-principal ${cargando ? 'pagos-cargando' : ''}`}>
@@ -518,12 +523,18 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           <button
                             className="pagos-boton-accion"
                             onClick={() => manejarAccion('crearTodos', pago)}
-                            title="Crear Orden + Contrato + Reserva"
-                            disabled={cargando}
+                            title={
+                              puedeCrearOrden(pago)
+                                ? "Crear Orden + Contrato + Reserva"
+                                : "Requiere al menos 50% pagado"
+                            }
+                            disabled={cargando || !puedeCrearOrden(pago)}  // ✅ Deshabilitar si no cumple
                             style={{
-                              background: '#8b5cf6',
+                              background: puedeCrearOrden(pago) ? '#8b5cf6' : '#9ca3af',  // ✅ Color gris si deshabilitado
                               color: 'white',
-                              border: '1px solid #c4b5fd'
+                              border: puedeCrearOrden(pago) ? '1px solid #c4b5fd' : '1px solid #d1d5db',
+                              cursor: puedeCrearOrden(pago) ? 'pointer' : 'not-allowed',
+                              opacity: puedeCrearOrden(pago) ? 1 : 0.5
                             }}
                           >
                             <Plus size={14} />

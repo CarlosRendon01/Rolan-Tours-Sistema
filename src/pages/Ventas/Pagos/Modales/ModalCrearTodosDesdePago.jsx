@@ -15,6 +15,9 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
     const [vehiculosDisponibles, setVehiculosDisponibles] = useState([]);
     const [coordinadoresDisponibles, setCoordinadoresDisponibles] = useState([]);
     const [guiasDisponibles, setGuiasDisponibles] = useState([]);
+    const [conductoresFiltrados, setConductoresFiltrados] = useState([]);
+    const [vehiculosFiltrados, setVehiculosFiltrados] = useState([]);
+    const [ordenesExistentes, setOrdenesExistentes] = useState([]);
 
     const [formulario, setFormulario] = useState({
         // Orden
@@ -84,8 +87,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
             try {
                 const token = localStorage.getItem('token');
 
-                // Cargar todas las listas en paralelo
-                const [conductores, vehiculos, coordinadores, guias] = await Promise.all([
+                const [conductores, vehiculos, coordinadores, guias, ordenes] = await Promise.all([
                     axios.get('http://127.0.0.1:8000/api/ordenes-servicio/conductores/disponibles', {
                         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
                     }),
@@ -97,6 +99,9 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                     }),
                     axios.get('http://127.0.0.1:8000/api/guias', {
                         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+                    }),
+                    axios.get('http://127.0.0.1:8000/api/ordenes-servicio', {
+                        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
                     })
                 ]);
 
@@ -104,6 +109,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                 setVehiculosDisponibles(vehiculos.data || []);
                 setCoordinadoresDisponibles(coordinadores.data || []);
                 setGuiasDisponibles(guias.data || []);
+                setOrdenesExistentes(ordenes.data || []);
 
             } catch (error) {
                 console.error('Error al cargar datos:', error);
@@ -143,6 +149,38 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
             setErrores(prev => ({ ...prev, [campo]: null }));
         }
     };
+
+    useEffect(() => {
+        if (conductoresDisponibles.length > 0 && ordenesExistentes.length > 0) {
+            const conductoresAsignados = ordenesExistentes
+                .filter(o => o.operador_id)
+                .map(o => parseInt(o.operador_id));
+
+            const conductoresLibres = conductoresDisponibles.filter(
+                c => !conductoresAsignados.includes(c.id)
+            );
+
+            setConductoresFiltrados(conductoresLibres);
+        } else {
+            setConductoresFiltrados(conductoresDisponibles);
+        }
+    }, [conductoresDisponibles, ordenesExistentes]);
+
+    useEffect(() => {
+        if (vehiculosDisponibles.length > 0 && ordenesExistentes.length > 0) {
+            const vehiculosAsignados = ordenesExistentes
+                .filter(o => o.vehiculo_id)
+                .map(o => parseInt(o.vehiculo_id));
+
+            const vehiculosLibres = vehiculosDisponibles.filter(
+                v => !vehiculosAsignados.includes(v.id)
+            );
+
+            setVehiculosFiltrados(vehiculosLibres);
+        } else {
+            setVehiculosFiltrados(vehiculosDisponibles);
+        }
+    }, [vehiculosDisponibles, ordenesExistentes]);
 
     const validarFormulario = () => {
         const nuevosErrores = {};
@@ -337,7 +375,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                                     disabled={guardando}
                                 >
                                     <option value="">-- Sin conductor --</option>
-                                    {conductoresDisponibles.map((conductor) => (
+                                    {conductoresFiltrados.map((conductor) => (
                                         <option key={conductor.id} value={conductor.id}>
                                             {conductor.nombre_conductor} {conductor.apellido_paterno_conductor} {conductor.apellido_materno_conductor}
                                         </option>
@@ -358,7 +396,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                                     disabled={guardando}
                                 >
                                     <option value="">-- Sin vehículo --</option>
-                                    {vehiculosDisponibles.map((vehiculo) => (
+                                    {vehiculosFiltrados.map((vehiculo) => (
                                         <option key={vehiculo.id} value={vehiculo.id}>
                                             {vehiculo.nombre} - {vehiculo.numero_placa} ({vehiculo.marca} {vehiculo.modelo})
                                         </option>
