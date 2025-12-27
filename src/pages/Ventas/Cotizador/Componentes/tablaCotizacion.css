@@ -7,7 +7,6 @@
   overflow: hidden;
   margin: 1rem;
 }
-
 .cotizaciones-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   padding: 2.5rem 3rem;
@@ -69,6 +68,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Estadísticas */
 .cotizaciones-contenedor-estadisticas {
   display: flex;
   gap: 1.5rem;
@@ -95,9 +95,11 @@
 }
 
 .cotizaciones-estadistica:first-child {
-  background: linear-gradient(135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(29, 78, 216, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.2),
+    rgba(29, 78, 216, 0.3)
+  );
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
@@ -114,47 +116,17 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg,
-      transparent 30%,
-      rgba(59, 130, 246, 0.1) 50%,
-      transparent 70%);
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(59, 130, 246, 0.1) 50%,
+    transparent 70%
+  );
   transform: translateX(-100%);
   transition: transform 0.6s ease;
 }
 
 .cotizaciones-estadistica:first-child:hover::before {
-  transform: translateX(100%);
-}
-
-.cotizaciones-estadistica:last-child {
-  background: linear-gradient(135deg,
-      rgba(245, 158, 11, 0.2),
-      rgba(217, 119, 6, 0.3));
-  border: 1px solid rgba(245, 158, 11, 0.4);
-}
-
-.cotizaciones-estadistica:last-child:hover {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
-}
-
-.cotizaciones-estadistica:last-child::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg,
-      transparent 30%,
-      rgba(245, 158, 11, 0.1) 50%,
-      transparent 70%);
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
-}
-
-.cotizaciones-estadistica:last-child:hover::before {
   transform: translateX(100%);
 }
 
@@ -182,8 +154,6 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
-  position: relative;
-  z-index: 2;
   color: white;
 }
 
@@ -192,10 +162,50 @@
   opacity: 0.9;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  position: relative;
-  z-index: 2;
   color: white;
   font-weight: 600;
+}
+
+/* Animaciones */
+@keyframes cotizaciones-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cotizaciones-pulse {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.2);
+  }
+}
+
+.cotizaciones-lineas-decorativas:hover .cotizaciones-linea {
+  animation: cotizaciones-pulse 0.6s ease-in-out infinite;
+}
+
+.cotizaciones-lineas-decorativas:hover .cotizaciones-linea:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.cotizaciones-lineas-decorativas:hover .cotizaciones-linea:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.cotizaciones-lineas-decorativas:hover .cotizaciones-linea:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.cotizaciones-lineas-decorativas:hover .cotizaciones-linea:nth-child(4) {
+  animation-delay: 0.3s;
 }
 
 .cotizaciones-controles {
@@ -223,11 +233,6 @@
   background: white;
   font-size: 0.95rem;
   min-width: 70px;
-}
-
-.cotizaciones-boton-nueva-wrapper {
-  display: flex;
-  align-items: center;
 }
 
 .cotizaciones-controles-derecha {
@@ -272,6 +277,7 @@
   pointer-events: none;
 }
 
+/* Tabla */
 .cotizaciones-contenedor-tabla {
   overflow-x: auto;
   border: 1px solid #dee2e6;
@@ -310,33 +316,29 @@
   width: 110px;
   min-width: 110px;
 }
-
 .cotizaciones-fila-encabezado th:nth-child(2) {
   width: 140px;
   min-width: 140px;
 }
-
 .cotizaciones-fila-encabezado th:nth-child(3) {
   width: 140px;
   min-width: 140px;
 }
-
 .cotizaciones-fila-encabezado th:nth-child(4) {
   width: auto;
   min-width: 200px;
 }
-
 .cotizaciones-fila-encabezado th:nth-child(5) {
   width: auto;
   min-width: 200px;
 }
-
 .cotizaciones-fila-encabezado th:nth-child(6) {
   width: 200px;
   min-width: 200px;
   text-align: center;
 }
 
+/* Filas de datos */
 .cotizaciones-fila-cotizacion {
   border-bottom: 1px solid #dee2e6;
   transition: all 0.2s ease;
@@ -398,11 +400,7 @@
   text-align: center;
 }
 
-.cotizaciones-columna-acciones {
-  position: relative;
-  width: 150px;
-}
-
+/* Botones de acción */
 .cotizaciones-botones-accion {
   display: flex;
   gap: 0.25rem;
@@ -456,13 +454,11 @@
 .cotizaciones-boton-accion.cotizaciones-editar {
   background: linear-gradient(45deg, #3b82f6, #2563eb);
   color: #ffffff;
-
 }
 
 .cotizaciones-boton-accion.cotizaciones-editar:hover {
   background: linear-gradient(45deg, #2563eb, #1d4ed8);
   transform: translateY(-1px);
-
 }
 
 .cotizaciones-boton-accion.cotizaciones-eliminar {
@@ -474,6 +470,25 @@
   background: linear-gradient(45deg, #c82333, #b21e2f);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* Tabla vacía */
+.cotizaciones-tabla-vacia {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6c757d;
+}
+
+.cotizaciones-tabla-vacia p {
+  margin: 0.5rem 0 0 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.cotizaciones-icono-vacio {
+  font-size: 3rem;
+  color: #dee2e6;
+  margin-bottom: 1rem;
 }
 
 .cotizaciones-pie-tabla {
@@ -497,6 +512,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.cotizaciones-tabla-vacia p svg {
+  width: 25px;
+  height: 25px;
+  vertical-align: bottom;
+  margin-left: 0.25rem;
+  transform: translateY(3px);
 }
 
 .cotizaciones-boton-paginacion {
@@ -558,68 +581,6 @@
   box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }
 
-.cotizaciones-tabla-vacia {
-  text-align: center;
-  padding: 3rem 2rem;
-  color: #6c757d;
-}
-
-.cotizaciones-tabla-vacia p {
-  margin: 0.5rem 0 0 0;
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
-.cotizaciones-icono-vacio {
-  font-size: 3rem;
-  color: #dee2e6;
-  margin-bottom: 1rem;
-}
-
-@keyframes cotizaciones-fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes cotizaciones-pulse {
-
-  0%,
-  100% {
-    transform: scaleY(1);
-  }
-
-  50% {
-    transform: scaleY(1.2);
-  }
-}
-
-.cotizaciones-lineas-decorativas:hover .cotizaciones-linea {
-  animation: cotizaciones-pulse 0.6s ease-in-out infinite;
-}
-
-.cotizaciones-lineas-decorativas:hover .cotizaciones-linea:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.cotizaciones-lineas-decorativas:hover .cotizaciones-linea:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.cotizaciones-lineas-decorativas:hover .cotizaciones-linea:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
-.cotizaciones-lineas-decorativas:hover .cotizaciones-linea:nth-child(4) {
-  animation-delay: 0.3s;
-}
-
 .sr-only {
   position: absolute;
   width: 1px;
@@ -642,12 +603,7 @@
   box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.25);
 }
 
-.cotizaciones-boton-accion:focus,
-.cotizaciones-boton-paginacion:focus,
-.cotizaciones-numero-pagina:focus {
-  z-index: 1;
-}
-
+/* Responsive */
 @media (max-width: 992px) {
   .cotizaciones-encabezado {
     padding: 1.5rem;
@@ -668,12 +624,6 @@
 
   .cotizaciones-valor-estadistica {
     font-size: 1.25rem;
-  }
-
-  .cotizaciones-icono-estadistica-circular,
-  .cotizaciones-icono-estadistica-cuadrado {
-    width: 16px;
-    height: 16px;
   }
 
   .cotizaciones-controles {
@@ -708,7 +658,6 @@
   .cotizaciones-contenedor-estadisticas {
     width: 100%;
     justify-content: center;
-    gap: 1rem;
   }
 
   .cotizaciones-controles {
@@ -732,15 +681,6 @@
   .cotizaciones-entrada-buscar {
     width: 100%;
     max-width: 200px;
-  }
-
-  .cotizaciones-boton-nueva-wrapper {
-    width: 100%;
-  }
-
-  .cotizaciones-boton-nueva-wrapper .cotizacion-boton-agregar {
-    width: 65%;
-    justify-content: center;
   }
 
   .cotizaciones-contenedor-tabla {
@@ -787,23 +727,18 @@
   .cotizaciones-fila-cotizacion td:nth-child(1):before {
     content: "FOLIO:";
   }
-
   .cotizaciones-fila-cotizacion td:nth-child(2):before {
     content: "FECHA SALIDA:";
   }
-
   .cotizaciones-fila-cotizacion td:nth-child(3):before {
     content: "FECHA REGRESO:";
   }
-
   .cotizaciones-fila-cotizacion td:nth-child(4):before {
     content: "ORIGEN:";
   }
-
   .cotizaciones-fila-cotizacion td:nth-child(5):before {
     content: "DESTINO:";
   }
-
   .cotizaciones-fila-cotizacion td:nth-child(6):before {
     content: "ACCIONES:";
   }
@@ -820,30 +755,15 @@
     padding-right: 0.5rem;
   }
 
-  .cotizaciones-fila-cotizacion td>* {
+  .cotizaciones-fila-cotizacion td > * {
     flex: 1;
     word-break: break-word;
   }
 
   .cotizaciones-fila-cotizacion td:nth-child(1) {
     background: linear-gradient(45deg, #e3f2fd, #f3e5f5);
-    color: #1976d2;
     border-radius: 0;
     box-shadow: none;
-    font-weight: 600;
-  }
-
-  .cotizaciones-fila-cotizacion td:nth-child(4),
-  .cotizaciones-fila-cotizacion td:nth-child(5) {
-    color: inherit;
-  }
-
-  .cotizaciones-fila-cotizacion td:nth-child(6) {
-    justify-content: flex-start;
-  }
-
-  .cotizaciones-columna-acciones {
-    width: auto;
   }
 
   .cotizaciones-botones-accion {
@@ -857,11 +777,6 @@
     gap: 1rem;
     text-align: center;
     padding: 1rem;
-  }
-
-  .cotizaciones-control-registros {
-    width: 100%;
-    justify-content: space-between;
   }
 
   .cotizaciones-controles-paginacion {
@@ -893,28 +808,14 @@
     font-size: 1.125rem;
   }
 
-  .cotizaciones-icono-estadistica-circular,
-  .cotizaciones-icono-estadistica-cuadrado {
-    width: 16px;
-    height: 16px;
-  }
-
-  .cotizaciones-boton-nueva-wrapper .cotizacion-boton-agregar {
-    width: 62%;
-    justify-content: center;
-  }
-
-  .cotizaciones-control-busqueda label {
-    display: none;
-  }
-
   .cotizaciones-fila-cotizacion td:before {
     width: 110px;
     min-width: 110px;
     font-size: 0.7rem;
   }
 
-  .cotizaciones-numeros-paginacion .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
+  .cotizaciones-numeros-paginacion
+    .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
     display: none;
   }
 
@@ -925,6 +826,7 @@
   }
 }
 
+/* Preferencias del sistema */
 @media (prefers-contrast: high) {
   .cotizaciones-encabezado {
     background: #000;
@@ -938,7 +840,6 @@
   .cotizaciones-fila-encabezado th {
     background: #fff;
     color: #000;
-    border: 1px;
     border: 1px solid #000;
   }
 
@@ -949,10 +850,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cotizaciones-fila-cotizacion {
-    animation: none;
-  }
-
+  .cotizaciones-fila-cotizacion,
   .cotizaciones-lineas-decorativas:hover .cotizaciones-linea {
     animation: none;
   }

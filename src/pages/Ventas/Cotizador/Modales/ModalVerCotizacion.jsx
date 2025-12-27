@@ -94,8 +94,6 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
   if (!estaAbierto || !cotizacion) {
     return null;
   }
-
-  // Extraer cotizaciones por vehículo del campo lista
   let cotizacionesPorVehiculo = [];
   if (cotizacion.lista) {
     try {
@@ -110,7 +108,10 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
   }
 
   const obtenerServicios = () => {
-    if (cotizacion.servicios_completos && Array.isArray(cotizacion.servicios_completos)) {
+    if (
+      cotizacion.servicios_completos &&
+      Array.isArray(cotizacion.servicios_completos)
+    ) {
       return cotizacion.servicios_completos;
     }
     return [];
@@ -141,8 +142,9 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
 
         <div className="modal-tabs">
           <button
-            className={`tab-button ${pestanaActiva === "informacion" ? "active" : ""
-              }`}
+            className={`tab-button ${
+              pestanaActiva === "informacion" ? "active" : ""
+            }`}
             onClick={() => setPestanaActiva("informacion")}
             type="button"
           >
@@ -150,8 +152,9 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
             Información General
           </button>
           <button
-            className={`tab-button ${pestanaActiva === "cotizaciones" ? "active" : ""
-              }`}
+            className={`tab-button ${
+              pestanaActiva === "cotizaciones" ? "active" : ""
+            }`}
             onClick={() => setPestanaActiva("cotizaciones")}
             type="button"
           >
@@ -267,7 +270,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
                       {servicios.map((servicio, i) => (
                         <li key={i}>
                           <strong>{servicio.nombre}</strong>
-                          {servicio.precio > 0 && ` — $${servicio.precio.toLocaleString('es-MX')}`}
+                          {servicio.precio > 0 &&
+                            ` — $${servicio.precio.toLocaleString("es-MX")}`}
                         </li>
                       ))}
                     </ul>

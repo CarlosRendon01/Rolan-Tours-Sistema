@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./nuevaCotizacion.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 const NuevaCotizacion = ({
   onGuardarCotizacion,
-  onGuardarCliente,
   cotizacionEditar,
   onCancelarEdicion,
   mostrarBoton = true,
@@ -15,8 +12,6 @@ const NuevaCotizacion = ({
   const [pasoActual, setPasoActual] = useState(1);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [erroresCampos, setErroresCampos] = useState({});
-  const [cotizacionesPorVehiculo, setCotizacionesPorVehiculo] = useState([]);
-  const [mostrarDesglose, setMostrarDesglose] = useState(false);
   const [formData, setFormData] = useState({
     folio: "",
     fecha_salida: "",
@@ -67,14 +62,11 @@ const NuevaCotizacion = ({
   });
 
   useEffect(() => {
-    // Solo bloquea el scroll cuando el modal está abierto
     if (mostrarModal) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-
-    // Limpia cuando el componente se desmonta
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -179,6 +171,29 @@ const NuevaCotizacion = ({
 
     return formatado;
   }, []);
+
+  const validarTodosLosPasos = () => {
+    for (let paso = 1; paso <= 5; paso++) {
+      const errores = validarPaso(paso);
+      if (Object.keys(errores).length > 0) {
+        setErroresCampos(errores);
+        setPasoActual(paso);
+        setTimeout(() => {
+          const primerCampoConError = Object.keys(errores)[0];
+          const elemento = document.querySelector(
+            `[name="${primerCampoConError}"]`
+          );
+          if (elemento) {
+            elemento.focus();
+            elemento.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }, 100);
+
+        return { valido: false, paso, errores };
+      }
+    }
+    return { valido: true };
+  };
 
   const validarTelefono = (telefono) => {
     const numeros = telefono.replace(/\D/g, "");
@@ -398,12 +413,9 @@ const NuevaCotizacion = ({
 
   useEffect(() => {
     if (cotizacionEditar) {
-      console.log("🔍 cotizacionEditar.servicios:", cotizacionEditar.servicios);
-
       document.body.style.overflow = "hidden";
       setModoEdicion(true);
 
-      // ✅ GUARDAR IDS TAL CUAL (se convertirán después)
       let serviciosParaFormulario = [];
       if (
         cotizacionEditar.servicios &&
@@ -411,8 +423,6 @@ const NuevaCotizacion = ({
       ) {
         serviciosParaFormulario = cotizacionEditar.servicios;
       }
-
-      console.log("🎯 serviciosParaFormulario (IDs):", serviciosParaFormulario);
 
       setFormData({
         folio: cotizacionEditar.folio || "",
@@ -465,15 +475,11 @@ const NuevaCotizacion = ({
       formData.servicios.length > 0 &&
       typeof formData.servicios[0] === "number"
     ) {
-      console.log("🔄 Convirtiendo IDs a servicios completos...");
-      console.log("📦 opcionesExtras disponibles:", opcionesExtras);
-
       const tieneOpciones = Object.values(opcionesExtras).some(
         (arr) => arr.length > 0
       );
 
       if (!tieneOpciones) {
-        console.log("⏳ Esperando que opcionesExtras se cargue...");
         return;
       }
 
@@ -484,44 +490,23 @@ const NuevaCotizacion = ({
               (s) => s.id === servicioId
             );
             if (servicio) {
-              console.log("✅ Servicio encontrado:", servicio);
               return servicio;
             }
           }
-          console.log("❌ No se encontró servicio con ID:", servicioId);
           return null;
         })
         .filter((s) => s !== null);
 
       if (serviciosCompletos.length > 0) {
-        console.log("✅ Actualizando servicios completos:", serviciosCompletos);
         setFormData((prev) => ({
           ...prev,
           servicios: serviciosCompletos,
         }));
       }
     }
-  }, [opcionesExtras, modoEdicion]);
-
-  useEffect(() => {
-    if (cotizacionEditar && cotizacionEditar.lista) {
-      try {
-        const parsed =
-          typeof cotizacionEditar.lista === "string"
-            ? JSON.parse(cotizacionEditar.lista)
-            : cotizacionEditar.lista;
-
-        if (parsed.cotizaciones_todos_vehiculos) {
-          setCotizacionesPorVehiculo(parsed.cotizaciones_todos_vehiculos);
-        }
-      } catch (error) {
-        console.error("Error al parsear el campo 'lista':", error);
-      }
-    }
-  }, [cotizacionEditar]);
+  }, [opcionesExtras, modoEdicion, formData.servicios]);
 
   const abrirModal = useCallback(() => {
-    setCotizacionesPorVehiculo([]);
     setMostrarModal(true);
     setPasoActual(1);
     setModoEdicion(false);
@@ -632,7 +617,6 @@ const NuevaCotizacion = ({
     if (!selected) return;
 
     setFormData((prev) => {
-      // Evitar duplicados
       const yaExiste = prev.servicios.find((s) => s.id === selected.id);
       if (yaExiste) return prev;
 
@@ -679,9 +663,6 @@ const NuevaCotizacion = ({
       total: value,
     }));
   };
-
-  const nombreCotizacionOrigen = formData.origen;
-  const nombreCotizacionDestico = formData.destino;
 
   const mostrarNotificacionAgregar = () => {
     Swal.fire({
@@ -731,25 +712,12 @@ const NuevaCotizacion = ({
     }
   };
 
-  const validarFormularioCompleto = useCallback(() => {
-    const erroresPaso1 = validarPaso(1);
-    const erroresPaso2 = validarPaso(2);
-    const erroresPaso3 = validarPaso(3);
-    const erroresPaso4 = validarPaso(4);
-
-    return {
-      ...erroresPaso1,
-      ...erroresPaso2,
-      ...erroresPaso3,
-      ...erroresPaso4,
-    };
-  }, [validarPaso]);
-
-  // 🔍 BUSCAR esta función (alrededor de la línea 350-400)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validarPaso(5)) {
+    const validacion = validarTodosLosPasos();
+
+    if (!validacion.valido) {
       return;
     }
 
@@ -761,16 +729,9 @@ const NuevaCotizacion = ({
         id: modoEdicion ? formData.id : generarIdCliente(),
       };
 
-      // 🆕 Llamar con await para esperar respuesta del API
       await onGuardarCotizacion(cotizacionCompleta, modoEdicion);
       modoEdicion ? mostrarNotificacionExito() : mostrarNotificacionAgregar();
-      // alert(
-      //   modoEdicion
-      //     ? mostrarNotificacionExito()
-      //     : "Cotización guardada exitosamente"
-      // );
 
-      // Resetear el formulario
       setFormData({
         folio: "",
         fecha_salida: "",
@@ -814,7 +775,6 @@ const NuevaCotizacion = ({
       setModoEdicion(false);
     } catch (error) {
       console.error("Error al guardar:", error);
-      // El error ya se maneja en Cotizacion.jsx, no mostrar alert duplicado
     }
   };
 
@@ -838,7 +798,6 @@ const NuevaCotizacion = ({
           onClick={abrirModal}
           title="Nueva Cotización"
         >
-          <FontAwesomeIcon icon={faPlus} />
           <span>Nueva Cotización</span>
         </button>
       )}

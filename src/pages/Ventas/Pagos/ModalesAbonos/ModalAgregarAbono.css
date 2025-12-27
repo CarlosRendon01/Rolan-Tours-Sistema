@@ -1,9 +1,3 @@
-/* ========================================
-   MODALAGREGARABONO.CSS - ESTILOS DEL MODAL
-   Modal para agregar abonos a pagos existentes
-   ======================================== */
-
-/* Overlay */
 .modal-abono-overlay {
   position: fixed !important;
   top: 0 !important;
@@ -19,7 +13,6 @@
   animation: fadeIn 0.2s ease-out !important;
 }
 
-/* Contenedor Principal */
 .modal-abono-contenedor {
   background: white !important;
   border-radius: 16px !important;
@@ -28,7 +21,8 @@
   max-height: 100vh !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   animation: slideUp 0.3s ease-out !important;
   position: relative !important;
   transform: scale(0.88) !important;
@@ -115,7 +109,8 @@
   font-size: 1.125rem !important;
   font-weight: 700 !important;
   color: #134e4a !important;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace !important;
 }
 
 .modal-abono-info-valor.verde {
@@ -460,7 +455,41 @@
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
 }
 
-/* Animaciones */
+.modal-abono-resumen-cotizacion {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #047857;
+}
+.modal-abono-total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  color: #065f46;
+}
+
+.modal-abono-input.readonly {
+  background: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes modal-abono-fadeIn {
   from {
     opacity: 0;

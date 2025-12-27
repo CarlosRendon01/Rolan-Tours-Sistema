@@ -1,15 +1,5 @@
 .cotizacion-container {
-  min-height: 100vh;
-  background-color: #ffffff;
-}
-
-.cotizacion-layout {
+  padding: 1rem;
   max-width: 1400px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.tabla-cotizacion-section {
-  flex: 1;
+  margin: 0 auto;
 }

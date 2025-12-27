@@ -13,12 +13,10 @@ const Cotizacion = () => {
 
   const API_URL = "http://127.0.0.1:8000/api/cotizaciones";
 
-  // 🆕 CARGAR cotizaciones al montar el componente
   useEffect(() => {
     cargarCotizaciones();
   }, []);
 
-  // 🆕 FUNCIÓN para cargar cotizaciones desde el API
   const cargarCotizaciones = async () => {
     try {
       setCargando(true);
@@ -37,9 +35,6 @@ const Cotizacion = () => {
         },
       });
 
-      console.log("Cotizaciones cargadas:", response.data);
-
-      // 🔹 Normalizar los extras antes de guardar en el estado
       const cotizacionesProcesadas = response.data.map((cotizacion) => {
         let extras = [];
 
@@ -95,16 +90,13 @@ const Cotizacion = () => {
         }
 
         if (esEdicion) {
-          // ACTUALIZAR
           await axios.put(`${API_URL}/${nuevaCotizacion.id}`, nuevaCotizacion, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           });
-          // mostrarNotificacionExito();
         } else {
-          // CREAR
           await axios.post(API_URL, nuevaCotizacion, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -113,13 +105,8 @@ const Cotizacion = () => {
           });
         }
 
-        // Recargar cotizaciones después de guardar
         await cargarCotizaciones();
         setCotizacionEditar(null);
-
-        console.log(
-          esEdicion ? "Cotización actualizada" : "Nueva cotización agregada"
-        );
       } catch (error) {
         console.error("Error al guardar cotización:", error);
         if (error.response?.status === 401) {
@@ -140,8 +127,6 @@ const Cotizacion = () => {
 
   const handleEditarCotizacion = useCallback((cotizacion) => {
     setCotizacionEditar(cotizacion);
-
-    console.log("Editando cotización:", cotizacion);
   }, []);
 
   const handleCancelarEdicion = useCallback(() => {
@@ -164,10 +149,7 @@ const Cotizacion = () => {
             Accept: "application/json",
           },
         });
-
-        // Recargar cotizaciones después de eliminar
         await cargarCotizaciones();
-        console.log("Cotización eliminada con ID:", id);
       } catch (error) {
         console.error("Error al eliminar cotización:", error);
         if (error.response?.status === 401) {
@@ -192,6 +174,7 @@ const Cotizacion = () => {
         <div className="tabla-cotizacion-section">
           <TablaCotizacion
             cotizaciones={cotizaciones}
+            cargando={cargando}
             onEditar={handleEditarCotizacion}
             onEliminar={handleEliminarCotizacion}
             botonNuevaCotizacion={
