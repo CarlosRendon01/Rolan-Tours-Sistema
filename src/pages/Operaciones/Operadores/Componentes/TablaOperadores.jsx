@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, UserCheck, Users, Plus, Phone } from 'lucide-react';
 import './TablaOperadores.css';
 
 const TablaOperadores = ({
-  operadores,        // ✅ Recibe operadores desde el padre
-  setOperadores,     // ✅ Por si necesitas actualizar (opcional)
+  operadores,       
+  setOperadores,   
   onVer,
   onEditar,
   onEliminar,
@@ -15,38 +14,6 @@ const TablaOperadores = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
 
-  const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState(null);
-
-  const cargarOperadores = async () => {
-    try {
-      setCargando(true);
-      setError(null);
-
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/operadores", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        }
-      });
-
-      console.log("✅ Operadores cargados:", response.data);
-      setOperadores(response.data);
-
-    } catch (error) {
-      console.error("❌ Error al cargar operadores:", error);
-      setError("Error al cargar operadores");
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  useEffect(() => {
-    cargarOperadores();
-  }, []);
-
-  // Filtrar operadores por búsqueda
   const operadoresFiltrados = operadores.filter(operador => {
     const busqueda = terminoBusqueda.toLowerCase();
     const nombreCompleto = `${operador.nombre} ${operador.apellidoPaterno} ${operador.apellidoMaterno}`.toLowerCase();
@@ -57,14 +24,12 @@ const TablaOperadores = ({
     );
   });
 
-  // Calcular paginación
   const totalRegistros = operadoresFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const operadoresPaginados = operadoresFiltrados.slice(indiceInicio, indiceFin);
 
-  // Calcular estadísticas
   const totalOperadores = operadores.length;
   const operadoresActivos = operadores.filter(op => {
     const hoy = new Date();
@@ -72,7 +37,6 @@ const TablaOperadores = ({
     return fechaVencimiento > hoy;
   }).length;
 
-  // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     const limpio = telefono.replace(/\D/g, '');
     if (limpio.length === 10) {
@@ -81,12 +45,10 @@ const TablaOperadores = ({
     return telefono;
   };
 
-  // Función para obtener iniciales
   const obtenerIniciales = (nombre, apellidoP, apellidoM) => {
     return `${nombre.charAt(0)}${apellidoP.charAt(0)}`;
   };
 
-  // Función para verificar vigencia de licencia
   const obtenerEstadoVigencia = (fechaVencimiento) => {
     const hoy = new Date();
     const vencimiento = new Date(fechaVencimiento);
@@ -101,7 +63,6 @@ const TablaOperadores = ({
     }
   };
 
-  // Función para formatear fecha
   const formatearFecha = (fecha) => {
     const date = new Date(fecha);
     return date.toLocaleDateString('es-MX', {
@@ -145,7 +106,6 @@ const TablaOperadores = ({
 
   return (
     <div className="operadores-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="operadores-encabezado">
         <div className="operadores-seccion-logo">
           <div className="operadores-lineas-decorativas">
@@ -157,7 +117,6 @@ const TablaOperadores = ({
           <h1 className="operadores-titulo">Gestión de Operadores</h1>
         </div>
 
-        {/* Estadísticas */}
         <div className="operadores-contenedor-estadisticas">
           <div className="operadores-estadistica">
             <div className="operadores-icono-estadistica-circular">
@@ -179,7 +138,6 @@ const TablaOperadores = ({
         </div>
       </div>
 
-      {/* Controles */}
       <div className="operadores-controles">
         <div className="operadores-control-registros">
           <label htmlFor="registros">Mostrar</label>
@@ -224,7 +182,6 @@ const TablaOperadores = ({
         </div>
       </div>
 
-      {/* Tabla */}
       {operadoresPaginados.length === 0 ? (
         <div className="operadores-estado-vacio">
           <div className="operadores-icono-vacio">
@@ -260,7 +217,7 @@ const TablaOperadores = ({
                     <tr
                       key={operador.id}
                       className="operadores-fila-operador"
-                      style={{ animationDelay: `${index * 0.1}s` }}
+                      data-animation-delay={index}
                     >
                       <td data-label="ID" className="operadores-columna-id">
                         <span className="operadores-badge-id">
@@ -305,7 +262,7 @@ const TablaOperadores = ({
                         <span className={`operadores-badge-vigencia ${estadoVigencia.clase}`}>
                           {estadoVigencia.texto}
                         </span>
-                        <div className="operadores-subtexto" style={{ marginTop: '0.25rem' }}>
+                        <div className="operadores-subtexto operadores-fecha-vigencia">
                           {formatearFecha(operador.fechaVencimientoLicencia)}
                         </div>
                       </td>
@@ -342,12 +299,11 @@ const TablaOperadores = ({
             </table>
           </div>
 
-          {/* Información de paginación y controles */}
           <div className="operadores-pie-tabla">
             <div className="operadores-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
               {terminoBusqueda && (
-                <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
+                <span className="operadores-texto-filtrado">
                   (filtrado de {operadores.length} registros totales)
                 </span>
               )}
@@ -390,5 +346,4 @@ const TablaOperadores = ({
     </div>
   );
 };
-
 export default TablaOperadores;

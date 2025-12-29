@@ -9,10 +9,7 @@ import ModalEditarOperador from './ModalesOperadores/ModalEditarOperador';
 import { modalEliminarOperador } from './ModalesOperadores/ModalEliminarOperador';
 
 const OperadoresPrincipal = () => {
-    // Estado para almacenar los operadores
     const [operadores, setOperadores] = useState([]);
-
-    // Estados para controlar los modales
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
     const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
     const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
@@ -29,38 +26,30 @@ const OperadoresPrincipal = () => {
                 }
             });
             setOperadores(response.data);
-            console.log('✅ Operadores recargados');
         } catch (error) {
             console.error('❌ Error al recargar operadores:', error);
         }
     };
-
-    // Funciones para manejar los modales
     const manejarVer = (operador) => {
         setOperadorSeleccionado(operador);
         setModalVerAbierto(true);
-        console.log('Ver operador:', operador);
     };
 
     const manejarEditar = (operador) => {
         setOperadorSeleccionado(operador);
         setModalEditarAbierto(true);
-        console.log('Editar operador:', operador);
     };
 
     const manejarEliminar = async (operador) => {
         const confirmado = await modalEliminarOperador(operador, recargarOperadores);
         if (confirmado) {
-            console.log('Operador eliminado:', operador);
         }
     };
 
     const manejarAgregar = () => {
         setModalAgregarAbierto(true);
-        console.log('Agregar nuevo operador');
     };
 
-    // Función para cerrar modales
     const cerrarModales = () => {
         setModalVerAbierto(false);
         setModalEditarAbierto(false);
@@ -69,12 +58,9 @@ const OperadoresPrincipal = () => {
         setOperadorSeleccionado(null);
     };
 
-    // Función para agregar operador
     const agregarOperador = async (nuevoOperador) => {
         try {
             const token = localStorage.getItem("token");
-
-            // ✅ CORREGIDO: Preparar datos exactamente como el backend los espera
             const operadorData = {
                 nombre: nuevoOperador.nombre,
                 apellido_paterno: nuevoOperador.apellidoPaterno,
@@ -90,9 +76,6 @@ const OperadoresPrincipal = () => {
                 fecha_vencimiento_examen: nuevoOperador.fechaVencimientoExamen,
                 comentarios: nuevoOperador.comentarios || null,
             };
-
-            console.log("📦 Datos a enviar al backend:", operadorData);
-
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/operadores",
                 operadorData,
@@ -104,23 +87,18 @@ const OperadoresPrincipal = () => {
                     }
                 }
             );
-
-            console.log("✅ Operador creado:", response.data);
-            await recargarOperadores(); // Recargar la lista
-            return response.data; // ✅ Retornar los datos para que el modal sepa que terminó
+            await recargarOperadores(); 
+            return response.data; 
         } catch (error) {
             console.error("❌ Error al crear operador:", error);
             console.error("❌ Respuesta del servidor:", error.response?.data);
-            throw error; // ✅ Lanzar el error para que el modal lo maneje
+            throw error; 
         }
     };
 
-    // Función para actualizar operador
     const actualizarOperador = async (operadorActualizado) => {
         try {
             const token = localStorage.getItem("token");
-
-            // ✅ CORREGIDO: Preparar datos exactamente como el backend los espera
             const operadorData = {
                 nombre: operadorActualizado.nombre,
                 apellido_paterno: operadorActualizado.apellidoPaterno,
@@ -136,9 +114,6 @@ const OperadoresPrincipal = () => {
                 fecha_vencimiento_examen: operadorActualizado.fechaVencimientoExamen,
                 comentarios: operadorActualizado.comentarios || null,
             };
-
-            console.log("📦 Datos a actualizar:", operadorData);
-
             const response = await axios.put(
                 `http://127.0.0.1:8000/api/operadores/${operadorActualizado.id}`,
                 operadorData,
@@ -150,14 +125,12 @@ const OperadoresPrincipal = () => {
                     }
                 }
             );
-
-            console.log("✅ Operador actualizado:", response.data);
-            await recargarOperadores(); // Recargar la lista
-            return response.data; // ✅ Retornar los datos para que el modal sepa que terminó
+            await recargarOperadores(); 
+            return response.data; 
         } catch (error) {
             console.error("❌ Error al actualizar operador:", error);
             console.error("❌ Respuesta del servidor:", error.response?.data);
-            throw error; // ✅ Lanzar el error para que el modal lo maneje
+            throw error; 
         }
     };
 
@@ -173,7 +146,6 @@ const OperadoresPrincipal = () => {
                     onAgregar={manejarAgregar}
                 />
 
-                {/* Modal VER */}
                 {modalVerAbierto && operadorSeleccionado && (
                     <ModalVerOperador
                         operador={operadorSeleccionado}
@@ -181,7 +153,6 @@ const OperadoresPrincipal = () => {
                     />
                 )}
 
-                {/* Modal EDITAR */}
                 {modalEditarAbierto && operadorSeleccionado && (
                     <ModalEditarOperador
                         operador={operadorSeleccionado}
@@ -190,7 +161,6 @@ const OperadoresPrincipal = () => {
                     />
                 )}
 
-                {/* Modal AGREGAR */}
                 {modalAgregarAbierto && (
                     <ModalAgregarOperador
                         onGuardar={agregarOperador}
@@ -201,5 +171,4 @@ const OperadoresPrincipal = () => {
         </PrincipalComponente>
     );
 };
-
 export default OperadoresPrincipal;

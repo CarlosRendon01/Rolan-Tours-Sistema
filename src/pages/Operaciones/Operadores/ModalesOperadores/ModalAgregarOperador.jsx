@@ -6,44 +6,32 @@ import CredencialOperador from '../Credenciales/CredencialOperador';
 
 const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Datos personales
     nombre: '',
     apellidoPaterno: '',
     apellidoMaterno: '',
     edad: '',
     correoElectronico: '',
-
-    // Teléfonos
     telefonoEmergencia: '',
     telefonoPersonal: '',
     telefonoFamiliar: '',
-
-    // Datos de licencia
     numeroLicencia: '',
     fechaVigenciaLicencia: '',
     fechaVencimientoLicencia: '',
     fechaVencimientoExamen: '',
-
-    // Comentarios
     comentarios: '',
-
-    // Documentos
     foto: null,
     ine: null
   });
-
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
 
-  // Función para obtener URL segura de la foto para vista previa
   const obtenerFotoUrl = () => {
     if (!formData.foto) return null;
     if (formData.foto instanceof File) {
       try {
         return URL.createObjectURL(formData.foto);
       } catch (error) {
-        console.error('Error al crear URL de foto:', error);
         return null;
       }
     }
@@ -87,7 +75,6 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones datos personales (obligatorios)
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
@@ -104,7 +91,6 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
       nuevosErrores.edad = 'Edad inválida (18-100 años)';
     }
 
-    // Validación de correo electrónico
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.correoElectronico.trim()) {
       nuevosErrores.correoElectronico = 'El correo es requerido';
@@ -112,7 +98,6 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
       nuevosErrores.correoElectronico = 'Correo electrónico inválido';
     }
 
-    // Validaciones teléfonos (obligatorios)
     const regexTelefono = /^\d{10}$/;
 
     if (!formData.telefonoEmergencia.trim()) {
@@ -131,7 +116,6 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
       nuevosErrores.telefonoFamiliar = 'Debe contener 10 dígitos';
     }
 
-    // Validaciones licencia (obligatorios)
     if (!formData.numeroLicencia.trim()) {
       nuevosErrores.numeroLicencia = 'El número de licencia es requerido';
     }
@@ -148,7 +132,6 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
       nuevosErrores.fechaVencimientoExamen = 'La fecha de vencimiento del examen es requerida';
     }
 
-    // Validar que la fecha de vencimiento sea posterior a la de vigencia
     if (formData.fechaVigenciaLicencia && formData.fechaVencimientoLicencia) {
       if (new Date(formData.fechaVencimientoLicencia) <= new Date(formData.fechaVigenciaLicencia)) {
         nuevosErrores.fechaVencimientoLicencia = 'Debe ser posterior a la fecha de vigencia';
@@ -161,13 +144,10 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    console.log('🔍 Iniciando validación...');
-
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposPersonales = ['nombre', 'apellidoPaterno', 'apellidoMaterno', 'edad', 'correoElectronico'];
       const camposTelefonos = ['telefonoEmergencia', 'telefonoPersonal', 'telefonoFamiliar'];
@@ -197,7 +177,6 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
       return;
     }
 
-    console.log('✅ Validación exitosa, guardando operador...');
     setGuardando(true);
 
     try {
@@ -218,25 +197,10 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
         foto: formData.foto,
         ine: formData.ine
       };
-
-      console.log('📦 Datos a guardar:', operadorData);
-
-      // Guardar el nombre del operador antes de cerrar
       const nombreCompleto = `${formData.nombre} ${formData.apellidoPaterno}`;
-
-      // ✅ ESPERAR a que la petición al backend termine completamente
       await onGuardar(operadorData);
-
-      console.log('✅ Operador guardado exitosamente en el backend');
-
-      // ✅ AHORA SÍ: Cerrar el modal DESPUÉS de que se guardó en el backend
       onCerrar();
-
-      // ✅ Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ Mostrar la alerta de éxito
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Operador Agregado!',
@@ -265,13 +229,8 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
       });
 
     } catch (error) {
-      console.error('❌ Error al guardar:', error);
-
-      // Si hay error, cerrar el modal
       onCerrar();
-
       await new Promise(resolve => setTimeout(resolve, 300));
-
       await Swal.fire({
         icon: 'error',
         title: 'Error al Guardar',
@@ -556,103 +515,99 @@ const ModalAgregarOperador = ({ onGuardar, onCerrar }) => {
   );
 
   return (
-    <div className="modal-agregar-overlay" onClick={onCerrar}>
-      <div className="modal-agregar-contenido modal-agregar-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div className="modal-agregar-header">
-          <h2>Agregar Nuevo Operador</h2>
-          <button className="modal-agregar-btn-cerrar" onClick={onCerrar} type="button">
-            <X size={24} />
-          </button>
-        </div>
-
-        {/* Tabs de Navegación */}
-        <div className="modal-agregar-tabs">
-          <button
-            className={`modal-agregar-tab-button ${seccionActiva === 'personales' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('personales')}
-            type="button"
-          >
-            <User size={18} />
-            Datos Personales
-          </button>
-          <button
-            className={`modal-agregar-tab-button ${seccionActiva === 'contacto' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('contacto')}
-            type="button"
-          >
-            <Phone size={18} />
-            Contacto
-          </button>
-          <button
-            className={`modal-agregar-tab-button ${seccionActiva === 'licencia' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('licencia')}
-            type="button"
-          >
-            <Calendar size={18} />
-            Licencia
-          </button>
-          <button
-            className={`modal-agregar-tab-button ${seccionActiva === 'documentos' ? 'active' : ''}`}
-            onClick={() => setSeccionActiva('documentos')}
-            type="button"
-          >
-            <Image size={18} />
-            Documentos
-          </button>
-        </div>
-
-        {/* Contenedor con dos columnas: Formulario + Vista Previa */}
-        <div className="modal-agregar-contenedor-principal">
-          {/* Columna Izquierda - Formulario */}
-          <div className="modal-agregar-columna-formulario">
-            <form onSubmit={handleSubmit} className="modal-agregar-form">
-              {seccionActiva === 'personales' && renderSeccionPersonales()}
-              {seccionActiva === 'contacto' && renderSeccionContacto()}
-              {seccionActiva === 'licencia' && renderSeccionLicencia()}
-              {seccionActiva === 'documentos' && renderSeccionDocumentos()}
-            </form>
-          </div>
-
-          {/* Columna Derecha - Vista Previa de Credencial */}
-          <div className="modal-agregar-columna-preview">
-            <div className="modal-agregar-preview-header">
-              <CreditCard size={20} />
-              <h3>Vista Previa de Credencial</h3>
-            </div>
-            <div className="modal-agregar-preview-content">
-              <CredencialOperador
-                operador={{
-                  ...formData,
-                  cargo: 'Conductor', // Valor por defecto
-                  foto: obtenerFotoUrl()
-                }}
-              />
-            </div>
-            <div className="modal-agregar-preview-info">
-              <FileText size={16} />
-              <p>Esta es una vista previa en tiempo real de cómo se verá la credencial del operador.</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer (FUERA del form, fijo en el bottom) */}
-        <div className="modal-agregar-footer">
-          <div className="modal-agregar-botones-izquierda">
-            <button type="button" className="modal-agregar-btn-cancelar" onClick={onCerrar}>
-              Cancelar
+    <div className="modal-agregar-operador-wrapper">
+      <div className="modal-agregar-overlay" onClick={onCerrar}>
+        <div className="modal-agregar-contenido modal-agregar-xl" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-agregar-header">
+            <h2>Agregar Nuevo Operador</h2>
+            <button className="modal-agregar-btn-cerrar" onClick={onCerrar} type="button">
+              <X size={24} />
             </button>
           </div>
-          <div className="modal-agregar-botones-derecha">
+
+          <div className="modal-agregar-tabs">
             <button
+              className={`modal-agregar-tab-button ${seccionActiva === 'personales' ? 'active' : ''}`}
+              onClick={() => setSeccionActiva('personales')}
               type="button"
-              className={`modal-agregar-btn-guardar ${guardando ? 'loading' : ''}`}
-              disabled={guardando}
-              onClick={handleSubmit}
             >
-              {!guardando && <Save size={20} />}
-              <span>{guardando ? 'Guardando...' : 'Guardar Operador'}</span>
+              <User size={18} />
+              Datos Personales
             </button>
+            <button
+              className={`modal-agregar-tab-button ${seccionActiva === 'contacto' ? 'active' : ''}`}
+              onClick={() => setSeccionActiva('contacto')}
+              type="button"
+            >
+              <Phone size={18} />
+              Contacto
+            </button>
+            <button
+              className={`modal-agregar-tab-button ${seccionActiva === 'licencia' ? 'active' : ''}`}
+              onClick={() => setSeccionActiva('licencia')}
+              type="button"
+            >
+              <Calendar size={18} />
+              Licencia
+            </button>
+            <button
+              className={`modal-agregar-tab-button ${seccionActiva === 'documentos' ? 'active' : ''}`}
+              onClick={() => setSeccionActiva('documentos')}
+              type="button"
+            >
+              <Image size={18} />
+              Documentos
+            </button>
+          </div>
+
+          <div className="modal-agregar-contenedor-principal">
+            <div className="modal-agregar-columna-formulario">
+              <form onSubmit={handleSubmit} className="modal-agregar-form">
+                {seccionActiva === 'personales' && renderSeccionPersonales()}
+                {seccionActiva === 'contacto' && renderSeccionContacto()}
+                {seccionActiva === 'licencia' && renderSeccionLicencia()}
+                {seccionActiva === 'documentos' && renderSeccionDocumentos()}
+              </form>
+            </div>
+
+            <div className="modal-agregar-columna-preview">
+              <div className="modal-agregar-preview-header">
+                <CreditCard size={20} />
+                <h3>Vista Previa de Credencial</h3>
+              </div>
+              <div className="modal-agregar-preview-content">
+                <CredencialOperador
+                  operador={{
+                    ...formData,
+                    cargo: 'Conductor',
+                    foto: obtenerFotoUrl()
+                  }}
+                />
+              </div>
+              <div className="modal-agregar-preview-info">
+                <FileText size={16} />
+                <p>Esta es una vista previa en tiempo real de cómo se verá la credencial del operador.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="modal-agregar-footer">
+            <div className="modal-agregar-botones-izquierda">
+              <button type="button" className="modal-agregar-btn-cancelar" onClick={onCerrar}>
+                Cancelar
+              </button>
+            </div>
+            <div className="modal-agregar-botones-derecha">
+              <button
+                type="button"
+                className={`modal-agregar-btn-guardar ${guardando ? 'loading' : ''}`}
+                disabled={guardando}
+                onClick={handleSubmit}
+              >
+                {!guardando && <Save size={20} />}
+                <span>{guardando ? 'Guardando...' : 'Guardar Operador'}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
