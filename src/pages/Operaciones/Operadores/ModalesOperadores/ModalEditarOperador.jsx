@@ -6,28 +6,19 @@ import CredencialOperador from '../Credenciales/CredencialOperador';
 
 const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Datos personales
     nombre: '',
     apellidoPaterno: '',
     apellidoMaterno: '',
     edad: '',
     correoElectronico: '',
-
-    // Teléfonos
     telefonoPersonal: '',
     telefonoEmergencia: '',
     telefonoFamiliar: '',
-
-    // Licencia
     numeroLicencia: '',
     fechaVigenciaLicencia: '',
     fechaVencimientoLicencia: '',
     fechaVencimientoExamen: '',
-
-    // Comentarios
     comentarios: '',
-
-    // Documentos
     foto: null,
     ine: null
   });
@@ -35,8 +26,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
-
-  // Función para obtener URL segura de la foto para vista previa
   const obtenerFotoUrl = () => {
     if (!formData.foto) return null;
     if (formData.foto instanceof File) {
@@ -52,8 +41,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
     }
     return null;
   };
-
-  // Cargar datos del operador cuando se abre el modal
   useEffect(() => {
     if (operador) {
       setFormData({
@@ -122,8 +109,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
 
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
-
-    // Validación datos personales
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
@@ -144,7 +129,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
       nuevosErrores.correoElectronico = 'Email inválido';
     }
 
-    // Validación teléfonos
     if (!formData.telefonoPersonal.trim()) {
       nuevosErrores.telefonoPersonal = 'El teléfono personal es requerido';
     } else if (!validarTelefono(formData.telefonoPersonal)) {
@@ -161,7 +145,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
       nuevosErrores.telefonoFamiliar = 'Debe tener 10 dígitos';
     }
 
-    // Validación licencia
     if (!formData.numeroLicencia.trim()) {
       nuevosErrores.numeroLicencia = 'El número de licencia es requerido';
     }
@@ -178,7 +161,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
       nuevosErrores.fechaVencimientoExamen = 'La fecha de vencimiento del examen es requerida';
     }
 
-    // Validar que la fecha de vencimiento sea posterior a la de vigencia
     if (formData.fechaVigenciaLicencia && formData.fechaVencimientoLicencia) {
       const vigencia = new Date(formData.fechaVigenciaLicencia);
       const vencimiento = new Date(formData.fechaVencimientoLicencia);
@@ -198,7 +180,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
 
-      // Determinar qué sección tiene errores
       const camposPersonales = ['nombre', 'apellidoPaterno', 'apellidoMaterno', 'edad', 'correoElectronico'];
       const camposContacto = ['telefonoPersonal', 'telefonoEmergencia', 'telefonoFamiliar'];
       const camposLicencia = ['numeroLicencia', 'fechaVigenciaLicencia', 'fechaVencimientoLicencia', 'fechaVencimientoExamen'];
@@ -215,7 +196,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
         setSeccionActiva('licencia');
       }
 
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.querySelector(`[name="${primerCampoConError}"]`);
@@ -250,22 +230,10 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
         ine: formData.ine
       };
 
-      // Guardar el nombre completo antes de cerrar
       const nombreCompleto = `${formData.nombre} ${formData.apellidoPaterno}`;
-
-      // ✅ ESPERAR a que la petición al backend termine completamente
       await onGuardar(operadorData);
-
-      console.log('✅ Operador actualizado exitosamente en el backend');
-
-      // ✅ AHORA SÍ: Cerrar el modal DESPUÉS de que se guardó en el backend
       onCerrar();
-
-      // ✅ Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ Mostrar la alerta de éxito
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Operador Actualizado!',
@@ -296,7 +264,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
 
-      // Si hay error, cerrar el modal
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -594,7 +561,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
   return (
     <div className="meo-overlay" onClick={onCerrar}>
       <div className="meo-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="meo-header">
           <h2>Editar Operador</h2>
           <button className="meo-btn-cerrar" onClick={onCerrar} type="button">
@@ -602,7 +568,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
             className={`meo-tab-button ${seccionActiva === 'personales' ? 'active' : ''}`}
@@ -638,9 +603,7 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Contenedor con dos columnas: Formulario + Vista Previa */}
         <div className="meo-contenedor-principal">
-          {/* Columna Izquierda - Formulario */}
           <div className="meo-columna-formulario">
             <form onSubmit={handleSubmit} className="meo-form">
               {seccionActiva === 'personales' && renderSeccionPersonales()}
@@ -650,7 +613,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
             </form>
           </div>
 
-          {/* Columna Derecha - Vista Previa de Credencial */}
           <div className="meo-columna-preview">
             <div className="meo-preview-header">
               <CreditCard size={20} />
@@ -672,7 +634,6 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
           </div>
         </div>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="meo-footer">
           <div className="meo-botones-izquierda">
             <button type="button" className="meo-btn-cancelar" onClick={onCerrar}>
@@ -695,5 +656,4 @@ const ModalEditarOperador = ({ operador, onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalEditarOperador;

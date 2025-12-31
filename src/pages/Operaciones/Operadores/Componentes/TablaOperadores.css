@@ -755,3 +755,13 @@
   color: #6c757d;
   margin-left: 0.5rem;
 }
+
+.operadores-mensaje-cargando {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #88898a;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border-radius: 8px;
+}

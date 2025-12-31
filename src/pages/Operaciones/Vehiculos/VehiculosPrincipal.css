@@ -1,19 +1,53 @@
-/* ========================================
-   VEHICULOSPRINCIPAL.CSS - SIMPLIFICADO
-   Solo estilos de layout principal
-   ======================================== */
-
-/* El componente principal ya no necesita muchos estilos 
-   porque todo está integrado en TablaVehiculos */
-
-/* Si PrincipalComponente no tiene padding, puedes agregar aquí */
 .vehiculos-principal-wrapper {
   padding: 1rem;
   background-color: #f5f7fa;
   min-height: 100vh;
 }
 
-/* Responsive para el wrapper si lo necesitas */
+.vehiculos-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.vehiculos-error-box {
+  background: #fee2e2;
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 500px;
+  text-align: center;
+}
+
+.vehiculos-error-title {
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+.vehiculos-error-message {
+  color: #991b1b;
+  margin-bottom: 1.5rem;
+}
+
+.vehiculos-error-button {
+  padding: 0.75rem 2rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.vehiculos-error-button:hover {
+  background: #1d4ed8;
+}
+
 @media (max-width: 768px) {
   .vehiculos-principal-wrapper {
     padding: 0.5rem;

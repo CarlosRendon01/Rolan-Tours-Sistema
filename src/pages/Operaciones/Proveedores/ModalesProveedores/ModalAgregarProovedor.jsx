@@ -5,27 +5,18 @@ import './ModalAgregarProovedor.css';
 
 const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Datos generales
     nombre_razon_social: '',
     tipo_proveedor: '',
     rfc: '',
     descripcion_servicio: '',
-
-    // Contacto
     nombre_contacto: '',
     telefono: '',
     correo: '',
-
-    // Ubicación
     direccion: '',
     ciudad: '',
     entidad_federativa: '',
     pais: 'México',
-
-    // Pago
     metodo_pago: '',
-
-    // Documentos
     foto_proveedor: null,
     documento_rfc: null,
     identificacion: null
@@ -35,7 +26,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
   const [seccionActiva, setSeccionActiva] = useState('generales');
   const [guardando, setGuardando] = useState(false);
 
-  // Estados de México
   const estadosMexico = [
     'Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche',
     'Chiapas', 'Chihuahua', 'Ciudad de México', 'Coahuila', 'Colima',
@@ -82,7 +72,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones datos generales (obligatorios)
     if (!formData.nombre_razon_social.trim()) {
       nuevosErrores.nombre_razon_social = 'La razón social es requerida';
     }
@@ -91,7 +80,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
       nuevosErrores.tipo_proveedor = 'El tipo de proveedor es requerido';
     }
 
-    // Validación RFC (13 caracteres para personas morales)
     const regexRFC = /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/;
     if (!formData.rfc.trim()) {
       nuevosErrores.rfc = 'El RFC es requerido';
@@ -99,12 +87,10 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
       nuevosErrores.rfc = 'RFC inválido (formato: ABC123456XYZ)';
     }
 
-    // Validaciones contacto (obligatorios)
     if (!formData.nombre_contacto.trim()) {
       nuevosErrores.nombre_contacto = 'El nombre de contacto es requerido';
     }
 
-    // Validación de teléfono (10 dígitos)
     const regexTelefono = /^\d{10}$/;
     if (!formData.telefono.trim()) {
       nuevosErrores.telefono = 'El teléfono es requerido';
@@ -112,7 +98,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
       nuevosErrores.telefono = 'Debe contener 10 dígitos';
     }
 
-    // Validación de correo electrónico
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.correo.trim()) {
       nuevosErrores.correo = 'El correo es requerido';
@@ -120,7 +105,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
       nuevosErrores.correo = 'Correo electrónico inválido';
     }
 
-    // Validaciones ubicación (obligatorios)
     if (!formData.direccion.trim()) {
       nuevosErrores.direccion = 'La dirección es requerida';
     }
@@ -137,7 +121,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
       nuevosErrores.pais = 'El país es requerido';
     }
 
-    // Validación método de pago
     if (!formData.metodo_pago) {
       nuevosErrores.metodo_pago = 'El método de pago es requerido';
     }
@@ -148,13 +131,11 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    console.log('🔍 Iniciando validación...');
 
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposGenerales = ['nombre_razon_social', 'tipo_proveedor', 'rfc', 'descripcion_servicio'];
       const camposContacto = ['nombre_contacto', 'telefono', 'correo'];
@@ -184,7 +165,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
       return;
     }
 
-    console.log('✅ Validación exitosa, guardando proveedor...');
     setGuardando(true);
 
     try {
@@ -206,24 +186,12 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
         identificacion: formData.identificacion,
       };
 
-      console.log('📦 Datos a guardar:', proveedorData);
 
-      // Guardar el nombre del proveedor antes de cerrar
       const nombreProveedor = formData.nombre_razon_social;
-
-      // Llamar a la función onGuardar del padre
       await onGuardar(proveedorData);
-
-      console.log('✅ Proveedor guardado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Proveedor Agregado!',
@@ -251,16 +219,11 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al guardar:', error);
-
-      // Si hay error, también cerrar el modal primero
       onCerrar();
-
       await new Promise(resolve => setTimeout(resolve, 300));
-
       await Swal.fire({
         icon: 'error',
         title: 'Error al Guardar',
@@ -570,7 +533,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="modal-proveedor-tabs">
           <button
             className={`modal-proveedor-tab-button ${seccionActiva === 'generales' ? 'active' : ''}`}
@@ -606,7 +568,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="modal-proveedor-form">
           {seccionActiva === 'generales' && renderSeccionGenerales()}
           {seccionActiva === 'contacto' && renderSeccionContacto()}
@@ -614,7 +575,6 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="modal-proveedor-footer">
           <div className="modal-proveedor-botones-izquierda">
             <button type="button" className="modal-proveedor-btn-cancelar" onClick={onCerrar}>
@@ -637,5 +597,4 @@ const ModalAgregarProveedor = ({ onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalAgregarProveedor;

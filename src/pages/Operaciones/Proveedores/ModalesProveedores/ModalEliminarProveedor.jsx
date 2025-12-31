@@ -3,13 +3,11 @@ import axios from 'axios';
 import './ModalEliminarProveedor.css';
 
 export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
-  // Validar datos del proveedor
   if (!proveedor?.nombre_razon_social) {
     await modalError('Información del proveedor incompleta');
     return false;
   }
 
-  // Función para obtener clase de badge de tipo
   const obtenerClaseTipo = (tipo) => {
     const tipos = {
       'Transporte': 'transporte',
@@ -21,7 +19,6 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
     return tipos[tipo] || 'otro';
   };
 
-  // Función para obtener icono de tipo
   const obtenerIconoTipo = (tipo) => {
     switch (tipo) {
       case 'Transporte':
@@ -36,7 +33,6 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
         return '📦';
     }
   };
-
   const nombreProveedor = proveedor.nombre_razon_social;
   const tipoProveedor = proveedor.tipo_proveedor || 'Otro';
   const claseTipo = obtenerClaseTipo(tipoProveedor);
@@ -79,7 +75,6 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
 
   if (resultado.isConfirmed) {
     modalCargando('Eliminando proveedor...');
-
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`http://127.0.0.1:8000/api/proveedores/${proveedor.id}`, {
@@ -89,16 +84,12 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
         }
       });
 
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
-
       Swal.close();
-
       if (onConfirmar) {
         await onConfirmar(proveedor);
       }
 
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminado!',
         html: `
@@ -169,5 +160,4 @@ export const modalCargando = (mensaje = 'Procesando...') => {
 export const cerrarModalCargando = () => {
   Swal.close();
 };
-
 export default modalEliminarProveedor;

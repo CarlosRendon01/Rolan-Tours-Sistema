@@ -3,7 +3,6 @@ import axios from 'axios';
 import './ModalEliminarVehiculo.css';
 
 export const modalEliminarVehiculo = async (vehiculo, onConfirmar) => {
-  // Validar datos del vehículo
   if (!vehiculo?.nombre) {
     await modalError('Información del vehículo incompleta');
     return false;
@@ -55,16 +54,13 @@ export const modalEliminarVehiculo = async (vehiculo, onConfirmar) => {
         }
       });
 
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
-
       Swal.close();
 
       if (onConfirmar) {
         await onConfirmar(vehiculo);
       }
 
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminado!',
         html: `
@@ -100,8 +96,7 @@ export const modalEliminarVehiculo = async (vehiculo, onConfirmar) => {
 };
 
 /**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
+ * @param {string} mensaje 
  */
 export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
@@ -120,8 +115,7 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
 };
 
 /**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
+ * @param {string} mensaje 
  */
 export const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
@@ -140,9 +134,6 @@ export const modalCargando = (mensaje = 'Procesando...') => {
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
 export const cerrarModalCargando = () => {
   Swal.close();
 };

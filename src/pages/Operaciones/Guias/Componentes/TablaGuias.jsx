@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, UserCheck, Users, Plus, Phone } from 'lucide-react';
 import './TablaGuias.css';
 
@@ -9,34 +8,29 @@ const TablaGuias = ({
   onVer,
   onEditar,
   onEliminar,
-  onAgregar
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
-
-  const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState(null);
-
-  const cargarGuias = async () => {
-    try {
-      setCargando(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/guias", {
-        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
-      });
-      setGuias(response.data);
-    } catch (error) {
-      console.error("❌ Error al cargar guías:", error);
-      setError("Error al cargar guías");
-    } finally {
-      setCargando(false);
-    }
-  };
+  const [puntosCarga, setPuntosCarga] = useState('');
 
   useEffect(() => {
-    cargarGuias();
-  }, []);
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
 
   const guiasFiltradas = guias.filter(guia => {
     const busqueda = terminoBusqueda.toLowerCase();
@@ -193,7 +187,30 @@ const TablaGuias = ({
         </div>
       </div>
 
-      {guiasPaginadas.length === 0 ? (
+      {cargando ? (
+        <div className="guias-contenedor-tabla">
+          <table className="guias-tabla">
+            <thead>
+              <tr className="guias-fila-encabezado">
+                <th>ID</th>
+                <th>NOMBRE COMPLETO</th>
+                <th>EDAD</th>
+                <th>TELÉFONO</th>
+                <th>IDIOMAS</th>
+                <th>ESTADO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="7" className="guias-mensaje-cargando">
+                  Cargando la información de los guías turísticos{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : guiasPaginadas.length === 0 ? (
         <div className="guias-estado-vacio">
           <div className="guias-icono-vacio">
             <Users size={80} strokeWidth={1.5} />
@@ -368,5 +385,4 @@ const TablaGuias = ({
     </div>
   );
 };
-
 export default TablaGuias;

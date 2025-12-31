@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Truck, BarChart3, Plus } from 'lucide-react';
 import './TablaVehiculos.css';
 
 const TablaVehiculos = ({
-  vehiculos,        // ✅ Recibe vehiculos desde el padre
-  setVehiculos,     // ✅ Por si necesitas actualizar (opcional)
+  vehiculos,
+  setVehiculos,
   onVer,
   onEditar,
   onEliminar,
-  onAgregar
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
-  // Solo estados locales para UI (paginación, búsqueda)
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [puntosCarga, setPuntosCarga] = useState('');
 
-  // Filtrar vehículos por búsqueda
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const vehiculosFiltrados = vehiculos.filter(vehiculo => {
     const busqueda = terminoBusqueda.toLowerCase();
     return (
@@ -24,14 +40,12 @@ const TablaVehiculos = ({
     );
   });
 
-  // Calcular paginación
   const totalRegistros = vehiculosFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const vehiculosPaginados = vehiculosFiltrados.slice(indiceInicio, indiceFin);
 
-  // Calcular estadísticas
   const totalVehiculos = vehiculos.length;
   const promedioRendimiento = vehiculos.length > 0
     ? (vehiculos.reduce((sum, v) => {
@@ -93,7 +107,6 @@ const TablaVehiculos = ({
 
   return (
     <div className="vehiculos-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="vehiculos-encabezado">
         <div className="vehiculos-seccion-logo">
           <div className="vehiculos-lineas-decorativas">
@@ -105,7 +118,6 @@ const TablaVehiculos = ({
           <h1 className="vehiculos-titulo">Gestión de Vehículos</h1>
         </div>
 
-        {/* Estadísticas */}
         <div className="vehiculos-contenedor-estadisticas">
           <div className="vehiculos-estadistica">
             <div className="vehiculos-icono-estadistica-circular">
@@ -127,7 +139,6 @@ const TablaVehiculos = ({
         </div>
       </div>
 
-      {/* Controles */}
       <div className="vehiculos-controles">
         <div className="vehiculos-control-registros">
           <label htmlFor="registros">Mostrar</label>
@@ -172,8 +183,31 @@ const TablaVehiculos = ({
         </div>
       </div>
 
-      {/* Tabla */}
-      {vehiculosPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="vehiculos-contenedor-tabla">
+          <table className="vehiculos-tabla">
+            <thead>
+              <tr className="vehiculos-fila-encabezado">
+                <th>ID</th>
+                <th>VEHÍCULO</th>
+                <th>RENDIMIENTO</th>
+                <th>PRECIO COMBUSTIBLE</th>
+                <th>DESGASTE</th>
+                <th>COSTO RENTA</th>
+                <th>COSTO CHOFER/DÍA</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="8" className="vehiculos-mensaje-cargando">
+                  Cargando la información de los vehículos{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : vehiculosPaginados.length === 0 ? (
         <div className="vehiculos-estado-vacio">
           <div className="vehiculos-icono-vacio">
             <Truck size={80} strokeWidth={1.5} />
@@ -287,7 +321,6 @@ const TablaVehiculos = ({
             </table>
           </div>
 
-          {/* Información de paginación y controles */}
           <div className="vehiculos-pie-tabla">
             <div className="vehiculos-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
@@ -335,5 +368,4 @@ const TablaVehiculos = ({
     </div>
   );
 };
-
 export default TablaVehiculos;

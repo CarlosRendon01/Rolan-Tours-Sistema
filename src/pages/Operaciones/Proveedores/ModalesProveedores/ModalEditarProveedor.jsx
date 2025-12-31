@@ -5,25 +5,18 @@ import Swal from 'sweetalert2';
 
 const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Información general
     nombre_razon_social: '',
     tipo_proveedor: '',
     rfc: '',
     descripcion_servicio: '',
     metodo_pago: '',
-
-    // Contacto
     nombre_contacto: '',
     telefono: '',
     correo: '',
-
-    // Dirección
     direccion: '',
     ciudad: '',
     entidad_federativa: '',
     pais: '',
-
-    // Documentos
     foto_proveedor: null,
     documento_rfc: null,
     identificacion: null
@@ -33,7 +26,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
   const [seccionActiva, setSeccionActiva] = useState('general');
   const [guardando, setGuardando] = useState(false);
 
-  // Cargar datos del proveedor cuando se abre el modal
   useEffect(() => {
     if (proveedor) {
       setFormData({
@@ -101,7 +93,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
   };
 
   const validarRFC = (rfc) => {
-    // RFC persona moral: 12 caracteres, RFC persona física: 13 caracteres
     const regex = /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{2,3}$/;
     return regex.test(rfc.toUpperCase());
   };
@@ -109,7 +100,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validación información general
     if (!formData.nombre_razon_social.trim()) {
       nuevosErrores.nombre_razon_social = 'La razón social es requerida';
     }
@@ -128,7 +118,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
       nuevosErrores.metodo_pago = 'El método de pago es requerido';
     }
 
-    // Validación contacto
     if (!formData.nombre_contacto.trim()) {
       nuevosErrores.nombre_contacto = 'El nombre de contacto es requerido';
     }
@@ -143,7 +132,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
       nuevosErrores.correo = 'Email inválido';
     }
 
-    // Validación dirección
     if (!formData.direccion.trim()) {
       nuevosErrores.direccion = 'La dirección es requerida';
     }
@@ -171,7 +159,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
 
-      // Determinar qué sección tiene errores
       const camposGenerales = ['nombre_razon_social', 'tipo_proveedor', 'rfc', 'descripcion_servicio', 'metodo_pago'];
       const camposContacto = ['nombre_contacto', 'telefono', 'correo'];
       const camposDireccion = ['direccion', 'ciudad', 'entidad_federativa', 'pais'];
@@ -188,7 +175,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
         setSeccionActiva('direccion');
       }
 
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.querySelector(`[name="${primerCampoConError}"]`);
@@ -223,22 +209,11 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
         identificacion: formData.identificacion
       };
 
-      // Guardar el nombre antes de cerrar
       const nombreProveedor = formData.nombre_razon_social;
-
-      // Llamar a la función onGuardar del padre
       await onGuardar(proveedorData);
-
-      console.log('✅ Proveedor actualizado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Proveedor Actualizado!',
@@ -266,16 +241,12 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
-
-      // Si hay error, también cerrar el modal primero
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
-
       await Swal.fire({
         icon: 'error',
         title: 'Error al Actualizar',
@@ -445,7 +416,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
       </div>
     </div>
   );
-
   const renderSeccionDireccion = () => (
     <div className="mep-form-grid">
       <div className="mep-form-group form-group-full">
@@ -584,7 +554,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
   return (
     <div className="mep-overlay" onClick={onCerrar}>
       <div className="mep-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="mep-header">
           <h2>Editar Proveedor</h2>
           <button className="mep-btn-cerrar" onClick={onCerrar} type="button">
@@ -592,7 +561,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="mep-tabs">
           <button
             className={`mep-tab-button ${seccionActiva === 'general' ? 'active' : ''}`}
@@ -628,7 +596,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="mep-form">
           {seccionActiva === 'general' && renderSeccionGeneral()}
           {seccionActiva === 'contacto' && renderSeccionContacto()}
@@ -636,7 +603,6 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="mep-footer">
           <div className="mep-botones-izquierda">
             <button type="button" className="mep-btn-cancelar" onClick={onCerrar}>
@@ -659,5 +625,4 @@ const ModalEditarProveedor = ({ proveedor, onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalEditarProveedor;

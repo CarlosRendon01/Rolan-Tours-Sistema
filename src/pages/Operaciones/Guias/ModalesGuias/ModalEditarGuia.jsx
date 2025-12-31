@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 
 const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // 🧾 Datos Personales
     nombre: '',
     apellido_paterno: '',
     apellido_materno: '',
@@ -18,8 +17,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
     institucion_seguro: '',
     contacto_emergencia: '',
     telefono_emergencia: '',
-
-    // 💼 Información Profesional
     costo_dia: '',
     idiomas: '',
     experiencia_anos: '',
@@ -27,29 +24,22 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
     certificacion_oficial: '',
     zona_servicio: '',
     estado_operativo: 'activo',
-
-    // 📄 Documentos
     foto_guia: null,
     foto_ine: null,
     foto_certificaciones: null,
     foto_licencia: null,
     foto_comprobante_domicilio: null
   });
-
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
-
-  // Cargar datos del guía cuando se abre el modal
   useEffect(() => {
     if (guia) {
-      // Convertir idiomas de array a string si es necesario
       const idiomasString = Array.isArray(guia.idiomas)
         ? guia.idiomas.join(', ')
         : guia.idiomas || '';
 
       setFormData({
-        // 🧾 Datos Personales
         nombre: guia.nombre || '',
         apellido_paterno: guia.apellido_paterno || '',
         apellido_materno: guia.apellido_materno || '',
@@ -62,8 +52,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         institucion_seguro: guia.institucion_seguro || '',
         contacto_emergencia: guia.contacto_emergencia || '',
         telefono_emergencia: guia.telefono_emergencia || '',
-
-        // 💼 Info Profesional
         costo_dia: guia.costo_dia || '',
         idiomas: idiomasString,
         experiencia_anos: guia.experiencia_anos || '',
@@ -71,8 +59,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         certificacion_oficial: guia.certificacion_oficial || '',
         zona_servicio: guia.zona_servicio || '',
         estado_operativo: guia.estado_operativo || 'activo',
-
-        // 📄 Documentos
         foto_guia: guia.documentos?.foto_guia || null,
         foto_ine: guia.documentos?.foto_ine || null,
         foto_certificaciones: guia.documentos?.foto_certificaciones || null,
@@ -81,7 +67,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       });
     }
   }, [guia]);
-
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
       const nuevosErrores = { ...prev };
@@ -119,7 +104,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // 🧾 Datos Personales (obligatorios)
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
@@ -132,13 +116,11 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       nuevosErrores.apellido_materno = 'Apellido requerido';
     }
 
-    // Validar teléfono (10 dígitos)
     const telefonoRegex = /^\d{10}$/;
     if (!formData.telefono || !telefonoRegex.test(formData.telefono)) {
       nuevosErrores.telefono = 'Debe tener 10 dígitos';
     }
 
-    // Validar email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email || !emailRegex.test(formData.email)) {
       nuevosErrores.email = 'Email inválido';
@@ -147,7 +129,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
     if (!formData.fecha_nacimiento) {
       nuevosErrores.fecha_nacimiento = 'La fecha es requerida';
     } else {
-      // Validar que sea mayor de 18 años
       const fechaNac = new Date(formData.fecha_nacimiento);
       const hoy = new Date();
       let edad = hoy.getFullYear() - fechaNac.getFullYear();
@@ -180,7 +161,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       nuevosErrores.telefono_emergencia = 'Debe tener 10 dígitos';
     }
 
-    // 💼 Información Profesional (obligatorios)
     if (!formData.costo_dia || parseFloat(formData.costo_dia) <= 0) {
       nuevosErrores.costo_dia = 'El costo debe ser mayor a 0';
     }
@@ -191,13 +171,11 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    console.log('📋 Iniciando validación...');
 
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposPersonales = ['nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email', 'fecha_nacimiento', 'ciudad', 'estado', 'institucion_seguro', 'contacto_emergencia', 'telefono_emergencia'];
       const camposProfesionales = ['costo_dia', 'idiomas', 'experiencia_anos', 'certificacion_oficial', 'zona_servicio'];
@@ -223,13 +201,11 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
       return;
     }
 
-    console.log('✅ Validación exitosa, actualizando guía...');
     setGuardando(true);
 
     try {
       const guiaData = {
         ...guia,
-        // 🧾 Datos Personales
         nombre: formData.nombre,
         apellido_paterno: formData.apellido_paterno,
         apellido_materno: formData.apellido_materno,
@@ -242,8 +218,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         institucion_seguro: formData.institucion_seguro,
         contacto_emergencia: formData.contacto_emergencia,
         telefono_emergencia: formData.telefono_emergencia,
-
-        // 💼 Info Profesional
         costo_dia: parseFloat(formData.costo_dia),
         idiomas: formData.idiomas,
         experiencia_anos: formData.experiencia_anos ? parseInt(formData.experiencia_anos) : null,
@@ -251,8 +225,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
         certificacion_oficial: formData.certificacion_oficial,
         zona_servicio: formData.zona_servicio,
         estado_operativo: formData.estado_operativo,
-
-        // 📄 Documentos
         documentos: {
           foto_guia: formData.foto_guia,
           foto_ine: formData.foto_ine,
@@ -261,20 +233,10 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
           foto_comprobante_domicilio: formData.foto_comprobante_domicilio
         }
       };
-
-      console.log('📦 Datos a actualizar:', guiaData);
-
       const nombreCompleto = `${formData.nombre} ${formData.apellido_paterno} ${formData.apellido_materno}`;
-
       await onGuardar(guiaData);
-
-      console.log('✅ Guía actualizado, cerrando modal primero...');
-
       onCerrar();
-
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Guía Actualizado!',
@@ -301,8 +263,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
           confirmButton: 'swal-confirm-custom-guia'
         }
       });
-
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
@@ -744,7 +704,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
   return (
     <div className="meg-overlay" onClick={onCerrar}>
       <div className="meg-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="meg-header">
           <h2>Editar Guía</h2>
           <button className="meg-btn-cerrar" onClick={onCerrar} type="button">
@@ -752,7 +711,6 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="meg-tabs">
           <button
             className={`meg-tab-button ${seccionActiva === 'personales' ? 'active' : ''}`}
@@ -780,14 +738,12 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="meg-form">
           {seccionActiva === 'personales' && renderSeccionPersonales()}
           {seccionActiva === 'profesionales' && renderSeccionProfesionales()}
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="meg-footer">
           <div className="meg-botones-izquierda">
             <button type="button" className="meg-btn-cancelar" onClick={onCerrar}>
@@ -810,5 +766,4 @@ const ModalEditarGuia = ({ guia, onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalEditarGuia;

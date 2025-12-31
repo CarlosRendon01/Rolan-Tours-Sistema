@@ -8,7 +8,6 @@ import './ModalVerGuia.css';
 
 const ModalVerGuia = ({ guia, onCerrar }) => {
 
-  // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
     if (typeof archivo === 'string') return archivo;
@@ -16,7 +15,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
     return null;
   };
 
-  // Obtener URLs de los archivos
   const fotoUrl = obtenerUrlArchivo(guia.foto || guia.documentos?.foto_guia);
   const ineUrl = obtenerUrlArchivo(guia.ine || guia.documentos?.foto_ine);
   const licenciaUrl = obtenerUrlArchivo(guia.documentos?.foto_licencia);
@@ -35,7 +33,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
     return edad;
   };
 
-  // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'N/A';
     const limpio = telefono.replace(/\D/g, '');
@@ -45,7 +42,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
     return telefono;
   };
 
-  // Función para formatear fecha
   const formatearFecha = (fecha) => {
     if (!fecha) return 'N/A';
     const date = new Date(fecha);
@@ -56,7 +52,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
     });
   };
 
-  // Función para formatear moneda
   const formatearMoneda = (cantidad) => {
     if (!cantidad) return 'N/A';
     return new Intl.NumberFormat('es-MX', {
@@ -65,7 +60,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
     }).format(cantidad);
   };
 
-  // Función para ver documento
   const handleVerDocumento = (archivo) => {
     if (!archivo) {
       alert('No hay documento disponible para visualizar');
@@ -86,7 +80,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
     alert('No hay documento disponible para visualizar');
   };
 
-  // Función para descargar documento
   const handleDescargar = (archivo, nombreDocumento) => {
     if (!archivo) {
       alert('No hay documento disponible para descargar');
@@ -120,7 +113,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
 
   const tieneDocumentos = fotoUrl || ineUrl || licenciaUrl || comprobanteUrl || certificacionesUrl;
 
-  // Procesar idiomas
   const idiomasArray = Array.isArray(guia.idiomas)
     ? guia.idiomas
     : (guia.idiomas ? guia.idiomas.split(',').map(i => i.trim()) : []);
@@ -145,9 +137,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
 
         <div className="mvg-body">
           <div className="mvg-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvg-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvg-guia-hero">
                 <div className="mvg-guia-hero-content">
                   <h3 className="mvg-guia-titulo">
@@ -178,7 +168,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                   </div>
                 </div>
 
-                {/* Foto del Guía */}
                 <div className="mvg-guia-imagen-container">
                   {fotoUrl ? (
                     <img
@@ -208,7 +197,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información Personal */}
               <div className="mvg-seccion-detalles">
                 <h3 className="mvg-titulo-seccion">
                   <UserCircle size={20} />
@@ -284,7 +272,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                   </div>
                 </div>
               </div>
-              {/* Información de Domicilio */}
               <div className="mvg-seccion-detalles">
                 <h3 className="mvg-titulo-seccion">
                   <Home size={20} />
@@ -314,7 +301,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información Profesional */}
               <div className="mvg-seccion-detalles">
                 <h3 className="mvg-titulo-seccion">
                   <Briefcase size={20} />
@@ -347,7 +333,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Especialidades */}
               {(guia.especialidades) && (
                 <div className="mvg-seccion-detalles">
                   <h3 className="mvg-titulo-seccion">
@@ -360,7 +345,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                 </div>
               )}
 
-              {/* Comentarios */}
               {guia.comentarios && (
                 <div className="mvg-seccion-detalles">
                   <h3 className="mvg-titulo-seccion">
@@ -373,7 +357,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                 </div>
               )}
 
-              {/* Documentos */}
               <div className="mvg-seccion-detalles">
                 <h3 className="mvg-titulo-seccion">
                   <FileText size={20} />
@@ -504,9 +487,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
               </div>
             </div>
 
-            {/* Columna Derecha */}
             <div className="mvg-columna-derecha">
-              {/* Card de Teléfonos */}
               <div className="mvg-card-estadistica">
                 <div className="mvg-card-header">
                   <h4 className="mvg-card-titulo">Teléfonos de Contacto</h4>
@@ -539,7 +520,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Contacto de Emergencia */}
               <div className="mvg-card-estadistica">
                 <div className="mvg-card-header">
                   <h4 className="mvg-card-titulo">Contacto de Emergencia</h4>
@@ -569,7 +549,6 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Idiomas */}
               {idiomasArray.length > 0 && (
                 <div className="mvg-card-estadistica">
                   <div className="mvg-card-header">
@@ -599,5 +578,4 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerGuia;

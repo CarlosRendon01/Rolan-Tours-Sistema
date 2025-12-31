@@ -1,4 +1,3 @@
-/* TablaProveedores.css - Versión Mejorada con Scroll */
 .proveedores-contenedor-principal {
     width: 100%;
     background: #ffffff;
@@ -8,7 +7,6 @@
     margin: 1rem;
 }
 
-/* Header estilo proveedores */
 .proveedores-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
     padding: 2rem;
@@ -69,7 +67,6 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Estadísticas estilo proveedores */
 .proveedores-contenedor-estadisticas {
     display: flex;
     gap: 2rem;
@@ -121,7 +118,6 @@
     letter-spacing: 0.5px;
 }
 
-/* Controles */
 .proveedores-controles {
     padding: 1.5rem 2rem;
     display: flex;
@@ -213,7 +209,6 @@
     pointer-events: none;
 }
 
-/* ✅ CONTENEDOR DE TABLA CON SCROLL MEJORADO */
 .proveedores-contenedor-tabla {
     overflow-x: auto;
     overflow-y: visible;
@@ -225,7 +220,6 @@
     position: relative;
 }
 
-/* ✅ SCROLLBAR PERSONALIZADO VISIBLE */
 .proveedores-contenedor-tabla::-webkit-scrollbar {
     height: 12px;
 }
@@ -246,18 +240,15 @@
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
-/* Tabla */
 .proveedores-tabla {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.85rem;
     min-width: 1200px;
-    /* Ancho mínimo para forzar scroll */
     border-radius: 12px;
 }
 
-/* Header de tabla */
 .proveedores-fila-encabezado {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
@@ -283,49 +274,40 @@
     border-right: none;
 }
 
-/* ✅ ANCHOS OPTIMIZADOS PARA LAS COLUMNAS DE PROVEEDORES */
 .proveedores-fila-encabezado th:nth-child(1) {
     width: 80px;
     min-width: 80px;
 }
 
-/* ID */
 .proveedores-fila-encabezado th:nth-child(2) {
     width: 320px;
     min-width: 300px;
 }
 
-/* RAZÓN SOCIAL */
 .proveedores-fila-encabezado th:nth-child(3) {
     width: 150px;
     min-width: 140px;
 }
 
-/* TIPO */
 .proveedores-fila-encabezado th:nth-child(4) {
     width: 180px;
     min-width: 170px;
 }
 
-/* RFC */
 .proveedores-fila-encabezado th:nth-child(5) {
     width: 160px;
     min-width: 150px;
 }
 
-/* TELÉFONO */
 .proveedores-fila-encabezado th:nth-child(6) {
     width: 170px;
     min-width: 160px;
 }
 
-/* MÉTODO PAGO */
 .proveedores-fila-encabezado th:nth-child(7) {
     width: 140px;
     min-width: 140px;
 }
-
-/* ACCIONES */
 
 .proveedores-fila-proveedor {
     border-bottom: 1px solid #e9d5ff;
@@ -358,7 +340,6 @@
     border-right: none;
 }
 
-/* Estilos específicos de columnas */
 .proveedores-columna-id .proveedores-badge-id {
     background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
     color: #213aa8;
@@ -420,7 +401,6 @@
     text-overflow: ellipsis;
 }
 
-/* Badge de tipo */
 .proveedores-badge-tipo {
     padding: 0.35rem 0.75rem;
     border-radius: 12px;
@@ -433,7 +413,6 @@
     white-space: nowrap;
 }
 
-/* Valor RFC */
 .proveedores-valor-rfc {
     font-family: monospace;
     background: #f5f3ff;
@@ -446,7 +425,6 @@
     white-space: nowrap;
 }
 
-/* Valores de teléfono */
 .proveedores-valor-telefono {
     color: #475569;
     font-weight: 500;
@@ -457,7 +435,6 @@
     white-space: nowrap;
 }
 
-/* Badge de método de pago */
 .proveedores-badge-pago {
     padding: 0.35rem 0.65rem;
     border-radius: 12px;
@@ -470,7 +447,6 @@
     white-space: nowrap;
 }
 
-/* Columna de acciones */
 .proveedores-columna-acciones {
     position: relative;
 }
@@ -547,7 +523,6 @@
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* Footer */
 .proveedores-pie-tabla {
     padding: 1.5rem 2rem;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -630,7 +605,6 @@
     box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
 }
 
-/* Animaciones */
 @keyframes proveedores-fadeIn {
     from {
         opacity: 0;
@@ -679,7 +653,6 @@
     animation-delay: 0.3s;
 }
 
-/* Estado vacío */
 .proveedores-estado-vacio {
     text-align: center;
     padding: 3rem 2rem;
@@ -705,7 +678,6 @@
     color: #6b7280;
 }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
     .proveedores-contenedor-tabla {
         margin: 0 1rem 1.5rem 1rem;
@@ -767,7 +739,6 @@
         width: 100%;
     }
 
-    /* En móvil, mantener el scroll horizontal */
     .proveedores-contenedor-tabla {
         margin: 0 0.5rem 1rem 0.5rem;
         border-radius: 8px;
@@ -775,7 +746,6 @@
 
     .proveedores-tabla {
         min-width: 900px;
-        /* Mantener scroll en móvil */
     }
 
     .proveedores-pie-tabla {
@@ -802,10 +772,19 @@
 
     .proveedores-tabla {
         min-width: 800px;
-        /* Ancho mínimo en pantallas muy pequeñas */
     }
 
     .proveedores-numeros-paginacion {
         flex-wrap: wrap;
     }
+}
+
+.proveedores-mensaje-cargando {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #3d3d3d;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border-radius: 8px;
 }

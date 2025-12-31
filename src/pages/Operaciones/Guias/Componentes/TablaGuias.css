@@ -1,4 +1,3 @@
-/* TablaGuias.css - Estilos únicos para gestión de guías turísticos */
 .guias-contenedor-principal {
   width: 100%;
   background: #ffffff;
@@ -8,7 +7,6 @@
   margin: 1rem;
 }
 
-/* Header estilo guías */
 .guias-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
   padding: 2rem;
@@ -69,7 +67,6 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Estadísticas estilo guías */
 .guias-contenedor-estadisticas {
   display: flex;
   gap: 2rem;
@@ -121,7 +118,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Controles */
 .guias-controles {
   padding: 1.5rem 2rem;
   display: flex;
@@ -213,7 +209,6 @@
   pointer-events: none;
 }
 
-/* Contenedor de tabla */
 .guias-contenedor-tabla {
   overflow-x: auto;
   border: 1px solid #dee2e6;
@@ -224,7 +219,6 @@
   overflow: auto;
 }
 
-/* Tabla */
 .guias-tabla {
   width: 100%;
   border-collapse: separate;
@@ -235,7 +229,6 @@
   overflow: hidden;
 }
 
-/* Header de tabla */
 .guias-fila-encabezado {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
@@ -254,42 +247,33 @@
   border-right: 1px solid #dee2e6;
 }
 
-/* Anchos específicos */
 .guias-fila-encabezado th:nth-child(1) {
   width: 80px;
 }
 
-/* ID */
 .guias-fila-encabezado th:nth-child(2) {
   width: 280px;
 }
 
-/* NOMBRE COMPLETO */
 .guias-fila-encabezado th:nth-child(3) {
   width: 100px;
 }
 
-/* EDAD */
 .guias-fila-encabezado th:nth-child(4) {
   width: 100px;
 }
 
-/* GÉNERO */
 .guias-fila-encabezado th:nth-child(5) {
   width: 180px;
 }
 
-/* TELÉFONO */
 .guias-fila-encabezado th:nth-child(6) {
   width: 200px;
 }
 
-/* IDIOMAS */
 .guias-fila-encabezado th:nth-child(7) {
   width: 150px;
 }
-
-/* ACCIONES */
 
 .guias-fila-guia {
   border-bottom: 1px solid #dee2e6;
@@ -316,7 +300,6 @@
   font-size: 0.85rem;
 }
 
-/* Estilos específicos de columnas */
 .guias-columna-id .guias-badge-id {
   background: linear-gradient(135deg, #ede9fe, #ddd6fe);
   color: #1e40af;
@@ -362,7 +345,6 @@
   font-weight: 500;
 }
 
-/* Badge de edad */
 .guias-badge-edad {
   background: #f0fdf4;
   color: #15803d;
@@ -376,7 +358,6 @@
   gap: 0.25rem;
 }
 
-/* Badge de género */
 .guias-badge-genero {
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
@@ -406,7 +387,6 @@
   border: 1px solid #e9d5ff;
 }
 
-/* Valores de teléfono */
 .guias-valor-telefono {
   color: #475569;
   font-weight: 500;
@@ -416,7 +396,6 @@
   gap: 0.25rem;
 }
 
-/* Badge de idiomas */
 .guias-badge-idiomas {
   display: flex;
   flex-wrap: wrap;
@@ -433,7 +412,6 @@
   border: 1px solid #ddd6fe;
 }
 
-/* Columna de acciones */
 .guias-columna-acciones {
   position: relative;
   width: 150px;
@@ -511,7 +489,6 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* Footer */
 .guias-pie-tabla {
   padding: 1.5rem 2rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -594,7 +571,6 @@
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
-/* Animaciones */
 @keyframes guias-fadeIn {
   from {
     opacity: 0;
@@ -643,7 +619,6 @@
   animation-delay: 0.3s;
 }
 
-/* Estado vacío */
 .guias-estado-vacio {
   text-align: center;
   padding: 3rem 2rem;
@@ -669,7 +644,6 @@
   color: #6b7280;
 }
 
-/* Responsive */
 @media (max-width: 992px) {
   .guias-encabezado {
     padding: 1rem 1.5rem;
@@ -810,4 +784,37 @@
   .guias-titulo {
     font-size: 1.25rem;
   }
+}
+
+.guias-mensaje-cargando {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #606161;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border-radius: 8px;
+}
+
+.guias-badge-estado {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.guias-badge-estado.activo {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.guias-badge-estado.inactivo {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
 }

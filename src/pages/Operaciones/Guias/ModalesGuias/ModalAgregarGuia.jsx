@@ -5,7 +5,6 @@ import './ModalAgregarGuia.css';
 
 const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // 🧾 Datos Personales
     nombre: '',
     apellido_paterno: '',
     apellido_materno: '',
@@ -18,8 +17,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
     institucion_seguro: '',
     contacto_emergencia: '',
     telefono_emergencia: '',
-
-    // 💼 Información Profesional
     costo_dia: '',
     idiomas: '',
     experiencia_anos: '',
@@ -27,8 +24,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
     certificacion_oficial: '',
     zona_servicio: '',
     estado_operativo: 'activo',
-
-    // 📄 Documentos
     foto_guia: null,
     foto_ine: null,
     foto_certificaciones: null,
@@ -39,7 +34,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
-
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
       const nuevosErrores = { ...prev };
@@ -77,7 +71,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // 🧾 Datos Personales (obligatorios)
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
@@ -90,13 +83,11 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       nuevosErrores.apellido_materno = 'Apellido requerido';
     }
 
-    // Validar teléfono (10 dígitos)
     const telefonoRegex = /^\d{10}$/;
     if (!formData.telefono || !telefonoRegex.test(formData.telefono)) {
       nuevosErrores.telefono = 'Debe tener 10 dígitos';
     }
 
-    // Validar email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email || !emailRegex.test(formData.email)) {
       nuevosErrores.email = 'Email inválido';
@@ -105,7 +96,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
     if (!formData.fecha_nacimiento) {
       nuevosErrores.fecha_nacimiento = 'La fecha es requerida';
     } else {
-      // Validar que sea mayor de 18 años
       const fechaNac = new Date(formData.fecha_nacimiento);
       const hoy = new Date();
       let edad = hoy.getFullYear() - fechaNac.getFullYear();
@@ -138,7 +128,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       nuevosErrores.telefono_emergencia = 'Debe tener 10 dígitos';
     }
 
-    // 💼 Información Profesional (obligatorios)
     if (!formData.costo_dia || parseFloat(formData.costo_dia) <= 0) {
       nuevosErrores.costo_dia = 'El costo debe ser mayor a 0';
     }
@@ -149,13 +138,11 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    console.log('📋 Iniciando validación...');
 
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposPersonales = ['nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email', 'fecha_nacimiento', 'ciudad', 'estado', 'institucion_seguro', 'contacto_emergencia', 'telefono_emergencia'];
       const camposProfesionales = ['costo_dia', 'idiomas', 'experiencia_anos', 'certificacion_oficial', 'zona_servicio'];
@@ -181,7 +168,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
       return;
     }
 
-    console.log('✅ Validación exitosa, guardando guía...');
     setGuardando(true);
 
     try {
@@ -214,19 +200,16 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
         }
       };
 
-      console.log('📦 Datos a guardar:', guiaData);
 
       const nombreCompleto = `${formData.nombre} ${formData.apellido_paterno} ${formData.apellido_materno}`;
 
       await onGuardar(guiaData);
 
-      console.log('✅ Guía guardado, cerrando modal primero...');
 
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Guía Agregado!',
@@ -253,9 +236,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
           confirmButton: 'swal-guia-confirm-custom'
         }
       });
-
-      console.log('✅ Alerta cerrada');
-
     } catch (error) {
       console.error('❌ Error al guardar:', error);
 
@@ -676,7 +656,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
   return (
     <div className="modal-guia-overlay" onClick={onCerrar}>
       <div className="modal-guia-contenido modal-guia-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-guia-header">
           <h2>Agregar Nuevo Guía</h2>
           <button className="modal-guia-btn-cerrar" onClick={onCerrar} type="button">
@@ -684,7 +663,6 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="modal-guia-tabs">
           <button
             className={`modal-guia-tab-button ${seccionActiva === 'personales' ? 'active' : ''}`}
@@ -712,14 +690,12 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="modal-guia-form">
           {seccionActiva === 'personales' && renderSeccionPersonales()}
           {seccionActiva === 'profesionales' && renderSeccionProfesionales()}
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="modal-guia-footer">
           <div className="modal-guia-botones-izquierda">
             <button type="button" className="modal-guia-btn-cancelar" onClick={onCerrar}>
@@ -742,5 +718,4 @@ const ModalAgregarGuia = ({ onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalAgregarGuia;

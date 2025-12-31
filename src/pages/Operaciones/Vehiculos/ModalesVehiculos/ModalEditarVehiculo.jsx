@@ -5,15 +5,12 @@ import Swal from 'sweetalert2';
 
 const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Campos básicos
     nombre: '',
     rendimiento: '',
     precio_combustible: '',
     desgaste: '',
     costo_renta: '',
     costo_chofer_dia: '',
-
-    // Campos adicionales
     numero_serie: '',
     nip: '',
     numero_tag: '',
@@ -26,8 +23,6 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
     numero_pasajeros: '',
     comentarios: '',
     vehiculos_disponibles: '',
-
-    // Documentos
     foto_vehiculo: null,
     foto_poliza_seguro: null,
     foto_factura: null,
@@ -39,7 +34,6 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
   const [seccionActiva, setSeccionActiva] = useState('basicos');
   const [guardando, setGuardando] = useState(false);
 
-  // Cargar datos del vehículo cuando se abre el modal
   useEffect(() => {
     if (vehiculo) {
       setFormData({
@@ -167,10 +161,8 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
 
-      // Determinar qué sección tiene errores
       const camposBasicos = ['nombre', 'rendimiento', 'precio_combustible', 'desgaste', 'costo_renta', 'costo_chofer_dia'];
       const camposAdicionales = ['marca', 'modelo', 'anio', 'numero_placa', 'numero_pasajeros', 'vehiculos_disponibles'];
-
       const erroresEnBasicos = Object.keys(nuevosErrores).some(key => camposBasicos.includes(key));
       const erroresEnAdicionales = Object.keys(nuevosErrores).some(key => camposAdicionales.includes(key));
 
@@ -180,7 +172,6 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         setSeccionActiva('adicionales');
       }
 
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.querySelector(`[name="${primerCampoConError}"]`);
@@ -225,22 +216,10 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         }
       };
 
-      // Guardar el nombre del vehículo antes de cerrar
       const nombreVehiculo = formData.nombre;
-
-      // Llamar a la función onGuardar del padre
       await onGuardar(vehiculoData);
-
-      console.log('✅ Vehículo actualizado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
-
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Vehículo Actualizado!',
@@ -268,12 +247,9 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
-
-      // Si hay error, también cerrar el modal primero
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -693,7 +669,6 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
   return (
     <div className="mev-overlay" onClick={onCerrar}>
       <div className="mev-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="mev-header">
           <h2>Editar Vehículo</h2>
           <button className="mev-btn-cerrar" onClick={onCerrar} type="button">
@@ -701,7 +676,6 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="mev-tabs">
           <button
             className={`mev-tab-button ${seccionActiva === 'basicos' ? 'active' : ''}`}
@@ -729,14 +703,12 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="mev-form">
           {seccionActiva === 'basicos' && renderSeccionBasicos()}
           {seccionActiva === 'adicionales' && renderSeccionAdicionales()}
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="mev-footer">
           <div className="mev-botones-izquierda">
             <button type="button" className="mev-btn-cancelar" onClick={onCerrar}>
@@ -759,5 +731,4 @@ const ModalEditarVehiculo = ({ vehiculo, onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalEditarVehiculo;

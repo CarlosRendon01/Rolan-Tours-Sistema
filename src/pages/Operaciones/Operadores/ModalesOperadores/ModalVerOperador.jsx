@@ -8,28 +8,19 @@ import CredencialOperador from '../Credenciales/CredencialOperador';
 
 const ModalVerOperador = ({ operador, onCerrar }) => {
   
-  // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
-    
-    // Si ya es una URL string, retornarla
     if (typeof archivo === 'string') {
       return archivo;
     }
-    
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
-    
     return null;
   };
 
-  // Obtener URLs de los archivos
   const fotoUrl = obtenerUrlArchivo(operador.foto);
   const ineUrl = obtenerUrlArchivo(operador.ine);
-  
-  // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'N/A';
     const limpio = telefono.replace(/\D/g, '');
@@ -39,7 +30,6 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
     return telefono;
   };
 
-  // Función para formatear fecha
   const formatearFecha = (fecha) => {
     if (!fecha) return 'N/A';
     const date = new Date(fecha);
@@ -50,7 +40,6 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
     });
   };
 
-  // Función para obtener estado de vigencia
   const obtenerEstadoVigencia = (fechaVencimiento) => {
     if (!fechaVencimiento) return { clase: 'vencida', texto: 'Sin fecha', icono: XCircle };
     
@@ -67,21 +56,18 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
     }
   };
 
-  // Función para ver documento
   const handleVerDocumento = (archivo) => {
     if (!archivo) {
       alert('No hay documento disponible para visualizar');
       return;
     }
     
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       window.open(url, '_blank');
       return;
     }
     
-    // Si es una URL string
     if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
       window.open(archivo, '_blank');
       return;
@@ -90,14 +76,12 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
     alert('No hay documento disponible para visualizar');
   };
 
-  // Función para descargar documento
   const handleDescargar = (archivo, nombreDocumento) => {
     if (!archivo) {
       alert('No hay documento disponible para descargar');
       return;
     }
     
-    // Si es un objeto File
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       const link = document.createElement('a');
@@ -110,7 +94,6 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
       return;
     }
     
-    // Si es una URL string
     if (typeof archivo === 'string') {
       const link = document.createElement('a');
       link.href = archivo;
@@ -125,12 +108,10 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
   };
 
   const tieneDocumentos = fotoUrl || ineUrl;
-
   const estadoLicencia = obtenerEstadoVigencia(operador.fechaVencimientoLicencia);
   const estadoExamen = obtenerEstadoVigencia(operador.fechaVencimientoExamen);
   const IconoLicencia = estadoLicencia.icono;
   const IconoExamen = estadoExamen.icono;
-
   return (
     <div className="mvo-overlay" onClick={onCerrar}>
       <div className="mvo-contenido" onClick={(e) => e.stopPropagation()}>
@@ -151,9 +132,7 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
 
         <div className="mvo-body">
           <div className="mvo-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvo-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvo-operador-hero">
                 <div className="mvo-operador-hero-content">
                   <h3 className="mvo-operador-titulo">
@@ -182,13 +161,11 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                   </div>
                 </div>
                 
-                {/* Credencial del Operador */}
                 <div className="mvo-operador-imagen-container">
                   <CredencialOperador operador={operador} />
                 </div>
               </div>
 
-              {/* Información Personal */}
               <div className="mvo-seccion-detalles">
                 <h3 className="mvo-titulo-seccion">
                   <UserCircle size={20} />
@@ -261,7 +238,6 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información de Licencia */}
               <div className="mvo-seccion-detalles">
                 <h3 className="mvo-titulo-seccion">
                   <Shield size={20} />
@@ -316,7 +292,6 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Comentarios */}
               {operador.comentarios && (
                 <div className="mvo-seccion-detalles">
                   <h3 className="mvo-titulo-seccion">
@@ -329,7 +304,6 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                 </div>
               )}
 
-              {/* Documentos */}
               <div className="mvo-seccion-detalles">
                 <h3 className="mvo-titulo-seccion">
                   <FileText size={20} />
@@ -395,9 +369,7 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
               </div>
             </div>
 
-            {/* Columna Derecha - Información de Contacto */}
             <div className="mvo-columna-derecha">
-              {/* Card de Teléfonos */}
               <div className="mvo-card-estadistica">
                 <div className="mvo-card-header">
                   <h4 className="mvo-card-titulo">Teléfonos de Contacto</h4>
@@ -428,7 +400,6 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Estado de Licencia */}
               <div className="mvo-card-estadistica">
                 <div className="mvo-card-header">
                   <h4 className="mvo-card-titulo">Estado de Licencia</h4>
@@ -453,7 +424,6 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Estado de Examen */}
               <div className="mvo-card-estadistica">
                 <div className="mvo-card-header">
                   <h4 className="mvo-card-titulo">Estado de Examen</h4>
@@ -490,5 +460,4 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerOperador;

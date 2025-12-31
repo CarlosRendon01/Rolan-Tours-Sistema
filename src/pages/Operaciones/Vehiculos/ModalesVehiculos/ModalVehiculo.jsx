@@ -5,15 +5,12 @@ import './ModalVehiculo.css';
 
 const ModalVehiculo = ({ onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Campos básicos
     nombre: '',
     rendimiento: '',
     precio_combustible: '',
     desgaste: '',
     costo_renta: '',
     costo_chofer_dia: '',
-
-    // Campos adicionales
     numero_serie: '',
     nip: '',
     numero_tag: '',
@@ -26,19 +23,15 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
     numero_pasajeros: '',
     comentarios: '',
     vehiculos_disponibles: '',
-
-    // Documentos
     foto_vehiculo: null,
     foto_poliza_seguro: null,
     foto_factura: null,
     foto_verificaciones: null,
     foto_folio_antt: null
   });
-
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('basicos');
   const [guardando, setGuardando] = useState(false);
-
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
       const nuevosErrores = { ...prev };
@@ -46,19 +39,16 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
       return nuevosErrores;
     });
   }, []);
-
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-
     if (errores[name]) {
       limpiarErrorCampo(name);
     }
   }, [errores, limpiarErrorCampo]);
-
   const handleFileChange = useCallback((e) => {
     const { name, files } = e.target;
     if (files && files[0]) {
@@ -75,8 +65,6 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
 
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
-
-    // Validaciones campos básicos (obligatorios)
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
@@ -101,7 +89,6 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
       nuevosErrores.costo_chofer_dia = 'El costo debe ser mayor a 0';
     }
 
-    // Validaciones campos adicionales (obligatorios)
     if (!formData.marca.trim()) {
       nuevosErrores.marca = 'La marca es requerida';
     }
@@ -133,13 +120,11 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    console.log('🔍 Iniciando validación...');
 
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposBasicos = ['nombre', 'rendimiento', 'precio_combustible', 'desgaste', 'costo_renta', 'costo_chofer_dia'];
       const camposAdicionales = ['marca', 'modelo', 'anio', 'numero_placa', 'numero_pasajeros', 'vehiculos_disponibles'];
@@ -165,7 +150,6 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
       return;
     }
 
-    console.log('✅ Validación exitosa, guardando vehículo...');
     setGuardando(true);
 
     try {
@@ -196,25 +180,10 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           foto_folio_antt: formData.foto_folio_antt
         }
       };
-
-      console.log('📦 Datos a guardar:', vehiculoData);
-
-      // Guardar el nombre del vehículo antes de cerrar
       const nombreVehiculo = formData.nombre;
-
-      // Llamar a la función onGuardar del padre
       await onGuardar(vehiculoData);
-
-      console.log('✅ Vehículo guardado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
-
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Vehículo Agregado!',
@@ -226,11 +195,11 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
       `,
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#2563eb',
-        timer: 3000, // ✅ (era 3000 antes)
-        timerProgressBar: true, // Muestra barra de progreso
-        showConfirmButton: true, // Permite cerrar antes con el botón
-        allowOutsideClick: true, // Permite cerrar haciendo clic fuera
-        allowEscapeKey: true, // Permite cerrar con ESC
+        timer: 3000,
+        timerProgressBar: true, 
+        showConfirmButton: true, 
+        allowOutsideClick: true, 
+        allowEscapeKey: true, 
         width: '500px',
         padding: '2rem',
         backdrop: `rgba(0,0,0,0.6)`,
@@ -242,16 +211,11 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al guardar:', error);
-
-      // Si hay error, también cerrar el modal primero
       onCerrar();
-
       await new Promise(resolve => setTimeout(resolve, 300));
-
       await Swal.fire({
         icon: 'error',
         title: 'Error al Guardar',
@@ -271,11 +235,9 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
       setGuardando(false);
     }
   }, [formData, validarFormulario, onGuardar, onCerrar]);
-
   const MensajeError = ({ nombreCampo }) => {
     const error = errores[nombreCampo];
     if (!error) return null;
-
     return <span className="modal-agregar-error-mensaje">{error}</span>;
   };
 
@@ -648,7 +610,6 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
   return (
     <div className="modal-agregar-overlay" onClick={onCerrar}>
       <div className="modal-agregar-contenido modal-agregar-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-agregar-header">
           <h2>Agregar Nuevo Vehículo</h2>
           <button className="modal-agregar-btn-cerrar" onClick={onCerrar} type="button">
@@ -656,7 +617,6 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="modal-agregar-tabs">
           <button
             className={`modal-agregar-tab-button ${seccionActiva === 'basicos' ? 'active' : ''}`}
@@ -684,14 +644,12 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="modal-agregar-form">
           {seccionActiva === 'basicos' && renderSeccionBasicos()}
           {seccionActiva === 'adicionales' && renderSeccionAdicionales()}
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="modal-agregar-footer">
           <div className="modal-agregar-botones-izquierda">
             <button type="button" className="modal-agregar-btn-cancelar" onClick={onCerrar}>
@@ -714,5 +672,4 @@ const ModalVehiculo = ({ onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVehiculo;

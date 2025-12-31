@@ -3,20 +3,16 @@ import axios from 'axios';
 import './ModalEliminarOperador.css';
 
 /**
- * Modal de confirmación para eliminar un operador usando SweetAlert2
- * @param {Object} operador - Objeto con información del operador a eliminar
- * @param {Function} onConfirmar - Callback cuando se confirma la eliminación
- * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
+ * @param {Object} operador 
+ * @param {Function} onConfirmar 
+ * @returns {Promise<boolean>} 
  */
 export const modalEliminarOperador = async (operador, onConfirmar) => {
-  // Validar datos del operador
   if (!operador?.nombre || !operador?.apellidoPaterno) {
     await modalError('Información del operador incompleta');
     return false;
   }
-
   const nombreCompleto = `${operador.nombre} ${operador.apellidoPaterno} ${operador.apellidoMaterno || ''}`.trim();
-
   const resultado = await Swal.fire({
     title: '¿Eliminar este operador?',
     html: `
@@ -63,16 +59,11 @@ export const modalEliminarOperador = async (operador, onConfirmar) => {
         }
       });
 
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
-
       Swal.close();
-
       if (onConfirmar) {
         await onConfirmar(operador);
       }
-
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminado!',
         html: `
@@ -108,8 +99,7 @@ export const modalEliminarOperador = async (operador, onConfirmar) => {
 };
 
 /**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
+ * @param {string} mensaje 
  */
 export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
@@ -128,8 +118,7 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
 };
 
 /**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
+ * @param {string} mensaje 
  */
 export const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
@@ -148,11 +137,7 @@ export const modalCargando = (mensaje = 'Procesando...') => {
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
 export const cerrarModalCargando = () => {
   Swal.close();
 };
-
 export default modalEliminarOperador;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Building2, Store, Plus, Phone, CreditCard } from 'lucide-react';
 import './TablaProveedores.css';
 
@@ -8,14 +8,30 @@ const TablaProveedores = ({
   onVer,
   onEditar,
   onEliminar,
-  onAgregar
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
-  // Estados locales para UI (paginación, búsqueda)
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [puntosCarga, setPuntosCarga] = useState('');
 
-  // Filtrar proveedores por búsqueda
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const proveedoresFiltrados = proveedores.filter(proveedor => {
     const busqueda = terminoBusqueda.toLowerCase();
     return (
@@ -26,18 +42,15 @@ const TablaProveedores = ({
     );
   });
 
-  // Calcular paginación
   const totalRegistros = proveedoresFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const proveedoresPaginados = proveedoresFiltrados.slice(indiceInicio, indiceFin);
 
-  // Calcular estadísticas
   const totalProveedores = proveedores.length;
   const proveedoresActivos = proveedores.filter(p => p.activo === true).length;
 
-  // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'N/A';
     const limpio = telefono.replace(/\D/g, '');
@@ -47,7 +60,6 @@ const TablaProveedores = ({
     return telefono;
   };
 
-  // Función para obtener iniciales o primera letra
   const obtenerIniciales = (razonSocial) => {
     if (!razonSocial) return '?';
     const palabras = razonSocial.trim().split(' ');
@@ -57,7 +69,6 @@ const TablaProveedores = ({
     return razonSocial.substring(0, 2).toUpperCase();
   };
 
-  // Función para obtener color según tipo de proveedor
   const obtenerColorTipo = (tipo) => {
     const colores = {
       'Transporte': { bg: '#dbeafe', color: '#1e40af', border: '#93c5fd' },
@@ -69,7 +80,6 @@ const TablaProveedores = ({
     return colores[tipo] || colores['Otro'];
   };
 
-  // Función para obtener color según método de pago
   const obtenerColorMetodoPago = (metodo) => {
     const colores = {
       'Transferencia': { bg: '#d1fae5', color: '#065f46' },
@@ -113,7 +123,6 @@ const TablaProveedores = ({
 
   return (
     <div className="proveedores-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="proveedores-encabezado">
         <div className="proveedores-seccion-logo">
           <div className="proveedores-lineas-decorativas">
@@ -125,7 +134,6 @@ const TablaProveedores = ({
           <h1 className="proveedores-titulo">Gestión de Proveedores</h1>
         </div>
 
-        {/* Estadísticas */}
         <div className="proveedores-contenedor-estadisticas">
           <div className="proveedores-estadistica">
             <div className="proveedores-icono-estadistica-circular">
@@ -147,7 +155,6 @@ const TablaProveedores = ({
         </div>
       </div>
 
-      {/* Controles */}
       <div className="proveedores-controles">
         <div className="proveedores-control-registros">
           <label htmlFor="proveedores-registros">Mostrar</label>
@@ -192,8 +199,30 @@ const TablaProveedores = ({
         </div>
       </div>
 
-      {/* Tabla */}
-      {proveedoresPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="proveedores-contenedor-tabla">
+          <table className="proveedores-tabla">
+            <thead>
+              <tr className="proveedores-fila-encabezado">
+                <th>ID</th>
+                <th>RAZÓN SOCIAL</th>
+                <th>TIPO</th>
+                <th>RFC</th>
+                <th>TELÉFONO</th>
+                <th>MÉTODO PAGO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="7" className="proveedores-mensaje-cargando">
+                  Cargando la información de los proveedores{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : proveedoresPaginados.length === 0 ? (
         <div className="proveedores-estado-vacio">
           <div className="proveedores-icono-vacio">
             <Store size={80} strokeWidth={1.5} />
@@ -332,7 +361,6 @@ const TablaProveedores = ({
             </table>
           </div>
 
-          {/* Información de paginación y controles */}
           <div className="proveedores-pie-tabla">
             <div className="proveedores-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
@@ -380,5 +408,4 @@ const TablaProveedores = ({
     </div>
   );
 };
-
 export default TablaProveedores;

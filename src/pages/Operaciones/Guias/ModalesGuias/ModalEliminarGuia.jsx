@@ -2,20 +2,11 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import './ModalEliminarGuia.css';
 
-/**
- * Modal de confirmación para eliminar un guía usando SweetAlert2
- * @param {Object} guia - Objeto con información del guía a eliminar
- * @param {Function} onConfirmar - Callback cuando se confirma la eliminación
- * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
- */
 export const modalEliminarGuia = async (guia, onConfirmar) => {
-  // ✅ Validar datos del guía - USANDO LOS NOMBRES CORRECTOS DE LOS CAMPOS
   if (!guia || !guia.nombre || (!guia.apellido_paterno && !guia.apellidoPaterno)) {
     await modalError('Información del guía incompleta');
     return false;
   }
-
-  // ✅ Soportar ambos formatos de nombres (con guion bajo y camelCase)
   const apellidoPaterno = guia.apellido_paterno || guia.apellidoPaterno || '';
   const apellidoMaterno = guia.apellido_materno || guia.apellidoMaterno || '';
   const nombreCompleto = `${guia.nombre} ${apellidoPaterno} ${apellidoMaterno}`.trim();
@@ -66,7 +57,6 @@ export const modalEliminarGuia = async (guia, onConfirmar) => {
         }
 
       });
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
 
       Swal.close();
@@ -75,7 +65,6 @@ export const modalEliminarGuia = async (guia, onConfirmar) => {
         await onConfirmar(guia.id);
       }
 
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminado!',
         html: `
@@ -110,10 +99,7 @@ export const modalEliminarGuia = async (guia, onConfirmar) => {
   return false;
 };
 
-/**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
- */
+
 export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
     title: 'Error',
@@ -130,10 +116,6 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
   });
 };
 
-/**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
- */
 export const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
     title: mensaje,
@@ -151,11 +133,7 @@ export const modalCargando = (mensaje = 'Procesando...') => {
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
 export const cerrarModalCargando = () => {
   Swal.close();
 };
-
 export default modalEliminarGuia;

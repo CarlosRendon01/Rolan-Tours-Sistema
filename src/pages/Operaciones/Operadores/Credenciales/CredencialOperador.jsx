@@ -14,12 +14,9 @@ const CredencialOperador = ({ operador }) => {
     return (
         <div className="credencial-container">
             <div className="credencial-card">
-                {/* Fondo decorativo con el patrón */}
                 <div className="credencial-background"></div>
 
-                {/* Contenido de la credencial */}
                 <div className="credencial-content">
-                    {/* Foto del operador */}
                     <div className="credencial-foto-container">
                         {operador.foto ? (
                             <img
@@ -47,17 +44,14 @@ const CredencialOperador = ({ operador }) => {
                         )}
                     </div>
 
-                    {/* Nombre completo */}
                     <div className="credencial-nombre">
                         {operador.nombre} {operador.apellidoPaterno}
                     </div>
 
-                    {/* Cargo/Puesto */}
                     <div className="credencial-cargo">
                         {operador.cargo || 'Conductor'}
                     </div>
 
-                    {/* Teléfono */}
                     <div className="credencial-telefono">
                         <svg
                             width="16"

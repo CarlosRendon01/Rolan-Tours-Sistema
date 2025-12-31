@@ -9,32 +9,52 @@ import { modalEliminarVehiculo } from './ModalesVehiculos/ModalEliminarVehiculo'
 import './VehiculosPrincipal.css';
 
 const VehiculosPrincipal = () => {
-  // Estado principal de vehículos
   const [vehiculos, setVehiculos] = useState([]);
-
-  // Estados de los modales
   const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
   const recargarVehiculos = async () => {
+    setCargando(true);
+    setError(null);
+
     try {
       const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("No hay token de autenticación");
+      }
+
       const response = await axios.get("http://127.0.0.1:8000/api/vehiculos", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
+        timeout: 10000
       });
+
       setVehiculos(response.data);
-      console.log('✅ Vehículos cargados:', response.data);
+
     } catch (error) {
       console.error('❌ Error al cargar vehículos:', error);
+
+      if (error.code === 'ECONNABORTED') {
+        setError('La conexión tardó demasiado. Verifica tu servidor.');
+      } else if (error.response) {
+        setError(`Error del servidor: ${error.response.status}`);
+      } else if (error.request) {
+        setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+      } else {
+        setError(error.message);
+      }
+    } finally {
+      setCargando(false);
     }
   };
 
-  // Cargar vehículos al montar el componente
   useEffect(() => {
     recargarVehiculos();
   }, []);
@@ -54,13 +74,11 @@ const VehiculosPrincipal = () => {
   };
 
   const handleEliminarVehiculo = async (vehiculo) => {
-    const confirmado = await modalEliminarVehiculo(vehiculo, await recargarVehiculos)
+    const confirmado = await modalEliminarVehiculo(vehiculo, recargarVehiculos);
     if (confirmado) {
-      console.log('Vehículo eliminado:', vehiculo);
     }
   };
 
-  // ✅ AGREGAR - Esta función NO cierra el modal, lo hace el ModalVehiculo después de la alerta
   const handleGuardarNuevoVehiculo = async (vehiculo) => {
     try {
       const token = localStorage.getItem("token");
@@ -86,8 +104,6 @@ const VehiculosPrincipal = () => {
         comentarios: vehiculo.comentarios || null,
       };
 
-      console.log("📦 Datos a enviar al backend:", vehiculoData);
-
       const response = await axios.post(
         "http://127.0.0.1:8000/api/vehiculos",
         vehiculoData,
@@ -99,13 +115,12 @@ const VehiculosPrincipal = () => {
         }
       );
 
-      console.log("✅ Vehiculo creado:", response.data);
-      await recargarVehiculos(); // Recargar la lista
-      return response.data; // ✅ Retornar los datos para que el modal sepa que terminó
+      await recargarVehiculos();
+      return response.data;
     } catch (error) {
       console.error("❌ Error al crear vehiculo:", error);
       console.error("❌ Respuesta del servidor:", error.response?.data);
-      throw error; // ✅ Lanzar el error para que el modal lo maneje
+      throw error;
     }
   };
 
@@ -134,8 +149,6 @@ const VehiculosPrincipal = () => {
         comentarios: vehiculoActualizado.comentarios || null,
       };
 
-      console.log("📦 Datos a actualizar:", vehiculoData);
-
       const response = await axios.put(
         `http://127.0.0.1:8000/api/vehiculos/${vehiculoActualizado.id}`,
         vehiculoData,
@@ -146,20 +159,41 @@ const VehiculosPrincipal = () => {
           }
         }
       );
-
-      console.log("✅ Vehiculo actualizado:", response.data);
-      await recargarVehiculos(); // Recargar la lista
-      return response.data; // ✅ Retornar los datos para que el modal sepa que terminó
+      await recargarVehiculos();
+      return response.data;
     } catch (error) {
       console.error("❌ Error al actualizar vehiculo:", error);
       console.error("❌ Respuesta del servidor:", error.response?.data);
-      throw error; // ✅ Lanzar el error para que el modal lo maneje
+      throw error;
     }
   };
 
   const handleCerrarModalAgregar = () => {
     setModalAgregarAbierto(false);
   };
+
+  if (error) {
+    return (
+      <PrincipalComponente>
+        <div className="vehiculos-error-container">
+          <div className="vehiculos-error-box">
+            <h2 className="vehiculos-error-title">
+              ❌ Error al cargar vehículos
+            </h2>
+            <p className="vehiculos-error-message">
+              {error}
+            </p>
+            <button
+              onClick={recargarVehiculos}
+              className="vehiculos-error-button"
+            >
+              🔄 Reintentar
+            </button>
+          </div>
+        </div>
+      </PrincipalComponente>
+    );
+  }
 
   return (
     <PrincipalComponente>
@@ -171,9 +205,10 @@ const VehiculosPrincipal = () => {
           onEditar={handleEditarVehiculo}
           onEliminar={handleEliminarVehiculo}
           onAgregar={handleAgregarVehiculo}
+          cargando={cargando}
+          onRecargar={recargarVehiculos}
         />
 
-        {/* Modal AGREGAR */}
         {modalAgregarAbierto && (
           <ModalVehiculo
             onGuardar={handleGuardarNuevoVehiculo}
@@ -181,7 +216,6 @@ const VehiculosPrincipal = () => {
           />
         )}
 
-        {/* Modal EDITAR */}
         {modalEditarAbierto && vehiculoSeleccionado && (
           <ModalEditarVehiculo
             vehiculo={vehiculoSeleccionado}
@@ -193,7 +227,6 @@ const VehiculosPrincipal = () => {
           />
         )}
 
-        {/* Modal VER */}
         {modalVerAbierto && vehiculoSeleccionado && (
           <ModalVerVehiculo
             vehiculo={vehiculoSeleccionado}

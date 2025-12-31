@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TablaOperadores from './Componentes/TablaOperadores';
 import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
@@ -15,21 +15,51 @@ const OperadoresPrincipal = () => {
     const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
     const [operadorSeleccionado, setOperadorSeleccionado] = useState(null);
+    const [cargando, setCargando] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        recargarOperadores();
+    }, []); 
 
     const recargarOperadores = async () => {
+        setCargando(true);
+        setError(null);
+        
         try {
             const token = localStorage.getItem("token");
+            
+            if (!token) {
+                throw new Error("No hay token de autenticación");
+            }
+            
             const response = await axios.get("http://127.0.0.1:8000/api/operadores", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
-                }
+                },
+                timeout: 10000 
             });
+
             setOperadores(response.data);
+            
         } catch (error) {
-            console.error('❌ Error al recargar operadores:', error);
+            console.error('❌ Error al cargar operadores:', error);
+            
+            if (error.code === 'ECONNABORTED') {
+                setError('La conexión tardó demasiado. Verifica tu servidor.');
+            } else if (error.response) {
+                setError(`Error del servidor: ${error.response.status}`);
+            } else if (error.request) {
+                setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+            } else {
+                setError(error.message);
+            }
+        } finally {
+            setCargando(false);
         }
     };
+
     const manejarVer = (operador) => {
         setOperadorSeleccionado(operador);
         setModalVerAbierto(true);
@@ -76,6 +106,7 @@ const OperadoresPrincipal = () => {
                 fecha_vencimiento_examen: nuevoOperador.fechaVencimientoExamen,
                 comentarios: nuevoOperador.comentarios || null,
             };
+            
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/operadores",
                 operadorData,
@@ -87,8 +118,10 @@ const OperadoresPrincipal = () => {
                     }
                 }
             );
+            
             await recargarOperadores(); 
             return response.data; 
+            
         } catch (error) {
             console.error("❌ Error al crear operador:", error);
             console.error("❌ Respuesta del servidor:", error.response?.data);
@@ -114,6 +147,7 @@ const OperadoresPrincipal = () => {
                 fecha_vencimiento_examen: operadorActualizado.fechaVencimientoExamen,
                 comentarios: operadorActualizado.comentarios || null,
             };
+            
             const response = await axios.put(
                 `http://127.0.0.1:8000/api/operadores/${operadorActualizado.id}`,
                 operadorData,
@@ -127,12 +161,36 @@ const OperadoresPrincipal = () => {
             );
             await recargarOperadores(); 
             return response.data; 
+            
         } catch (error) {
             console.error("❌ Error al actualizar operador:", error);
             console.error("❌ Respuesta del servidor:", error.response?.data);
             throw error; 
         }
     };
+
+    if (error) {
+        return (
+            <PrincipalComponente>
+                <div className="error-container">
+                    <div className="error-box">
+                        <h2 className="error-title">
+                            ❌ Error al cargar operadores
+                        </h2>
+                        <p className="error-message">
+                            {error}
+                        </p>
+                        <button
+                            onClick={recargarOperadores}
+                            className="error-button"
+                        >
+                            🔄 Reintentar
+                        </button>
+                    </div>
+                </div>
+            </PrincipalComponente>
+        );
+    }
 
     return (
         <PrincipalComponente>
@@ -144,6 +202,8 @@ const OperadoresPrincipal = () => {
                     onEditar={manejarEditar}
                     onEliminar={manejarEliminar}
                     onAgregar={manejarAgregar}
+                    cargando={cargando}
+                    onRecargar={recargarOperadores}
                 />
 
                 {modalVerAbierto && operadorSeleccionado && (
@@ -171,4 +231,5 @@ const OperadoresPrincipal = () => {
         </PrincipalComponente>
     );
 };
+
 export default OperadoresPrincipal;

@@ -7,16 +7,13 @@ import './ModalVerProveedor.css';
 
 const ModalVerProveedor = ({ proveedor, onCerrar }) => {
 
-  // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
 
-    // Si ya es una URL string, retornarla
     if (typeof archivo === 'string') {
       return archivo;
     }
 
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
@@ -24,12 +21,10 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
     return null;
   };
 
-  // Obtener URLs de los archivos
   const fotoUrl = obtenerUrlArchivo(proveedor.foto_proveedor);
   const rfcUrl = obtenerUrlArchivo(proveedor.documento_rfc);
   const identificacionUrl = obtenerUrlArchivo(proveedor.identificacion);
 
-  // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'N/A';
     const limpio = telefono.replace(/\D/g, '');
@@ -39,7 +34,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
     return telefono;
   };
 
-  // Función para obtener clase de badge de tipo de proveedor
   const obtenerClaseTipo = (tipo) => {
     const tipos = {
       'Transporte': 'transporte',
@@ -51,7 +45,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
     return tipos[tipo] || 'otro';
   };
 
-  // Función para obtener icono de tipo de proveedor
   const obtenerIconoTipo = (tipo) => {
     switch (tipo) {
       case 'Transporte':
@@ -67,21 +60,18 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
     }
   };
 
-  // Función para ver documento
   const handleVerDocumento = (archivo) => {
     if (!archivo) {
       alert('No hay documento disponible para visualizar');
       return;
     }
 
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       window.open(url, '_blank');
       return;
     }
 
-    // Si es una URL string
     if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
       window.open(archivo, '_blank');
       return;
@@ -90,14 +80,12 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
     alert('No hay documento disponible para visualizar');
   };
 
-  // Función para descargar documento
   const handleDescargar = (archivo, nombreDocumento) => {
     if (!archivo) {
       alert('No hay documento disponible para descargar');
       return;
     }
 
-    // Si es un objeto File
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       const link = document.createElement('a');
@@ -110,7 +98,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
       return;
     }
 
-    // Si es una URL string
     if (typeof archivo === 'string') {
       const link = document.createElement('a');
       link.href = archivo;
@@ -146,9 +133,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
 
         <div className="mvp-body">
           <div className="mvp-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvp-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvp-proveedor-hero">
                 <div className="mvp-proveedor-hero-content">
                   <h3 className="mvp-proveedor-titulo">
@@ -177,7 +162,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                   </div>
                 </div>
 
-                {/* Foto del Proveedor */}
                 <div className="mvp-proveedor-imagen-container">
                   {fotoUrl ? (
                     <img
@@ -208,7 +192,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información General */}
               <div className="mvp-seccion-detalles">
                 <h3 className="mvp-titulo-seccion">
                   <Building2 size={20} />
@@ -281,7 +264,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Descripción del Servicio */}
               {proveedor.descripcion_servicio && (
                 <div className="mvp-seccion-detalles">
                   <h3 className="mvp-titulo-seccion">
@@ -294,7 +276,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                 </div>
               )}
 
-              {/* Documentos */}
               <div className="mvp-seccion-detalles">
                 <h3 className="mvp-titulo-seccion">
                   <FileText size={20} />
@@ -385,9 +366,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
               </div>
             </div>
 
-            {/* Columna Derecha - Información de Contacto */}
             <div className="mvp-columna-derecha">
-              {/* Card de Contacto */}
               <div className="mvp-card-estadistica">
                 <div className="mvp-card-header">
                   <h4 className="mvp-card-titulo">Información de Contacto</h4>
@@ -418,7 +397,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Dirección */}
               <div className="mvp-card-estadistica">
                 <div className="mvp-card-header">
                   <h4 className="mvp-card-titulo">Dirección</h4>
@@ -453,7 +431,6 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Estado */}
               <div className="mvp-card-estadistica">
                 <div className="mvp-card-header">
                   <h4 className="mvp-card-titulo">Estado del Proveedor</h4>
@@ -490,5 +467,4 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerProveedor;

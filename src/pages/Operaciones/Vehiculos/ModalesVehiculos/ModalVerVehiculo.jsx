@@ -1,7 +1,7 @@
 import {
   X, Car, Gauge, Fuel, TrendingDown, CreditCard,
   UserCircle, FileText, Calendar, Hash, Tag,
-  Image as ImageIcon, Download, DollarSign, Activity, Eye  // ✅ Agregado Eye
+  Image as ImageIcon, Download, DollarSign, Activity, Eye 
 } from 'lucide-react';
 import './ModalVerVehiculo.css';
 
@@ -30,13 +30,11 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
     return Math.min(desgaste * 10, 100);
   };
 
-  // ✅ Función para ver documento en nueva pestaña
   const handleVerDocumento = (url) => {
     if (!url) return;
     window.open(url, '_blank');
   };
 
-  // ✅ Función para descargar documento
   const handleDescargar = (url, nombreDocumento) => {
     if (!url) return;
 
@@ -79,9 +77,7 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
 
         <div className="mvv-body">
           <div className="mvv-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvv-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvv-vehiculo-hero">
                 <div className="mvv-vehiculo-hero-content">
                   <h3 className="mvv-vehiculo-titulo">{vehiculo.nombre}</h3>
@@ -108,7 +104,6 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                   </div>
                 </div>
 
-                {/* Imagen del Vehículo */}
                 <div className="mvv-vehiculo-imagen-container">
                   {vehiculo.documentos?.foto_vehiculo ? (
                     <img
@@ -137,7 +132,6 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información del Vehículo */}
               <div className="mvv-seccion-detalles">
                 <h3 className="mvv-titulo-seccion">
                   <Car size={20} />
@@ -246,7 +240,6 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Datos Operativos */}
               <div className="mvv-seccion-detalles">
                 <h3 className="mvv-titulo-seccion">
                   <Gauge size={20} />
@@ -301,7 +294,6 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Comentarios */}
               {vehiculo.comentarios && (
                 <div className="mvv-seccion-detalles">
                   <h3 className="mvv-titulo-seccion">
@@ -314,7 +306,6 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                 </div>
               )}
 
-              {/* ✅ Documentos - SECCIÓN ACTUALIZADA */}
               <div className="mvv-seccion-detalles">
                 <h3 className="mvv-titulo-seccion">
                   <ImageIcon size={20} />
@@ -361,7 +352,6 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
               </div>
             </div>
 
-            {/* Columna Derecha - Estadísticas */}
             <div className="mvv-columna-derecha">
               {/* Card de Costos */}
               <div className="mvv-card-estadistica">
@@ -391,7 +381,6 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Rendimiento */}
               <div className="mvv-card-estadistica">
                 <div className="mvv-card-header">
                   <h4 className="mvv-card-titulo">Rendimiento</h4>
@@ -433,7 +422,6 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Disponibilidad */}
               <div className="mvv-card-estadistica">
                 <div className="mvv-card-header">
                   <h4 className="mvv-card-titulo">Disponibilidad</h4>
@@ -470,5 +458,4 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerVehiculo;

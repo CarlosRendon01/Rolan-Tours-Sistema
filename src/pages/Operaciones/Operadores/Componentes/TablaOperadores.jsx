@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, UserCheck, Users, Plus, Phone } from 'lucide-react';
 import './TablaOperadores.css';
 
@@ -8,11 +8,29 @@ const TablaOperadores = ({
   onVer,
   onEditar,
   onEliminar,
-  onAgregar
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [puntosCarga, setPuntosCarga] = useState('');
+
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
 
   const operadoresFiltrados = operadores.filter(operador => {
     const busqueda = terminoBusqueda.toLowerCase();
@@ -182,7 +200,30 @@ const TablaOperadores = ({
         </div>
       </div>
 
-      {operadoresPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="operadores-contenedor-tabla">
+          <table className="operadores-tabla">
+            <thead>
+              <tr className="operadores-fila-encabezado">
+                <th>ID</th>
+                <th>NOMBRE COMPLETO</th>
+                <th>EDAD</th>
+                <th>TELÉFONO</th>
+                <th>N° LICENCIA</th>
+                <th>VIGENCIA LIC.</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="7" className="operadores-mensaje-cargando">
+                  Cargando la información de los operadores{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : operadoresPaginados.length === 0 ? (
         <div className="operadores-estado-vacio">
           <div className="operadores-icono-vacio">
             <Users size={80} strokeWidth={1.5} />
@@ -346,4 +387,5 @@ const TablaOperadores = ({
     </div>
   );
 };
+
 export default TablaOperadores;

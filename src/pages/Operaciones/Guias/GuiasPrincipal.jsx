@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TablaGuias from './Componentes/TablaGuias';
 import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
@@ -9,58 +9,77 @@ import ModalEditarGuia from './ModalesGuias/ModalEditarGuia';
 import { modalEliminarGuia } from './ModalesGuias/ModalEliminarGuia';
 
 const GuiasPrincipal = () => {
-    // Estado para almacenar los guías
     const [guias, setGuias] = useState([]);
-
-    // Estados para controlar los modales
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
     const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
     const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
     const [guiaSeleccionado, setGuiaSeleccionado] = useState(null);
+    const [cargando, setCargando] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        recargarGuias();
+    }, []);
 
     const recargarGuias = async () => {
+        setCargando(true);
+        setError(null);
+
         try {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                throw new Error("No hay token de autenticación");
+            }
+
             const response = await axios.get("http://127.0.0.1:8000/api/guias", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
-                }
+                },
+                timeout: 10000
             });
+
             setGuias(response.data);
-            console.log('✅ Guias recargados');
+
         } catch (error) {
             console.error('❌ Error al recargar guias:', error);
+
+            if (error.code === 'ECONNABORTED') {
+                setError('La conexión tardó demasiado. Verifica tu servidor.');
+            } else if (error.response) {
+                setError(`Error del servidor: ${error.response.status}`);
+            } else if (error.request) {
+                setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+            } else {
+                setError(error.message);
+            }
+        } finally {
+            setCargando(false);
         }
     };
 
-    // Funciones para manejar los modales
     const manejarVer = (guia) => {
         setGuiaSeleccionado(guia);
         setModalVerAbierto(true);
-        console.log('Ver guía:', guia);
     };
 
     const manejarEditar = (guia) => {
         setGuiaSeleccionado(guia);
         setModalEditarAbierto(true);
-        console.log('Editar guía:', guia);
     };
 
     const manejarEliminar = async (guia) => {
         const confirmado = await modalEliminarGuia(guia, recargarGuias);
         if (confirmado) {
-            console.log('Guía eliminado:', guia);
         }
     };
 
     const manejarAgregar = () => {
         setModalAgregarAbierto(true);
-        console.log('Agregar nuevo guía');
     };
 
-    // Función para cerrar modales
     const cerrarModales = () => {
         setModalVerAbierto(false);
         setModalEditarAbierto(false);
@@ -69,12 +88,10 @@ const GuiasPrincipal = () => {
         setGuiaSeleccionado(null);
     };
 
-    // Función para agregar guía
     const agregarGuia = async (nuevoGuia) => {
         try {
             const token = localStorage.getItem("token");
 
-            // Preparar datos para enviar al backend
             const guiaData = {
                 nombre: nuevoGuia.nombre,
                 apellido_paterno: nuevoGuia.apellido_paterno,
@@ -108,16 +125,14 @@ const GuiasPrincipal = () => {
                 }
             );
 
-            console.log("✅ Guía creado:", response.data);
             cerrarModales();
-            await recargarGuias(); // Recargar la lista
+            await recargarGuias();
         } catch (error) {
             console.error("❌ Error al crear guía:", error);
             alert("Error al crear guía: " + (error.response?.data?.error || error.message));
         }
     };
 
-    // Función para actualizar guía
     const actualizarGuia = async (guiaActualizado) => {
         try {
             const token = localStorage.getItem("token");
@@ -155,20 +170,41 @@ const GuiasPrincipal = () => {
                 }
             );
 
-            console.log("✅ Guía actualizado:", response.data);
             cerrarModales();
-            await recargarGuias(); // Recargar la lista
+            await recargarGuias();
         } catch (error) {
             console.error("❌ Error al actualizar guía:", error);
             alert("Error al actualizar guía: " + (error.response?.data?.error || error.message));
         }
     };
 
-    // Función para eliminar guía
     const eliminarGuia = (id) => {
         setGuias(guias.filter(g => g.id !== id));
         cerrarModales();
     };
+
+    if (error) {
+        return (
+            <PrincipalComponente>
+                <div className="guias-error-container">
+                    <div className="guias-error-box">
+                        <h2 className="guias-error-title">
+                            ❌ Error al cargar guías
+                        </h2>
+                        <p className="guias-error-message">
+                            {error}
+                        </p>
+                        <button
+                            onClick={recargarGuias}
+                            className="guias-error-button"
+                        >
+                            🔄 Reintentar
+                        </button>
+                    </div>
+                </div>
+            </PrincipalComponente>
+        );
+    }
 
     return (
         <PrincipalComponente>
@@ -180,9 +216,10 @@ const GuiasPrincipal = () => {
                     onEditar={manejarEditar}
                     onEliminar={manejarEliminar}
                     onAgregar={manejarAgregar}
+                    cargando={cargando}
+                    onRecargar={recargarGuias}
                 />
 
-                {/* Modal VER */}
                 {modalVerAbierto && guiaSeleccionado && (
                     <ModalVerGuia
                         guia={guiaSeleccionado}
@@ -190,7 +227,6 @@ const GuiasPrincipal = () => {
                     />
                 )}
 
-                {/* Modal EDITAR */}
                 {modalEditarAbierto && guiaSeleccionado && (
                     <ModalEditarGuia
                         guia={guiaSeleccionado}
@@ -199,7 +235,6 @@ const GuiasPrincipal = () => {
                     />
                 )}
 
-                {/* Modal AGREGAR */}
                 {modalAgregarAbierto && (
                     <ModalAgregarGuia
                         onGuardar={agregarGuia}
