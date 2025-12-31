@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Truck, Package, Plus, DollarSign } from 'lucide-react';
 import './TablaTransporte.css';
 
@@ -8,14 +8,30 @@ const TablaTransporte = ({
   onVer,
   onEditar,
   onEliminar,
-  onAgregar
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
-  // Estados locales para UI
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [puntosCarga, setPuntosCarga] = useState('');
 
-  // Filtrar transportes por búsqueda
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const transportesFiltrados = transportes.filter(transporte => {
     const busqueda = terminoBusqueda.toLowerCase();
     return (
@@ -26,24 +42,17 @@ const TablaTransporte = ({
     );
   });
 
-  // Calcular paginación
   const totalRegistros = transportesFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const transportesPaginados = transportesFiltrados.slice(indiceInicio, indiceFin);
-
-  // Calcular estadísticas
   const totalTransportes = transportes.length;
   const transportesActivos = transportes.filter(t => t.disponibilidad && t.estado === 'Activo').length;
-
-  // Función para formatear precio
   const formatearPrecio = (precio, moneda) => {
     const simbolo = moneda === 'USD' ? '$' : '$';
     return `${simbolo}${precio.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${moneda}`;
   };
-
-  // Función para obtener iniciales del tipo de transporte
   const obtenerInicialesTransporte = (tipo) => {
     const palabras = tipo.split(' ');
     if (palabras.length >= 2) {
@@ -86,7 +95,6 @@ const TablaTransporte = ({
 
   return (
     <div className="transporte-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="transporte-encabezado">
         <div className="transporte-seccion-logo">
           <div className="transporte-lineas-decorativas">
@@ -98,7 +106,6 @@ const TablaTransporte = ({
           <h1 className="transporte-titulo">Gestión de Transporte</h1>
         </div>
 
-        {/* Estadísticas */}
         <div className="transporte-contenedor-estadisticas">
           <div className="transporte-estadistica">
             <div className="transporte-icono-estadistica-circular">
@@ -120,7 +127,6 @@ const TablaTransporte = ({
         </div>
       </div>
 
-      {/* Controles */}
       <div className="transporte-controles">
         <div className="transporte-control-registros">
           <label htmlFor="transporte-registros">Mostrar</label>
@@ -165,8 +171,32 @@ const TablaTransporte = ({
         </div>
       </div>
 
-      {/* Tabla */}
-      {transportesPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="transporte-contenedor-tabla">
+          <table className="transporte-tabla">
+            <thead>
+              <tr className="transporte-fila-encabezado">
+                <th>CÓDIGO</th>
+                <th>SERVICIO</th>
+                <th>TIPO TRANSPORTE</th>
+                <th>CAPACIDAD</th>
+                <th>PAQUETE</th>
+                <th>PRECIO</th>
+                <th>PROVEEDOR</th>
+                <th>ESTADO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="9" className="transporte-mensaje-cargando">
+                  Cargando la información de los transportes{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : transportesPaginados.length === 0 ? (
         <div className="transporte-estado-vacio">
           <div className="transporte-icono-vacio">
             <Truck size={80} strokeWidth={1.5} />
@@ -297,7 +327,6 @@ const TablaTransporte = ({
             </table>
           </div>
 
-          {/* Información de paginación y controles */}
           <div className="transporte-pie-tabla">
             <div className="transporte-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
@@ -345,5 +374,4 @@ const TablaTransporte = ({
     </div>
   );
 };
-
 export default TablaTransporte;

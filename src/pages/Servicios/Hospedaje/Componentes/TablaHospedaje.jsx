@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Home, Hotel, Plus, Users } from 'lucide-react';
 import './TablaHospedaje.css';
 
@@ -7,11 +7,30 @@ const TablaHospedaje = ({
   onVer,
   onEditar,
   onEliminar,
-  onAgregar
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [puntosCarga, setPuntosCarga] = useState('');
+
+  // Efecto para animar los puntos de carga
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
 
   const hospedajesFiltrados = hospedajes.filter(hospedaje => {
     const busqueda = terminoBusqueda.toLowerCase();
@@ -58,7 +77,7 @@ const TablaHospedaje = ({
       'USD': '$',
       'EUR': '€'
     };
-    const precioNumero = parseFloat(precio) || 0; // ✅ Convertir a número
+    const precioNumero = parseFloat(precio) || 0;
     return `${simbolos[moneda] || '$'}${precioNumero.toFixed(2)} ${moneda}`;
   };
 
@@ -185,7 +204,33 @@ const TablaHospedaje = ({
         </div>
       </div>
 
-      {hospedajesPaginados.length === 0 ? (
+      {/* Tabla con estado de carga */}
+      {cargando ? (
+        <div className="hospedaje-contenedor-tabla">
+          <table className="hospedaje-tabla">
+            <thead>
+              <tr className="hospedaje-fila-encabezado">
+                <th>CÓDIGO</th>
+                <th>SERVICIO</th>
+                <th>TIPO HOSPEDAJE</th>
+                <th>HABITACIÓN</th>
+                <th>CAPACIDAD</th>
+                <th>PRECIO</th>
+                <th>PROVEEDOR</th>
+                <th>ESTADO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="9" className="hospedaje-mensaje-cargando">
+                  Cargando la información de los hospedajes{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : hospedajesPaginados.length === 0 ? (
         <div className="hospedaje-estado-vacio">
           <div className="hospedaje-icono-vacio">
             <Hotel size={80} strokeWidth={1.5} />

@@ -5,7 +5,6 @@ import './ModalAgregarCoordinador.css';
 
 const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Información Principal
     nombre: '',
     apellido_paterno: '',
     apellido_materno: '',
@@ -14,8 +13,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
     email: '',
     ciudad: '',
     estado: '',
-
-    // Información Laboral y Profesional
     nss: '',
     institucion_seguro: '',
     contacto_emergencia: '',
@@ -26,8 +23,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
     especialidades: '',
     certificacion_oficial: false,
     comentarios: '',
-
-    // Documentos
     foto_coordinador: null,
     foto_ine: null,
     foto_certificaciones: null,
@@ -38,7 +33,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('principal');
   const [guardando, setGuardando] = useState(false);
-
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
       const nuevosErrores = { ...prev };
@@ -76,7 +70,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones Información Principal (obligatorios)
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
@@ -100,7 +93,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
       }
     }
 
-    // Validación de teléfono
     const regexTelefono = /^\d{10}$/;
     if (!formData.telefono.trim()) {
       nuevosErrores.telefono = 'El teléfono es requerido';
@@ -108,7 +100,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
       nuevosErrores.telefono = 'Debe contener 10 dígitos';
     }
 
-    // Validación de correo electrónico
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim()) {
       nuevosErrores.email = 'El correo es requerido';
@@ -124,7 +115,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
       nuevosErrores.estado = 'El estado es requerido';
     }
 
-    // Validaciones Información Laboral (obligatorios)
     const regexNSS = /^\d{11}$/;
     if (!formData.nss.trim()) {
       nuevosErrores.nss = 'El NSS es requerido';
@@ -167,18 +157,13 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-
-    console.log('🔍 Iniciando validación...');
-
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposPrincipal = ['nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento', 'telefono', 'email', 'ciudad', 'estado'];
       const camposLaboral = ['nss', 'institucion_seguro', 'contacto_emergencia', 'telefono_emergencia', 'costo_dia', 'idiomas', 'experiencia_anos', 'especialidades'];
-
       const erroresEnPrincipal = Object.keys(nuevosErrores).some(key => camposPrincipal.includes(key));
       const erroresEnLaboral = Object.keys(nuevosErrores).some(key => camposLaboral.includes(key));
 
@@ -199,8 +184,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
 
       return;
     }
-
-    console.log('✅ Validación exitosa, guardando coordinador...');
     setGuardando(true);
 
     try {
@@ -230,19 +213,11 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
         contrato_laboral: formData.contrato_laboral
       };
 
-      console.log('📦 Datos a guardar:', coordinadorData);
-
       const nombreCompleto = `${formData.nombre} ${formData.apellido_paterno}`;
-
       await onGuardar(coordinadorData);
-
-      console.log('✅ Coordinador guardado, cerrando modal primero...');
-
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Coordinador Agregado!',
@@ -270,15 +245,12 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al guardar:', error);
-
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
-
       await Swal.fire({
         icon: 'error',
         title: 'Error al Guardar',
@@ -707,7 +679,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
   return (
     <div className="modal-coord-overlay" onClick={onCerrar}>
       <div className="modal-coord-contenido modal-coord-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-coord-header">
           <h2>Agregar Nuevo Coordinador</h2>
           <button className="modal-coord-btn-cerrar" onClick={onCerrar} type="button">
@@ -715,7 +686,6 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="modal-coord-tabs">
           <button
             className={`modal-coord-tab-button ${seccionActiva === 'principal' ? 'active' : ''}`}
@@ -743,14 +713,12 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="modal-coord-form">
           {seccionActiva === 'principal' && renderSeccionPrincipal()}
           {seccionActiva === 'laboral' && renderSeccionLaboral()}
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="modal-coord-footer">
           <div className="modal-coord-botones-izquierda">
             <button type="button" className="modal-coord-btn-cancelar" onClick={onCerrar}>
@@ -773,5 +741,4 @@ const ModalAgregarCoordinador = ({ onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalAgregarCoordinador;

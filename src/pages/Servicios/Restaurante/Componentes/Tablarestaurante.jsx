@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, UtensilsCrossed, ChefHat, Plus, DollarSign } from 'lucide-react';
 import './TablaRestaurante.css';
 
@@ -8,14 +8,30 @@ const TablaRestaurante = ({
   onVer,
   onEditar,
   onEliminar,
-  onAgregar
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
-  // Estados locales para UI
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [puntosCarga, setPuntosCarga] = useState('');
 
-  // Filtrar restaurantes por búsqueda
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const restaurantesFiltrados = restaurantes.filter(restaurante => {
     const busqueda = terminoBusqueda.toLowerCase();
     return (
@@ -27,24 +43,19 @@ const TablaRestaurante = ({
     );
   });
 
-  // Calcular paginación
   const totalRegistros = restaurantesFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const restaurantesPaginados = restaurantesFiltrados.slice(indiceInicio, indiceFin);
-
-  // Calcular estadísticas
   const totalRestaurantes = restaurantes.length;
   const restaurantesActivos = restaurantes.filter(r => r.disponibilidad && r.estado === 'Activo').length;
 
-  // Función para formatear precio
   const formatearPrecio = (precio, moneda) => {
     const simbolo = moneda === 'USD' ? '$' : '$';
     return `${simbolo}${precio.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${moneda}`;
   };
 
-  // Función para obtener iniciales del tipo de servicio
   const obtenerInicialesServicio = (tipo) => {
     const palabras = tipo.split(' ');
     if (palabras.length >= 2) {
@@ -87,7 +98,6 @@ const TablaRestaurante = ({
 
   return (
     <div className="resto-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="resto-encabezado">
         <div className="resto-seccion-logo">
           <div className="resto-lineas-decorativas">
@@ -99,7 +109,6 @@ const TablaRestaurante = ({
           <h1 className="resto-titulo">Gestión de Restaurante</h1>
         </div>
 
-        {/* Estadísticas */}
         <div className="resto-contenedor-estadisticas">
           <div className="resto-estadistica">
             <div className="resto-icono-estadistica-circular">
@@ -121,7 +130,6 @@ const TablaRestaurante = ({
         </div>
       </div>
 
-      {/* Controles */}
       <div className="resto-controles">
         <div className="resto-control-registros">
           <label htmlFor="resto-registros">Mostrar</label>
@@ -166,8 +174,32 @@ const TablaRestaurante = ({
         </div>
       </div>
 
-      {/* Tabla */}
-      {restaurantesPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="resto-contenedor-tabla">
+          <table className="resto-tabla">
+            <thead>
+              <tr className="resto-fila-encabezado">
+                <th>CÓDIGO</th>
+                <th>SERVICIO</th>
+                <th>TIPO SERVICIO</th>
+                <th>CATEGORÍA</th>
+                <th>PAQUETE</th>
+                <th>PRECIO</th>
+                <th>RESTAURANTE</th>
+                <th>ESTADO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="9" className="resto-mensaje-cargando">
+                  Cargando la información de los restaurantes{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : restaurantesPaginados.length === 0 ? (
         <div className="resto-estado-vacio">
           <div className="resto-icono-vacio">
             <UtensilsCrossed size={80} strokeWidth={1.5} />
@@ -298,7 +330,6 @@ const TablaRestaurante = ({
             </table>
           </div>
 
-          {/* Información de paginación y controles */}
           <div className="resto-pie-tabla">
             <div className="resto-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros

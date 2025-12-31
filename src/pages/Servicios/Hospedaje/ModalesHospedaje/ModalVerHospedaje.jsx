@@ -8,7 +8,6 @@ import './ModalVerHospedaje.css';
 
 const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
 
-  // Función para obtener URL de archivo
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
 
@@ -25,7 +24,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
 
   const fotoUrl = obtenerUrlArchivo(hospedaje.foto_servicio);
 
-  // Función para formatear precio
   const formatearPrecio = (precio, moneda = 'MXN') => {
     if (!precio) return 'N/A';
 
@@ -41,7 +39,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
     })} ${moneda}`;
   };
 
-  // Función para obtener clase de estado
   const obtenerClaseEstado = (estado) => {
     const estados = {
       'Activo': 'activo',
@@ -51,7 +48,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
     return estados[estado] || 'activo';
   };
 
-  // Función para obtener icono de estado
   const obtenerIconoEstado = (estado) => {
     const iconos = {
       'Activo': CheckCircle,
@@ -60,10 +56,7 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
     };
     return iconos[estado] || CheckCircle;
   };
-
   const IconoEstado = obtenerIconoEstado(hospedaje.estado);
-
-  // Dividir servicios por comas
   const serviciosArray = hospedaje.servicios_instalaciones
     ? hospedaje.servicios_instalaciones.split(',').map(s => s.trim()).filter(s => s)
     : [];
@@ -92,9 +85,7 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
 
         <div className="mvh-body">
           <div className="mvh-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvh-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvh-hospedaje-hero">
                 <div className="mvh-hospedaje-hero-content">
                   <h3 className="mvh-hospedaje-titulo">
@@ -125,7 +116,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                   </div>
                 </div>
 
-                {/* Foto del Hospedaje */}
                 <div className="mvh-hospedaje-imagen-container">
                   {fotoUrl ? (
                     <img
@@ -156,7 +146,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información General */}
               <div className="mvh-seccion-detalles">
                 <h3 className="mvh-titulo-seccion">
                   <Home size={20} />
@@ -227,7 +216,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Descripción del Servicio */}
               {hospedaje.descripcion_servicio && (
                 <div className="mvh-seccion-detalles">
                   <h3 className="mvh-titulo-seccion">
@@ -240,7 +228,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               )}
 
-              {/* Información de Paquete y Precios */}
               <div className="mvh-seccion-detalles">
                 <h3 className="mvh-titulo-seccion">
                   <DollarSign size={20} />
@@ -291,7 +278,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               </div>
 
-              {/* ¿Qué Incluye? */}
               {hospedaje.incluye && (
                 <div className="mvh-seccion-detalles">
                   <h3 className="mvh-titulo-seccion">
@@ -304,7 +290,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               )}
 
-              {/* Restricciones y Políticas */}
               {hospedaje.restricciones && (
                 <div className="mvh-seccion-detalles">
                   <h3 className="mvh-titulo-seccion">
@@ -317,7 +302,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               )}
 
-              {/* Ubicación y Proveedor */}
               <div className="mvh-seccion-detalles">
                 <h3 className="mvh-titulo-seccion">
                   <MapPin size={20} />
@@ -358,7 +342,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Servicios e Instalaciones */}
               {hospedaje.servicios_instalaciones && (
                 <div className="mvh-seccion-detalles">
                   <h3 className="mvh-titulo-seccion">
@@ -372,9 +355,7 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
               )}
             </div>
 
-            {/* Columna Derecha - Información Adicional */}
             <div className="mvh-columna-derecha">
-              {/* Card de Precio Resumen */}
               <div className="mvh-card-estadistica">
                 <div className="mvh-card-header">
                   <h4 className="mvh-card-titulo">Información de Precio</h4>
@@ -402,7 +383,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Estado */}
               <div className="mvh-card-estadistica">
                 <div className="mvh-card-header">
                   <h4 className="mvh-card-titulo">Estado del Servicio</h4>
@@ -434,7 +414,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Capacidad y Tipo */}
               <div className="mvh-card-estadistica">
                 <div className="mvh-card-header">
                   <h4 className="mvh-card-titulo">Características</h4>
@@ -462,7 +441,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Servicios Incluidos */}
               {incluyeArray.length > 0 && (
                 <div className="mvh-card-estadistica">
                   <div className="mvh-card-header">
@@ -480,7 +458,6 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
                 </div>
               )}
 
-              {/* Card de Instalaciones */}
               {serviciosArray.length > 0 && (
                 <div className="mvh-card-estadistica">
                   <div className="mvh-card-header">
@@ -510,5 +487,4 @@ const ModalVerHospedaje = ({ hospedaje, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerHospedaje;

@@ -1,4 +1,3 @@
-/* TablaRestaurante.css - Estilo Restaurante */
 .resto-contenedor-principal {
     width: 100%;
     background: #ffffff;
@@ -8,7 +7,6 @@
     margin: 1rem;
 }
 
-/* Header estilo restaurante */
 .resto-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
     padding: 2rem;
@@ -69,7 +67,6 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Estadísticas estilo restaurante */
 .resto-contenedor-estadisticas {
     display: flex;
     gap: 2rem;
@@ -121,7 +118,6 @@
     letter-spacing: 0.5px;
 }
 
-/* Controles */
 .resto-controles {
     padding: 1.5rem 2rem;
     display: flex;
@@ -213,7 +209,6 @@
     pointer-events: none;
 }
 
-/* Contenedor de tabla */
 .resto-contenedor-tabla {
     overflow-x: auto;
     overflow-y: auto;
@@ -224,7 +219,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Tabla */
 .resto-tabla {
     width: 100%;
     border-collapse: separate;
@@ -235,7 +229,6 @@
     overflow: hidden;
 }
 
-/* Header de tabla */
 .resto-fila-encabezado {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
@@ -254,52 +247,41 @@
     border-right: 1px solid #dee2e6;
 }
 
-/* Anchos específicos */
 .resto-fila-encabezado th:nth-child(1) {
     width: 120px;
 }
 
-/* CÓDIGO */
 .resto-fila-encabezado th:nth-child(2) {
     width: 280px;
 }
 
-/* SERVICIO */
 .resto-fila-encabezado th:nth-child(3) {
     width: 140px;
 }
 
-/* TIPO SERVICIO */
 .resto-fila-encabezado th:nth-child(4) {
     width: 120px;
 }
 
-/* CATEGORÍA */
 .resto-fila-encabezado th:nth-child(5) {
     width: 140px;
 }
 
-/* PAQUETE */
 .resto-fila-encabezado th:nth-child(6) {
     width: 140px;
 }
 
-/* PRECIO */
 .resto-fila-encabezado th:nth-child(7) {
     width: 180px;
 }
 
-/* RESTAURANTE */
 .resto-fila-encabezado th:nth-child(8) {
     width: 120px;
 }
 
-/* ESTADO */
 .resto-fila-encabezado th:nth-child(9) {
     width: 150px;
 }
-
-/* ACCIONES */
 
 .resto-fila-restaurante {
     border-bottom: 1px solid #dee2e6;
@@ -326,7 +308,6 @@
     font-size: 0.85rem;
 }
 
-/* Estilos específicos de columnas */
 .resto-columna-codigo .resto-badge-codigo {
     background: linear-gradient(135deg, #e0f2fe, #bfdbfe);
     color: #1e40af;
@@ -372,7 +353,6 @@
     font-weight: 500;
 }
 
-/* Badge de tipo */
 .resto-badge-tipo {
     background: #fef3c7;
     color: #92400e;
@@ -386,7 +366,6 @@
     gap: 0.25rem;
 }
 
-/* Badge de categoría */
 .resto-badge-categoria {
     background: #e0e7ff;
     color: #4338ca;
@@ -400,7 +379,6 @@
     gap: 0.25rem;
 }
 
-/* Valor de paquete */
 .resto-valor-paquete {
     font-family: monospace;
     background: #f0fdf4;
@@ -411,7 +389,6 @@
     font-size: 0.8rem;
 }
 
-/* Valor de precio */
 .resto-valor-precio {
     color: #059669;
     font-weight: 700;
@@ -422,13 +399,11 @@
     font-size: 0.9rem;
 }
 
-/* Valor de proveedor */
 .resto-valor-proveedor {
     color: #475569;
     font-weight: 500;
 }
 
-/* Badge de estado */
 .resto-badge-estado {
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
@@ -458,7 +433,6 @@
     border: 1px solid #d1d5db;
 }
 
-/* Columna de acciones */
 .resto-columna-acciones {
     position: relative;
     width: 150px;
@@ -536,7 +510,6 @@
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* Footer */
 .resto-pie-tabla {
     padding: 1.5rem 2rem;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -619,7 +592,6 @@
     box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
 }
 
-/* Animaciones */
 @keyframes resto-fadeIn {
     from {
         opacity: 0;
@@ -668,7 +640,6 @@
     animation-delay: 0.3s;
 }
 
-/* Estado vacío */
 .resto-estado-vacio {
     text-align: center;
     padding: 3rem 2rem;
@@ -694,7 +665,6 @@
     color: #6b7280;
 }
 
-/* Responsive */
 @media (max-width: 992px) {
     .resto-encabezado {
         padding: 1rem 1.5rem;
@@ -843,4 +813,14 @@
     .resto-titulo {
         font-size: 1.25rem;
     }
+}
+
+.resto-mensaje-cargando {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #575758;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border-radius: 8px;
 }

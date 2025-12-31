@@ -5,45 +5,33 @@ import './ModalAgregarTransporte.css';
 
 const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
   const [formData, setFormData] = useState({
-    // Datos generales
     nombre_servicio: '',
     tipo_transporte: '',
     capacidad: '',
     descripcion_servicio: '',
-
-    // Paquete y precios
     tipo_paquete: '',
     duracion_paquete: '',
     precio_base: '',
     moneda: 'MXN',
     incluye: '',
     restricciones: '',
-
-    // Relación con proveedores
     empresa_proveedora_id: '',
     nombre_proveedor: '',
     ubicacion_salida: '',
     ubicacion_destino: '',
     disponibilidad: true,
-
-    // Información administrativa
     codigo_servicio: '',
     estado: 'Activo',
-
-    // Foto
     foto_servicio: null
   });
 
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('generales');
   const [guardando, setGuardando] = useState(false);
-
-  // Opciones para los selectores
   const tiposTransporte = ['Taxi', 'Van', 'Autobús', 'Minibús', 'Sprinter', 'Camioneta', 'Auto Sedán'];
   const tiposPaquete = ['Por día', 'Por hora', 'Por viaje', 'Por semana', 'Por mes'];
   const monedas = ['MXN', 'USD'];
   const estados = ['Activo', 'Inactivo'];
-
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
       const nuevosErrores = { ...prev };
@@ -60,7 +48,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
       [name]: type === 'checkbox' ? checked : value
     }));
 
-    // Si se selecciona un proveedor, autollenar el nombre
     if (name === 'empresa_proveedora_id' && value) {
       const proveedorSeleccionado = proveedores.find(p => p.id === parseInt(value));
       if (proveedorSeleccionado) {
@@ -100,7 +87,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones datos generales (obligatorios)
     if (!formData.nombre_servicio.trim()) {
       nuevosErrores.nombre_servicio = 'El nombre del servicio es requerido';
     }
@@ -117,7 +103,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
       nuevosErrores.descripcion_servicio = 'La descripción es requerida';
     }
 
-    // Validaciones paquete y precios (obligatorios)
     if (!formData.tipo_paquete) {
       nuevosErrores.tipo_paquete = 'El tipo de paquete es requerido';
     }
@@ -130,7 +115,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
       nuevosErrores.moneda = 'La moneda es requerida';
     }
 
-    // Validaciones ubicaciones (obligatorias)
     if (!formData.ubicacion_salida.trim()) {
       nuevosErrores.ubicacion_salida = 'La ubicación de salida es requerida';
     }
@@ -149,18 +133,14 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    console.log('🔍 Iniciando validación...');
-
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposGenerales = ['nombre_servicio', 'tipo_transporte', 'capacidad', 'descripcion_servicio'];
       const camposPaquete = ['tipo_paquete', 'duracion_paquete', 'precio_base', 'moneda', 'incluye', 'restricciones'];
       const camposUbicacion = ['empresa_proveedora_id', 'ubicacion_salida', 'ubicacion_destino'];
-
       const erroresEnGenerales = Object.keys(nuevosErrores).some(key => camposGenerales.includes(key));
       const erroresEnPaquete = Object.keys(nuevosErrores).some(key => camposPaquete.includes(key));
       const erroresEnUbicacion = Object.keys(nuevosErrores).some(key => camposUbicacion.includes(key));
@@ -185,11 +165,8 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
       return;
     }
 
-    console.log('✅ Validación exitosa, guardando transporte...');
     setGuardando(true);
-
     try {
-      // Generar código de servicio si no existe
       const codigoFinal = formData.codigo_servicio || generarCodigoServicio();
 
       const transporteData = {
@@ -200,19 +177,12 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
         fecha_registro: new Date().toISOString(),
       };
 
-      console.log('📦 Datos a guardar:', transporteData);
 
       const nombreServicio = formData.nombre_servicio;
-
       await onGuardar(transporteData);
-
-      console.log('✅ Transporte guardado, cerrando modal primero...');
-
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Servicio Agregado!',
@@ -240,8 +210,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
           confirmButton: 'swal-confirm-custom'
         }
       });
-
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al guardar:', error);
@@ -593,7 +561,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
   return (
     <div className="modal-transporte-overlay" onClick={onCerrar}>
       <div className="modal-transporte-contenido modal-transporte-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-transporte-header">
           <h2>Agregar Nuevo Servicio de Transporte</h2>
           <button className="modal-transporte-btn-cerrar" onClick={onCerrar} type="button">
@@ -601,7 +568,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="modal-transporte-tabs">
           <button
             className={`modal-transporte-tab-button ${seccionActiva === 'generales' ? 'active' : ''}`}
@@ -637,7 +603,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="modal-transporte-form">
           {seccionActiva === 'generales' && renderSeccionGenerales()}
           {seccionActiva === 'paquete' && renderSeccionPaquete()}
@@ -645,7 +610,6 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer */}
         <div className="modal-transporte-footer">
           <div className="modal-transporte-botones-izquierda">
             <button type="button" className="modal-transporte-btn-cancelar" onClick={onCerrar}>
@@ -668,5 +632,4 @@ const ModalAgregarTransporte = ({ onGuardar, onCerrar, proveedores = [] }) => {
     </div>
   );
 };
-
 export default ModalAgregarTransporte;

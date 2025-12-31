@@ -1,5 +1,3 @@
-/* Prefijo: mvc- (Modal Ver Coordinador) para evitar conflictos */
-
 .mvc-overlay {
   position: fixed;
   top: 0;
@@ -36,7 +34,7 @@
   flex-direction: column;
   animation: mvcSlideUp 0.3s ease;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  transform: scale(0.9) !important;
+  transform: scale(0.85) !important;
 }
 
 @keyframes mvcSlideUp {
@@ -51,7 +49,6 @@
   }
 }
 
-/* Header del Modal */
 .mvc-header {
   padding: 2rem;
   border-bottom: 1px solid #006eff;
@@ -71,8 +68,8 @@
 }
 
 .mvc-icono-header {
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff ;
+  background: rgba(255, 255, 255, 0.2) ;
   padding: 12px;
   border-radius: 12px;
 }
@@ -80,12 +77,12 @@
 .mvc-header-contenido h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #ffffff !important;
+  color: #ffffff ;
   font-weight: 700;
 }
 
 .mvc-subtitulo {
-  color: #e2e8f0 !important;
+  color: #e2e8f0 ;
   font-size: 0.9rem;
   margin: 0.25rem 0 0 0;
   font-weight: 500;
@@ -110,7 +107,6 @@
   color: #1e293b;
 }
 
-/* Body del Modal */
 .mvc-body {
   padding: 2rem;
   overflow-y: auto;
@@ -134,7 +130,6 @@
   background: #94a3b8;
 }
 
-/* Layout Principal */
 .mvc-contenido-principal {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -142,7 +137,6 @@
   margin-bottom: 2rem;
 }
 
-/* Columna Izquierda */
 .mvc-columna-izquierda {
   display: flex;
   flex-direction: column;
@@ -254,7 +248,6 @@
   font-weight: 700;
 }
 
-/* Sección de Datos */
 .mvc-seccion-detalles {
   margin-bottom: 2rem;
 }
@@ -334,7 +327,6 @@
   color: #3b82f6;
 }
 
-/* Columna Derecha - Estadísticas */
 .mvc-columna-derecha {
   display: flex;
   flex-direction: column;
@@ -371,7 +363,6 @@
   color: #94a3b8;
 }
 
-/* Teléfonos */
 .mvc-telefonos-lista {
   display: flex;
   flex-direction: column;
@@ -402,7 +393,6 @@
   gap: 0.5rem;
 }
 
-/* Badge de Certificación */
 .mvc-badge-certificacion {
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -425,7 +415,6 @@
   color: #991b1b;
 }
 
-/* Información de Costo */
 .mvc-costo-container {
   display: flex;
   flex-direction: column;
@@ -453,7 +442,6 @@
   font-weight: 700;
 }
 
-/* Documentos */
 .mvc-documentos-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -541,7 +529,6 @@
   padding: 2rem;
 }
 
-/* Comentarios */
 .mvc-comentarios-box {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -552,7 +539,6 @@
   font-size: 0.95rem;
 }
 
-/* Footer */
 .mvc-footer {
   padding: 1.5rem 2rem;
   border-top: 1px solid #e2e8f0;
@@ -579,7 +565,6 @@
   color: #ffffff;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .mvc-contenido-principal {
     grid-template-columns: 1fr;

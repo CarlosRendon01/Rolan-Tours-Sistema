@@ -5,7 +5,6 @@ import './ModalAgregarTours.css';
 
 const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
   const [formData, setFormData] = useState({
-    // Datos generales
     nombre_tour: '',
     tipo_tour: '',
     duracion_tour: '',
@@ -17,8 +16,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
     punto_llegada: '',
     hora_salida: '',
     hora_regreso: '',
-
-    // Paquete y precios
     tipo_paquete: '',
     precio_base: '',
     moneda: 'MXN',
@@ -29,8 +26,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
     costo_por_nino: '',
     costo_por_adulto_mayor: '',
     temporada: '',
-
-    // Proveedor
     operado_por: '',
     empresa_proveedora_id: '',
     guia_principal: '',
@@ -40,11 +35,7 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
     transporte_incluido: false,
     seguro_incluido: false,
     numero_licencia_guia: '',
-
-    // Documentos
     foto_tour: null,
-
-    // Administrativo
     codigo_tour: '',
     estado: 'activo'
   });
@@ -100,7 +91,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones datos generales
     if (!formData.codigo_tour.trim()) {
       nuevosErrores.codigo_tour = 'El código del tour es requerido';
     }
@@ -133,7 +123,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
       nuevosErrores.idiomas_disponibles = 'Selecciona al menos un idioma';
     }
 
-    // Validaciones paquete y precios
     if (!formData.tipo_paquete) {
       nuevosErrores.tipo_paquete = 'El tipo de paquete es requerido';
     }
@@ -146,7 +135,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
       nuevosErrores.incluye = 'Especifica qué incluye el tour';
     }
 
-    // Validaciones proveedor
     if (!formData.operado_por.trim()) {
       nuevosErrores.operado_por = 'El operador es requerido';
     }
@@ -177,11 +165,9 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-
       const camposGenerales = ['codigo_tour', 'nombre_tour', 'tipo_tour', 'duracion_tour', 'capacidad_maxima', 'descripcion_tour', 'nivel_dificultad', 'idiomas_disponibles', 'punto_partida', 'punto_llegada', 'hora_salida', 'hora_regreso'];
       const camposPaquete = ['tipo_paquete', 'precio_base', 'moneda', 'incluye', 'no_incluye', 'descuento_disponible', 'iva_incluido', 'costo_por_nino', 'costo_por_adulto_mayor', 'temporada'];
       const camposProveedor = ['operado_por', 'empresa_proveedora_id', 'guia_principal', 'contacto_proveedor', 'ubicacion_salida', 'disponibilidad', 'transporte_incluido', 'seguro_incluido', 'numero_licencia_guia'];
-
       const erroresEnGenerales = Object.keys(nuevosErrores).some(key => camposGenerales.includes(key));
       const erroresEnPaquete = Object.keys(nuevosErrores).some(key => camposPaquete.includes(key));
       const erroresEnProveedor = Object.keys(nuevosErrores).some(key => camposProveedor.includes(key));
@@ -905,7 +891,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
   return (
     <div className="modal-agregar-tour-overlay" onClick={onCerrar}>
       <div className="modal-agregar-tour-contenido modal-agregar-tour-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-agregar-tour-header">
           <h2>Agregar Nuevo Tour</h2>
           <button className="modal-agregar-tour-btn-cerrar" onClick={onCerrar} type="button">
@@ -913,7 +898,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="modal-agregar-tour-tabs">
           <button
             className={`modal-agregar-tour-tab-button ${seccionActiva === 'generales' ? 'active' : ''}`}
@@ -949,7 +933,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
           </button>
         </div>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="modal-agregar-tour-form">
           {seccionActiva === 'generales' && renderSeccionGenerales()}
           {seccionActiva === 'paquete' && renderSeccionPaquete()}
@@ -957,7 +940,6 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer */}
         <div className="modal-agregar-tour-footer">
           <div className="modal-agregar-tour-botones-izquierda">
             <button type="button" className="modal-agregar-tour-btn-cancelar" onClick={onCerrar}>
@@ -980,5 +962,4 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
     </div>
   );
 };
-
 export default ModalAgregarTours;

@@ -1,4 +1,3 @@
-/* HospedajePrincipal.css */
 .hospedaje-principal {
   width: 100%;
   min-height: 100vh;
@@ -9,15 +8,57 @@
   align-items: center;
 }
 
-/* Contenedor principal responsive */
 @media (max-width: 768px) {
   .hospedaje-principal {
     padding: 0.5rem;
   }
 }
 
-/* Asegurar que la tabla tenga espacio adecuado */
 .hospedaje-principal > * {
   width: 100%;
   max-width: 100%;
+}
+
+.hospedaje-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.hospedaje-error-box {
+  background: #fee2e2;
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 500px;
+  text-align: center;
+}
+
+.hospedaje-error-title {
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+.hospedaje-error-message {
+  color: #991b1b;
+  margin-bottom: 1.5rem;
+}
+
+.hospedaje-error-button {
+  padding: 0.75rem 2rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hospedaje-error-button:hover {
+  background: #1d4ed8;
 }

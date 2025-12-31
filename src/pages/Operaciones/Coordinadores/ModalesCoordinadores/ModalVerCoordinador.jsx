@@ -1,5 +1,5 @@
-import { 
-  X, User, Phone, Mail, Calendar, CreditCard, 
+import {
+  X, User, Phone, Mail, Calendar, CreditCard,
   FileText, Hash, Shield, MapPin, DollarSign,
   UserCircle, CheckCircle, XCircle, Eye, Download,
   Briefcase, Globe, Award, Home, Building2
@@ -7,32 +7,22 @@ import {
 import './ModalVerCoordinador.css';
 
 const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
-  
-  // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
-    
-    // Si ya es una URL string, retornarla
     if (typeof archivo === 'string') {
       return archivo;
     }
-    
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
-    
     return null;
   };
 
-  // Obtener URLs de los archivos
   const fotoUrl = obtenerUrlArchivo(coordinador.foto_coordinador);
   const ineUrl = obtenerUrlArchivo(coordinador.foto_ine);
   const certificacionesUrl = obtenerUrlArchivo(coordinador.foto_certificaciones);
   const comprobanteUrl = obtenerUrlArchivo(coordinador.foto_comprobante_domicilio);
   const contratoUrl = obtenerUrlArchivo(coordinador.contrato_laboral);
-  
-  // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'N/A';
     const limpio = telefono.replace(/\D/g, '');
@@ -41,19 +31,15 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
     }
     return telefono;
   };
-
-  // Función para formatear fecha
   const formatearFecha = (fecha) => {
     if (!fecha) return 'N/A';
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-MX', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
-
-  // Función para calcular edad
   const calcularEdad = (fechaNacimiento) => {
     if (!fechaNacimiento) return 'N/A';
     const hoy = new Date();
@@ -65,8 +51,6 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
     }
     return edad;
   };
-
-  // Función para formatear moneda
   const formatearMoneda = (cantidad) => {
     if (!cantidad && cantidad !== 0) return 'N/A';
     return new Intl.NumberFormat('es-MX', {
@@ -74,38 +58,28 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
       currency: 'MXN'
     }).format(cantidad);
   };
-
-  // Función para ver documento
   const handleVerDocumento = (archivo) => {
     if (!archivo) {
       alert('No hay documento disponible para visualizar');
       return;
     }
-    
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       window.open(url, '_blank');
       return;
     }
-    
-    // Si es una URL string
     if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
       window.open(archivo, '_blank');
       return;
     }
-    
+
     alert('No hay documento disponible para visualizar');
   };
-
-  // Función para descargar documento
   const handleDescargar = (archivo, nombreDocumento) => {
     if (!archivo) {
       alert('No hay documento disponible para descargar');
       return;
     }
-    
-    // Si es un objeto File
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       const link = document.createElement('a');
@@ -117,8 +91,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
       URL.revokeObjectURL(url);
       return;
     }
-    
-    // Si es una URL string
+
     if (typeof archivo === 'string') {
       const link = document.createElement('a');
       link.href = archivo;
@@ -128,7 +101,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
       document.body.removeChild(link);
       return;
     }
-    
+
     alert('No hay documento disponible para descargar');
   };
 
@@ -155,9 +128,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
 
         <div className="mvc-body">
           <div className="mvc-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvc-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvc-coordinador-hero">
                 <div className="mvc-coordinador-hero-content">
                   <h3 className="mvc-coordinador-titulo">
@@ -185,12 +156,11 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                     </div>
                   </div>
                 </div>
-                
-                {/* Foto del Coordinador */}
+
                 <div className="mvc-coordinador-imagen-container">
                   {fotoUrl ? (
-                    <img 
-                      src={fotoUrl} 
+                    <img
+                      src={fotoUrl}
                       alt={`${coordinador.nombre} ${coordinador.apellido_paterno}`}
                       className="mvc-coordinador-foto"
                       onError={(e) => {
@@ -216,7 +186,6 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información Personal */}
               <div className="mvc-seccion-detalles">
                 <h3 className="mvc-titulo-seccion">
                   <UserCircle size={20} />
@@ -311,7 +280,6 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información Profesional */}
               <div className="mvc-seccion-detalles">
                 <h3 className="mvc-titulo-seccion">
                   <Briefcase size={20} />
@@ -394,7 +362,6 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Comentarios */}
               {coordinador.comentarios && (
                 <div className="mvc-seccion-detalles">
                   <h3 className="mvc-titulo-seccion">
@@ -407,7 +374,6 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                 </div>
               )}
 
-              {/* Documentos */}
               <div className="mvc-seccion-detalles">
                 <h3 className="mvc-titulo-seccion">
                   <FileText size={20} />
@@ -421,7 +387,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                           <UserCircle size={32} />
                           <span>Fotografía</span>
                           <div className="mvc-botones-documento">
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-ver"
                               onClick={() => handleVerDocumento(coordinador.foto_coordinador)}
                               title="Ver fotografía en nueva pestaña"
@@ -429,7 +395,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-download"
                               onClick={() => handleDescargar(coordinador.foto_coordinador, 'foto')}
                               title="Descargar fotografía"
@@ -440,13 +406,13 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                           </div>
                         </div>
                       )}
-                      
+
                       {ineUrl && (
                         <div className="mvc-documento-item">
                           <CreditCard size={32} />
                           <span>INE</span>
                           <div className="mvc-botones-documento">
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-ver"
                               onClick={() => handleVerDocumento(coordinador.foto_ine)}
                               title="Ver INE en nueva pestaña"
@@ -454,7 +420,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-download"
                               onClick={() => handleDescargar(coordinador.foto_ine, 'ine')}
                               title="Descargar INE"
@@ -471,7 +437,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                           <Award size={32} />
                           <span>Certificaciones</span>
                           <div className="mvc-botones-documento">
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-ver"
                               onClick={() => handleVerDocumento(coordinador.foto_certificaciones)}
                               title="Ver certificaciones en nueva pestaña"
@@ -479,7 +445,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-download"
                               onClick={() => handleDescargar(coordinador.foto_certificaciones, 'certificaciones')}
                               title="Descargar certificaciones"
@@ -496,7 +462,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                           <Home size={32} />
                           <span>Comprobante de Domicilio</span>
                           <div className="mvc-botones-documento">
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-ver"
                               onClick={() => handleVerDocumento(coordinador.foto_comprobante_domicilio)}
                               title="Ver comprobante en nueva pestaña"
@@ -504,7 +470,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-download"
                               onClick={() => handleDescargar(coordinador.foto_comprobante_domicilio, 'comprobante_domicilio')}
                               title="Descargar comprobante"
@@ -521,7 +487,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                           <FileText size={32} />
                           <span>Contrato Laboral</span>
                           <div className="mvc-botones-documento">
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-ver"
                               onClick={() => handleVerDocumento(coordinador.contrato_laboral)}
                               title="Ver contrato en nueva pestaña"
@@ -529,7 +495,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvc-btn-descargar mvc-btn-download"
                               onClick={() => handleDescargar(coordinador.contrato_laboral, 'contrato')}
                               title="Descargar contrato"
@@ -547,10 +513,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                 </div>
               </div>
             </div>
-
-            {/* Columna Derecha - Información de Contacto */}
             <div className="mvc-columna-derecha">
-              {/* Card de Teléfonos */}
               <div className="mvc-card-estadistica">
                 <div className="mvc-card-header">
                   <h4 className="mvc-card-titulo">Teléfonos de Contacto</h4>
@@ -574,7 +537,6 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Contacto de Emergencia */}
               <div className="mvc-card-estadistica">
                 <div className="mvc-card-header">
                   <h4 className="mvc-card-titulo">Contacto de Emergencia</h4>
@@ -597,7 +559,6 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Información Económica */}
               <div className="mvc-card-estadistica">
                 <div className="mvc-card-header">
                   <h4 className="mvc-card-titulo">Información Económica</h4>
@@ -625,5 +586,4 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerCoordinador;

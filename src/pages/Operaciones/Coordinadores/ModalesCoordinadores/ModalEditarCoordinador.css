@@ -1,6 +1,3 @@
-/* Prefijo: mec- (Modal Editar Coordinador) para evitar conflictos */
-
-/* Overlay */
 .mec-overlay {
   position: fixed;
   top: 0;
@@ -22,19 +19,18 @@
   to { opacity: 1; }
 }
 
-/* Contenedor Principal */
 .mec-contenido {
-  background: white !important;
-  border-radius: 16px !important;
-  width: 90% !important;
-  max-width: 1200px !important;
-  max-height: 90vh !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  animation: mecSlideUp 0.3s ease-out !important;
-  position: relative !important;
-  transform: scale(0.8) !important;
+  background: white ;
+  border-radius: 16px ;
+  width: 90% ;
+  max-width: 1200px ;
+  max-height: 90vh ;
+  display: flex ;
+  flex-direction: column ;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) ;
+  animation: mecSlideUp 0.3s ease-out ;
+  position: relative ;
+  transform: scale(0.85) !important;
 }
 
 .mec-contenido.modal-xl {
@@ -52,7 +48,6 @@
   }
 }
 
-/* Header */
 .mec-header {
   padding: 2rem 2.5rem;
   border-bottom: 1px solid #e5e7eb;
@@ -95,7 +90,6 @@
   transform: scale(1.05);
 }
 
-/* Tabs de Navegación */
 .mec-tabs {
   display: flex;
   background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
@@ -143,7 +137,6 @@
   border-radius: 3px 3px 0 0;
 }
 
-/* Formulario */
 .mec-form {
   flex: 1;
   overflow-y: auto;
@@ -187,7 +180,6 @@
   background-color: #2563eb;
 }
 
-/* Grid de Formulario */
 .mec-form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -228,7 +220,6 @@
   margin-left: 2px;
 }
 
-/* Inputs */
 .mec-form-group input,
 .mec-form-group textarea,
 .mec-form-group select {
@@ -278,7 +269,6 @@
   border-color: #e5e7eb;
 }
 
-/* Estados de validación */
 .mec-form-group input:not(.input-error):valid:not(:placeholder-shown) {
   border-color: #10b981;
 }
@@ -292,7 +282,6 @@
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
-/* Mensajes de error */
 .mec-error-mensaje {
   margin: 0.5rem 0 0 0;
   font-size: 0.875rem;
@@ -303,7 +292,6 @@
   font-weight: 500;
 }
 
-/* Campos de archivo */
 .mec-form-group-file {
   display: flex;
   flex-direction: column;
@@ -360,7 +348,6 @@
   margin-top: 0.625rem;
 }
 
-/* Checkbox personalizado */
 .mec-checkbox-container {
   display: flex;
   align-items: center;
@@ -382,7 +369,6 @@
   font-weight: 600;
 }
 
-/* Footer */
 .mec-footer {
   padding: 2rem 2.5rem;
   border-top: 1px solid #e5e7eb;
@@ -452,7 +438,6 @@
   transform: translateY(0);
 }
 
-/* Indicador de carga en botón */
 .mec-btn-actualizar.loading {
   position: relative;
   color: transparent;
@@ -478,7 +463,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .mec-contenido {
     max-height: 95vh;
@@ -563,55 +547,51 @@
   }
 }
 
-/* ========================================
-   ESTILOS PERSONALIZADOS PARA SWEETALERT2
-   ======================================== */
-
 .swal-popup-custom {
-  border-radius: 20px !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 20px ;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) ;
 }
 
 .swal-title-custom {
-  font-size: 1.8rem !important;
-  font-weight: 700 !important;
-  color: #111827 !important;
-  padding-top: 1rem !important;
+  font-size: 1.8rem ;
+  font-weight: 700 ;
+  color: #111827 ;
+  padding-top: 1rem ;
 }
 
 .swal-html-custom {
-  margin: 1.5rem 0 !important;
-  font-size: 1.1rem !important;
+  margin: 1.5rem 0 ;
+  font-size: 1.1rem ;
 }
 
 .swal-confirm-custom {
-  font-size: 1.1rem !important;
-  font-weight: 600 !important;
-  padding: 0.875rem 2.5rem !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
-  transition: all 0.2s ease !important;
+  font-size: 1.1rem ;
+  font-weight: 600 ;
+  padding: 0.875rem 2.5rem ;
+  border-radius: 12px ;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) ;
+  transition: all 0.2s ease ;
 }
 
 .swal-confirm-custom:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
+  transform: translateY(-2px) ;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) ;
 }
 
 .swal2-icon.swal2-success {
-  border-color: #10b981 !important;
+  border-color: #10b981 ;
 }
 
 .swal2-icon.swal2-success [class^='swal2-success-line'] {
-  background-color: #10b981 !important;
+  background-color: #10b981 ;
 }
 
 .swal2-icon.swal2-success .swal2-success-ring {
-  border-color: rgba(16, 185, 129, 0.3) !important;
+  border-color: rgba(16, 185, 129, 0.3) ;
 }
 
 .swal2-show {
-  animation: swal2-show 0.4s ease-out !important;
+  animation: swal2-show 0.4s ease-out ;
 }
 
 @keyframes swal2-show {

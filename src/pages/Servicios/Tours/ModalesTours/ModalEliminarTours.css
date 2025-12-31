@@ -1,22 +1,16 @@
-/* ========================================
-   ESTILOS PARA SWEETALERT2 - MODAL ELIMINAR TOURS
-   Prefijo: eliminar-tour- para evitar conflictos
-   ======================================== */
 
-/* Popup principal */
 .eliminar-tour-popup {
-  border-radius: 12px !important;
-  padding: 1.5rem !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-  font-family: inherit !important;
+  border-radius: 12px ;
+  padding: 1.5rem ;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) ;
+  font-family: inherit ;
 }
 
 .eliminar-tour-popup-cargando {
-  border-radius: 16px !important;
-  padding: 2rem !important;
+  border-radius: 16px ;
+  padding: 2rem ;
 }
 
-/* Títulos */
 .eliminar-tour-titulo {
   font-size: 1.25rem !important;
   font-weight: 700 !important;
@@ -25,32 +19,30 @@
 }
 
 .eliminar-tour-titulo-exito {
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  color: #059669 !important;
-  margin-bottom: 0 !important;
+  font-size: 1.25rem ;
+  font-weight: 700 ;
+  color: #059669 ;
+  margin-bottom: 0 ;
 }
 
 .eliminar-tour-titulo-error {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  color: #dc2626 !important;
-  margin-bottom: 0.5rem !important;
+  font-size: 1.5rem ;
+  font-weight: 700 ;
+  color: #dc2626 ;
+  margin-bottom: 0.5rem ;
 }
 
 .eliminar-tour-titulo-cargando {
-  font-size: 1.25rem !important;
-  font-weight: 600 !important;
-  color: #4b5563 !important;
+  font-size: 1.25rem ;
+  font-weight: 600 ;
+  color: #4b5563 ;
 }
 
-/* Contenedor HTML */
 .eliminar-tour-html {
-  margin: 0 !important;
-  padding: 0.5rem 0 !important;
+  margin: 0 ;
+  padding: 0.5rem 0 ;
 }
 
-/* Contenido principal */
 .eliminar-tour-contenido {
   text-align: center;
 }
@@ -76,7 +68,6 @@
   font-style: italic;
 }
 
-/* Advertencia */
 .eliminar-tour-advertencia {
   display: flex;
   align-items: flex-start;
@@ -106,7 +97,6 @@
   font-weight: 600;
 }
 
-/* Contenido de éxito */
 .eliminar-tour-exito-contenido {
   text-align: center;
 }
@@ -124,7 +114,6 @@
   margin-top: 0.5rem;
 }
 
-/* Iconos */
 .eliminar-tour-icono {
   border-color: #f59e0b !important;
   color: #f59e0b !important;
@@ -133,106 +122,101 @@
 }
 
 .eliminar-tour-icono-exito {
-  border-color: #10b981 !important;
-  color: #10b981 !important;
+  border-color: #10b981 ;
+  color: #10b981 ;
 }
 
 .eliminar-tour-icono-error {
-  border-color: #ef4444 !important;
-  color: #ef4444 !important;
+  border-color: #ef4444 ;
+  color: #ef4444 ;
 }
 
-/* Botones */
 .eliminar-tour-acciones {
-  margin-top: 1rem !important;
+  margin-top: 1rem ;
 }
 
 .eliminar-tour-boton-confirmar {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-  color: white !important;
-  border: none !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) ;
+  color: white ;
+  border: none ;
+  padding: 0.625rem 1.5rem ;
+  border-radius: 8px ;
+  font-weight: 600 ;
+  font-size: 0.875rem ;
+  cursor: pointer ;
+  transition: all 0.2s ease ;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) ;
 }
 
 .eliminar-tour-boton-confirmar:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) !important;
+  transform: translateY(-1px) ;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) ;
 }
 
 .eliminar-tour-boton-cancelar {
-  background: white !important;
-  color: #6b7280 !important;
-  border: 1.5px solid #e5e7eb !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  margin-right: 0.5rem !important;
+  background: white ;
+  color: #6b7280 ;
+  border: 1.5px solid #e5e7eb ;
+  padding: 0.625rem 1.5rem ;
+  border-radius: 8px ;
+  font-weight: 600 ;
+  font-size: 0.875rem ;
+  cursor: pointer ;
+  transition: all 0.2s ease ;
+  margin-right: 0.5rem ;
 }
 
 .eliminar-tour-boton-cancelar:hover {
-  background: #f9fafb !important;
-  border-color: #d1d5db !important;
+  background: #f9fafb ;
+  border-color: #d1d5db ;
 }
 
 .eliminar-tour-boton-exito {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  color: white !important;
-  border: none !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) ;
+  color: white ;
+  border: none ;
+  padding: 0.625rem 1.5rem ;
+  border-radius: 8px ;
+  font-weight: 600 ;
+  font-size: 0.875rem ;
+  cursor: pointer ;
+  transition: all 0.2s ease ;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) ;
 }
 
 .eliminar-tour-boton-exito:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4) !important;
+  transform: translateY(-1px) ;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4) ;
 }
 
 .eliminar-tour-boton-error {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-  color: white !important;
-  border: none !important;
-  padding: 0.75rem 2rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.9375rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) ;
+  color: white ;
+  border: none ;
+  padding: 0.75rem 2rem ;
+  border-radius: 8px ;
+  font-weight: 600 ;
+  font-size: 0.9375rem ;
+  cursor: pointer ;
+  transition: all 0.2s ease ;
 }
 
-/* Timer progress bar */
 .swal2-timer-progress-bar {
-  background: #10b981 !important;
+  background: #10b981 ;
 }
 
-/* Animaciones suaves */
 .swal2-show {
-  animation: swal2-show 0.3s !important;
+  animation: swal2-show 0.3s ;
 }
 
 .swal2-hide {
-  animation: swal2-hide 0.2s !important;
+  animation: swal2-hide 0.2s ;
 }
 
-/* Loading spinner personalizado */
 .swal2-loading {
-  border-color: #3b82f6 transparent #3b82f6 transparent !important;
+  border-color: #3b82f6 transparent #3b82f6 transparent ;
 }
 
-/* Responsive */
 @media (max-width: 640px) {
   .eliminar-tour-popup {
     padding: 1.25rem !important;
@@ -242,11 +226,11 @@
 
   .eliminar-tour-titulo,
   .eliminar-tour-titulo-exito {
-    font-size: 1.125rem !important;
+    font-size: 1.125rem ;
   }
 
   .eliminar-tour-nombre {
-    font-size: 0.9375rem !important;
+    font-size: 0.9375rem ;
   }
 
   .eliminar-tour-advertencia {
@@ -261,7 +245,7 @@
   .eliminar-tour-boton-confirmar,
   .eliminar-tour-boton-cancelar,
   .eliminar-tour-boton-exito {
-    padding: 0.5rem 1.25rem !important;
-    font-size: 0.8125rem !important;
+    padding: 0.5rem 1.25rem ;
+    font-size: 0.8125rem ;
   }
 }

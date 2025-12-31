@@ -1,5 +1,3 @@
-/* Prefijo: mvt- (Modal Ver Transporte) para evitar conflictos */
-
 .mvt-overlay {
   position: fixed;
   top: 0;
@@ -26,17 +24,17 @@
 }
 
 .mvt-contenido {
-  background: white !important;
-  border-radius: 16px !important;
-  width: 90% !important;
-  max-width: 1200px !important;
-  max-height: 90vh !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  animation: slideUp 0.3s ease-out !important;
-  position: relative !important;
-  transform: scale(0.9) !important;
+  background: white ;
+  border-radius: 16px ;
+  width: 90% ;
+  max-width: 1200px ;
+  max-height: 90vh ;
+  display: flex ;
+  flex-direction: column ;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) ;
+  animation: slideUp 0.3s ease-out ;
+  position: relative ;
+  transform: scale(0.85) !important;
 }
 
 @keyframes mvtSlideUp {
@@ -51,7 +49,6 @@
   }
 }
 
-/* Header del Modal */
 .mvt-header {
   padding: 2rem;
   border-bottom: 1px solid #006eff;
@@ -71,8 +68,8 @@
 }
 
 .mvt-icono-header {
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff ;
+  background: rgba(255, 255, 255, 0.2) ;
   padding: 12px;
   border-radius: 12px;
 }
@@ -80,12 +77,12 @@
 .mvt-header-contenido h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #ffffff !important;
+  color: #ffffff ;
   font-weight: 700;
 }
 
 .mvt-subtitulo {
-  color: #e2e8f0 !important;
+  color: #e2e8f0 ;
   font-size: 0.9rem;
   margin: 0.25rem 0 0 0;
   font-weight: 500;
@@ -110,7 +107,6 @@
   color: #1e293b;
 }
 
-/* Body del Modal */
 .mvt-body {
   padding: 2rem;
   overflow-y: auto;
@@ -134,7 +130,6 @@
   background: #94a3b8;
 }
 
-/* Layout Principal */
 .mvt-contenido-principal {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -142,7 +137,6 @@
   margin-bottom: 2rem;
 }
 
-/* Columna Izquierda */
 .mvt-columna-izquierda {
   display: flex;
   flex-direction: column;
@@ -182,7 +176,7 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  color: #353232 !important;
+  color: #353232 ;
 }
 
 .mvt-transporte-subtitulo {
@@ -254,7 +248,6 @@
   font-weight: 700;
 }
 
-/* Sección de Datos */
 .mvt-seccion-detalles {
   margin-bottom: 2rem;
 }
@@ -334,7 +327,6 @@
   color: #3b82f6;
 }
 
-/* Descripción */
 .mvt-descripcion-box {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -351,7 +343,6 @@
   color: #713f12;
 }
 
-/* Columna Derecha - Estadísticas */
 .mvt-columna-derecha {
   display: flex;
   flex-direction: column;
@@ -393,7 +384,6 @@
   color: #94a3b8;
 }
 
-/* Estado */
 .mvt-estado-container {
   display: flex;
   flex-direction: column;
@@ -449,7 +439,6 @@
   color: #991b1b;
 }
 
-/* Resumen */
 .mvt-resumen-lista {
   display: flex;
   flex-direction: column;
@@ -482,7 +471,6 @@
   font-size: 1.1rem;
 }
 
-/* Proveedor */
 .mvt-proveedor-container {
   display: flex;
   flex-direction: column;
@@ -518,7 +506,6 @@
   font-weight: 600;
 }
 
-/* Documentos */
 .mvt-documentos-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -598,7 +585,6 @@
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
 }
 
-/* Footer */
 .mvt-footer {
   padding: 1.5rem 2rem;
   border-top: 1px solid #e2e8f0;
@@ -625,7 +611,6 @@
   color: #ffffff;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .mvt-contenido-principal {
     grid-template-columns: 1fr;

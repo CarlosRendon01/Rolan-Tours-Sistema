@@ -9,13 +9,11 @@ import ModalEditarHospedaje from './ModalesHospedaje/ModalEditarHospedaje';
 import { modalEliminarHospedaje } from './ModalesHospedaje/ModalEliminarHospedaje';
 
 const HospedajePrincipal = () => {
-    // ✅ SOLUCIÓN: Agregar el estado de proveedores
     const [proveedores, setProveedores] = useState([]);
-
-    // Estado para almacenar los hospedajes
     const [hospedajes, setHospedajes] = useState([]);
-
-    // Estados para controlar los modales (preparados para el futuro)
+    const [cargando, setCargando] = useState(true);
+    const [error, setError] = useState(null);
+    
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
     const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
@@ -27,18 +25,41 @@ const HospedajePrincipal = () => {
     }, []);
 
     const recargarHospedajes = async () => {
+        setCargando(true);
+        setError(null);
+
         try {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                throw new Error("No hay token de autenticación");
+            }
+
             const response = await axios.get("http://127.0.0.1:8000/api/hospedajes", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
-                }
+                },
+                timeout: 10000
             });
+
             setHospedajes(response.data);
             console.log('✅ Hospedajes recargados');
+
         } catch (error) {
             console.error('❌ Error al recargar hospedajes:', error);
+
+            if (error.code === 'ECONNABORTED') {
+                setError('La conexión tardó demasiado. Verifica tu servidor.');
+            } else if (error.response) {
+                setError(`Error del servidor: ${error.response.status}`);
+            } else if (error.request) {
+                setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+            } else {
+                setError(error.message);
+            }
+        } finally {
+            setCargando(false);
         }
     };
 
@@ -58,19 +79,14 @@ const HospedajePrincipal = () => {
         }
     };
 
-    // Funciones para manejar los modales
     const manejarVer = (hospedaje) => {
         setHospedajeSeleccionado(hospedaje);
         setModalVerAbierto(true);
-        console.log('Ver hospedaje:', hospedaje);
-        // TODO: Implementar modal cuando esté listo
     };
 
     const manejarEditar = (hospedaje) => {
         setHospedajeSeleccionado(hospedaje);
         setModalEditarAbierto(true);
-        console.log('Editar hospedaje:', hospedaje);
-        // TODO: Implementar modal cuando esté listo
     };
 
     const manejarEliminar = async (hospedaje) => {
@@ -93,11 +109,8 @@ const HospedajePrincipal = () => {
 
     const manejarAgregar = () => {
         setModalAgregarAbierto(true);
-        console.log('Agregar nuevo hospedaje');
-        // TODO: Implementar modal cuando esté listo
     };
 
-    // Función para cerrar modales
     const cerrarModales = () => {
         setModalVerAbierto(false);
         setModalEditarAbierto(false);
@@ -105,7 +118,6 @@ const HospedajePrincipal = () => {
         setHospedajeSeleccionado(null);
     };
 
-    // Función para agregar hospedaje
     const agregarHospedaje = async (nuevoHospedaje) => {
         try {
             const token = localStorage.getItem("token");
@@ -172,6 +184,30 @@ const HospedajePrincipal = () => {
         }
     };
 
+    // Manejo de errores
+    if (error) {
+        return (
+            <PrincipalComponente>
+                <div className="hospedaje-error-container">
+                    <div className="hospedaje-error-box">
+                        <h2 className="hospedaje-error-title">
+                            ❌ Error al cargar hospedajes
+                        </h2>
+                        <p className="hospedaje-error-message">
+                            {error}
+                        </p>
+                        <button
+                            onClick={recargarHospedajes}
+                            className="hospedaje-error-button"
+                        >
+                            🔄 Reintentar
+                        </button>
+                    </div>
+                </div>
+            </PrincipalComponente>
+        );
+    }
+
     return (
         <PrincipalComponente>
             <div className="hospedaje-principal">
@@ -181,11 +217,10 @@ const HospedajePrincipal = () => {
                     onEditar={manejarEditar}
                     onEliminar={manejarEliminar}
                     onAgregar={manejarAgregar}
+                    cargando={cargando}
+                    onRecargar={recargarHospedajes}
                 />
 
-                {/* TODO: Descomentar cuando los modales estén implementados */}
-
-                {/* Modal VER */}
                 {modalVerAbierto && hospedajeSeleccionado && (
                     <ModalVerHospedaje
                         hospedaje={hospedajeSeleccionado}
@@ -202,7 +237,6 @@ const HospedajePrincipal = () => {
                     />
                 )}
 
-                {/* Modal AGREGAR */}
                 {modalAgregarAbierto && (
                     <ModalAgregarHospedaje
                         onGuardar={agregarHospedaje}

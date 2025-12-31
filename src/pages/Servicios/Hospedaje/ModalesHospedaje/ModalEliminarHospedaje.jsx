@@ -1,14 +1,7 @@
 import Swal from 'sweetalert2';
 import './ModalEliminarHospedaje.css';
 
-/**
- * Modal de confirmación para eliminar un hospedaje usando SweetAlert2
- * @param {Object} hospedaje - Objeto con información del hospedaje a eliminar
- * @param {Function} onConfirmar - Callback cuando se confirma la eliminación
- * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
- */
 export const modalEliminarHospedaje = async (hospedaje, onConfirmar) => {
-  // Validar datos del hospedaje
   if (!hospedaje?.nombre_servicio || !hospedaje?.codigo_servicio) {
     await modalError('Información del hospedaje incompleta');
     return false;
@@ -60,12 +53,9 @@ export const modalEliminarHospedaje = async (hospedaje, onConfirmar) => {
         await onConfirmar(hospedaje);
       }
 
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
-
       Swal.close();
 
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminado!',
         html: `
@@ -101,10 +91,6 @@ export const modalEliminarHospedaje = async (hospedaje, onConfirmar) => {
   return false;
 };
 
-/**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
- */
 export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
     title: 'Error',
@@ -121,10 +107,6 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
   });
 };
 
-/**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
- */
 export const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
     title: mensaje,
@@ -142,11 +124,7 @@ export const modalCargando = (mensaje = 'Procesando...') => {
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
 export const cerrarModalCargando = () => {
   Swal.close();
 };
-
 export default modalEliminarHospedaje;

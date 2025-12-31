@@ -5,22 +5,17 @@ import './ModalAgregarRestaurante.css';
 
 const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
   const [formData, setFormData] = useState({
-    // Datos generales
     nombre_servicio: '',
     tipo_servicio: '',
     categoria: '',
     descripcion_servicio: '',
     capacidad: '',
-
-    // Paquete y precios
     tipo_paquete: '',
     duracion_paquete: '',
     precio_base: '',
     moneda: 'MXN',
     incluye: '',
     restricciones: '',
-
-    // Relación con proveedores
     empresa_proveedora_id: '',
     nombre_proveedor: '',
     ubicacion_restaurante: '',
@@ -28,22 +23,17 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
     disponibilidad: true,
     codigo_servicio: '',
     estado: 'Activo',
-
-    // Documentos
     foto_servicio: null
   });
 
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('generales');
   const [guardando, setGuardando] = useState(false);
-
-  // Listas de opciones
   const tiposServicio = ['Desayuno', 'Comida', 'Cena', 'Buffet', 'Menú Especial'];
   const categorias = ['Casual', 'Gourmet', 'Familiar', 'Buffet', 'Café'];
   const tiposPaquete = ['Por persona', 'Por grupo', 'Por menú', 'Buffet libre'];
   const monedas = ['MXN', 'USD'];
   const estados = ['Activo', 'Inactivo', 'Mantenimiento'];
-
   const limpiarErrorCampo = useCallback((nombreCampo) => {
     setErrores((prev) => {
       const nuevosErrores = { ...prev };
@@ -59,7 +49,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
       [name]: type === 'checkbox' ? checked : value
     }));
 
-    // Si se selecciona un proveedor, autollenar el nombre
     if (name === 'empresa_proveedora_id' && value) {
       const proveedorSeleccionado = proveedores.find(p => p.id === parseInt(value));
       if (proveedorSeleccionado) {
@@ -92,7 +81,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones datos generales (obligatorios)
     if (!formData.nombre_servicio.trim()) {
       nuevosErrores.nombre_servicio = 'El nombre del servicio es requerido';
     }
@@ -113,7 +101,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
       nuevosErrores.capacidad = 'Capacidad inválida (1-500 comensales)';
     }
 
-    // Validaciones paquete y precios (obligatorios)
     if (!formData.tipo_paquete) {
       nuevosErrores.tipo_paquete = 'El tipo de paquete es requerido';
     }
@@ -126,7 +113,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
       nuevosErrores.moneda = 'La moneda es requerida';
     }
 
-    // Validaciones ubicación (obligatorios)
     if (!formData.ubicacion_restaurante.trim()) {
       nuevosErrores.ubicacion_restaurante = 'La ubicación es requerida';
     }
@@ -137,18 +123,15 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    console.log('🔍 Iniciando validación...');
 
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log('❌ Errores de validación:', nuevosErrores);
 
       const camposGenerales = ['nombre_servicio', 'tipo_servicio', 'categoria', 'descripcion_servicio', 'capacidad'];
       const camposPaquete = ['tipo_paquete', 'duracion_paquete', 'precio_base', 'moneda', 'incluye', 'restricciones'];
       const camposUbicacion = ['empresa_proveedora_id', 'ubicacion_restaurante', 'horario_servicio'];
-
       const erroresEnGenerales = Object.keys(nuevosErrores).some(key => camposGenerales.includes(key));
       const erroresEnPaquete = Object.keys(nuevosErrores).some(key => camposPaquete.includes(key));
       const erroresEnUbicacion = Object.keys(nuevosErrores).some(key => camposUbicacion.includes(key));
@@ -173,7 +156,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
       return;
     }
 
-    console.log('✅ Validación exitosa, guardando restaurante...');
     setGuardando(true);
 
     try {
@@ -199,24 +181,11 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
         foto_servicio: formData.foto_servicio
       };
 
-      console.log('📦 Datos a guardar:', restauranteData);
-
-      // Guardar el nombre del servicio antes de cerrar
       const nombreServicio = formData.nombre_servicio;
-
-      // Llamar a la función onGuardar del padre
       await onGuardar(restauranteData);
-
-      console.log('✅ Restaurante guardado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Servicio Agregado!',
@@ -244,16 +213,12 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al guardar:', error);
-
-      // Si hay error, también cerrar el modal primero
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
-
       await Swal.fire({
         icon: 'error',
         title: 'Error al Guardar',
@@ -606,7 +571,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
   return (
     <div className="modal-resto-overlay" onClick={onCerrar}>
       <div className="modal-resto-contenido modal-resto-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-resto-header">
           <h2>Agregar Nuevo Servicio de Restaurante</h2>
           <button className="modal-resto-btn-cerrar" onClick={onCerrar} type="button">
@@ -614,7 +578,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="modal-resto-tabs">
           <button
             className={`modal-resto-tab-button ${seccionActiva === 'generales' ? 'active' : ''}`}
@@ -650,7 +613,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="modal-resto-form">
           {seccionActiva === 'generales' && renderSeccionGenerales()}
           {seccionActiva === 'paquete' && renderSeccionPaquete()}
@@ -658,7 +620,6 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="modal-resto-footer">
           <div className="modal-resto-botones-izquierda">
             <button type="button" className="modal-resto-btn-cancelar" onClick={onCerrar}>
@@ -681,5 +642,4 @@ const ModalAgregarRestaurante = ({ onGuardar, onCerrar, proveedores = [] }) => {
     </div>
   );
 };
-
 export default ModalAgregarRestaurante;

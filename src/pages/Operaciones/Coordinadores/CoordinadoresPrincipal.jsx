@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TablaCoordinadores from './Componentes/TablaCoordinadores';
 import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
@@ -9,58 +9,77 @@ import { modalEliminarCoordinador } from './ModalesCoordinadores/Modaleliminarco
 import './CoordinadoresPrincipal.css';
 
 const CoordinadoresPrincipal = () => {
-    // Estado para almacenar los coordinadores
     const [coordinadores, setCoordinadores] = useState([]);
-
-    // Estados para controlar los modales
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
     const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
     const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
     const [coordinadorSeleccionado, setCoordinadorSeleccionado] = useState(null);
+    const [cargando, setCargando] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        recargarCoordinadores();
+    }, []);
 
     const recargarCoordinadores = async () => {
+        setCargando(true);
+        setError(null);
+
         try {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                throw new Error("No hay token de autenticación");
+            }
+
             const response = await axios.get("http://127.0.0.1:8000/api/coordinadores", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
-                }
+                },
+                timeout: 10000
             });
+
             setCoordinadores(response.data);
-            console.log('✅ Coordinadores recargados');
+
         } catch (error) {
             console.error('❌ Error al recargar coordinadores:', error);
+
+            if (error.code === 'ECONNABORTED') {
+                setError('La conexión tardó demasiado. Verifica tu servidor.');
+            } else if (error.response) {
+                setError(`Error del servidor: ${error.response.status}`);
+            } else if (error.request) {
+                setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+            } else {
+                setError(error.message);
+            }
+        } finally {
+            setCargando(false);
         }
     };
 
-    // Funciones para manejar los modales
     const manejarVer = (coordinador) => {
         setCoordinadorSeleccionado(coordinador);
         setModalVerAbierto(true);
-        console.log('Ver coordinador:', coordinador);
     };
 
     const manejarEditar = (coordinador) => {
         setCoordinadorSeleccionado(coordinador);
         setModalEditarAbierto(true);
-        console.log('Editar coordinador:', coordinador);
     };
 
     const manejarEliminar = async (coordinador) => {
         const confirmado = await modalEliminarCoordinador(coordinador, recargarCoordinadores);
         if (confirmado) {
-            console.log('✅ Coordinador eliminado y lista actualizada');
         }
     };
 
     const manejarAgregar = () => {
         setModalAgregarAbierto(true);
-        console.log('Agregar nuevo coordinador');
     };
 
-    // Función para cerrar modales
     const cerrarModales = () => {
         setModalVerAbierto(false);
         setModalEditarAbierto(false);
@@ -69,12 +88,10 @@ const CoordinadoresPrincipal = () => {
         setCoordinadorSeleccionado(null);
     };
 
-    // Función para agregar coordinador
     const agregarCoordinador = async (nuevoCoordinador) => {
         try {
             const token = localStorage.getItem("token");
 
-            // Preparar datos para enviar al backend
             const coordinadorData = {
                 nombre: nuevoCoordinador.nombre,
                 apellido_paterno: nuevoCoordinador.apellido_paterno,
@@ -107,7 +124,6 @@ const CoordinadoresPrincipal = () => {
                 }
             );
 
-            console.log("✅ Coordinador creado:", response.data);
             cerrarModales();
             await recargarCoordinadores();
         } catch (error) {
@@ -152,7 +168,6 @@ const CoordinadoresPrincipal = () => {
                 }
             );
 
-            console.log("✅ Coordinador actualizado:", response.data);
             cerrarModales();
             await recargarCoordinadores();
         } catch (error) {
@@ -160,6 +175,29 @@ const CoordinadoresPrincipal = () => {
             alert("Error al actualizar coordinador: " + (error.response?.data?.error || error.message));
         }
     };
+
+    if (error) {
+        return (
+            <PrincipalComponente>
+                <div className="coordinadores-error-container">
+                    <div className="coordinadores-error-box">
+                        <h2 className="coordinadores-error-title">
+                            ❌ Error al cargar coordinadores
+                        </h2>
+                        <p className="coordinadores-error-message">
+                            {error}
+                        </p>
+                        <button
+                            onClick={recargarCoordinadores}
+                            className="coordinadores-error-button"
+                        >
+                            🔄 Reintentar
+                        </button>
+                    </div>
+                </div>
+            </PrincipalComponente>
+        );
+    }
 
     return (
         <PrincipalComponente>
@@ -171,9 +209,10 @@ const CoordinadoresPrincipal = () => {
                     onEditar={manejarEditar}
                     onEliminar={manejarEliminar}
                     onAgregar={manejarAgregar}
+                    cargando={cargando}
+                    onRecargar={recargarCoordinadores}
                 />
 
-                {/* Los modales se agregarán aquí más adelante */}
                 {modalAgregarAbierto && (
                     <ModalAgregarCoordinador
                         onGuardar={agregarCoordinador}
@@ -195,9 +234,6 @@ const CoordinadoresPrincipal = () => {
                         onCerrar={cerrarModales}
                     />
                 )}
-
-
-
             </div>
         </PrincipalComponente>
     );

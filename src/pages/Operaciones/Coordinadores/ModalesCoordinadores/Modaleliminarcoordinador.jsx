@@ -3,14 +3,11 @@ import axios from 'axios';
 import './ModalEliminarCoordinador.css';
 
 export const modalEliminarCoordinador = async (coordinador, onConfirmar) => {
-  // Validar datos del coordinador
   if (!coordinador?.nombre || !coordinador?.apellido_paterno) {
     await modalError('Información del coordinador incompleta');
     return false;
   }
-
   const nombreCompleto = `${coordinador.nombre} ${coordinador.apellido_paterno} ${coordinador.apellido_materno || ''}`.trim();
-
   const resultado = await Swal.fire({
     title: '¿Eliminar este coordinador?',
     html: `
@@ -57,16 +54,11 @@ export const modalEliminarCoordinador = async (coordinador, onConfirmar) => {
         }
       });
 
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
-
       Swal.close();
-
       if (onConfirmar) {
         await onConfirmar(coordinador);
       }
-
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminado!',
         html: `
@@ -101,10 +93,6 @@ export const modalEliminarCoordinador = async (coordinador, onConfirmar) => {
   return false;
 };
 
-/**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
- */
 export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
     title: 'Error',
@@ -121,10 +109,6 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
   });
 };
 
-/**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
- */
 export const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
     title: mensaje,
@@ -142,11 +126,8 @@ export const modalCargando = (mensaje = 'Procesando...') => {
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
+
 export const cerrarModalCargando = () => {
   Swal.close();
 };
-
 export default modalEliminarCoordinador;

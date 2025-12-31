@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, UserCheck, Users, Plus, Phone, MapPin } from 'lucide-react';
 import './TablaCoordinadores.css';
 
@@ -9,37 +8,30 @@ const TablaCoordinadores = ({
   onVer,
   onEditar,
   onEliminar,
-  onAgregar
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
-  // Estados locales para UI
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
-
-  const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState(null);
-
-  const cargarCoordinadores = async () => {
-    try {
-      setCargando(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/coordinadores", {
-        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
-      });
-      setCoordinadores(response.data);
-    } catch (error) {
-      console.error("❌ Error al cargar coordinadores:", error);
-      setError("Error al cargar coordinadores");
-    } finally {
-      setCargando(false);
-    }
-  };
+  const [puntosCarga, setPuntosCarga] = useState('');
 
   useEffect(() => {
-    cargarCoordinadores();
-  }, []);
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
 
-  // Filtrar coordinadores por búsqueda
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const coordinadoresFiltrados = coordinadores.filter(coordinador => {
     const busqueda = terminoBusqueda.toLowerCase();
     const nombreCompleto = `${coordinador.nombre} ${coordinador.apellido_paterno} ${coordinador.apellido_materno}`.toLowerCase();
@@ -51,20 +43,17 @@ const TablaCoordinadores = ({
     );
   });
 
-  // Calcular paginación
   const totalRegistros = coordinadoresFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const coordinadoresPaginados = coordinadoresFiltrados.slice(indiceInicio, indiceFin);
 
-  // Calcular estadísticas
   const totalCoordinadores = coordinadores.length;
   const coordinadoresActivos = coordinadores.filter(coord =>
     coord.certificacion_oficial === true || coord.certificacion_oficial === 'Sí'
   ).length;
 
-  // Función para formatear teléfono
   const formatearTelefono = (telefono) => {
     const limpio = telefono?.replace(/\D/g, '') || '';
     if (limpio.length === 10) {
@@ -73,12 +62,10 @@ const TablaCoordinadores = ({
     return telefono || 'N/A';
   };
 
-  // Función para obtener iniciales
   const obtenerIniciales = (nombre, apellidoP) => {
     return `${nombre?.charAt(0) || ''}${apellidoP?.charAt(0) || ''}`.toUpperCase();
   };
 
-  // Función para calcular edad desde fecha de nacimiento
   const calcularEdad = (fechaNacimiento) => {
     if (!fechaNacimiento) return 'N/A';
     const hoy = new Date();
@@ -91,7 +78,6 @@ const TablaCoordinadores = ({
     return edad;
   };
 
-  // Función para obtener badge de experiencia
   const obtenerBadgeExperiencia = (anos) => {
     if (!anos || anos < 1) return { clase: 'junior', texto: 'Junior' };
     if (anos < 3) return { clase: 'intermedio', texto: 'Intermedio' };
@@ -133,7 +119,6 @@ const TablaCoordinadores = ({
 
   return (
     <div className="coord-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="coord-encabezado">
         <div className="coord-seccion-logo">
           <div className="coord-lineas-decorativas">
@@ -145,7 +130,6 @@ const TablaCoordinadores = ({
           <h1 className="coord-titulo">Gestión de Coordinadores</h1>
         </div>
 
-        {/* Estadísticas */}
         <div className="coord-contenedor-estadisticas">
           <div className="coord-estadistica">
             <div className="coord-icono-estadistica-circular">
@@ -167,7 +151,6 @@ const TablaCoordinadores = ({
         </div>
       </div>
 
-      {/* Controles */}
       <div className="coord-controles">
         <div className="coord-control-registros">
           <label htmlFor="coord-registros">Mostrar</label>
@@ -212,8 +195,30 @@ const TablaCoordinadores = ({
         </div>
       </div>
 
-      {/* Tabla */}
-      {coordinadoresPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="coord-contenedor-tabla">
+          <table className="coord-tabla">
+            <thead>
+              <tr className="coord-fila-encabezado">
+                <th>ID</th>
+                <th>NOMBRE COMPLETO</th>
+                <th>EDAD</th>
+                <th>TELÉFONO</th>
+                <th>UBICACIÓN</th>
+                <th>EXPERIENCIA</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="7" className="coord-mensaje-cargando">
+                  Cargando la información de los coordinadores{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : coordinadoresPaginados.length === 0 ? (
         <div className="coord-estado-vacio">
           <div className="coord-icono-vacio">
             <Users size={80} strokeWidth={1.5} />
@@ -332,7 +337,6 @@ const TablaCoordinadores = ({
             </table>
           </div>
 
-          {/* Información de paginación y controles */}
           <div className="coord-pie-tabla">
             <div className="coord-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
@@ -380,5 +384,4 @@ const TablaCoordinadores = ({
     </div>
   );
 };
-
 export default TablaCoordinadores;

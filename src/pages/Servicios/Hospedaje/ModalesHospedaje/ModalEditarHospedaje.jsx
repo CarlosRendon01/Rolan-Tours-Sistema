@@ -5,7 +5,6 @@ import './ModalEditarHospedaje.css';
 
 const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = [] }) => {
   const [formData, setFormData] = useState({
-    // Datos generales
     codigo_servicio: '',
     nombre_servicio: '',
     tipo_hospedaje: '',
@@ -13,30 +12,22 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
     capacidad: '',
     descripcion_servicio: '',
     estado: 'Activo',
-
-    // Paquete y precios
     tipo_paquete: '',
     duracion_paquete: '',
     precio_base: '',
     moneda: 'MXN',
     incluye: '',
     restricciones: '',
-
-    // Proveedor
     empresa_proveedora_id: '',
     ubicacion_hospedaje: '',
     servicios_instalaciones: '',
     disponibilidad: 'disponible',
-
-    // Documentos
     foto_servicio: null
   });
 
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('generales');
   const [guardando, setGuardando] = useState(false);
-
-  // Cargar datos del hospedaje cuando se abre el modal
   useEffect(() => {
     if (hospedaje) {
       setFormData({
@@ -99,7 +90,6 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones datos generales
     if (!formData.codigo_servicio.trim()) {
       nuevosErrores.codigo_servicio = 'El código del servicio es requerido';
     }
@@ -124,7 +114,6 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
       nuevosErrores.descripcion_servicio = 'La descripción es requerida';
     }
 
-    // Validaciones paquete y precios
     if (!formData.tipo_paquete) {
       nuevosErrores.tipo_paquete = 'El tipo de paquete es requerido';
     }
@@ -141,7 +130,6 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
       nuevosErrores.incluye = 'Especifica qué incluye el servicio';
     }
 
-    // Validaciones proveedor
     if (!formData.empresa_proveedora_id) {
       nuevosErrores.empresa_proveedora_id = 'Selecciona un proveedor';
     }
@@ -168,7 +156,6 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
       const camposGenerales = ['codigo_servicio', 'nombre_servicio', 'tipo_hospedaje', 'tipo_habitacion', 'capacidad', 'descripcion_servicio'];
       const camposPaquete = ['tipo_paquete', 'duracion_paquete', 'precio_base', 'moneda', 'incluye', 'restricciones'];
       const camposProveedor = ['empresa_proveedora_id', 'ubicacion_hospedaje', 'servicios_instalaciones'];
-
       const erroresEnGenerales = Object.keys(nuevosErrores).some(key => camposGenerales.includes(key));
       const erroresEnPaquete = Object.keys(nuevosErrores).some(key => camposPaquete.includes(key));
       const erroresEnProveedor = Object.keys(nuevosErrores).some(key => camposProveedor.includes(key));
@@ -222,19 +209,10 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
       };
 
       const nombreServicio = formData.nombre_servicio;
-
       await onGuardar(hospedajeData);
-
-      console.log('✅ Hospedaje actualizado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
 
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Hospedaje Actualizado!',
@@ -262,12 +240,10 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
         }
       });
 
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
 
-      // Si hay error, también cerrar el modal primero
       onCerrar();
 
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -639,7 +615,6 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
   return (
     <div className="meh-overlay" onClick={onCerrar}>
       <div className="meh-contenido meh-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="meh-header">
           <h2>Editar Hospedaje</h2>
           <button className="meh-btn-cerrar" onClick={onCerrar} type="button">
@@ -647,7 +622,6 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="meh-tabs">
           <button
             className={`meh-tab-button ${seccionActiva === 'generales' ? 'active' : ''}`}
@@ -683,7 +657,6 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
           </button>
         </div>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="meh-form">
           {seccionActiva === 'generales' && renderSeccionGenerales()}
           {seccionActiva === 'paquete' && renderSeccionPaquete()}
@@ -691,7 +664,6 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer */}
         <div className="meh-footer">
           <div className="meh-botones-izquierda">
             <button type="button" className="meh-btn-cancelar" onClick={onCerrar}>
@@ -714,5 +686,4 @@ const ModalEditarHospedaje = ({ hospedaje, onGuardar, onCerrar, proveedores = []
     </div>
   );
 };
-
 export default ModalEditarHospedaje;

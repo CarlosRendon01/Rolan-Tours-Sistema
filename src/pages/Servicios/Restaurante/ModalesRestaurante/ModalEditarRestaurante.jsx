@@ -5,22 +5,17 @@ import Swal from 'sweetalert2';
 
 const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores = [] }) => {
   const [formData, setFormData] = useState({
-    // Datos generales
     nombre_servicio: '',
     tipo_servicio: '',
     categoria: '',
     descripcion_servicio: '',
     capacidad: '',
-
-    // Paquete y precios
     tipo_paquete: '',
     duracion_paquete: '',
     precio_base: '',
     moneda: 'MXN',
     incluye: '',
     restricciones: '',
-
-    // Relación con proveedores
     empresa_proveedora_id: '',
     nombre_proveedor: '',
     ubicacion_restaurante: '',
@@ -28,23 +23,17 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
     disponibilidad: true,
     codigo_servicio: '',
     estado: 'Activo',
-
-    // Documentos
     foto_servicio: null
   });
 
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('generales');
   const [guardando, setGuardando] = useState(false);
-
-  // Listas de opciones
   const tiposServicio = ['Desayuno', 'Comida', 'Cena', 'Buffet', 'Menú Especial'];
   const categorias = ['Casual', 'Gourmet', 'Familiar', 'Buffet', 'Café'];
   const tiposPaquete = ['Por persona', 'Por grupo', 'Por menú', 'Buffet libre'];
   const monedas = ['MXN', 'USD'];
   const estados = ['Activo', 'Inactivo', 'Mantenimiento'];
-
-  // Cargar datos del restaurante cuando se abre el modal
   useEffect(() => {
     if (restaurante) {
       setFormData({
@@ -86,7 +75,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
       [name]: type === 'checkbox' ? checked : value
     }));
 
-    // Si se selecciona un proveedor, autollenar el nombre
     if (name === 'empresa_proveedora_id' && value) {
       const proveedorSeleccionado = proveedores.find(p => p.id === parseInt(value));
       if (proveedorSeleccionado) {
@@ -119,7 +107,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones datos generales (obligatorios)
     if (!formData.nombre_servicio.trim()) {
       nuevosErrores.nombre_servicio = 'El nombre del servicio es requerido';
     }
@@ -140,7 +127,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
       nuevosErrores.capacidad = 'Capacidad inválida (1-500 comensales)';
     }
 
-    // Validaciones paquete y precios (obligatorios)
     if (!formData.tipo_paquete) {
       nuevosErrores.tipo_paquete = 'El tipo de paquete es requerido';
     }
@@ -153,7 +139,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
       nuevosErrores.moneda = 'La moneda es requerida';
     }
 
-    // Validaciones ubicación (obligatorios)
     if (!formData.ubicacion_restaurante.trim()) {
       nuevosErrores.ubicacion_restaurante = 'La ubicación es requerida';
     }
@@ -169,7 +154,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
 
-      // Determinar qué sección tiene errores
       const camposGenerales = ['nombre_servicio', 'tipo_servicio', 'categoria', 'descripcion_servicio', 'capacidad'];
       const camposPaquete = ['tipo_paquete', 'duracion_paquete', 'precio_base', 'moneda', 'incluye', 'restricciones'];
       const camposUbicacion = ['empresa_proveedora_id', 'ubicacion_restaurante', 'horario_servicio'];
@@ -186,7 +170,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
         setSeccionActiva('ubicacion');
       }
 
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.querySelector(`[name="${primerCampoConError}"]`);
@@ -225,22 +208,10 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
         foto_servicio: formData.foto_servicio
       };
 
-      // Guardar el nombre del servicio antes de cerrar
       const nombreServicio = formData.nombre_servicio;
-
-      // Llamar a la función onGuardar del padre
       await onGuardar(restauranteData);
-
-      console.log('✅ Restaurante actualizado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
-
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Servicio Actualizado!',
@@ -268,16 +239,10 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
         }
       });
 
-      console.log('✅ Alerta cerrada');
-
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
-
-      // Si hay error, también cerrar el modal primero
       onCerrar();
-
       await new Promise(resolve => setTimeout(resolve, 300));
-
       await Swal.fire({
         icon: 'error',
         title: 'Error al Actualizar',
@@ -633,7 +598,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
   return (
     <div className="mer-overlay" onClick={onCerrar}>
       <div className="mer-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="mer-header">
           <h2>Editar Servicio de Restaurante</h2>
           <button className="mer-btn-cerrar" onClick={onCerrar} type="button">
@@ -641,7 +605,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="mer-tabs">
           <button
             className={`mer-tab-button ${seccionActiva === 'generales' ? 'active' : ''}`}
@@ -677,7 +640,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="mer-form">
           {seccionActiva === 'generales' && renderSeccionGenerales()}
           {seccionActiva === 'paquete' && renderSeccionPaquete()}
@@ -685,7 +647,6 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="mer-footer">
           <div className="mer-botones-izquierda">
             <button type="button" className="mer-btn-cancelar" onClick={onCerrar}>
@@ -708,5 +669,4 @@ const ModalEditarRestaurante = ({ restaurante, onGuardar, onCerrar, proveedores 
     </div>
   );
 };
-
 export default ModalEditarRestaurante;

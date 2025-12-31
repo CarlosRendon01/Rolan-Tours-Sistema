@@ -1,4 +1,3 @@
-/* TablaTours.css - Versión Completa Estilo Tours */
 .tours-contenedor-principal {
   width: 100%;
   background: #ffffff;
@@ -8,7 +7,6 @@
   margin: 1rem;
 }
 
-/* Header estilo tours */
 .tours-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
   padding: 2rem;
@@ -69,7 +67,6 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Estadísticas estilo tours */
 .tours-contenedor-estadisticas {
   display: flex;
   gap: 2rem;
@@ -121,7 +118,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Controles */
 .tours-controles {
   padding: 1.5rem 2rem;
   display: flex;
@@ -213,7 +209,6 @@
   pointer-events: none;
 }
 
-/* Contenedor de tabla */
 .tours-contenedor-tabla {
   overflow-x: auto;
   overflow-y: visible;
@@ -226,7 +221,6 @@
   position: relative;
 }
 
-/* Estilo mejorado para el scrollbar horizontal */
 .tours-contenedor-tabla::-webkit-scrollbar {
   height: 12px;
 }
@@ -246,7 +240,6 @@
   background: linear-gradient(135deg, #707172, #5b5c5e);
 }
 
-/* Tabla */
 .tours-tabla {
   width: 100%;
   border-collapse: separate;
@@ -257,7 +250,6 @@
   table-layout: fixed;
 }
 
-/* Header de tabla */
 .tours-fila-encabezado {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
@@ -276,15 +268,14 @@
   border-right: 1px solid #dee2e6;
 }
 
-/* Anchos específicos */
-.tours-fila-encabezado th:nth-child(1) { width: 120px; min-width: 120px; }   /* CÓDIGO */
-.tours-fila-encabezado th:nth-child(2) { width: 300px; min-width: 300px; }  /* NOMBRE TOUR */
-.tours-fila-encabezado th:nth-child(3) { width: 150px; min-width: 150px; }  /* TIPO */
-.tours-fila-encabezado th:nth-child(4) { width: 130px; min-width: 130px; }  /* DURACIÓN */
-.tours-fila-encabezado th:nth-child(5) { width: 130px; min-width: 130px; }  /* CAPACIDAD */
-.tours-fila-encabezado th:nth-child(6) { width: 150px; min-width: 150px; }  /* PRECIO */
-.tours-fila-encabezado th:nth-child(7) { width: 150px; min-width: 150px; }  /* ESTADO */
-.tours-fila-encabezado th:nth-child(8) { width: 170px; min-width: 170px; }  /* ACCIONES */
+.tours-fila-encabezado th:nth-child(1) { width: 120px; min-width: 120px; }   
+.tours-fila-encabezado th:nth-child(2) { width: 300px; min-width: 300px; }  
+.tours-fila-encabezado th:nth-child(3) { width: 150px; min-width: 150px; }  
+.tours-fila-encabezado th:nth-child(4) { width: 130px; min-width: 130px; }  
+.tours-fila-encabezado th:nth-child(5) { width: 130px; min-width: 130px; }  
+.tours-fila-encabezado th:nth-child(6) { width: 150px; min-width: 150px; }  
+.tours-fila-encabezado th:nth-child(7) { width: 150px; min-width: 150px; }  
+.tours-fila-encabezado th:nth-child(8) { width: 170px; min-width: 170px; }  
 
 .tours-fila-tour {
   border-bottom: 1px solid #dee2e6;
@@ -312,12 +303,10 @@
   white-space: nowrap;
 }
 
-/* Permitir wrap solo en columnas específicas */
 .tours-fila-tour td:nth-child(2) {
   white-space: normal;
 }
 
-/* Estilos específicos de columnas */
 .tours-columna-codigo .tours-badge-codigo {
   background: linear-gradient(135deg, #e0f2fe, #bfdbfe);
   color: #1e40af;
@@ -364,7 +353,6 @@
   font-weight: 500;
 }
 
-/* Badge de tipo */
 .tours-badge-tipo {
   background: #f0fdf4;
   color: #15803d;
@@ -378,7 +366,6 @@
   gap: 0.25rem;
 }
 
-/* Duración */
 .tours-valor-duracion {
   color: #475569;
   font-weight: 500;
@@ -387,7 +374,6 @@
   gap: 0.25rem;
 }
 
-/* Capacidad */
 .tours-valor-capacidad {
   background: #f8f9fa;
   padding: 0.25rem 0.5rem;
@@ -399,7 +385,6 @@
   gap: 0.25rem;
 }
 
-/* Precio */
 .tours-valor-precio {
   font-family: monospace;
   font-weight: 700;
@@ -410,7 +395,6 @@
   gap: 0.25rem;
 }
 
-/* Badge de estado */
 .tours-badge-estado {
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
@@ -440,7 +424,6 @@
   border: 1px solid #fde68a;
 }
 
-/* Columna de acciones */
 .tours-columna-acciones {
   position: relative;
   width: 170px;
@@ -521,7 +504,6 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* Footer */
 .tours-pie-tabla {
   padding: 1.5rem 2rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -604,7 +586,6 @@
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
-/* Animaciones */
 @keyframes tours-fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -628,7 +609,6 @@
 .tours-lineas-decorativas:hover .tours-linea:nth-child(3) { animation-delay: 0.2s; }
 .tours-lineas-decorativas:hover .tours-linea:nth-child(4) { animation-delay: 0.3s; }
 
-/* Estado vacío */
 .tours-estado-vacio {
   text-align: center;
   padding: 3rem 2rem;
@@ -654,7 +634,16 @@
   color: #6b7280;
 }
 
-/* Responsive */
+.tours-mensaje-cargando {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #3d3d3d;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border-radius: 8px;
+}
+
 @media (max-width: 992px) {
   .tours-encabezado {
     padding: 1rem 1.5rem;

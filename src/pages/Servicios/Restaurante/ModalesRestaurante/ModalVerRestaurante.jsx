@@ -6,17 +6,13 @@ import {
 import './ModalVerRestaurante.css';
 
 const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
-
-  // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
 
-    // Si ya es una URL string, retornarla
     if (typeof archivo === 'string') {
       return archivo;
     }
 
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
@@ -24,10 +20,8 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
     return null;
   };
 
-  // Obtener URL de la foto
   const fotoUrl = obtenerUrlArchivo(restaurante.foto_servicio);
 
-  // Función para formatear precio
   const formatearPrecio = (precio, moneda) => {
     if (!precio) return 'N/A';
     const precioNum = parseFloat(precio);
@@ -35,7 +29,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
     return `${simbolo}${precioNum.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${moneda}`;
   };
 
-  // Función para obtener icono de estado
   const obtenerIconoEstado = (estado) => {
     switch (estado) {
       case 'Activo':
@@ -49,21 +42,18 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
     }
   };
 
-  // Función para ver documento
   const handleVerDocumento = (archivo) => {
     if (!archivo) {
       alert('No hay documento disponible para visualizar');
       return;
     }
 
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       window.open(url, '_blank');
       return;
     }
 
-    // Si es una URL string
     if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
       window.open(archivo, '_blank');
       return;
@@ -72,14 +62,12 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
     alert('No hay documento disponible para visualizar');
   };
 
-  // Función para descargar documento
   const handleDescargar = (archivo, nombreDocumento) => {
     if (!archivo) {
       alert('No hay documento disponible para descargar');
       return;
     }
 
-    // Si es un objeto File
     if (archivo instanceof File) {
       const url = URL.createObjectURL(archivo);
       const link = document.createElement('a');
@@ -92,7 +80,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
       return;
     }
 
-    // Si es una URL string
     if (typeof archivo === 'string') {
       const link = document.createElement('a');
       link.href = archivo;
@@ -129,9 +116,7 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
 
         <div className="mvr-body">
           <div className="mvr-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvr-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvr-servicio-hero">
                 <div className="mvr-servicio-hero-content">
                   <h3 className="mvr-servicio-titulo">
@@ -160,7 +145,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                   </div>
                 </div>
 
-                {/* Foto del Servicio */}
                 <div className="mvr-servicio-imagen-container">
                   {fotoUrl ? (
                     <img
@@ -190,7 +174,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información General */}
               <div className="mvr-seccion-detalles">
                 <h3 className="mvr-titulo-seccion">
                   <FileText size={20} />
@@ -265,7 +248,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información de Paquete y Precios */}
               <div className="mvr-seccion-detalles">
                 <h3 className="mvr-titulo-seccion">
                   <DollarSign size={20} />
@@ -316,7 +298,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Incluye */}
               {restaurante.incluye && (
                 <div className="mvr-seccion-detalles">
                   <h3 className="mvr-titulo-seccion">
@@ -329,7 +310,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                 </div>
               )}
 
-              {/* Restricciones */}
               {restaurante.restricciones && (
                 <div className="mvr-seccion-detalles">
                   <h3 className="mvr-titulo-seccion">
@@ -342,7 +322,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                 </div>
               )}
 
-              {/* Documentos */}
               {fotoUrl && (
                 <div className="mvr-seccion-detalles">
                   <h3 className="mvr-titulo-seccion">
@@ -377,9 +356,7 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
               )}
             </div>
 
-            {/* Columna Derecha - Información de Ubicación */}
             <div className="mvr-columna-derecha">
-              {/* Card de Ubicación */}
               <div className="mvr-card-estadistica">
                 <div className="mvr-card-header">
                   <h4 className="mvr-card-titulo">Ubicación</h4>
@@ -404,7 +381,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Proveedor */}
               <div className="mvr-card-estadistica">
                 <div className="mvr-card-header">
                   <h4 className="mvr-card-titulo">Proveedor</h4>
@@ -430,7 +406,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Disponibilidad */}
               <div className="mvr-card-estadistica">
                 <div className="mvr-card-header">
                   <h4 className="mvr-card-titulo">Estado del Servicio</h4>
@@ -466,7 +441,6 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
             </div>
           </div>
         </div>
-
         <div className="mvr-footer">
           <button className="mvr-btn-cerrar-footer" onClick={onCerrar}>
             Cerrar
@@ -476,5 +450,4 @@ const ModalVerRestaurante = ({ restaurante, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerRestaurante;

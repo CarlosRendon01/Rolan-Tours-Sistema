@@ -1,14 +1,8 @@
 import Swal from 'sweetalert2';
 import './ModalEliminarTours.css';
 
-/**
- * Modal de confirmación para eliminar un tour usando SweetAlert2
- * @param {Object} tour - Objeto con información del tour a eliminar
- * @param {Function} onConfirmar - Callback cuando se confirma la eliminación
- * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
- */
+
 export const modalEliminarTour = async (tour, onConfirmar) => {
-  // Validar datos del tour
   if (!tour?.nombre_tour || !tour?.codigo_tour) {
     await modalError('Información del tour incompleta');
     return false;
@@ -60,12 +54,8 @@ export const modalEliminarTour = async (tour, onConfirmar) => {
         await onConfirmar(tour);
       }
 
-      // Delay mínimo para UX
       await new Promise(resolve => setTimeout(resolve, 600));
-
       Swal.close();
-
-      // Mostrar éxito
       await Swal.fire({
         title: '¡Eliminado!',
         html: `
@@ -101,10 +91,6 @@ export const modalEliminarTour = async (tour, onConfirmar) => {
   return false;
 };
 
-/**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
- */
 export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
     title: 'Error',
@@ -121,10 +107,6 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
   });
 };
 
-/**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
- */
 export const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
     title: mensaje,
@@ -142,11 +124,8 @@ export const modalCargando = (mensaje = 'Procesando...') => {
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
+
 export const cerrarModalCargando = () => {
   Swal.close();
 };
-
 export default modalEliminarTour;

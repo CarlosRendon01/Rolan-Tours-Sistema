@@ -7,16 +7,13 @@ import './ModalVerTransporte.css';
 
 const ModalVerTransporte = ({ transporte, onCerrar }) => {
 
-  // Función para convertir File a URL
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
 
-    // Si ya es una URL string, retornarla
     if (typeof archivo === 'string') {
       return archivo;
     }
 
-    // Si es un objeto File, crear URL temporal
     if (archivo instanceof File) {
       return URL.createObjectURL(archivo);
     }
@@ -24,10 +21,8 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
     return null;
   };
 
-  // Obtener URL de la foto del servicio
   const fotoUrl = obtenerUrlArchivo(transporte.foto_servicio);
 
-  // Función para formatear precio
   const formatearPrecio = (precio, moneda) => {
     if (!precio) return 'N/A';
     const simbolo = moneda === 'USD' ? '$' : '$';
@@ -37,7 +32,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
     })} ${moneda}`;
   };
 
-  // Función para obtener badge de estado
   const obtenerBadgeEstado = (estado) => {
     const estados = {
       'Activo': { clase: 'activo', icono: CheckCircle },
@@ -48,7 +42,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
     return estados[estado] || { clase: 'inactivo', icono: XCircle };
   };
 
-  // Función para obtener badge de disponibilidad
   const obtenerBadgeDisponibilidad = (disponible) => {
     if (disponible) {
       return { clase: 'disponible', texto: 'Disponible', icono: CheckCircle };
@@ -56,7 +49,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
     return { clase: 'no-disponible', texto: 'No Disponible', icono: XCircle };
   };
 
-  // Función para ver documento
   const handleVerDocumento = (archivo) => {
     if (!archivo) {
       alert('No hay documento disponible para visualizar');
@@ -77,7 +69,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
     alert('No hay documento disponible para visualizar');
   };
 
-  // Función para descargar documento
   const handleDescargar = (archivo, nombreDocumento) => {
     if (!archivo) {
       alert('No hay documento disponible para descargar');
@@ -134,9 +125,7 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
 
         <div className="mvt-body">
           <div className="mvt-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvt-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvt-transporte-hero">
                 <div className="mvt-transporte-hero-content">
                   <h3 className="mvt-transporte-titulo">
@@ -167,7 +156,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                   </div>
                 </div>
 
-                {/* Foto del Servicio */}
                 <div className="mvt-transporte-imagen-container">
                   {fotoUrl ? (
                     <img
@@ -197,7 +185,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información General */}
               <div className="mvt-seccion-detalles">
                 <h3 className="mvt-titulo-seccion">
                   <FileText size={20} />
@@ -248,7 +235,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Descripción */}
               {transporte.descripcion_servicio && (
                 <div className="mvt-seccion-detalles">
                   <h3 className="mvt-titulo-seccion">
@@ -261,7 +247,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               )}
 
-              {/* Información de Paquete */}
               <div className="mvt-seccion-detalles">
                 <h3 className="mvt-titulo-seccion">
                   <Package size={20} />
@@ -312,7 +297,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Ubicaciones */}
               <div className="mvt-seccion-detalles">
                 <h3 className="mvt-titulo-seccion">
                   <MapPin size={20} />
@@ -341,7 +325,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Incluye */}
               {transporte.incluye && (
                 <div className="mvt-seccion-detalles">
                   <h3 className="mvt-titulo-seccion">
@@ -354,7 +337,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               )}
 
-              {/* Restricciones */}
               {transporte.restricciones && (
                 <div className="mvt-seccion-detalles">
                   <h3 className="mvt-titulo-seccion">
@@ -367,7 +349,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               )}
 
-              {/* Foto del Servicio */}
               {fotoUrl && (
                 <div className="mvt-seccion-detalles">
                   <h3 className="mvt-titulo-seccion">
@@ -402,9 +383,7 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
               )}
             </div>
 
-            {/* Columna Derecha - Estado y Disponibilidad */}
             <div className="mvt-columna-derecha">
-              {/* Card de Estado */}
               <div className="mvt-card-estadistica">
                 <div className="mvt-card-header">
                   <h4 className="mvt-card-titulo">Estado del Servicio</h4>
@@ -423,7 +402,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Disponibilidad */}
               <div className="mvt-card-estadistica">
                 <div className="mvt-card-header">
                   <h4 className="mvt-card-titulo">Disponibilidad</h4>
@@ -442,7 +420,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Resumen */}
               <div className="mvt-card-estadistica mvt-card-resumen">
                 <div className="mvt-card-header">
                   <h4 className="mvt-card-titulo">Resumen del Servicio</h4>
@@ -470,7 +447,6 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Proveedor */}
               {transporte.nombre_proveedor && (
                 <div className="mvt-card-estadistica">
                   <div className="mvt-card-header">
@@ -505,5 +481,4 @@ const ModalVerTransporte = ({ transporte, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerTransporte;

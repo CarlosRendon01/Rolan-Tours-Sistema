@@ -8,7 +8,6 @@ import './ModalVerTours.css';
 
 const ModalVerTours = ({ tour, onCerrar }) => {
 
-  // Función para obtener URL de archivo
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
 
@@ -25,7 +24,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
 
   const fotoUrl = obtenerUrlArchivo(tour.foto_tour);
 
-  // Función para formatear precio
   const formatearPrecio = (precio, moneda = 'MXN') => {
     if (!precio) return 'N/A';
 
@@ -41,7 +39,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
     })} ${moneda}`;
   };
 
-  // Función para obtener clase de estado
   const obtenerClaseEstado = (estado) => {
     const estadosLowerCase = estado?.toLowerCase() || '';
     if (estadosLowerCase.includes('activo')) return 'activo';
@@ -49,8 +46,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
     if (estadosLowerCase.includes('mantenimiento')) return 'mantenimiento';
     return 'activo';
   };
-
-  // Función para obtener clase de dificultad
   const obtenerClaseDificultad = (dificultad) => {
     const dificultadLowerCase = dificultad?.toLowerCase() || '';
     if (dificultadLowerCase.includes('fácil') || dificultadLowerCase.includes('facil') || dificultadLowerCase.includes('bajo')) return 'facil';
@@ -59,8 +54,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
     if (dificultadLowerCase.includes('extremo')) return 'extremo';
     return 'moderado';
   };
-
-  // Función para obtener icono de estado
   const obtenerIconoEstado = (estado) => {
     const estadosLowerCase = estado?.toLowerCase() || '';
     if (estadosLowerCase.includes('activo')) return CheckCircle;
@@ -70,8 +63,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
   };
 
   const IconoEstado = obtenerIconoEstado(tour.estado);
-
-  // Dividir servicios por comas
   const incluyeArray = tour.incluye
     ? tour.incluye.split(',').map(s => s.trim()).filter(s => s)
     : [];
@@ -100,9 +91,7 @@ const ModalVerTours = ({ tour, onCerrar }) => {
 
         <div className="mvt-body">
           <div className="mvt-contenido-principal">
-            {/* Columna Izquierda */}
             <div className="mvt-columna-izquierda">
-              {/* Hero Card */}
               <div className="mvt-tour-hero">
                 <div className="mvt-tour-hero-content">
                   <h3 className="mvt-tour-titulo">
@@ -133,7 +122,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
                   </div>
                 </div>
 
-                {/* Foto del Tour */}
                 <div className="mvt-tour-imagen-container">
                   {fotoUrl ? (
                     <img
@@ -164,7 +152,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información General */}
               <div className="mvt-seccion-detalles">
                 <h3 className="mvt-titulo-seccion">
                   <MapPin size={20} />
@@ -313,7 +300,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Información del Proveedor */}
               <div className="mvt-seccion-detalles">
                 <h3 className="mvt-titulo-seccion">
                   <Building size={20} />
@@ -385,9 +371,7 @@ const ModalVerTours = ({ tour, onCerrar }) => {
               </div>
             </div>
 
-            {/* Columna Derecha - Información Adicional */}
             <div className="mvt-columna-derecha">
-              {/* Card de Precio Resumen */}
               <div className="mvt-card-estadistica">
                 <div className="mvt-card-header">
                   <h4 className="mvt-card-titulo">Información de Precio</h4>
@@ -447,7 +431,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Estado */}
               <div className="mvt-card-estadistica">
                 <div className="mvt-card-header">
                   <h4 className="mvt-card-titulo">Estado del Tour</h4>
@@ -492,7 +475,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
                 </div>
               </div>
 
-              {/* Card de Servicios Incluidos */}
               {incluyeArray.length > 0 && (
                 <div className="mvt-card-estadistica">
                   <div className="mvt-card-header">
@@ -510,7 +492,6 @@ const ModalVerTours = ({ tour, onCerrar }) => {
                 </div>
               )}
 
-              {/* Card de No Incluye */}
               {noIncluyeArray.length > 0 && (
                 <div className="mvt-card-estadistica">
                   <div className="mvt-card-header">
@@ -540,5 +521,4 @@ const ModalVerTours = ({ tour, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerTours;

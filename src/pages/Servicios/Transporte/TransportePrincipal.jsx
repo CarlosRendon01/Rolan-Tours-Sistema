@@ -9,16 +9,13 @@ import { modalEliminarTransporte } from "./ModalesTransporte/Modaleliminartransp
 import "./TransportePrincipal.css";
 
 const TransportePrincipal = () => {
-  // Estado principal
   const [transportes, setTransportes] = useState([]);
-
-  // Estados para los modales
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
   const [transporteSeleccionado, setTransporteSeleccionado] = useState(null);
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
-
-  // Lista de proveedores
   const [proveedores, setProveedores] = useState([]);
 
   useEffect(() => {
@@ -27,21 +24,41 @@ const TransportePrincipal = () => {
   }, []);
 
   const recargarTransportes = async () => {
+    setCargando(true);
+    setError(null);
+
     try {
       const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("No hay token de autenticación");
+      }
+
       const response = await axios.get("http://127.0.0.1:8000/api/transportes", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
+        timeout: 10000
       });
+
       setTransportes(response.data);
-      console.log('✅ Transportes recargados');
     } catch (error) {
       console.error('❌ Error al recargar transportes:', error);
+
+      if (error.code === 'ECONNABORTED') {
+        setError('La conexión tardó demasiado. Verifica tu servidor.');
+      } else if (error.response) {
+        setError(`Error del servidor: ${error.response.status}`);
+      } else if (error.request) {
+        setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+      } else {
+        setError(error.message);
+      }
+    } finally {
+      setCargando(false);
     }
   };
-
   const recargarProveedores = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -52,13 +69,11 @@ const TransportePrincipal = () => {
         }
       });
       setProveedores(response.data);
-      console.log('✅ Proveedores recargados');
     } catch (error) {
       console.error('❌ Error al recargar proveedores:', error);
     }
   };
 
-  // Manejadores
   const manejarVer = (transporte) => {
     setTransporteSeleccionado(transporte);
     setModalVerAbierto(true);
@@ -96,7 +111,6 @@ const TransportePrincipal = () => {
         }
       );
 
-      console.log("✅ Transporte creado:", response.data);
       cerrarModales();
       await recargarTransportes();
     } catch (error) {
@@ -130,7 +144,6 @@ const TransportePrincipal = () => {
         }
       );
 
-      console.log("✅ Transporte actualizado:", response.data);
       cerrarModales();
       await recargarTransportes();
     } catch (error) {
@@ -151,7 +164,6 @@ const TransportePrincipal = () => {
               Accept: "application/json",
             }
           });
-          console.log('✅ Transporte eliminado');
           await recargarTransportes();
         } catch (error) {
           console.error('❌ Error al eliminar transporte:', error);
@@ -167,6 +179,29 @@ const TransportePrincipal = () => {
     setTransporteSeleccionado(null);
   };
 
+  if (error) {
+    return (
+      <PrincipalComponente>
+        <div className="transporte-error-container">
+          <div className="transporte-error-box">
+            <h2 className="transporte-error-title">
+              ❌ Error al cargar transportes
+            </h2>
+            <p className="transporte-error-message">
+              {error}
+            </p>
+            <button
+              onClick={recargarTransportes}
+              className="transporte-error-button"
+            >
+              🔄 Reintentar
+            </button>
+          </div>
+        </div>
+      </PrincipalComponente>
+    );
+  }
+
   return (
     <PrincipalComponente>
       <div className="transporte-principal">
@@ -176,9 +211,10 @@ const TransportePrincipal = () => {
           onAgregar={manejarAgregar}
           onEditar={manejarEditar}
           onEliminar={manejarEliminar}
+          cargando={cargando}
+          onRecargar={recargarTransportes}
         />
 
-        {/* Modal Ver */}
         {modalVerAbierto && transporteSeleccionado && (
           <ModalVerTransporte
             transporte={transporteSeleccionado}
@@ -186,7 +222,6 @@ const TransportePrincipal = () => {
           />
         )}
 
-        {/* Modal Agregar */}
         {modalAgregarAbierto && (
           <ModalAgregarTransporte
             onGuardar={manejarGuardarTransporte}
@@ -195,7 +230,6 @@ const TransportePrincipal = () => {
           />
         )}
 
-        {/* Modal Editar */}
         {modalEditarAbierto && transporteSeleccionado && (
           <ModalEditarTransporte
             transporte={transporteSeleccionado}
@@ -208,5 +242,4 @@ const TransportePrincipal = () => {
     </PrincipalComponente>
   );
 };
-
 export default TransportePrincipal;

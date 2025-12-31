@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 
 const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
   const [formData, setFormData] = useState({
-    // Datos personales
     nombre: '',
     apellido_paterno: '',
     apellido_materno: '',
@@ -13,13 +12,9 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
     email: '',
     ciudad: '',
     estado: '',
-
-    // Contacto
     telefono: '',
     telefono_emergencia: '',
     contacto_emergencia: '',
-
-    // Profesional
     experiencia_anos: '',
     idiomas: '',
     especialidades: '',
@@ -27,11 +22,7 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
     costo_dia: '',
     nss: '',
     institucion_seguro: '',
-
-    // Comentarios
     comentarios: '',
-
-    // Documentos
     foto_coordinador: null,
     foto_ine: null,
     foto_certificaciones: null,
@@ -43,7 +34,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
   const [seccionActiva, setSeccionActiva] = useState('personales');
   const [guardando, setGuardando] = useState(false);
 
-  // Cargar datos del coordinador cuando se abre el modal
   useEffect(() => {
     if (coordinador) {
       setFormData({
@@ -138,7 +128,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validación datos personales
     if (!formData.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es requerido';
     }
@@ -176,7 +165,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
       nuevosErrores.estado = 'El estado es requerido';
     }
 
-    // Validación contacto
     if (!formData.telefono.trim()) {
       nuevosErrores.telefono = 'El teléfono es requerido';
     } else if (!validarTelefono(formData.telefono)) {
@@ -193,7 +181,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
       nuevosErrores.contacto_emergencia = 'El contacto de emergencia es requerido';
     }
 
-    // Validación profesional
     if (!formData.experiencia_anos || parseInt(formData.experiencia_anos) < 0) {
       nuevosErrores.experiencia_anos = 'Los años de experiencia son requeridos';
     }
@@ -230,12 +217,9 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-
-      // Determinar qué sección tiene errores
       const camposPersonales = ['nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento', 'email', 'ciudad', 'estado'];
       const camposContacto = ['telefono', 'telefono_emergencia', 'contacto_emergencia'];
       const camposProfesionales = ['experiencia_anos', 'idiomas', 'especialidades', 'costo_dia', 'nss', 'institucion_seguro'];
-
       const erroresEnPersonales = Object.keys(nuevosErrores).some(key => camposPersonales.includes(key));
       const erroresEnContacto = Object.keys(nuevosErrores).some(key => camposContacto.includes(key));
       const erroresEnProfesionales = Object.keys(nuevosErrores).some(key => camposProfesionales.includes(key));
@@ -248,7 +232,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
         setSeccionActiva('profesional');
       }
 
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.querySelector(`[name="${primerCampoConError}"]`);
@@ -291,22 +274,10 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
         contrato_laboral: formData.contrato_laboral
       };
 
-      // Guardar el nombre completo antes de cerrar
       const nombreCompleto = `${formData.nombre} ${formData.apellido_paterno}`;
-
-      // Llamar a la función onGuardar del padre
       await onGuardar(coordinadorData);
-
-      console.log('✅ Coordinador actualizado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
-
-      // ✅ SEGUNDO: Esperar un poquito para que el modal se cierre
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // ✅ TERCERO: Mostrar la alerta DESPUÉS de cerrar el modal
-      console.log('✅ Mostrando alerta...');
       await Swal.fire({
         icon: 'success',
         title: '¡Coordinador Actualizado!',
@@ -334,16 +305,11 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
         }
       });
 
-      console.log('✅ Alerta cerrada');
 
     } catch (error) {
       console.error('❌ Error al actualizar:', error);
-
-      // Si hay error, también cerrar el modal primero
       onCerrar();
-
       await new Promise(resolve => setTimeout(resolve, 300));
-
       await Swal.fire({
         icon: 'error',
         title: 'Error al Actualizar',
@@ -819,7 +785,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
   return (
     <div className="mec-overlay" onClick={onCerrar}>
       <div className="mec-contenido modal-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="mec-header">
           <h2>Editar Coordinador</h2>
           <button className="mec-btn-cerrar" onClick={onCerrar} type="button">
@@ -827,7 +792,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="mec-tabs">
           <button
             className={`mec-tab-button ${seccionActiva === 'personales' ? 'active' : ''}`}
@@ -863,7 +827,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={handleSubmit} className="mec-form">
           {seccionActiva === 'personales' && renderSeccionPersonales()}
           {seccionActiva === 'contacto' && renderSeccionContacto()}
@@ -871,7 +834,6 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer (FUERA del form, fijo en el bottom) */}
         <div className="mec-footer">
           <div className="mec-botones-izquierda">
             <button type="button" className="mec-btn-cancelar" onClick={onCerrar}>
@@ -894,5 +856,4 @@ const ModalEditarCoordinador = ({ coordinador, onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalEditarCoordinador;

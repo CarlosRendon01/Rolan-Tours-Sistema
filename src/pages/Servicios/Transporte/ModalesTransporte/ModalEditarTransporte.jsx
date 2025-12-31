@@ -28,14 +28,11 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
   const [errores, setErrores] = useState({});
   const [seccionActiva, setSeccionActiva] = useState('generales');
   const [guardando, setGuardando] = useState(false);
-
-  // Listas de opciones
   const tiposTransporte = ['Taxi', 'Van', 'Autobús', 'Minibús', 'Sprinter', 'Camioneta', 'Auto Sedán'];
   const tiposPaquete = ['Por día', 'Por hora', 'Por viaje', 'Por semana', 'Por mes'];
   const monedas = ['MXN', 'USD'];
   const estados = ['Activo', 'Inactivo', 'Mantenimiento'];
 
-  // Cargar datos cuando se abre el modal
   useEffect(() => {
     if (transporte) {
       setFormData({
@@ -224,13 +221,11 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
     },
     [formData, validarFormulario, onGuardar, transporte, onCerrar]
   );
-
   const MensajeError = ({ nombreCampo }) => {
     const error = errores[nombreCampo];
     if (!error) return null;
     return <span className="modal-transporte-error-mensaje">{error}</span>;
   };
-
   const renderSeccionGenerales = () => (
     <div className="modal-transporte-form-grid">
       <div className="modal-transporte-form-group">
@@ -244,7 +239,6 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
         />
         <MensajeError nombreCampo="nombre_servicio" />
       </div>
-
       <div className="modal-transporte-form-group">
         <label>Tipo de Transporte *</label>
         <select
@@ -262,7 +256,6 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
         </select>
         <MensajeError nombreCampo="tipo_transporte" />
       </div>
-
       <div className="modal-transporte-form-group">
         <label>Capacidad (pasajeros) *</label>
         <input
@@ -275,7 +268,6 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
         />
         <MensajeError nombreCampo="capacidad" />
       </div>
-
       <div className="modal-transporte-form-group">
         <label>Código de Servicio</label>
         <input
@@ -286,7 +278,6 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
           placeholder="Ej: TRV-001"
         />
       </div>
-
       <div className="modal-transporte-form-group modal-transporte-form-group-full">
         <label>Descripción *</label>
         <textarea
@@ -299,7 +290,6 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
       </div>
     </div>
   );
-
   const renderSeccionPaquete = () => (
     <div className="modal-transporte-form-grid">
       <div className="modal-transporte-form-group">
@@ -319,12 +309,10 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
         </select>
         <MensajeError nombreCampo="tipo_paquete" />
       </div>
-
       <div className="modal-transporte-form-group">
         <label>Duración</label>
         <input type="text" name="duracion_paquete" value={formData.duracion_paquete} onChange={handleChange} />
       </div>
-
       <div className="modal-transporte-form-group">
         <label>Precio Base *</label>
         <input
@@ -337,7 +325,6 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
         />
         <MensajeError nombreCampo="precio_base" />
       </div>
-
       <div className="modal-transporte-form-group">
         <label>Moneda *</label>
         <select name="moneda" value={formData.moneda} onChange={handleChange}>
@@ -348,7 +335,6 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
           ))}
         </select>
       </div>
-
       <div className="modal-transporte-form-group modal-transporte-form-group-full">
         <label>Incluye</label>
         <textarea name="incluye" value={formData.incluye} onChange={handleChange} rows="2" />
@@ -360,7 +346,6 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
       </div>
     </div>
   );
-
   const renderSeccionUbicacion = () => (
     <div className="modal-transporte-form-grid">
       <div className="modal-transporte-form-group">
@@ -502,5 +487,4 @@ const ModalEditarTransporte = ({ transporte, onGuardar, onCerrar, proveedores = 
     </div>
   );
 };
-
 export default ModalEditarTransporte;

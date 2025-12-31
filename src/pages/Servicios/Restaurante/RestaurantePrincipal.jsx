@@ -5,21 +5,18 @@ import TablaRestaurante from "./Componentes/TablaRestaurante";
 import ModalAgregarRestaurante from "./ModalesRestaurante/ModalAgregarRestaurante";
 import ModalEditarRestaurante from "./ModalesRestaurante/ModalEditarRestaurante";
 import ModalVerRestaurante from "./ModalesRestaurante/ModalVerRestaurante";
-import { modalEliminarRestaurante } from "./ModalesRestaurante/ModalEliminarRestaurante"; // ✅ IMPORTAR AQUÍ
+import { modalEliminarRestaurante } from "./ModalesRestaurante/ModalEliminarRestaurante";
 import "./RestaurantePrincipal.css";
 
 const RestaurantePrincipal = () => {
-  // Estado principal
   const [restaurantes, setRestaurantes] = useState([]);
-
-  // Estados para los modales
   const [restauranteSeleccionado, setRestauranteSeleccionado] = useState(null);
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
-
-  // Lista de proveedores
   const [proveedores, setProveedores] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     recargarRestaurantes();
@@ -27,18 +24,40 @@ const RestaurantePrincipal = () => {
   }, []);
 
   const recargarRestaurantes = async () => {
+    setCargando(true);
+    setError(null);
+
     try {
       const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("No hay token de autenticación");
+      }
+
       const response = await axios.get("http://127.0.0.1:8000/api/restaurantes", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
+        timeout: 10000
       });
+
       setRestaurantes(response.data);
-      console.log('✅ Restaurantes recargados');
+
     } catch (error) {
       console.error('❌ Error al recargar restaurantes:', error);
+
+      if (error.code === 'ECONNABORTED') {
+        setError('La conexión tardó demasiado. Verifica tu servidor.');
+      } else if (error.response) {
+        setError(`Error del servidor: ${error.response.status}`);
+      } else if (error.request) {
+        setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+      } else {
+        setError(error.message);
+      }
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -52,13 +71,11 @@ const RestaurantePrincipal = () => {
         }
       });
       setProveedores(response.data);
-      console.log('✅ Proveedores recargados');
     } catch (error) {
       console.error('❌ Error al recargar proveedores:', error);
     }
   };
 
-  // Manejadores
   const manejarVer = (restaurante) => {
     setRestauranteSeleccionado(restaurante);
     setModalVerAbierto(true);
@@ -73,16 +90,13 @@ const RestaurantePrincipal = () => {
     setModalEditarAbierto(true);
   };
 
-  // ✅ ACTUALIZAR ESTA FUNCIÓN
   const manejarEliminar = async (restaurante) => {
-    // Preparar el objeto con el formato que espera el modal
     const restauranteParaModal = {
       nombreRestaurante: restaurante.nombre_servicio,
-      tipo: restaurante.categoria === "Buffet" ? "paquete" : "restaurante", // Adaptar según tu lógica
+      tipo: restaurante.categoria === "Buffet" ? "paquete" : "restaurante",
       id: restaurante.id
     };
 
-    // Mostrar modal y esperar confirmación
     const confirmado = await modalEliminarRestaurante(
       restauranteParaModal,
       async (rest) => {
@@ -94,7 +108,6 @@ const RestaurantePrincipal = () => {
               Accept: "application/json",
             }
           });
-          console.log('✅ Restaurante eliminado');
           await recargarRestaurantes();
         } catch (error) {
           console.error('❌ Error al eliminar restaurante:', error);
@@ -126,7 +139,6 @@ const RestaurantePrincipal = () => {
         }
       );
 
-      console.log("✅ Restaurante creado:", response.data);
       cerrarModales();
       await recargarRestaurantes();
     } catch (error) {
@@ -160,7 +172,6 @@ const RestaurantePrincipal = () => {
         }
       );
 
-      console.log("✅ Restaurante actualizado:", response.data);
       cerrarModales();
       await recargarRestaurantes();
     } catch (error) {
@@ -176,6 +187,29 @@ const RestaurantePrincipal = () => {
     setRestauranteSeleccionado(null);
   };
 
+  if (error) {
+    return (
+      <PrincipalComponente>
+        <div className="restaurante-error-container">
+          <div className="restaurante-error-box">
+            <h2 className="restaurante-error-title">
+              ❌ Error al cargar restaurantes
+            </h2>
+            <p className="restaurante-error-message">
+              {error}
+            </p>
+            <button
+              onClick={recargarRestaurantes}
+              className="restaurante-error-button"
+            >
+              🔄 Reintentar
+            </button>
+          </div>
+        </div>
+      </PrincipalComponente>
+    );
+  }
+
   return (
     <PrincipalComponente>
       <div className="restaurante-principal">
@@ -185,9 +219,10 @@ const RestaurantePrincipal = () => {
           onAgregar={manejarAgregar}
           onEditar={manejarEditar}
           onEliminar={manejarEliminar}
+          cargando={cargando}
+          onRecargar={recargarRestaurantes}
         />
 
-        {/* Modal Agregar */}
         {modalAgregarAbierto && (
           <ModalAgregarRestaurante
             onGuardar={manejarGuardarRestaurante}
@@ -196,7 +231,6 @@ const RestaurantePrincipal = () => {
           />
         )}
 
-        {/* Modal Editar */}
         {modalEditarAbierto && restauranteSeleccionado && (
           <ModalEditarRestaurante
             restaurante={restauranteSeleccionado}
@@ -206,14 +240,12 @@ const RestaurantePrincipal = () => {
           />
         )}
 
-        {/* Modal Ver */}
         {modalVerAbierto && restauranteSeleccionado && (
           <ModalVerRestaurante
             restaurante={restauranteSeleccionado}
             onCerrar={cerrarModales}
           />
         )}
-
       </div>
     </PrincipalComponente>
   );

@@ -5,17 +5,15 @@ import TablaTours from './Componentes/TablaTours';
 import ModalAgregarTours from './ModalesTours/ModalAgregarTours';
 import ModalEditarTours from './ModalesTours/ModalEditarTours';
 import ModalVerTours from './ModalesTours/ModalVerTours';
-import { modalEliminarTour } from './ModalesTours/ModalEliminarTours'; // ✅ NUEVO: Importar modal eliminar
+import { modalEliminarTour } from './ModalesTours/ModalEliminarTours';
 import './ToursPrincipal.css';
 
 const ToursPrincipal = () => {
-    // ✅ Lista de proveedores
-    const [proveedores,setProveedores] = useState([]);
-
-    // Estado para los tours con datos de ejemplo
+    const [proveedores, setProveedores] = useState([]);
     const [tours, setTours] = useState([]);
-
-    // ✅ Estados para controlar los modales
+    const [cargando, setCargando] = useState(true);
+    const [error, setError] = useState(null);
+    
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
     const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
@@ -28,18 +26,41 @@ const ToursPrincipal = () => {
     }, []);
 
     const recargarTours = async () => {
+        setCargando(true);
+        setError(null);
+
         try {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                throw new Error("No hay token de autenticación");
+            }
+
             const response = await axios.get("http://127.0.0.1:8000/api/tours", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
-                }
+                },
+                timeout: 10000
             });
+
             setTours(response.data);
             console.log('✅ Tours recargados');
+
         } catch (error) {
             console.error('❌ Error al recargar tours:', error);
+
+            if (error.code === 'ECONNABORTED') {
+                setError('La conexión tardó demasiado. Verifica tu servidor.');
+            } else if (error.response) {
+                setError(`Error del servidor: ${error.response.status}`);
+            } else if (error.request) {
+                setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+            } else {
+                setError(error.message);
+            }
+        } finally {
+            setCargando(false);
         }
     };
 
@@ -59,24 +80,17 @@ const ToursPrincipal = () => {
         }
     };
 
-    // ✅ Función para ver tour
     const handleVerTour = (tour) => {
-        console.log('Ver tour:', tour);
         setTourAVer(tour);
         setModalVerAbierto(true);
     };
 
-    // ✅ Función para editar tour
     const handleEditarTour = (tour) => {
-        console.log('Editar tour:', tour);
         setTourAEditar(tour);
         setModalEditarAbierto(true);
     };
 
-    // ✅ MODIFICADO: Función para eliminar tour con modal mejorado
     const handleEliminarTour = async (tour) => {
-        console.log('Eliminar tour:', tour);
-
         const confirmado = await modalEliminarTour(tour, async (tourAEliminar) => {
             try {
                 const token = localStorage.getItem("token");
@@ -95,11 +109,9 @@ const ToursPrincipal = () => {
     };
 
     const handleAgregarTour = () => {
-        console.log('Agregar nuevo tour');
         setModalAgregarAbierto(true);
     };
 
-    // ✅ Función para cerrar modales
     const cerrarModales = () => {
         setModalAgregarAbierto(false);
         setModalEditarAbierto(false);
@@ -108,7 +120,6 @@ const ToursPrincipal = () => {
         setTourAVer(null);
     };
 
-    // ✅ Función para agregar tour
     const agregarTour = async (nuevoTour) => {
         try {
             const token = localStorage.getItem("token");
@@ -183,6 +194,30 @@ const ToursPrincipal = () => {
         }
     };
 
+    // Manejo de errores
+    if (error) {
+        return (
+            <PrincipalComponente>
+                <div className="tours-error-container">
+                    <div className="tours-error-box">
+                        <h2 className="tours-error-title">
+                            ❌ Error al cargar tours
+                        </h2>
+                        <p className="tours-error-message">
+                            {error}
+                        </p>
+                        <button
+                            onClick={recargarTours}
+                            className="tours-error-button"
+                        >
+                            🔄 Reintentar
+                        </button>
+                    </div>
+                </div>
+            </PrincipalComponente>
+        );
+    }
+
     return (
         <PrincipalComponente>
             <div className="tours-principal">
@@ -193,9 +228,10 @@ const ToursPrincipal = () => {
                     onEditar={handleEditarTour}
                     onEliminar={handleEliminarTour}
                     onAgregar={handleAgregarTour}
+                    cargando={cargando}
+                    onRecargar={recargarTours}
                 />
 
-                {/* ✅ Modal AGREGAR */}
                 {modalAgregarAbierto && (
                     <ModalAgregarTours
                         onGuardar={agregarTour}
@@ -204,7 +240,6 @@ const ToursPrincipal = () => {
                     />
                 )}
 
-                {/* ✅ Modal EDITAR */}
                 {modalEditarAbierto && tourAEditar && (
                     <ModalEditarTours
                         tour={tourAEditar}
@@ -214,7 +249,6 @@ const ToursPrincipal = () => {
                     />
                 )}
 
-                {/* ✅ Modal VER */}
                 {modalVerAbierto && tourAVer && (
                     <ModalVerTours
                         tour={tourAVer}

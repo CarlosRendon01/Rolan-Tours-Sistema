@@ -5,7 +5,6 @@ import './ModalEditarTours.css';
 
 const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
   const [formData, setFormData] = useState({
-    // Datos generales
     nombre_tour: '',
     tipo_tour: '',
     duracion_tour: '',
@@ -17,8 +16,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
     punto_llegada: '',
     hora_salida: '',
     hora_regreso: '',
-
-    // Paquete y precios
     tipo_paquete: '',
     precio_base: '',
     moneda: 'MXN',
@@ -29,8 +26,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
     costo_por_nino: '',
     costo_por_adulto_mayor: '',
     temporada: '',
-
-    // Proveedor
     operado_por: '',
     empresa_proveedora_id: '',
     guia_principal: '',
@@ -40,11 +35,7 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
     transporte_incluido: false,
     seguro_incluido: false,
     numero_licencia_guia: '',
-
-    // Documentos
     foto_tour: null,
-
-    // Administrativo
     codigo_tour: '',
     estado: 'activo'
   });
@@ -53,7 +44,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
   const [seccionActiva, setSeccionActiva] = useState('generales');
   const [guardando, setGuardando] = useState(false);
 
-  // Cargar datos del tour cuando se abre el modal
   useEffect(() => {
     if (tour) {
       setFormData({
@@ -141,7 +131,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
   const validarFormulario = useCallback(() => {
     const nuevosErrores = {};
 
-    // Validaciones datos generales
     if (!formData.codigo_tour.trim()) {
       nuevosErrores.codigo_tour = 'El código del tour es requerido';
     }
@@ -174,7 +163,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
       nuevosErrores.idiomas_disponibles = 'Selecciona al menos un idioma';
     }
 
-    // Validaciones paquete y precios
     if (!formData.tipo_paquete) {
       nuevosErrores.tipo_paquete = 'El tipo de paquete es requerido';
     }
@@ -187,7 +175,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
       nuevosErrores.incluye = 'Especifica qué incluye el tour';
     }
 
-    // Validaciones proveedor
     if (!formData.operado_por.trim()) {
       nuevosErrores.operado_por = 'El operador es requerido';
     }
@@ -218,11 +205,9 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-
       const camposGenerales = ['codigo_tour', 'nombre_tour', 'tipo_tour', 'duracion_tour', 'capacidad_maxima', 'descripcion_tour', 'nivel_dificultad', 'idiomas_disponibles', 'punto_partida', 'punto_llegada', 'hora_salida', 'hora_regreso'];
       const camposPaquete = ['tipo_paquete', 'precio_base', 'moneda', 'incluye', 'no_incluye', 'descuento_disponible', 'iva_incluido', 'costo_por_nino', 'costo_por_adulto_mayor', 'temporada'];
       const camposProveedor = ['operado_por', 'empresa_proveedora_id', 'guia_principal', 'contacto_proveedor', 'ubicacion_salida', 'disponibilidad', 'transporte_incluido', 'seguro_incluido', 'numero_licencia_guia'];
-
       const erroresEnGenerales = Object.keys(nuevosErrores).some(key => camposGenerales.includes(key));
       const erroresEnPaquete = Object.keys(nuevosErrores).some(key => camposPaquete.includes(key));
       const erroresEnProveedor = Object.keys(nuevosErrores).some(key => camposProveedor.includes(key));
@@ -243,6 +228,20 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
           elemento.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }, 100);
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos Incompletos',
+        html: `<p style="font-size: 1rem; color: #4b5563; margin: 1rem 0;">Por favor completa todos los campos requeridos antes de continuar.</p>`,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#f59e0b',
+        customClass: {
+          popup: 'met-swal-popup-custom',
+          title: 'met-swal-title-custom',
+          htmlContainer: 'met-swal-html-custom',
+          confirmButton: 'met-swal-confirm-custom'
+        }
+      });
 
       return;
     }
@@ -294,12 +293,8 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
 
       await onGuardar(tourData);
 
-      console.log('✅ Tour actualizado, cerrando modal primero...');
-
-      // ✅ PRIMERO: Cerrar el modal
       onCerrar();
 
-      // ✅ SEGUNDO: Mostrar el SweetAlert2 después de cerrar el modal
       setTimeout(() => {
         Swal.fire({
           icon: 'success',
@@ -318,12 +313,24 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
 
     } catch (error) {
       console.error('❌ Error al actualizar el tour:', error);
+      console.error('📄 Detalles del error:', {
+        message: error.message,
+        stack: error.stack,
+        error: error
+      });
+
       Swal.fire({
         icon: 'error',
         title: 'Error al Actualizar',
-        text: 'Hubo un problema al actualizar el tour. Por favor, intenta nuevamente.',
+        html: `<p style="font-size: 1rem; color: #4b5563; margin: 1rem 0;">Hubo un problema al actualizar el tour: <strong>${error.message || 'Error desconocido'}</strong></p>`,
         confirmButtonText: 'Entendido',
-        confirmButtonColor: '#ef4444'
+        confirmButtonColor: '#ef4444',
+        customClass: {
+          popup: 'met-swal-popup-custom',
+          title: 'met-swal-title-custom',
+          htmlContainer: 'met-swal-html-custom',
+          confirmButton: 'met-swal-confirm-custom'
+        }
       });
     } finally {
       setGuardando(false);
@@ -919,7 +926,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
   return (
     <div className="met-overlay" onClick={onCerrar}>
       <div className="met-contenido met-xl" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="met-header">
           <h2>Editar Tour</h2>
           <button className="met-btn-cerrar" onClick={onCerrar} type="button">
@@ -927,7 +933,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="met-tabs">
           <button
             className={`met-tab-button ${seccionActiva === 'generales' ? 'active' : ''}`}
@@ -963,7 +968,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
           </button>
         </div>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="met-form">
           {seccionActiva === 'generales' && renderSeccionGenerales()}
           {seccionActiva === 'paquete' && renderSeccionPaquete()}
@@ -971,7 +975,6 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
           {seccionActiva === 'documentos' && renderSeccionDocumentos()}
         </form>
 
-        {/* Footer */}
         <div className="met-footer">
           <div className="met-botones-izquierda">
             <button type="button" className="met-btn-cancelar" onClick={onCerrar}>
@@ -994,5 +997,4 @@ const ModalEditarTours = ({ tour, onGuardar, onCerrar, proveedores = [] }) => {
     </div>
   );
 };
-
 export default ModalEditarTours;

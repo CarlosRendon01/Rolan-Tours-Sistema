@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, MapPin, Map, Plus, Clock, Users, DollarSign } from 'lucide-react';
 import './TablaTours.css';
 
@@ -8,14 +8,30 @@ const TablaTours = ({
   onVer, 
   onEditar, 
   onEliminar,
-  onAgregar 
+  onAgregar,
+  cargando,
+  onRecargar
 }) => {
-  // Estados locales para UI (paginación, búsqueda)
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [puntosCarga, setPuntosCarga] = useState('');
 
-  // Filtrar tours por búsqueda
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const toursFiltrados = tours.filter(tour => {
     const busqueda = terminoBusqueda.toLowerCase();
     return (
@@ -25,18 +41,15 @@ const TablaTours = ({
     );
   });
 
-  // Calcular paginación
   const totalRegistros = toursFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const toursPaginados = toursFiltrados.slice(indiceInicio, indiceFin);
-
-  // Calcular estadísticas
+  
   const totalTours = tours.length;
   const toursActivos = tours.filter(tour => tour.estado === 'activo').length;
 
-  // Función para formatear precio
   const formatearPrecio = (precio, moneda = 'MXN') => {
     const simbolos = {
       'MXN': '$',
@@ -46,7 +59,6 @@ const TablaTours = ({
     return `${simbolos[moneda] || '$'}${precio.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
-  // Función para obtener iniciales
   const obtenerIniciales = (nombreTour) => {
     const palabras = nombreTour.split(' ');
     if (palabras.length >= 2) {
@@ -55,7 +67,6 @@ const TablaTours = ({
     return nombreTour.substring(0, 2).toUpperCase();
   };
 
-  // Función para obtener clase de estado
   const obtenerClaseEstado = (estado) => {
     const estados = {
       'Activo': 'activo',
@@ -65,7 +76,6 @@ const TablaTours = ({
     return estados[estado.toLowerCase()] || 'inactivo';
   };
 
-  // Función para formatear duración
   const formatearDuracion = (duracion) => {
     if (duracion.includes('hora')) {
       return duracion;
@@ -107,7 +117,6 @@ const TablaTours = ({
 
   return (
     <div className="tours-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="tours-encabezado">
         <div className="tours-seccion-logo">
           <div className="tours-lineas-decorativas">
@@ -119,7 +128,6 @@ const TablaTours = ({
           <h1 className="tours-titulo">Gestión de Tours</h1>
         </div>
         
-        {/* Estadísticas */}
         <div className="tours-contenedor-estadisticas">
           <div className="tours-estadistica">
             <div className="tours-icono-estadistica-circular">
@@ -141,7 +149,6 @@ const TablaTours = ({
         </div>
       </div>
 
-      {/* Controles */}
       <div className="tours-controles">
         <div className="tours-control-registros">
           <label htmlFor="registros">Mostrar</label>
@@ -186,8 +193,31 @@ const TablaTours = ({
         </div>
       </div>
 
-      {/* Tabla */}
-      {toursPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="tours-contenedor-tabla">
+          <table className="tours-tabla">
+            <thead>
+              <tr className="tours-fila-encabezado">
+                <th>CÓDIGO</th>
+                <th>NOMBRE TOUR</th>
+                <th>TIPO</th>
+                <th>DURACIÓN</th>
+                <th>CAPACIDAD</th>
+                <th>PRECIO</th>
+                <th>ESTADO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="8" className="tours-mensaje-cargando">
+                  Cargando la información de los tours{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : toursPaginados.length === 0 ? (
         <div className="tours-estado-vacio">
           <div className="tours-icono-vacio">
             <Map size={80} strokeWidth={1.5} />
@@ -308,7 +338,6 @@ const TablaTours = ({
             </table>
           </div>
 
-          {/* Información de paginación y controles */}
           <div className="tours-pie-tabla">
             <div className="tours-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
