@@ -3,7 +3,6 @@ import { Truck, Calendar, Gauge, AlertTriangle, CheckCircle, Clock } from 'lucid
 import './CardVehiculo.css';
 
 const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
-  // Calcular días desde el último mantenimiento
   const diasDesdeMantenimiento = () => {
     if (!mantenimiento.ultimo_mantenimiento) return null;
     const fechaUltimo = new Date(mantenimiento.ultimo_mantenimiento.fecha);
@@ -12,7 +11,6 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
     return diferencia;
   };
 
-  // Calcular kilómetros hasta el próximo mantenimiento
   const kmHastaProximo = () => {
     const kmActual = mantenimiento.kilometraje_actual;
     const kmUltimoMant = mantenimiento.ultimo_mantenimiento?.kilometraje || 0;
@@ -21,7 +19,6 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
     return Math.max(0, kmRestantes);
   };
 
-  // Obtener el icono según el estado
   const getEstadoIcono = () => {
     switch (mantenimiento.estado) {
       case 'verde':
@@ -35,7 +32,6 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
     }
   };
 
-  // Obtener mensaje según el estado
   const getEstadoMensaje = () => {
     const dias = diasDesdeMantenimiento();
     const km = kmHastaProximo();
@@ -60,10 +56,8 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
       className={`card-vehiculo ${mantenimiento.estado}`}
       onClick={onClick}
     >
-      {/* Borde de color según estado */}
       <div className={`card-borde ${mantenimiento.estado}`}></div>
 
-      {/* Header con foto y estado */}
       <div className="card-header">
         <div className="card-foto">
           {vehiculo.documentos?.foto_vehiculo ? (
@@ -83,7 +77,6 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
         </div>
       </div>
 
-      {/* Información del vehículo */}
       <div className="card-body">
         <h3 className="card-nombre">{vehiculo.nombre}</h3>
         <p className="card-detalles">
@@ -91,7 +84,6 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
         </p>
         <p className="card-placa">Placa: {vehiculo.numero_placa}</p>
 
-        {/* Métricas */}
         <div className="card-metricas">
           <div className="card-metrica">
             <Gauge size={16} />
@@ -105,12 +97,10 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
           )}
         </div>
 
-        {/* Estado del mantenimiento */}
         <div className={`card-estado-mensaje ${mantenimiento.estado}`}>
           <p>{getEstadoMensaje()}</p>
         </div>
 
-        {/* Último mantenimiento */}
         {mantenimiento.ultimo_mantenimiento && (
           <div className="card-ultimo-mantenimiento">
             <p className="card-ultimo-label">Último mantenimiento:</p>
@@ -119,12 +109,10 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
         )}
       </div>
 
-      {/* Footer */}
       <div className="card-footer">
         <button className="card-btn-ver">Ver detalles</button>
       </div>
     </div>
   );
 };
-
 export default CardVehiculo;

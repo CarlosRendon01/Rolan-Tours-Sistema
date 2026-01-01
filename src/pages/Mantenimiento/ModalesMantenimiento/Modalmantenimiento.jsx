@@ -30,7 +30,6 @@ const ModalMantenimiento = ({
     setNuevoKm(mantenimiento.kilometraje_actual);
   }, [mantenimiento.kilometraje_actual]);
 
-  // Formatear fecha
   const formatearFecha = (fecha) => {
     if (!fecha) return '-';
     const date = new Date(fecha);
@@ -41,7 +40,6 @@ const ModalMantenimiento = ({
     });
   };
 
-  // Calcular porcentaje de uso del intervalo
   const calcularPorcentajeUso = () => {
     const kmActual = mantenimiento.kilometraje_actual;
     const kmUltimoMant = mantenimiento.ultimo_mantenimiento?.kilometraje || 0;
@@ -50,7 +48,6 @@ const ModalMantenimiento = ({
     return Math.min(100, (kmRecorridos / intervalo) * 100);
   };
 
-  // Manejar actualización de kilometraje
   const handleActualizarKm = () => {
     if (nuevoKm && nuevoKm >= mantenimiento.kilometraje_actual) {
       onActualizarKilometraje(vehiculo.id, parseInt(nuevoKm));
@@ -58,7 +55,6 @@ const ModalMantenimiento = ({
     }
   };
 
-  // Obtener icono de estado
   const getEstadoIcono = () => {
     switch (mantenimiento.estado) {
       case 'verde':
@@ -90,7 +86,6 @@ const ModalMantenimiento = ({
   return (
     <div className="modal-mant-overlay" onClick={onCerrar}>
       <div className="modal-mant-contenido" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-mant-header">
           <div className="modal-mant-header-info">
             <div className="modal-mant-avatar">
@@ -108,7 +103,6 @@ const ModalMantenimiento = ({
           </button>
         </div>
 
-        {/* Estado visual */}
         <div className={`modal-mant-estado-banner ${mantenimiento.estado}`}>
           <div className="modal-mant-estado-contenido">
             {getEstadoIcono()}
@@ -123,7 +117,6 @@ const ModalMantenimiento = ({
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="modal-mant-tabs">
           <button
             className={`modal-mant-tab ${seccionActiva === 'info' ? 'active' : ''}`}
@@ -141,11 +134,9 @@ const ModalMantenimiento = ({
           </button>
         </div>
 
-        {/* Contenido */}
         <div className="modal-mant-body">
           {seccionActiva === 'info' && (
             <div className="modal-mant-info">
-              {/* Kilometraje actual */}
               <div className="modal-mant-card">
                 <div className="modal-mant-card-header">
                   <h4>
@@ -191,7 +182,6 @@ const ModalMantenimiento = ({
                 )}
               </div>
 
-              {/* Progreso del mantenimiento */}
               <div className="modal-mant-card">
                 <h4>
                   <TrendingUp size={20} />
@@ -217,7 +207,6 @@ const ModalMantenimiento = ({
                 </p>
               </div>
 
-              {/* Próximo mantenimiento */}
               <div className="modal-mant-card">
                 <h4>
                   <Calendar size={20} />
@@ -236,7 +225,6 @@ const ModalMantenimiento = ({
                 )}
               </div>
 
-              {/* Último mantenimiento */}
               {mantenimiento.ultimo_mantenimiento && (
                 <div className="modal-mant-card">
                   <h4>
@@ -274,7 +262,6 @@ const ModalMantenimiento = ({
                 </div>
               )}
 
-              {/* Comentarios */}
               {mantenimiento.comentarios && (
                 <div className="modal-mant-card">
                   <h4>
@@ -326,7 +313,6 @@ const ModalMantenimiento = ({
           )}
         </div>
 
-        {/* Footer */}
         <div className="modal-mant-footer">
           <button className="modal-mant-btn-secundario" onClick={onCerrar}>
             Cerrar
@@ -343,5 +329,4 @@ const ModalMantenimiento = ({
     </div>
   );
 };
-
 export default ModalMantenimiento;

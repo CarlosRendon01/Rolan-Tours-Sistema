@@ -21,11 +21,7 @@ const MantenimientoPrincipal = () => {
   const [modalDetallesAbierto, setModalDetallesAbierto] = useState(false);
   const [modalRegistrarAbierto, setModalRegistrarAbierto] = useState(false);
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
-
-  // ✅ NUEVO: Estado para forzar re-render del modal
   const [keyModal, setKeyModal] = useState(0);
-
-  // ✅ Cargar vehículos con datos de mantenimiento
   const recargarVehiculos = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -36,13 +32,11 @@ const MantenimientoPrincipal = () => {
         }
       });
       setVehiculos(response.data);
-      console.log('✅ Vehículos cargados con datos de mantenimiento:', response.data);
     } catch (error) {
       console.error('❌ Error al cargar vehículos:', error);
     }
   };
 
-  // ✅ Recargar un vehículo específico
   const recargarVehiculoEspecifico = async (vehiculoId) => {
     try {
       const token = localStorage.getItem("token");
@@ -54,25 +48,12 @@ const MantenimientoPrincipal = () => {
       });
 
       const vehiculoActualizado = response.data;
-
-      console.log('✅ Vehículo recargado:', {
-        id: vehiculoActualizado.id,
-        nombre: vehiculoActualizado.nombre,
-        kilometraje_actual: vehiculoActualizado.kilometraje_actual,
-        estado_mantenimiento: vehiculoActualizado.estado_mantenimiento,
-        ultimo_mantenimiento: vehiculoActualizado.ultimo_mantenimiento,
-        total_mantenimientos: vehiculoActualizado.mantenimientos?.length || 0,
-      });
-
-      // ✅ Actualizar el vehículo en la lista
       setVehiculos(prev =>
         prev.map(v => v.id === vehiculoId ? vehiculoActualizado : v)
       );
 
-      // ✅ IMPORTANTE: Actualizar el vehículo seleccionado para el modal
       if (vehiculoSeleccionado?.id === vehiculoId) {
         setVehiculoSeleccionado(vehiculoActualizado);
-        // ✅ Forzar re-render del modal
         setKeyModal(prev => prev + 1);
       }
 
@@ -87,7 +68,6 @@ const MantenimientoPrincipal = () => {
     recargarVehiculos();
   }, []);
 
-  // ✅ Obtener estadísticas
   const obtenerEstadisticas = () => {
     const stats = {
       total: vehiculos.length,
@@ -107,8 +87,6 @@ const MantenimientoPrincipal = () => {
   };
 
   const estadisticas = obtenerEstadisticas();
-
-  // ✅ Obtener datos de mantenimiento de un vehículo
   const obtenerMantenimiento = (vehiculo) => {
     return {
       kilometraje_actual: vehiculo.kilometraje_actual || 0,
@@ -120,30 +98,23 @@ const MantenimientoPrincipal = () => {
     };
   };
 
-  // ✅ Filtrar vehículos
   const vehiculosFiltrados = vehiculos.filter((vehiculo) => {
     const estado = vehiculo.estado_mantenimiento || 'verde';
-
-    // Filtro de búsqueda
     const cumpleBusqueda =
       vehiculo.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
       vehiculo.numero_placa.toLowerCase().includes(busqueda.toLowerCase()) ||
       vehiculo.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
       vehiculo.modelo.toLowerCase().includes(busqueda.toLowerCase());
 
-    // Filtro de estado
     const cumpleEstado = filtroEstado === "todos" || estado === filtroEstado;
-
     return cumpleBusqueda && cumpleEstado;
   });
 
-  // ✅ Abrir modal de detalles
   const handleVerDetalles = (vehiculo) => {
     setVehiculoSeleccionado(vehiculo);
     setModalDetallesAbierto(true);
   };
 
-  // ✅ Abrir modal de registrar mantenimiento
   const handleRegistrarMantenimiento = (vehiculoId) => {
     const vehiculo = vehiculos.find((v) => v.id === vehiculoId);
     setVehiculoSeleccionado(vehiculo);
@@ -151,7 +122,6 @@ const MantenimientoPrincipal = () => {
     setModalRegistrarAbierto(true);
   };
 
-  // ✅ MODIFICADO: Guardar nuevo mantenimiento
   const handleGuardarMantenimiento = async (vehiculoId, nuevoMantenimiento) => {
     try {
       const token = localStorage.getItem("token");
@@ -179,12 +149,8 @@ const MantenimientoPrincipal = () => {
         }
       );
 
-      console.log("✅ Mantenimiento registrado:", response.data);
 
-      // ✅ Recargar el vehículo específico (actualiza modal automáticamente)
       await recargarVehiculoEspecifico(vehiculoId);
-
-      // ✅ Reabrir el modal de detalles después de cerrar el de registro
       setModalRegistrarAbierto(false);
       setTimeout(() => {
         setModalDetallesAbierto(true);
@@ -197,7 +163,6 @@ const MantenimientoPrincipal = () => {
     }
   };
 
-  // ✅ MODIFICADO: Actualizar kilometraje
   const handleActualizarKilometraje = async (vehiculoId, nuevoKm) => {
     try {
       const token = localStorage.getItem("token");
@@ -220,12 +185,7 @@ const MantenimientoPrincipal = () => {
           }
         }
       );
-
-      console.log("✅ Kilometraje actualizado");
-
-      // ✅ Recargar el vehículo específico (actualiza modal automáticamente)
       await recargarVehiculoEspecifico(vehiculoId);
-
     } catch (error) {
       console.error("❌ Error al actualizar kilometraje:", error);
       throw error;
@@ -235,7 +195,6 @@ const MantenimientoPrincipal = () => {
   return (
     <PrincipalComponente>
       <div className="mantenimiento-principal">
-        {/* Header con estadísticas */}
         <div className="mantenimiento-encabezado">
           <div className="mantenimiento-seccion-logo">
             <div className="mantenimiento-lineas-decorativas">
@@ -247,7 +206,6 @@ const MantenimientoPrincipal = () => {
             <h1 className="mantenimiento-titulo">Control de Mantenimiento</h1>
           </div>
 
-          {/* Estadísticas */}
           <div className="mantenimiento-contenedor-estadisticas">
             <div className="mantenimiento-estadistica">
               <div className="mantenimiento-icono-estadistica total">
@@ -299,9 +257,7 @@ const MantenimientoPrincipal = () => {
           </div>
         </div>
 
-        {/* Controles de búsqueda y filtros */}
         <div className="mantenimiento-controles">
-          {/* Búsqueda */}
           <div className="mantenimiento-control-busqueda">
             <div className="mantenimiento-entrada-busqueda">
               <Search className="mantenimiento-icono-buscar" size={20} />
@@ -315,7 +271,6 @@ const MantenimientoPrincipal = () => {
             </div>
           </div>
 
-          {/* Filtros */}
           <div className="mantenimiento-filtros">
             <Filter size={18} />
             <button
@@ -352,7 +307,6 @@ const MantenimientoPrincipal = () => {
           </div>
         </div>
 
-        {/* Grid de cards */}
         {vehiculosFiltrados.length === 0 ? (
           <div className="mantenimiento-vacio">
             <Wrench size={80} strokeWidth={1.5} />
@@ -378,7 +332,6 @@ const MantenimientoPrincipal = () => {
           </div>
         )}
 
-        {/* Modal de detalles - ✅ AGREGADO key para forzar re-render */}
         {modalDetallesAbierto && vehiculoSeleccionado && (
           <ModalMantenimiento
             key={`modal-${vehiculoSeleccionado.id}-${keyModal}`}
@@ -392,8 +345,6 @@ const MantenimientoPrincipal = () => {
             onActualizarKilometraje={handleActualizarKilometraje}
           />
         )}
-
-        {/* Modal de registrar mantenimiento */}
         {modalRegistrarAbierto && vehiculoSeleccionado && (
           <ModalRegistrarMantenimiento
             vehiculo={vehiculoSeleccionado}
@@ -409,5 +360,4 @@ const MantenimientoPrincipal = () => {
     </PrincipalComponente>
   );
 };
-
 export default MantenimientoPrincipal;

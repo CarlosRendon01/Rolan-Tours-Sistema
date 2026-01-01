@@ -38,7 +38,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Si selecciona "Otro", mostrar campo de texto
     if (name === 'tipo' && value === 'Otro') {
       setMostrarCampoNuevoTipo(true);
     } else if (name === 'tipo' && value !== 'Otro') {
@@ -51,7 +50,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
       [name]: value
     }));
 
-    // Limpiar error del campo
     if (errores[name]) {
       setErrores(prev => {
         const nuevosErrores = { ...prev };
@@ -74,7 +72,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
       return;
     }
 
-    // Verificar si ya existe
     if (tiposMantenimiento.some(tipo => tipo.toLowerCase() === tipoLimpio.toLowerCase())) {
       Swal.fire({
         icon: 'info',
@@ -84,23 +81,18 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
       });
       return;
     }
-
-    // Agregar el nuevo tipo antes de "Otro"
     const nuevostiposMantenimiento = [...tiposMantenimiento];
     nuevostiposMantenimiento.splice(nuevostiposMantenimiento.length - 1, 0, tipoLimpio);
     setTiposMantenimiento(nuevostiposMantenimiento);
 
-    // Seleccionar automáticamente el nuevo tipo
     setFormData(prev => ({
       ...prev,
       tipo: tipoLimpio
     }));
 
-    // Limpiar y ocultar campo
     setNuevoTipo('');
     setMostrarCampoNuevoTipo(false);
 
-    // Mensaje de éxito
     Swal.fire({
       icon: 'success',
       title: '¡Tipo agregado!',
@@ -145,8 +137,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-
-      // Focus en el primer campo con error
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
         const elemento = document.querySelector(`[name="${primerCampoConError}"]`);
@@ -169,18 +159,10 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
         costo: formData.costo ? parseFloat(formData.costo) : null,
         fecha: formData.fecha
       };
-
       await onGuardar(vehiculo.id, nuevoMantenimiento);
-
-      console.log('✅ Mantenimiento registrado:', nuevoMantenimiento);
-
-      // Cerrar modal
       onCerrar();
 
-      // Esperar un poco
       await new Promise(resolve => setTimeout(resolve, 300));
-
-      // Mostrar alerta de éxito
       await Swal.fire({
         icon: 'success',
         title: '¡Mantenimiento Registrado!',
@@ -216,7 +198,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
   return (
     <div className="modal-reg-mant-overlay" onClick={onCerrar}>
       <div className="modal-reg-mant-contenido" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-reg-mant-header">
           <div className="modal-reg-mant-header-info">
             <div className="modal-reg-mant-icono">
@@ -232,9 +213,7 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
           </button>
         </div>
 
-        {/* Formulario */}
         <div className="modal-reg-mant-form">
-          {/* Tipo de mantenimiento */}
           <div className="modal-reg-mant-form-group">
             <label htmlFor="tipo">
               <Wrench size={18} />
@@ -257,7 +236,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
             )}
           </div>
 
-          {/* Campo para nuevo tipo de mantenimiento */}
           {mostrarCampoNuevoTipo && (
             <div className="modal-reg-mant-form-group" style={{ background: '#f0f9ff', padding: '16px', borderRadius: '8px', border: '2px dashed #667eea' }}>
               <label htmlFor="nuevoTipo" style={{ color: '#1e40af' }}>
@@ -315,7 +293,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
             </div>
           )}
 
-          {/* Kilometraje y Fecha */}
           <div className="modal-reg-mant-form-row">
             <div className="modal-reg-mant-form-group">
               <label htmlFor="kilometraje">
@@ -356,7 +333,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
             </div>
           </div>
 
-          {/* Costo */}
           <div className="modal-reg-mant-form-group">
             <label htmlFor="costo">
               <DollarSign size={18} />
@@ -378,7 +354,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
             )}
           </div>
 
-          {/* Descripción */}
           <div className="modal-reg-mant-form-group">
             <label htmlFor="descripcion">
               <FileText size={18} />
@@ -399,7 +374,6 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
           </div>
         </div>
 
-        {/* Footer */}
         <div className="modal-reg-mant-footer">
           <button
             type="button"
@@ -423,5 +397,4 @@ const ModalRegistrarMantenimiento = ({ vehiculo, mantenimiento, onGuardar, onCer
     </div>
   );
 };
-
 export default ModalRegistrarMantenimiento;

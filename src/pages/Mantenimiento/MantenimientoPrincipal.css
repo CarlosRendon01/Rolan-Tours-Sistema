@@ -1,11 +1,9 @@
-/* ===== MANTENIMIENTO PRINCIPAL ===== */
 .mantenimiento-principal {
   padding: 32px;
   min-height: 100vh;
   background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
 }
 
-/* Header */
 .mantenimiento-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
   border-radius: 16px;
@@ -65,7 +63,6 @@
   letter-spacing: -0.5px;
 }
 
-/* Estadísticas */
 .mantenimiento-contenedor-estadisticas {
   display: flex;
   gap: 24px;
@@ -137,7 +134,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Controles */
 .mantenimiento-controles {
   background: white;
   border-radius: 16px;
@@ -161,7 +157,6 @@
   position: relative;
   width: 400px;
   min-width: 220px;
-  /* 🔹 Evita que se encoja demasiado */
 }
 
 .mantenimiento-entrada-buscar {
@@ -189,7 +184,6 @@
   pointer-events: none;
 }
 
-/* Filtros */
 .mantenimiento-filtros {
   display: flex;
   align-items: center;
@@ -243,7 +237,6 @@
   background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
 }
 
-/* Grid de cards */
 .mantenimiento-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -261,7 +254,6 @@
   }
 }
 
-/* Estado vacío */
 .mantenimiento-vacio {
   display: flex;
   flex-direction: column;
@@ -287,7 +279,6 @@
   max-width: 400px;
 }
 
-/* Responsive */
 @media (max-width: 1200px) {
   .mantenimiento-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
