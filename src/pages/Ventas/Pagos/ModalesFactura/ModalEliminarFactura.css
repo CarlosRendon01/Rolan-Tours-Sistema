@@ -1,8 +1,3 @@
-/* ========================================
-   ESTILOS PARA SWEETALERT2 - MODAL ELIMINAR FACTURA
-   ======================================== */
-
-/* Popup principal */
 .eliminar-factura-popup {
   background: white !important;
   border-radius: 16px !important;
@@ -11,11 +6,11 @@
   max-height: 150vh !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   animation: slideUp 0.3s ease-out !important;
   position: relative !important;
-  transform: scale(0.90) !important;
-
+  transform: scale(0.9) !important;
 }
 
 .eliminar-factura-popup-cargando {
@@ -23,7 +18,6 @@
   padding: 2rem !important;
 }
 
-/* Títulos */
 .eliminar-factura-titulo {
   font-size: 1.25rem !important;
   font-weight: 700 !important;
@@ -36,8 +30,7 @@
   font-weight: 700 !important;
   color: #059669 !important;
   margin-bottom: 0 !important;
-  transform: scale(0.90) !important;
-
+  transform: scale(0.9) !important;
 }
 
 .eliminar-factura-titulo-error {
@@ -53,13 +46,11 @@
   color: #4b5563 !important;
 }
 
-/* Contenedor HTML */
 .eliminar-factura-html {
   margin: 0 !important;
   padding: 0.5rem 0 !important;
 }
 
-/* Contenido principal */
 .eliminar-factura-contenido {
   text-align: center;
 }
@@ -76,7 +67,8 @@
   color: #1f2937;
   margin: 0.5rem 0;
   font-weight: 700;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace;
 }
 
 .eliminar-factura-serie {
@@ -97,7 +89,8 @@
   font-size: 0.875rem;
   color: #4b5563;
   margin: 0.25rem 0;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace;
 }
 
 .eliminar-factura-monto {
@@ -107,7 +100,6 @@
   font-weight: 700;
 }
 
-/* Información adicional de la factura */
 .eliminar-factura-info {
   background: #f9fafb;
   border-radius: 8px;
@@ -137,10 +129,10 @@
   color: #1f2937;
   font-weight: 600;
   font-size: 0.75rem;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace;
 }
 
-/* Badge de estado */
 .eliminar-factura-estado {
   display: inline-block;
   padding: 0.25rem 0.625rem;
@@ -164,7 +156,6 @@
   border: 1px solid #fecaca;
 }
 
-/* Advertencia */
 .eliminar-factura-advertencia {
   display: flex;
   align-items: flex-start;
@@ -198,7 +189,6 @@
   color: #92400e;
 }
 
-/* Advertencia especial para facturas timbradas */
 .eliminar-factura-advertencia-critica {
   background: #fee2e2;
   border: 2px solid #dc2626;
@@ -225,7 +215,6 @@
   font-weight: 500;
 }
 
-/* Contenido de éxito */
 .eliminar-factura-exito-contenido {
   text-align: center;
 }
@@ -244,12 +233,12 @@
 }
 
 .eliminar-factura-exito-numero {
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace;
   font-weight: 600;
   color: #1f2937;
 }
 
-/* Iconos */
 .eliminar-factura-icono {
   border-color: #f59e0b !important;
   color: #f59e0b !important;
@@ -267,7 +256,6 @@
   color: #ef4444 !important;
 }
 
-/* Botones */
 .eliminar-factura-acciones {
   margin-top: 1rem !important;
 }
@@ -338,12 +326,10 @@
   transition: all 0.2s ease !important;
 }
 
-/* Timer progress bar */
 .swal2-timer-progress-bar {
   background: #10b981 !important;
 }
 
-/* Animaciones suaves */
 .swal2-show {
   animation: swal2-show 0.3s !important;
 }
@@ -352,12 +338,10 @@
   animation: swal2-hide 0.2s !important;
 }
 
-/* Loading spinner personalizado */
 .swal2-loading {
   border-color: #3b82f6 transparent #3b82f6 transparent !important;
 }
 
-/* Responsive */
 @media (max-width: 640px) {
   .eliminar-factura-popup {
     padding: 1.25rem !important;
