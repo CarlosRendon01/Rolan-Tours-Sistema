@@ -45,10 +45,11 @@
   max-height: 90vh !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   animation: slideUp 0.3s ease-out !important;
   position: relative !important;
-  transform: scale(0.90) !important;
+  transform: scale(0.9) !important;
 }
 
 @keyframes modalReciboSlideUp {
@@ -69,7 +70,11 @@
   align-items: center !important;
   padding: 1.5rem !important;
   border-bottom: 1px solid var(--recibo-border) !important;
-  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    var(--recibo-primary) 0%,
+    var(--recibo-secondary) 100%
+  ) !important;
   color: white !important;
   border-radius: 12px 12px 0 0 !important;
   gap: 1rem !important;
@@ -278,7 +283,11 @@
   font-weight: 700 !important;
   color: var(--recibo-text-primary) !important;
   margin: 0 0 0.5rem 0 !important;
-  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    var(--recibo-primary) 0%,
+    var(--recibo-secondary) 100%
+  ) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
@@ -334,7 +343,12 @@
 
 .recibo-divisor {
   height: 2px !important;
-  background: linear-gradient(90deg, transparent, var(--recibo-primary), transparent) !important;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--recibo-primary),
+    transparent
+  ) !important;
   margin: 2rem 0 !important;
   border: none !important;
 }
@@ -392,7 +406,11 @@
 }
 
 .recibo-pago-destacado {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.08) 0%,
+    rgba(118, 75, 162, 0.08) 100%
+  ) !important;
   border: 2px solid var(--recibo-primary) !important;
   border-radius: 8px !important;
   padding: 1.5rem !important;
@@ -496,7 +514,11 @@
   justify-content: center !important;
   gap: 0.75rem !important;
   padding: 1rem !important;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.08) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.08) 0%,
+    rgba(5, 150, 105, 0.08) 100%
+  ) !important;
   border: 2px solid var(--recibo-success) !important;
   border-radius: 8px !important;
   color: #065f46 !important;
@@ -619,7 +641,11 @@
 }
 
 .modal-recibo-boton-primario {
-  background: linear-gradient(135deg, var(--recibo-primary) 0%, var(--recibo-secondary) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    var(--recibo-primary) 0%,
+    var(--recibo-secondary) 100%
+  ) !important;
   color: white !important;
   box-shadow: 0 2px 4px rgb(50, 80, 212) !important;
 }

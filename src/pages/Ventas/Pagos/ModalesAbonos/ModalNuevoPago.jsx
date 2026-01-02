@@ -1,68 +1,83 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import { X, User, Calendar, DollarSign, FileText, CreditCard, AlertCircle, Save } from 'lucide-react';
-import './ModalNuevoPago.css';
+import React, { useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import {
+  X,
+  User,
+  Calendar,
+  DollarSign,
+  FileText,
+  CreditCard,
+  AlertCircle,
+  Save,
+} from "lucide-react";
+import "./ModalNuevoPago.css";
 
 const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
   const [formulario, setFormulario] = useState({
-    clienteId: '',
-    nombreCliente: '',
-    emailCliente: '',
-    telefonoCliente: '',
-    tipoServicio: '',
-    descripcionServicio: '',
-    fechaTour: '',
-    montoTotal: '',
-    numeroAbonos: '3',
-    abonoMinimo: '',
-    frecuenciaPago: 'semanal',
-    fechaPrimerAbono: '',
-    numeroContrato: '',
-    observaciones: ''
+    clienteId: "",
+    nombreCliente: "",
+    emailCliente: "",
+    telefonoCliente: "",
+    tipoServicio: "",
+    descripcionServicio: "",
+    fechaTour: "",
+    montoTotal: "",
+    numeroAbonos: "3",
+    abonoMinimo: "",
+    frecuenciaPago: "semanal",
+    fechaPrimerAbono: "",
+    numeroContrato: "",
+    observaciones: "",
   });
 
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
 
   const tiposServicio = [
-    'Tour Arqueológico',
-    'Tour Gastronómico',
-    'Tour Ecoturístico',
-    'Tour Cultural',
-    'Tour Aventura',
-    'Tour Personalizado'
+    "Tour Arqueológico",
+    "Tour Gastronómico",
+    "Tour Ecoturístico",
+    "Tour Cultural",
+    "Tour Aventura",
+    "Tour Personalizado",
   ];
 
   const frecuenciasPago = [
-    { valor: 'semanal', etiqueta: 'Semanal' },
-    { valor: 'quincenal', etiqueta: 'Quincenal' },
-    { valor: 'mensual', etiqueta: 'Mensual' }
+    { valor: "semanal", etiqueta: "Semanal" },
+    { valor: "quincenal", etiqueta: "Quincenal" },
+    { valor: "mensual", etiqueta: "Mensual" },
   ];
 
   const manejarCambio = (campo, valor) => {
-    setFormulario(prev => ({
+    setFormulario((prev) => ({
       ...prev,
-      [campo]: valor
+      [campo]: valor,
     }));
 
     if (errores[campo]) {
-      setErrores(prev => ({
+      setErrores((prev) => ({
         ...prev,
-        [campo]: null
+        [campo]: null,
       }));
     }
 
-    if (campo === 'montoTotal' || campo === 'numeroAbonos') {
-      const monto = campo === 'montoTotal' ? parseFloat(valor) : parseFloat(formulario.montoTotal);
-      const abonos = campo === 'numeroAbonos' ? parseInt(valor) : parseInt(formulario.numeroAbonos);
+    if (campo === "montoTotal" || campo === "numeroAbonos") {
+      const monto =
+        campo === "montoTotal"
+          ? parseFloat(valor)
+          : parseFloat(formulario.montoTotal);
+      const abonos =
+        campo === "numeroAbonos"
+          ? parseInt(valor)
+          : parseInt(formulario.numeroAbonos);
 
       if (!isNaN(monto) && !isNaN(abonos) && abonos > 0) {
         const abonoCalculado = Math.ceil(monto / abonos);
-        setFormulario(prev => ({
+        setFormulario((prev) => ({
           ...prev,
           [campo]: valor,
-          abonoMinimo: abonoCalculado.toString()
+          abonoMinimo: abonoCalculado.toString(),
         }));
       }
     }
@@ -72,29 +87,30 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
     const nuevosErrores = {};
 
     if (!formulario.nombreCliente.trim()) {
-      nuevosErrores.nombreCliente = 'El nombre del cliente es obligatorio';
+      nuevosErrores.nombreCliente = "El nombre del cliente es obligatorio";
     }
     if (!formulario.emailCliente.trim()) {
-      nuevosErrores.emailCliente = 'El email es obligatorio';
+      nuevosErrores.emailCliente = "El email es obligatorio";
     } else if (!/\S+@\S+\.\S+/.test(formulario.emailCliente)) {
-      nuevosErrores.emailCliente = 'Email inválido';
+      nuevosErrores.emailCliente = "Email inválido";
     }
 
     if (!formulario.tipoServicio) {
-      nuevosErrores.tipoServicio = 'Selecciona un tipo de servicio';
+      nuevosErrores.tipoServicio = "Selecciona un tipo de servicio";
     }
     if (!formulario.fechaTour) {
-      nuevosErrores.fechaTour = 'La fecha del tour es obligatoria';
+      nuevosErrores.fechaTour = "La fecha del tour es obligatoria";
     }
 
     if (!formulario.montoTotal || parseFloat(formulario.montoTotal) <= 0) {
-      nuevosErrores.montoTotal = 'El monto total debe ser mayor a 0';
+      nuevosErrores.montoTotal = "El monto total debe ser mayor a 0";
     }
     if (!formulario.numeroAbonos || parseInt(formulario.numeroAbonos) < 2) {
-      nuevosErrores.numeroAbonos = 'Debe haber al menos 2 abonos';
+      nuevosErrores.numeroAbonos = "Debe haber al menos 2 abonos";
     }
     if (!formulario.fechaPrimerAbono) {
-      nuevosErrores.fechaPrimerAbono = 'La fecha del primer abono es obligatoria';
+      nuevosErrores.fechaPrimerAbono =
+        "La fecha del primer abono es obligatoria";
     }
 
     setErrores(nuevosErrores);
@@ -111,7 +127,6 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
     try {
       const token = localStorage.getItem("token");
 
-      // ✅ Preparar datos para el backend
       const datosPago = {
         numero_contrato: formulario.numeroContrato || `CONT-${Date.now()}`,
         monto_total: parseFloat(formulario.montoTotal),
@@ -119,53 +134,48 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
         abono_minimo: parseFloat(formulario.abonoMinimo),
         frecuencia_pago: formulario.frecuenciaPago,
         fecha_inicio: formulario.fechaPrimerAbono,
-        fecha_finalizacion: null, // Se calcula automáticamente
+        fecha_finalizacion: null,
         observaciones: formulario.observaciones || null,
       };
 
-      // ✅ Enviar al backend
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/pagos',
+        "http://127.0.0.1:8000/api/pagos",
         datosPago,
         {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-          }
+          },
         }
       );
 
-      console.log('✅ Pago creado:', response.data);
-
-      // ✅ Mostrar mensaje de éxito
       await Swal.fire({
-        title: '¡Pago Creado!',
+        title: "¡Pago Creado!",
         text: `Se ha registrado el plan de pagos correctamente`,
-        icon: 'success',
+        icon: "success",
         timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
 
-      // ✅ Actualizar la tabla padre
       if (onGuardar) {
         await onGuardar();
       }
 
       limpiarFormulario();
       onCerrar();
-
     } catch (error) {
-      console.error('❌ Error al crear pago:', error);
+      console.error("❌ Error al crear pago:", error);
 
-      const mensajeError = error.response?.data?.error ||
+      const mensajeError =
+        error.response?.data?.error ||
         error.response?.data?.message ||
-        'No se pudo crear el pago';
+        "No se pudo crear el pago";
 
       await Swal.fire({
-        title: 'Error',
+        title: "Error",
         text: mensajeError,
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
+        icon: "error",
+        confirmButtonText: "Aceptar",
       });
     } finally {
       setGuardando(false);
@@ -174,20 +184,20 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
 
   const limpiarFormulario = () => {
     setFormulario({
-      clienteId: '',
-      nombreCliente: '',
-      emailCliente: '',
-      telefonoCliente: '',
-      tipoServicio: '',
-      descripcionServicio: '',
-      fechaTour: '',
-      montoTotal: '',
-      numeroAbonos: '3',
-      abonoMinimo: '',
-      frecuenciaPago: 'semanal',
-      fechaPrimerAbono: '',
-      numeroContrato: '',
-      observaciones: ''
+      clienteId: "",
+      nombreCliente: "",
+      emailCliente: "",
+      telefonoCliente: "",
+      tipoServicio: "",
+      descripcionServicio: "",
+      fechaTour: "",
+      montoTotal: "",
+      numeroAbonos: "3",
+      abonoMinimo: "",
+      frecuenciaPago: "semanal",
+      fechaPrimerAbono: "",
+      numeroContrato: "",
+      observaciones: "",
     });
     setErrores({});
   };
@@ -199,27 +209,29 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
 
   if (!abierto) return null;
 
-  const montoPorAbono = formulario.montoTotal && formulario.numeroAbonos
-    ? (parseFloat(formulario.montoTotal) / parseInt(formulario.numeroAbonos)).toFixed(2)
-    : 0;
+  const montoPorAbono =
+    formulario.montoTotal && formulario.numeroAbonos
+      ? (
+          parseFloat(formulario.montoTotal) / parseInt(formulario.numeroAbonos)
+        ).toFixed(2)
+      : 0;
 
   return (
     <div className="modal-overlay">
       <div className="modal-contenedor">
-        {/* Header */}
         <div className="modal-header">
           <div>
             <h2 className="modal-titulo">Registrar Nuevo Pago por Abonos</h2>
-            <p className="modal-subtitulo">Complete la información del cliente y el plan de pagos</p>
+            <p className="modal-subtitulo">
+              Complete la información del cliente y el plan de pagos
+            </p>
           </div>
           <button className="modal-boton-cerrar" onClick={manejarCancelar}>
             <X size={20} />
           </button>
         </div>
 
-        {/* Body */}
         <form onSubmit={manejarEnviar} className="modal-body">
-          {/* Sección: Información del Cliente */}
           <div className="modal-seccion">
             <div className="modal-seccion-header">
               <User size={20} className="modal-icono-seccion cliente" />
@@ -232,8 +244,12 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <input
                   type="text"
                   value={formulario.nombreCliente}
-                  onChange={(e) => manejarCambio('nombreCliente', e.target.value)}
-                  className={`modal-input ${errores.nombreCliente ? 'error' : ''}`}
+                  onChange={(e) =>
+                    manejarCambio("nombreCliente", e.target.value)
+                  }
+                  className={`modal-input ${
+                    errores.nombreCliente ? "error" : ""
+                  }`}
                   placeholder="Ej: Juan Pérez García"
                 />
                 {errores.nombreCliente && (
@@ -248,8 +264,12 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <input
                   type="email"
                   value={formulario.emailCliente}
-                  onChange={(e) => manejarCambio('emailCliente', e.target.value)}
-                  className={`modal-input ${errores.emailCliente ? 'error' : ''}`}
+                  onChange={(e) =>
+                    manejarCambio("emailCliente", e.target.value)
+                  }
+                  className={`modal-input ${
+                    errores.emailCliente ? "error" : ""
+                  }`}
                   placeholder="cliente@ejemplo.com"
                 />
                 {errores.emailCliente && (
@@ -264,7 +284,9 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <input
                   type="tel"
                   value={formulario.telefonoCliente}
-                  onChange={(e) => manejarCambio('telefonoCliente', e.target.value)}
+                  onChange={(e) =>
+                    manejarCambio("telefonoCliente", e.target.value)
+                  }
                   className="modal-input"
                   placeholder="951 123 4567"
                 />
@@ -272,7 +294,6 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
             </div>
           </div>
 
-          {/* Sección: Información del Servicio */}
           <div className="modal-seccion">
             <div className="modal-seccion-header">
               <Calendar size={20} className="modal-icono-seccion servicio" />
@@ -284,12 +305,18 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <label className="modal-label">Tipo de Servicio *</label>
                 <select
                   value={formulario.tipoServicio}
-                  onChange={(e) => manejarCambio('tipoServicio', e.target.value)}
-                  className={`modal-select ${errores.tipoServicio ? 'error' : ''}`}
+                  onChange={(e) =>
+                    manejarCambio("tipoServicio", e.target.value)
+                  }
+                  className={`modal-select ${
+                    errores.tipoServicio ? "error" : ""
+                  }`}
                 >
                   <option value="">Seleccionar...</option>
-                  {tiposServicio.map(tipo => (
-                    <option key={tipo} value={tipo}>{tipo}</option>
+                  {tiposServicio.map((tipo) => (
+                    <option key={tipo} value={tipo}>
+                      {tipo}
+                    </option>
                   ))}
                 </select>
                 {errores.tipoServicio && (
@@ -304,9 +331,9 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <input
                   type="date"
                   value={formulario.fechaTour}
-                  onChange={(e) => manejarCambio('fechaTour', e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  className={`modal-input ${errores.fechaTour ? 'error' : ''}`}
+                  onChange={(e) => manejarCambio("fechaTour", e.target.value)}
+                  min={new Date().toISOString().split("T")[0]}
+                  className={`modal-input ${errores.fechaTour ? "error" : ""}`}
                 />
                 {errores.fechaTour && (
                   <p className="modal-error">
@@ -320,7 +347,9 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <input
                   type="text"
                   value={formulario.descripcionServicio}
-                  onChange={(e) => manejarCambio('descripcionServicio', e.target.value)}
+                  onChange={(e) =>
+                    manejarCambio("descripcionServicio", e.target.value)
+                  }
                   className="modal-input"
                   placeholder="Ej: Monte Albán + Hierve el Agua"
                 />
@@ -328,7 +357,6 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
             </div>
           </div>
 
-          {/* Sección: Plan de Pago */}
           <div className="modal-seccion">
             <div className="modal-seccion-header">
               <DollarSign size={20} className="modal-icono-seccion pago" />
@@ -343,10 +371,14 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                   <input
                     type="number"
                     value={formulario.montoTotal}
-                    onChange={(e) => manejarCambio('montoTotal', e.target.value)}
+                    onChange={(e) =>
+                      manejarCambio("montoTotal", e.target.value)
+                    }
                     min="0"
                     step="0.01"
-                    className={`modal-input con-simbolo ${errores.montoTotal ? 'error' : ''}`}
+                    className={`modal-input con-simbolo ${
+                      errores.montoTotal ? "error" : ""
+                    }`}
                     placeholder="0.00"
                   />
                 </div>
@@ -362,10 +394,14 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <input
                   type="number"
                   value={formulario.numeroAbonos}
-                  onChange={(e) => manejarCambio('numeroAbonos', e.target.value)}
+                  onChange={(e) =>
+                    manejarCambio("numeroAbonos", e.target.value)
+                  }
                   min="2"
                   max="12"
-                  className={`modal-input ${errores.numeroAbonos ? 'error' : ''}`}
+                  className={`modal-input ${
+                    errores.numeroAbonos ? "error" : ""
+                  }`}
                 />
                 {errores.numeroAbonos && (
                   <p className="modal-error">
@@ -378,11 +414,15 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <label className="modal-label">Frecuencia de Pago</label>
                 <select
                   value={formulario.frecuenciaPago}
-                  onChange={(e) => manejarCambio('frecuenciaPago', e.target.value)}
+                  onChange={(e) =>
+                    manejarCambio("frecuenciaPago", e.target.value)
+                  }
                   className="modal-select"
                 >
-                  {frecuenciasPago.map(freq => (
-                    <option key={freq.valor} value={freq.valor}>{freq.etiqueta}</option>
+                  {frecuenciasPago.map((freq) => (
+                    <option key={freq.valor} value={freq.valor}>
+                      {freq.etiqueta}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -392,9 +432,13 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <input
                   type="date"
                   value={formulario.fechaPrimerAbono}
-                  onChange={(e) => manejarCambio('fechaPrimerAbono', e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  className={`modal-input ${errores.fechaPrimerAbono ? 'error' : ''}`}
+                  onChange={(e) =>
+                    manejarCambio("fechaPrimerAbono", e.target.value)
+                  }
+                  min={new Date().toISOString().split("T")[0]}
+                  className={`modal-input ${
+                    errores.fechaPrimerAbono ? "error" : ""
+                  }`}
                 />
                 {errores.fechaPrimerAbono && (
                   <p className="modal-error">
@@ -404,7 +448,6 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
               </div>
             </div>
 
-            {/* Resumen del Plan */}
             {formulario.montoTotal && formulario.numeroAbonos && (
               <div className="modal-resumen">
                 <div className="modal-resumen-header">
@@ -412,15 +455,31 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                   <strong>Resumen del Plan de Pagos:</strong>
                 </div>
                 <div className="modal-resumen-contenido">
-                  <p>• Monto por abono: <strong>${montoPorAbono}</strong></p>
-                  <p>• Total: <strong>${parseFloat(formulario.montoTotal).toFixed(2)}</strong> en <strong>{formulario.numeroAbonos} pagos</strong></p>
-                  <p>• Frecuencia: <strong>{frecuenciasPago.find(f => f.valor === formulario.frecuenciaPago)?.etiqueta}</strong></p>
+                  <p>
+                    • Monto por abono: <strong>${montoPorAbono}</strong>
+                  </p>
+                  <p>
+                    • Total:{" "}
+                    <strong>
+                      ${parseFloat(formulario.montoTotal).toFixed(2)}
+                    </strong>{" "}
+                    en <strong>{formulario.numeroAbonos} pagos</strong>
+                  </p>
+                  <p>
+                    • Frecuencia:{" "}
+                    <strong>
+                      {
+                        frecuenciasPago.find(
+                          (f) => f.valor === formulario.frecuenciaPago
+                        )?.etiqueta
+                      }
+                    </strong>
+                  </p>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Sección: Información Adicional */}
           <div className="modal-seccion">
             <div className="modal-seccion-header">
               <FileText size={20} className="modal-icono-seccion adicional" />
@@ -433,7 +492,9 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <input
                   type="text"
                   value={formulario.numeroContrato}
-                  onChange={(e) => manejarCambio('numeroContrato', e.target.value)}
+                  onChange={(e) =>
+                    manejarCambio("numeroContrato", e.target.value)
+                  }
                   className="modal-input"
                   placeholder="CONT-001"
                 />
@@ -443,7 +504,9 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                 <label className="modal-label">Observaciones</label>
                 <textarea
                   value={formulario.observaciones}
-                  onChange={(e) => manejarCambio('observaciones', e.target.value)}
+                  onChange={(e) =>
+                    manejarCambio("observaciones", e.target.value)
+                  }
                   rows={3}
                   className="modal-textarea"
                   placeholder="Notas adicionales sobre el pago o el servicio..."
@@ -453,12 +516,19 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
           </div>
         </form>
 
-        {/* Footer */}
         <div className="modal-footer">
-          <button type="button" onClick={manejarCancelar} className="modal-boton-cancelar">
+          <button
+            type="button"
+            onClick={manejarCancelar}
+            className="modal-boton-cancelar"
+          >
             Cancelar
           </button>
-          <button type="submit" onClick={manejarEnviar} className="modal-boton-guardar">
+          <button
+            type="submit"
+            onClick={manejarEnviar}
+            className="modal-boton-guardar"
+          >
             <Save size={18} />
             <span>Guardar Pago</span>
           </button>

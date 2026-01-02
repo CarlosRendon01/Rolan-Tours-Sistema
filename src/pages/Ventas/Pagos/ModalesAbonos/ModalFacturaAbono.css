@@ -1,8 +1,3 @@
-/* ============================================
-   MODAL FACTURA ABONO - ESTILOS
-   ============================================ */
-
-/* Overlay del Modal */
 .modal-factura-overlay {
   position: fixed;
   top: 0;
@@ -28,7 +23,6 @@
   }
 }
 
-/* Contenedor Principal */
 .modal-factura-contenedor {
   background: white !important;
   border-radius: 16px !important;
@@ -37,7 +31,8 @@
   max-height: 80vh !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   animation: slideUp 0.3s ease-out !important;
   position: relative !important;
   transform: scale(0.88) !important;
@@ -55,7 +50,6 @@
   }
 }
 
-/* Header del Modal */
 .modal-factura-header {
   display: flex !important;
   justify-content: space-between !important;
@@ -110,7 +104,6 @@
   transform: scale(1.05) !important;
 }
 
-/* Alerta */
 .modal-factura-alerta {
   display: flex !important;
   align-items: flex-start !important;
@@ -133,7 +126,6 @@
   line-height: 1.5 !important;
 }
 
-/* Contenido del Modal */
 .modal-factura-contenido {
   flex: 1 !important;
   overflow-y: auto !important;
@@ -158,7 +150,6 @@
   background: #94a3b8 !important;
 }
 
-/* Documento de Factura */
 .factura-documento {
   background: white !important;
   padding: 3rem !important;
@@ -168,7 +159,6 @@
   margin: 0 auto !important;
 }
 
-/* Encabezado de Factura */
 .factura-encabezado {
   display: flex !important;
   justify-content: space-between !important;
@@ -271,7 +261,7 @@
   color: #6b7280 !important;
 }
 
-.factura-fecha-item>div {
+.factura-fecha-item > div {
   display: flex !important;
   flex-direction: column !important;
   gap: 0.125rem !important;
@@ -287,14 +277,12 @@
   color: #4b5563 !important;
 }
 
-/* Divisor */
 .factura-divisor {
   height: 2px !important;
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
   margin: 2rem 0 !important;
 }
 
-/* Información Fiscal */
 .factura-info-fiscal {
   background: #f9fafb !important;
   border: 2px solid #e5e7eb !important;
@@ -312,7 +300,7 @@
   border-bottom: 1px solid #e5e7eb !important;
 }
 
-.factura-folio-fiscal>div {
+.factura-folio-fiscal > div {
   display: flex !important;
   flex-direction: column !important;
   gap: 0.25rem !important;
@@ -330,7 +318,7 @@
   font-size: 0.875rem !important;
   color: #1f2937 !important;
   font-weight: 600 !important;
-  font-family: 'Courier New', monospace !important;
+  font-family: "Courier New", monospace !important;
   word-break: break-all !important;
 }
 
@@ -355,10 +343,9 @@
 .factura-cert-valor {
   font-size: 0.875rem !important;
   color: #1f2937 !important;
-  font-family: 'Courier New', monospace !important;
+  font-family: "Courier New", monospace !important;
 }
 
-/* Secciones */
 .factura-seccion {
   margin-bottom: 2rem !important;
 }
@@ -396,12 +383,11 @@
 }
 
 .factura-campo-valor {
-  font-size: 0.9375rem ! important;
+  font-size: 0.9375rem !important;
   color: #1f2937 !important;
   font-weight: 500 !important;
 }
 
-/* Tabla de Conceptos */
 .factura-tabla-conceptos {
   overflow-x: auto !important;
   border: 1px solid #e5e7eb !important;
@@ -466,7 +452,6 @@
   white-space: nowrap !important;
 }
 
-/* Totales */
 .factura-totales-seccion {
   display: grid !important;
   grid-template-columns: 1fr auto !important;
@@ -538,7 +523,6 @@
   color: #2b1ae9 !important;
 }
 
-/* Historial de Pagos */
 .factura-historial {
   display: flex !important;
   flex-direction: column !important;
@@ -593,7 +577,6 @@
   font-size: 1.125rem !important;
 }
 
-/* Sellos Digitales */
 .factura-sello {
   margin: 1.5rem 0 !important;
   padding: 1rem !important;
@@ -614,7 +597,7 @@
 .factura-sello-texto {
   font-size: 0.75rem !important;
   color: #1f2937 !important;
-  font-family: 'Courier New', monospace !important;
+  font-family: "Courier New", monospace !important;
   word-break: break-all !important;
   line-height: 1.6 !important;
   margin: 0 !important;
@@ -623,7 +606,6 @@
   border-radius: 4px !important;
 }
 
-/* Cadena Original */
 .factura-cadena {
   margin: 1.5rem 0 !important;
   padding: 1rem !important;
@@ -644,13 +626,12 @@
 .factura-cadena-texto {
   font-size: 0.75rem !important;
   color: #78350f !important;
-  font-family: 'Courier New', monospace !important;
+  font-family: "Courier New", monospace !important;
   word-break: break-all !important;
   line-height: 1.6 !important;
   margin: 0 !important;
 }
 
-/* Código QR */
 .factura-qr {
   display: flex !important;
   align-items: center !important;
@@ -704,11 +685,10 @@
 
 .factura-qr-link {
   color: #2b1ae9 !important;
-  font-family: 'Courier New', monospace !important;
+  font-family: "Courier New", monospace !important;
   font-size: 0.8125rem !important;
 }
 
-/* Footer */
 .factura-footer {
   text-align: center !important;
   margin-top: 2rem !important;
@@ -722,7 +702,6 @@
   margin: 0.25rem 0 !important;
 }
 
-/* Botones de Acción */
 .modal-factura-acciones {
   display: flex !important;
   justify-content: flex-end !important;
@@ -784,7 +763,6 @@
   transform: none !important;
 }
 
-/* Estilos de Impresión */
 @media print {
   .no-print {
     display: none !important;
@@ -828,7 +806,6 @@
   }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .modal-factura-contenedor {
     max-width: 100% !important;

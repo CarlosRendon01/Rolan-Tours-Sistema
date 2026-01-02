@@ -1,8 +1,3 @@
-/* ========================================
-   ESTILOS PARA SWEETALERT2 - MODAL ELIMINAR PAGO
-   ======================================== */
-
-/* Popup principal */
 .eliminar-popup {
   border-radius: 12px !important;
   padding: 1.5rem !important;
@@ -15,7 +10,6 @@
   padding: 2rem !important;
 }
 
-/* Títulos */
 .eliminar-titulo {
   font-size: 1.25rem !important;
   font-weight: 700 !important;
@@ -43,13 +37,11 @@
   color: #4b5563 !important;
 }
 
-/* Contenedor HTML */
 .eliminar-html {
   margin: 0 !important;
   padding: 0.5rem 0 !important;
 }
 
-/* Contenido principal */
 .eliminar-contenido {
   text-align: center;
 }
@@ -75,7 +67,6 @@
   font-weight: 600;
 }
 
-/* Advertencia de abonos */
 .eliminar-advertencia {
   display: flex;
   align-items: flex-start;
@@ -116,7 +107,6 @@
   font-style: italic;
 }
 
-/* Contenido de éxito */
 .eliminar-exito-contenido {
   text-align: center;
 }
@@ -134,7 +124,6 @@
   margin-top: 0.5rem;
 }
 
-/* Iconos */
 .eliminar-icono {
   border-color: #f59e0b !important;
   color: #f59e0b !important;
@@ -152,7 +141,6 @@
   color: #ef4444 !important;
 }
 
-/* Botones */
 .eliminar-acciones {
   margin-top: 1rem !important;
 }
@@ -223,12 +211,10 @@
   transition: all 0.2s ease !important;
 }
 
-/* Timer progress bar */
 .swal2-timer-progress-bar {
   background: #10b981 !important;
 }
 
-/* Animaciones suaves */
 .swal2-show {
   animation: swal2-show 0.3s !important;
 }
@@ -237,12 +223,10 @@
   animation: swal2-hide 0.2s !important;
 }
 
-/* Loading spinner personalizado */
 .swal2-loading {
   border-color: #3b82f6 transparent #3b82f6 transparent !important;
 }
 
-/* Responsive */
 @media (max-width: 640px) {
   .eliminar-popup {
     padding: 1.25rem !important;

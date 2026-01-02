@@ -13,7 +13,6 @@ const TablaPagos = () => {
   };
 
   const renderVistaActual = () => {
-    // Props compartidas para todos los componentes
     const propsCompartidas = {
       vistaActual,
       onCambiarVista: manejarCambioVista

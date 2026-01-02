@@ -15,10 +15,6 @@ import writtenNumber from "written-number";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
 
-// ============================================
-// UTILIDADES
-// ============================================
-
 const formatearFecha = (fecha) => {
   const opciones = { year: "numeric", month: "long", day: "numeric" };
   return new Date(fecha).toLocaleDateString("es-MX", opciones);
@@ -31,10 +27,6 @@ const formatearMoneda = (cantidad) => {
   }).format(cantidad);
 };
 
-// ============================================
-// COMPONENTE PRINCIPAL
-// ============================================
-
 const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
   const [imprimiendo, setImprimiendo] = useState(false);
   const [abonoSeleccionado, setAbonoSeleccionado] = useState(null);
@@ -45,7 +37,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
 
   if (!abierto || !pagoSeleccionado) return null;
 
-  // Filtrar solo abonos activos
   const abonosDisponibles =
     pagoSeleccionado.historialAbonos?.filter(
       (abono) => abono.activo !== false
@@ -53,14 +44,12 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
 
   const fechaActual = new Date().toLocaleDateString("es-MX");
 
-  // Generar número de recibo basado en el abono seleccionado
   const numeroRecibo = abonoSeleccionado
     ? `REC-${pagoSeleccionado.id.toString().padStart(4, "0")}-${
         abonoSeleccionado.numeroAbono
       }`
     : `REC-${pagoSeleccionado.id.toString().padStart(4, "0")}`;
 
-  // Función para generar PDF con la plantilla (igual que TablaRecibos)
   const generarPDF = async (datosRecibo) => {
     try {
       const plantillaUrl = "/ReciboPago.pdf";
@@ -113,7 +102,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
         formatoActual
       );
 
-      // Extraer el monto numérico
       const montoNumerico =
         typeof datosRecibo?.monto === "number"
           ? datosRecibo.monto
@@ -157,7 +145,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
     }
   };
 
-  // Visualizar PDF en modal
   const visualizarPDF = async () => {
     if (!abonoSeleccionado) {
       alert("Por favor selecciona un abono");
@@ -167,10 +154,8 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
     try {
       setImprimiendo(true);
 
-      // Obtener el ID del recibo asociado al abono
       const reciboId = abonoSeleccionado.recibo_id || abonoSeleccionado.id;
 
-      // Hacer petición al backend para obtener los datos completos del recibo
       const token = localStorage.getItem("token");
       const response = await fetch(
         `http://127.0.0.1:8000/api/abonos/${reciboId}`,
@@ -188,21 +173,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
 
       const data = await response.json();
       const reciboCompleto = data.data || data;
-
-      console.log("=== DEBUG RECIBO ===");
-      console.log("Recibo completo:", reciboCompleto);
-      console.log(
-        "Todas las propiedades del recibo:",
-        Object.keys(reciboCompleto)
-      );
-      console.log("ID:", reciboCompleto.id);
-      console.log("numeroRecibo:", reciboCompleto.numeroRecibo);
-      console.log("cliente:", reciboCompleto.cliente);
-      console.log("concepto:", reciboCompleto.concepto);
-      console.log("descripcion:", reciboCompleto.descripcion);
-      console.log("detalle:", reciboCompleto.detalle);
-      console.log("monto:", reciboCompleto.monto);
-      console.log("==================");
 
       setReciboPDFActual(reciboCompleto);
       setModalPDFAbierto(true);
@@ -223,7 +193,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
     }
   };
 
-  // Descargar PDF
   const descargarPDF = async () => {
     try {
       if (!reciboPDFActual) return;
@@ -236,17 +205,12 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
       link.download = `Recibo_${reciboPDFActual.fechaEmision}_${reciboPDFActual.numeroRecibo}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
-
-      console.log(
-        `PDF descargado correctamente - Recibo ID: ${reciboPDFActual.id}`
-      );
     } catch (error) {
       console.error("Error al descargar PDF:", error);
       alert("Error al descargar el PDF. Por favor, intente nuevamente.");
     }
   };
 
-  // Cerrar modal PDF
   const cerrarModalPDF = () => {
     setModalPDFAbierto(false);
     if (pdfUrl) {
@@ -269,7 +233,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
           className="modal-recibo-contenedor"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* HEADER */}
           <div className="modal-recibo-header no-print">
             <div className="modal-recibo-titulo-seccion">
               <Receipt size={28} className="modal-recibo-icono-titulo" />
@@ -291,7 +254,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
             </button>
           </div>
 
-          {/* SELECTOR DE ABONOS */}
           <div className="modal-recibo-contenido" ref={reciboRef}>
             {abonosDisponibles.length === 0 ? (
               <div className="recibo-sin-abonos">
@@ -347,7 +309,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
             )}
           </div>
 
-          {/* BOTONES DE ACCIÓN */}
           <div className="modal-recibo-acciones no-print">
             <button
               className="modal-recibo-boton modal-recibo-boton-secundario"
@@ -369,7 +330,6 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
         </div>
       </div>
 
-      {/* Modal de visualización de PDF */}
       <ModalVisualizarPDF
         estaAbierto={modalPDFAbierto}
         pdfUrl={pdfUrl}
