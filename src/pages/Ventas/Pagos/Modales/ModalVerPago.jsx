@@ -1,16 +1,24 @@
-import React from 'react';
-import { X, User, DollarSign, Calendar, CreditCard, FileText, Package, Clock, Hash } from 'lucide-react';
-import './ModalVerPago.css';
+import React from "react";
+import {
+  X,
+  User,
+  DollarSign,
+  Calendar,
+  CreditCard,
+  FileText,
+  Package,
+  Clock,
+  Hash,
+} from "lucide-react";
+import "./ModalVerPago.css";
 
 const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
-  // Función para restaurar el scroll completamente
   const restaurarScroll = React.useCallback(() => {
-    document.body.style.overflow = '';
-    document.body.style.overflowY = '';
-    document.documentElement.style.overflow = '';
+    document.body.style.overflow = "";
+    document.body.style.overflowY = "";
+    document.documentElement.style.overflow = "";
   }, []);
 
-  // Función mejorada para cerrar el modal
   const manejarCierre = React.useCallback(() => {
     restaurarScroll();
     alCerrar();
@@ -18,39 +26,37 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
 
   React.useEffect(() => {
     if (estaAbierto) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
       restaurarScroll();
     }
   }, [estaAbierto, restaurarScroll]);
 
-  // Función para obtener color del estado
   const obtenerColorEstado = (estado) => {
     switch (estado?.toLowerCase()) {
-      case 'pagado':
-        return '#10b981';
-      case 'vencido':
-        return '#ef4444';
+      case "pagado":
+        return "#10b981";
+      case "vencido":
+        return "#ef4444";
       default:
-        return '#6b7280';
+        return "#6b7280";
     }
   };
 
-  // Manejar la tecla Escape y control del scroll
   React.useEffect(() => {
     const manejarTeclaEscape = (evento) => {
-      if (evento.key === 'Escape') {
+      if (evento.key === "Escape") {
         manejarCierre();
       }
     };
 
     if (estaAbierto) {
-      document.addEventListener('keydown', manejarTeclaEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", manejarTeclaEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', manejarTeclaEscape);
+      document.removeEventListener("keydown", manejarTeclaEscape);
       restaurarScroll();
     };
   }, [estaAbierto, manejarCierre, restaurarScroll]);
@@ -58,10 +64,13 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
   if (!estaAbierto || !pago) {
     return null;
   }
-  
+
   return (
     <div className="superposicion-modal-pago" onClick={manejarCierre}>
-      <div className="contenido-modal-pago" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="contenido-modal-pago"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="encabezado-modal-pago">
           <button
             className="boton-cerrar-modal-pago"
@@ -78,14 +87,13 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
         </div>
 
         <div className="cuerpo-modal-pago">
-          {/* Insignia de Estado */}
           <div className="contenedor-insignia-estado-pago">
             <div
               className="insignia-estado-pago"
               style={{
                 backgroundColor: `${obtenerColorEstado(pago.estado)}15`,
                 borderColor: obtenerColorEstado(pago.estado),
-                color: obtenerColorEstado(pago.estado)
+                color: obtenerColorEstado(pago.estado),
               }}
             >
               <span
@@ -97,29 +105,26 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
           </div>
 
           <div className="lista-informacion-pago">
-            {/* ID del Pago */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
                 <Hash size={16} />
                 ID del Pago
               </div>
               <div className="valor-informacion-pago">
-                #{pago.id?.toString().padStart(3, '0')}
+                #{pago.id?.toString().padStart(3, "0")}
               </div>
             </div>
 
-            {/* Cliente */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
                 <User size={16} />
                 Cliente
               </div>
               <div className="valor-informacion-pago">
-                {pago.cliente?.nombre || pago.cliente || 'Sin cliente'}
+                {pago.cliente?.nombre || pago.cliente || "Sin cliente"}
               </div>
             </div>
 
-            {/* Monto */}
             <div className="elemento-informacion-pago elemento-destacado-pago">
               <div className="etiqueta-informacion-pago">
                 <DollarSign size={16} />
@@ -130,40 +135,42 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
               </div>
             </div>
 
-            {/* Fecha de Pago */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
                 <Calendar size={16} />
                 Fecha de Pago
               </div>
               <div className="valor-informacion-pago">
-                {pago.fechaInicio || <span className="texto-vacio-pago">No registrada</span>}
+                {pago.fechaInicio || (
+                  <span className="texto-vacio-pago">No registrada</span>
+                )}
               </div>
             </div>
 
-            {/* Fecha de Vencimiento */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
                 <Clock size={16} />
                 Fecha de Vencimiento
               </div>
               <div className="valor-informacion-pago">
-                {pago.proximoVencimiento || <span className="texto-vacio-pago">No especificada</span>}
+                {pago.proximoVencimiento || (
+                  <span className="texto-vacio-pago">No especificada</span>
+                )}
               </div>
             </div>
 
-            {/* Método de Pago */}
             <div className="elemento-informacion-pago">
               <div className="etiqueta-informacion-pago">
                 <CreditCard size={16} />
                 Método de Pago
               </div>
               <div className="valor-informacion-pago">
-                {pago.metodoPago || <span className="texto-vacio-pago">No especificado</span>}
+                {pago.metodoPago || (
+                  <span className="texto-vacio-pago">No especificado</span>
+                )}
               </div>
             </div>
 
-            {/* Concepto */}
             {pago.observaciones && (
               <div className="elemento-informacion-pago">
                 <div className="etiqueta-informacion-pago">
@@ -177,7 +184,6 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
             )}
           </div>
 
-          {/* Botón de cerrar en la parte inferior */}
           <div className="contenedor-boton-inferior-pago">
             <button
               className="boton-cerrar-inferior-pago"

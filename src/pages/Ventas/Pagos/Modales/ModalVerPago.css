@@ -1,9 +1,3 @@
-/* ===============================
-   MODAL VER PAGO - ESTILO DE CLIENTE
-   Adaptado del diseño de ModalVerCliente
-   =============================== */
-
-/* Overlay del modal PAGO */
 .superposicion-modal-pago {
   position: fixed !important;
   top: 0 !important;
@@ -29,7 +23,6 @@
   }
 }
 
-/* Contenido del modal PAGO */
 .contenido-modal-pago {
   background: white !important;
   border-radius: 16px !important;
@@ -38,10 +31,11 @@
   max-height: 110vh !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   animation: slideUp 0.3s ease-out !important;
   position: relative !important;
-  transform: scale(0.90) !important;
+  transform: scale(0.9) !important;
 }
 
 @keyframes slideInPago {
@@ -56,7 +50,6 @@
   }
 }
 
-/* Header del modal PAGO */
 .encabezado-modal-pago {
   padding: 2rem 2.5rem !important;
   border-bottom: 1px solid #e5e7eb !important;
@@ -79,10 +72,12 @@
   left: 0 !important;
   right: 0 !important;
   height: 4px !important;
-  background: linear-gradient(90deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      rgba(255, 255, 255, 0.1) 100%) !important;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  ) !important;
 }
 
 .titulo-modal-pago {
@@ -130,7 +125,6 @@
   transform: scale(0.95) !important;
 }
 
-/* Cuerpo del modal PAGO */
 .cuerpo-modal-pago {
   padding: 25px !important;
   background: #fff !important;
@@ -138,7 +132,6 @@
   overflow-y: auto !important;
 }
 
-/* Scrollbar personalizado PAGO */
 .cuerpo-modal-pago::-webkit-scrollbar {
   width: 6px !important;
 }
@@ -157,7 +150,6 @@
   background: #94a3b8 !important;
 }
 
-/* Contenedor de Insignia de Estado */
 .contenedor-insignia-estado-pago {
   display: flex !important;
   justify-content: center !important;
@@ -166,7 +158,6 @@
   margin-bottom: 20px !important;
 }
 
-/* Insignia de Estado */
 .insignia-estado-pago {
   display: inline-flex !important;
   align-items: center !important;
@@ -188,7 +179,6 @@
   flex-shrink: 0 !important;
 }
 
-/* Lista de información del pago */
 .lista-informacion-pago {
   display: flex !important;
   flex-direction: column !important;
@@ -237,7 +227,6 @@
   min-height: 1.4rem !important;
 }
 
-/* Elemento destacado - Monto */
 .elemento-destacado-pago {
   background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
   border: 2px solid #10b981 !important;
@@ -256,13 +245,14 @@
   font-size: 24px !important;
   font-weight: 700 !important;
   color: #059669 !important;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace !important;
 }
 
-/* Código de factura */
 .codigo-factura-pago {
   display: inline-block !important;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace !important;
   font-weight: 600 !important;
   font-size: 13px !important;
   color: #1e40af !important;
@@ -271,13 +261,11 @@
   border-radius: 4px !important;
 }
 
-/* Texto vacío */
 .texto-vacio-pago {
   color: #94a3b8 !important;
   font-style: italic !important;
 }
 
-/* Contenedor del botón inferior PAGO */
 .contenedor-boton-inferior-pago {
   display: flex !important;
   justify-content: center !important;
@@ -286,7 +274,6 @@
   margin-top: 25px !important;
 }
 
-/* Botón de cerrar inferior PAGO */
 .boton-cerrar-inferior-pago {
   background-color: white !important;
   color: #dc2626 !important;
@@ -336,7 +323,6 @@
   outline-offset: 2px !important;
 }
 
-/* Media Queries PAGO - Responsivo */
 @media screen and (max-width: 480px) {
   .contenido-modal-pago {
     width: 100% !important;
@@ -372,7 +358,6 @@
   }
 }
 
-/* Estados de enfoque para accesibilidad PAGO */
 .boton-cerrar-modal-pago:focus {
   outline: 2px solid rgba(255, 255, 255, 0.5) !important;
   outline-offset: 2px !important;

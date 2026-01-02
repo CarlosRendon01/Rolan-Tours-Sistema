@@ -52,7 +52,6 @@ const ModalGenerarFactura = ({
 
   if (!estaAbierto || !pago) return null;
 
-  // ✅ Validación de datos fiscales completos
   const validarDatosFiscales = () => {
     const camposFaltantes = [];
 
@@ -65,18 +64,15 @@ const ModalGenerarFactura = ({
     return camposFaltantes;
   };
 
-  // ✅ Verificar si ya tiene factura generada
   const yaEstaFacturado = () => {
     return pago.facturaGenerada === true || !!pago.uuidFactura;
   };
 
-  // ✅ Validar estatus del pago
   const esPagoFacturable = () => {
     const estatusValidos = ["completado", "liquidado", "pagado", "aprobado"];
     return estatusValidos.includes(pago.estatus?.toLowerCase());
   };
 
-  // ✅ Formatear monto con moneda
   const formatearMonto = (monto) => {
     const moneda = pago.moneda || "MXN";
     const simbolos = {
@@ -96,12 +92,10 @@ const ModalGenerarFactura = ({
     })}`;
   };
 
-  // ✅ Generar factura con validaciones mejoradas
   const manejarGenerarFactura = async (formato) => {
     establecerError(null);
     establecerMensajeExito(null);
 
-    // Validación 1: Verificar si ya está facturado
     if (yaEstaFacturado()) {
       establecerError(
         "Este pago ya tiene una factura generada. No se pueden generar facturas duplicadas."
@@ -109,7 +103,6 @@ const ModalGenerarFactura = ({
       return;
     }
 
-    // Validación 2: Verificar datos fiscales completos
     const camposFaltantes = validarDatosFiscales();
     if (camposFaltantes.length > 0) {
       establecerError(
@@ -120,7 +113,6 @@ const ModalGenerarFactura = ({
       return;
     }
 
-    // Validación 3: Verificar que el pago esté completado
     if (!esPagoFacturable()) {
       establecerError(
         `No se puede facturar un pago con estatus "${pago.estatus}".\n\nSolo se pueden facturar pagos completados, liquidados o aprobados.`
@@ -128,7 +120,6 @@ const ModalGenerarFactura = ({
       return;
     }
 
-    // Validación 4: Verificar que haya un monto válido
     if (!pago.monto || pago.monto <= 0) {
       establecerError("El monto del pago debe ser mayor a cero.");
       return;
@@ -193,7 +184,6 @@ const ModalGenerarFactura = ({
 
       const resultado = await response.json();
 
-      // Descargar el archivo generado
       if (resultado.archivoUrl) {
         window.open(resultado.archivoUrl, "_blank");
       } else if (resultado.archivo) {
@@ -242,15 +232,12 @@ const ModalGenerarFactura = ({
     }
   };
 
-  // ✅ Descargar factura existente
   const manejarDescargarFactura = async (formato) => {
     establecerError(null);
     establecerGenerando(true);
 
     try {
-      // Si es PDF, generar localmente con el módulo de generación
       if (formato === "pdf") {
-        // Preparar datos de la factura para el PDF
         const datosFactura = {
           numeroFactura: pago.numeroFactura,
           serie: pago.serie || "A",
@@ -278,7 +265,6 @@ const ModalGenerarFactura = ({
           "✅ Factura descargada exitosamente en formato PDF"
         );
       } else {
-        // Para XML, hacer petición al servidor
         const response = await fetch(
           `/api/facturacion/descargar/${pago.id}?formato=${formato}`,
           {
@@ -317,7 +303,6 @@ const ModalGenerarFactura = ({
     }
   };
 
-  // ✅ Enviar por email con validaciones
   const manejarEnviarEmail = async () => {
     establecerError(null);
     establecerMensajeExito(null);
@@ -389,7 +374,6 @@ const ModalGenerarFactura = ({
     }
   };
 
-  // ✅ Imprimir con ventana de previsualización
   const manejarImprimir = () => {
     establecerError(null);
 
@@ -399,7 +383,6 @@ const ModalGenerarFactura = ({
     }
 
     try {
-      // Preparar datos de la factura para imprimir
       const datosFactura = {
         numeroFactura: pago.numeroFactura,
         serie: pago.serie || "A",
@@ -433,7 +416,6 @@ const ModalGenerarFactura = ({
     }
   };
 
-  // ✅ Obtener icono según estatus
   const obtenerIconoEstatus = () => {
     const estatus = pago.estatus?.toLowerCase();
 
@@ -459,7 +441,6 @@ const ModalGenerarFactura = ({
         className="modal-factura-contenedor"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="modal-factura-header">
           <div className="modal-factura-header-contenido">
             <div className="modal-factura-icono-principal">
@@ -490,9 +471,7 @@ const ModalGenerarFactura = ({
           </button>
         </div>
 
-        {/* Body */}
         <div className="modal-factura-body">
-          {/* Mensaje de error */}
           {error && (
             <div className="modal-factura-alerta-error">
               <AlertCircle size={22} className="modal-factura-alerta-icono" />
@@ -505,7 +484,6 @@ const ModalGenerarFactura = ({
             </div>
           )}
 
-          {/* Mensaje de éxito */}
           {mensajeExito && (
             <div
               className="modal-factura-alerta-warning"
@@ -531,7 +509,6 @@ const ModalGenerarFactura = ({
             </div>
           )}
 
-          {/* Alerta si ya está facturado */}
           {yaEstaFacturado() && !error && !mensajeExito && (
             <div className="modal-factura-alerta-warning">
               <AlertCircle size={22} className="modal-factura-alerta-icono" />
@@ -556,7 +533,6 @@ const ModalGenerarFactura = ({
             </div>
           )}
 
-          {/* Información del pago */}
           <div className="modal-factura-info-pago">
             <div className="modal-factura-info-item">
               <span className="modal-factura-label">Cliente</span>
@@ -626,14 +602,12 @@ const ModalGenerarFactura = ({
             </div>
           </div>
 
-          {/* Vista previa de la factura timbrada */}
           {yaEstaFacturado() && (
             <div className="modal-factura-vista-previa">
               <h3 className="modal-factura-opciones-titulo">
                 📄 Factura Electrónica Timbrada
               </h3>
 
-              {/* Información principal de la factura */}
               <div className="modal-factura-uuid-container">
                 <div className="modal-factura-uuid-grid">
                   <div>
@@ -667,7 +641,6 @@ const ModalGenerarFactura = ({
                 </div>
               </div>
 
-              {/* Botón destacado de descarga */}
               <button
                 onClick={() => manejarDescargarFactura("pdf")}
                 disabled={generando}
@@ -677,7 +650,6 @@ const ModalGenerarFactura = ({
                 <span>Descargar Factura en PDF</span>
               </button>
 
-              {/* Opciones adicionales */}
               <div className="modal-factura-opciones-secundarias">
                 <button
                   className="modal-factura-boton-opcion-secundario"
@@ -712,7 +684,6 @@ const ModalGenerarFactura = ({
             </div>
           )}
 
-          {/* Opciones de generación (solo si NO está facturado) */}
           {!yaEstaFacturado() && (
             <div className="modal-factura-opciones">
               <h3 className="modal-factura-opciones-titulo">
@@ -743,7 +714,6 @@ const ModalGenerarFactura = ({
             </div>
           )}
 
-          {/* Nota informativa */}
           <div className="modal-factura-nota">
             <div className="modal-factura-nota-icono">
               <FileText size={18} />
@@ -756,7 +726,6 @@ const ModalGenerarFactura = ({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="modal-factura-footer">
           <button
             className="modal-factura-boton-cancelar"
@@ -767,7 +736,6 @@ const ModalGenerarFactura = ({
           </button>
         </div>
 
-        {/* Loading Overlay */}
         {generando && (
           <div className="modal-factura-loading">
             <div className="modal-factura-spinner"></div>

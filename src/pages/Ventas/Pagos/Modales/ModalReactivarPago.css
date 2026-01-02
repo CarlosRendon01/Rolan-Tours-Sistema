@@ -1,7 +1,3 @@
-/* ========================================
-   MODAL REACTIVAR PAGO - ESTILOS MEJORADOS
-   ======================================== */
-
 .modal-reactivar-overlay {
   position: fixed;
   top: 0;
@@ -18,11 +14,11 @@
 }
 
 @keyframes fadeInReactivar {
-  from { 
+  from {
     opacity: 0;
     backdrop-filter: blur(0);
   }
-  to { 
+  to {
     opacity: 1;
     backdrop-filter: blur(4px);
   }
@@ -85,7 +81,8 @@
   margin: 0 auto 1.5rem;
   color: #28a745;
   position: relative;
-  animation: scaleInReactivar 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s backwards;
+  animation: scaleInReactivar 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s
+    backwards;
 }
 
 @keyframes scaleInReactivar {
@@ -100,7 +97,7 @@
 }
 
 .modal-reactivar-icono::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -111,7 +108,8 @@
 }
 
 @keyframes pulseReactivar {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.3;
   }
@@ -206,7 +204,8 @@
   font-weight: 700;
   color: #28a745;
   font-size: 1.125rem;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+    "Courier New", monospace;
 }
 
 .modal-reactivar-badge {
@@ -255,7 +254,8 @@
 }
 
 @keyframes checkPulseReactivar {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -314,7 +314,7 @@
 }
 
 .modal-reactivar-btn-confirmar::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -349,7 +349,6 @@
   transform: none !important;
 }
 
-/* Spinner para el botón de carga */
 .spinner-reactivar {
   width: 16px;
   height: 16px;
@@ -361,10 +360,11 @@
 }
 
 @keyframes spinReactivar {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .modal-reactivar-contenido {
     padding: 2rem;

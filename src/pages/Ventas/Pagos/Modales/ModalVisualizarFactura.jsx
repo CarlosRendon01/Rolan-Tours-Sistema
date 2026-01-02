@@ -22,7 +22,6 @@ const ModalVisualizarFactura = ({
   const cargarPlantillaDesdePublic = async () => {
     setCargando(true);
     try {
-      // Cargar la plantilla desde public
       const response = await fetch("/Factura.xlsm");
 
       if (!response.ok) {
@@ -67,8 +66,6 @@ const ModalVisualizarFactura = ({
     const workbook = XLSX.read(arrayBuffer, { type: "array" });
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
-    // Llenar datos en celdas específicas (ajusta según tu plantilla)
-    // Estas son las celdas de ejemplo, cámbialas según tu plantilla real
     worksheet["B5"] = { v: factura.numeroFactura, t: "s" };
     worksheet["B6"] = { v: factura.serie, t: "s" };
     worksheet["B7"] = { v: factura.folio, t: "s" };
@@ -79,12 +76,10 @@ const ModalVisualizarFactura = ({
     worksheet["B12"] = { v: factura.uuid, t: "s" };
     worksheet["B13"] = { v: factura.estado, t: "s" };
 
-    // Si hay fecha de cancelación
     if (factura.fechaCancelacion) {
       worksheet["B14"] = { v: factura.fechaCancelacion, t: "s" };
     }
 
-    // Generar HTML para previsualización
     const html = XLSX.utils.sheet_to_html(worksheet, {
       editable: false,
       header: "",
@@ -97,10 +92,8 @@ const ModalVisualizarFactura = ({
   const generarVistaPrevia = () => {
     setCargando(true);
 
-    // Crear nuevo libro Excel
     const workbook = XLSX.utils.book_new();
 
-    // Crear datos estructurados
     const datos = [
       ["FACTURA ELECTRÓNICA", "", "", "", "", ""],
       [],
@@ -136,7 +129,6 @@ const ModalVisualizarFactura = ({
 
     const worksheet = XLSX.utils.aoa_to_sheet(datos);
 
-    // Ajustar ancho de columnas
     worksheet["!cols"] = [
       { wch: 25 },
       { wch: 30 },
@@ -148,7 +140,6 @@ const ModalVisualizarFactura = ({
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Factura");
 
-    // Generar HTML para vista previa
     const html = XLSX.utils.sheet_to_html(worksheet, {
       editable: false,
       header: "",
