@@ -137,7 +137,6 @@ const ModalAgregarUsuario = ({ onGuardar, onCerrar, roles = [] }) => {
   const renderSeccionGeneral = () => (
     <div className="modal-agregar-usuario-form">
       <div className="modal-agregar-usuario-form-grid">
-        {/* Nombre */}
         <div className="modal-agregar-usuario-form-group">
           <label>
             Nombre <span className="modal-agregar-usuario-required">*</span>
@@ -153,7 +152,6 @@ const ModalAgregarUsuario = ({ onGuardar, onCerrar, roles = [] }) => {
           <MensajeError nombreCampo="nombre" />
         </div>
 
-        {/* Apellido Paterno */}
         <div className="modal-agregar-usuario-form-group">
           <label>Apellido Paterno</label>
           <input
@@ -165,7 +163,6 @@ const ModalAgregarUsuario = ({ onGuardar, onCerrar, roles = [] }) => {
           />
         </div>
 
-        {/* Apellido Materno */}
         <div className="modal-agregar-usuario-form-group">
           <label>Apellido Materno</label>
           <input
@@ -177,7 +174,6 @@ const ModalAgregarUsuario = ({ onGuardar, onCerrar, roles = [] }) => {
           />
         </div>
 
-        {/* Género */}
         <div className="modal-agregar-usuario-form-group modal-agregar-usuario-form-group-full">
           <label>Género</label>
           <select name="genero" value={formData.genero} onChange={handleChange}>
@@ -189,7 +185,6 @@ const ModalAgregarUsuario = ({ onGuardar, onCerrar, roles = [] }) => {
           </select>
         </div>
 
-        {/* Correo Electrónico */}
         <div className="modal-agregar-usuario-form-group modal-agregar-usuario-form-group-full">
           <label>
             Correo Electrónico <span className="modal-agregar-usuario-required">*</span>
@@ -205,7 +200,6 @@ const ModalAgregarUsuario = ({ onGuardar, onCerrar, roles = [] }) => {
           <MensajeError nombreCampo="correo" />
         </div>
 
-        {/* Contraseña */}
         <div className="modal-agregar-usuario-form-group">
           <label>
             Contraseña <span className="modal-agregar-usuario-required">*</span>
@@ -221,7 +215,6 @@ const ModalAgregarUsuario = ({ onGuardar, onCerrar, roles = [] }) => {
           <MensajeError nombreCampo="contrasena" />
         </div>
 
-        {/* Confirmar Contraseña */}
         <div className="modal-agregar-usuario-form-group">
           <label>
             Confirmar Contraseña <span className="modal-agregar-usuario-required">*</span>
@@ -350,5 +343,4 @@ const ModalAgregarUsuario = ({ onGuardar, onCerrar, roles = [] }) => {
     </div>
   );
 };
-
 export default ModalAgregarUsuario;

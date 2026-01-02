@@ -271,10 +271,8 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
           eliminar: false,
         };
       }
-
       const estadoActual = nuevosPermisos[moduloId].modulos[submoduloId].activo;
       const nuevoEstado = !estadoActual;
-
       nuevosPermisos[moduloId].modulos[submoduloId] = {
         activo: nuevoEstado,
         ver: nuevoEstado,
@@ -285,9 +283,7 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
       const algunoActivo = Object.values(nuevosPermisos[moduloId].modulos).some(
         (sub) => sub.ver || sub.editar || sub.eliminar
       );
-
       nuevosPermisos[moduloId].activo = algunoActivo;
-
       return { ...prev, permisos: nuevosPermisos };
     });
   };
@@ -295,7 +291,6 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
   const togglePermiso = (moduloId, submoduloId, tipoPermiso) => {
     setFormData((prev) => {
       const nuevosPermisos = JSON.parse(JSON.stringify(prev.permisos));
-
       if (submoduloId) {
         if (!nuevosPermisos[moduloId].modulos) {
           nuevosPermisos[moduloId].modulos = {};
@@ -404,15 +399,9 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
           usuarios_asignados: 0,
           estado: "activo",
         };
-
         await onGuardar(nuevoRol);
-
         setGuardando(false);
-
-        // Mostrar notificación de éxito
         mostrarNotificacionExito();
-
-        // Cerrar modal después de un breve delay
         setTimeout(() => {
           onCerrar();
         }, 500);
@@ -682,7 +671,6 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
             Permisos
           </button>
         </div>
-
         {seccionActiva === "general" && renderSeccionGeneral()}
         {seccionActiva === "permisos" && renderSeccionPermisos()}
 
@@ -704,5 +692,4 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalAgregarRol;

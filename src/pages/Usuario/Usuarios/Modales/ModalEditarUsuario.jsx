@@ -5,7 +5,7 @@ import "./ModalEditarUsuario.css";
 const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
   const [formData, setFormData] = useState({
     nombre: "",
-    correo: "", // Cambio: era email
+    correo: "", 
     contrasena: "",
     confirmarContrasena: "",
     apellido_paterno: "",
@@ -24,22 +24,20 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
   const generos = ["Masculino", "Femenino", "Otro", "Prefiero no decir"];
   const estados = ["activo", "inactivo"];
 
-  // Cargar datos del usuario al montar el componente
   useEffect(() => {
     if (usuario) {
       setFormData({
         nombre: usuario.nombre || "",
-        correo: usuario.correo || "", // Cambio: era email
+        correo: usuario.correo || "", 
         contrasena: "",
         confirmarContrasena: "",
         apellido_paterno: usuario.apellido_paterno || "",
         apellido_materno: usuario.apellido_materno || "",
         genero: usuario.genero || "",
         estado: usuario.estado || "activo",
-        rolesSeleccionados: usuario.roles?.map((r) => r.id) || [], // ⭐ AGREGAR ESTO
+        rolesSeleccionados: usuario.roles?.map((r) => r.id) || [], 
       });
     }
-    // Si hay foto existente, mostrarla
     if (usuario.foto) {
       setVistaPrevia(usuario.foto);
     }
@@ -94,7 +92,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           [name]: file,
         }));
 
-        // Crear vista previa
         const reader = new FileReader();
         reader.onloadend = () => {
           setVistaPrevia(reader.result);
@@ -171,13 +168,10 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
   };
 
   const handleSubmit = useCallback(async () => {
-    console.log("🔍 Iniciando validación...");
-
     const nuevosErrores = validarFormulario();
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
-      console.log("❌ Errores de validación:", nuevosErrores);
 
       setTimeout(() => {
         const primerCampoConError = Object.keys(nuevosErrores)[0];
@@ -193,7 +187,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
       return;
     }
 
-    console.log("✅ Validación exitosa, actualizando usuario...");
     setGuardando(true);
 
     try {
@@ -203,20 +196,13 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
         fecha_modificacion: new Date().toISOString(),
       };
 
-      console.log("📦 Datos a actualizar:", usuarioActualizado);
 
       const nombreCompleto = `${formData.nombre} ${formData.apellido_paterno}`;
-
       await onGuardar(usuarioActualizado);
-
-      console.log("✅ Usuario actualizado, mostrando notificación...");
-
       setGuardando(false);
 
-      // Mostrar notificación de éxito
       mostrarNotificacionExito(nombreCompleto);
 
-      // Cerrar modal después de un breve delay
       setTimeout(() => {
         onCerrar();
       }, 500);
@@ -256,7 +242,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
   const renderSeccionGeneral = () => (
     <div className="modal-editar-usuario-form">
       <div className="modal-editar-usuario-form-grid">
-        {/* Nombre */}
         <div className="modal-editar-usuario-form-group">
           <label htmlFor="nombre">
             Nombre <span className="modal-editar-usuario-required">*</span>
@@ -273,7 +258,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           <MensajeError nombreCampo="nombre" />
         </div>
 
-        {/* Apellido Paterno */}
         <div className="modal-editar-usuario-form-group">
           <label htmlFor="apellido_paterno">Apellido Paterno</label>
           <input
@@ -286,7 +270,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           />
         </div>
 
-        {/* Apellido Materno */}
         <div className="modal-editar-usuario-form-group">
           <label htmlFor="apellido_materno">Apellido Materno</label>
           <input
@@ -299,7 +282,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           />
         </div>
 
-        {/* Correo Electrónico */}
         <div className="modal-editar-usuario-form-group">
           <label htmlFor="correo">
             Correo Electrónico{" "}
@@ -317,7 +299,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           <MensajeError nombreCampo="correo" />
         </div>
 
-        {/* Nueva Contraseña */}
         <div className="modal-editar-usuario-form-group">
           <label htmlFor="contrasena">Nueva Contraseña</label>
           <input
@@ -335,7 +316,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           </span>
         </div>
 
-        {/* Confirmar Nueva Contraseña */}
         <div className="modal-editar-usuario-form-group">
           <label htmlFor="confirmarContrasena">Confirmar Nueva Contraseña</label>
           <input
@@ -352,7 +332,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           <MensajeError nombreCampo="confirmarContrasena" />
         </div>
 
-        {/* Género */}
         <div className="modal-editar-usuario-form-group">
           <label htmlFor="genero">Género</label>
           <select
@@ -370,7 +349,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           </select>
         </div>
 
-        {/* Estado */}
         <div className="modal-editar-usuario-form-group">
           <label htmlFor="estado">Estado</label>
           <select
@@ -388,7 +366,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           </select>
         </div>
 
-        {/* Foto de Perfil */}
         <div className="modal-editar-usuario-form-group modal-editar-usuario-form-group-full">
           <label htmlFor="foto">
             <Camera size={20} />
@@ -477,7 +454,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
         className="modal-editar-usuario-contenido"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="modal-editar-usuario-header">
           <h2>Editar Usuario</h2>
           <button
@@ -489,7 +465,6 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="modal-editar-usuario-tabs">
           <button
             type="button"
@@ -511,11 +486,9 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
           </button>
         </div>
 
-        {/* Contenido */}
         {seccionActiva === "general" && renderSeccionGeneral()}
         {seccionActiva === "roles" && renderSeccionRoles()}
 
-        {/* Footer */}
         <div className="modal-editar-usuario-footer">
           <div className="modal-editar-usuario-botones-izquierda">
             <button
@@ -543,5 +516,4 @@ const ModalEditarUsuario = ({ usuario, onGuardar, onCerrar, roles = [] }) => {
     </div>
   );
 };
-
 export default ModalEditarUsuario;

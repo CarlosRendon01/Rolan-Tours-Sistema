@@ -11,8 +11,9 @@ import "./PrincipalUsuario.css";
 const UsuariosPrincipal = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [roles, setRoles] = useState([]);
-
-  // Estados para controlar los modales de USUARIOS
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+  
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
@@ -25,18 +26,40 @@ const UsuariosPrincipal = () => {
   }, []);
 
   const recargarUsuarios = async () => {
+    setCargando(true);
+    setError(null);
+
     try {
       const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("No hay token de autenticación");
+      }
+
       const response = await axios.get("http://127.0.0.1:8000/api/users", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
+        timeout: 10000
       });
+
       setUsuarios(response.data);
-      console.log("✅ Usuarios recargados");
+
     } catch (error) {
       console.error("❌ Error al recargar usuarios:", error);
+
+      if (error.code === 'ECONNABORTED') {
+        setError('La conexión tardó demasiado. Verifica tu servidor.');
+      } else if (error.response) {
+        setError(`Error del servidor: ${error.response.status}`);
+      } else if (error.request) {
+        setError('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+      } else {
+        setError(error.message);
+      }
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -50,37 +73,30 @@ const UsuariosPrincipal = () => {
         },
       });
       setRoles(response.data);
-      console.log("✅ Roles cargados");
     } catch (error) {
       console.error("❌ Error al cargar roles:", error);
     }
   };
 
-  // Funciones para manejar los modales de USUARIOS
   const manejarVer = (usuario) => {
     setUsuarioSeleccionado(usuario);
     setModalVerAbierto(true);
-    console.log("Ver usuario:", usuario);
   };
 
   const manejarEditar = (usuario) => {
     setUsuarioSeleccionado(usuario);
     setModalEditarAbierto(true);
-    console.log("Editar usuario:", usuario);
   };
 
   const manejarEliminar = (usuario) => {
     setUsuarioSeleccionado(usuario);
     setModalEliminarAbierto(true);
-    console.log("Eliminar usuario:", usuario);
   };
 
   const manejarAgregar = () => {
     setModalAgregarAbierto(true);
-    console.log("Agregar nuevo usuario");
   };
 
-  // Función para cerrar modales
   const cerrarModales = () => {
     setModalVerAbierto(false);
     setModalEditarAbierto(false);
@@ -89,12 +105,9 @@ const UsuariosPrincipal = () => {
     setUsuarioSeleccionado(null);
   };
 
-  // Función para agregar usuario
   const agregarUsuario = async (nuevoUsuario) => {
     try {
       const token = localStorage.getItem("token");
-
-      // 1. Crear el usuario básico
       const userData = {
         nombre: nuevoUsuario.nombre,
         correo: nuevoUsuario.correo,
@@ -116,9 +129,6 @@ const UsuariosPrincipal = () => {
         }
       );
 
-      console.log("✅ Usuario creado:", response.data);
-
-      // 2. Asignar roles si hay
       if (
         nuevoUsuario.rolesSeleccionados &&
         nuevoUsuario.rolesSeleccionados.length > 0
@@ -133,25 +143,24 @@ const UsuariosPrincipal = () => {
             },
           }
         );
-        console.log("✅ Roles asignados:", nuevoUsuario.rolesSeleccionados);
       }
 
-      cerrarModales();
       await recargarUsuarios();
+      cerrarModales();
+      return response.data;
     } catch (error) {
       console.error("❌ Error al crear usuario:", error);
       alert(
         "Error al crear usuario: " +
         (error.response?.data?.message || error.message)
       );
+      throw error;
     }
   };
 
   const actualizarUsuario = async (usuarioActualizado) => {
     try {
       const token = localStorage.getItem("token");
-
-      // 1. Actualizar datos básicos del usuario
       const userData = {
         nombre: usuarioActualizado.nombre,
         apellido_paterno: usuarioActualizado.apellido_paterno || null,
@@ -161,7 +170,6 @@ const UsuariosPrincipal = () => {
         correo: usuarioActualizado.correo,
       };
 
-      // Solo enviar contraseña si fue modificada
       if (
         usuarioActualizado.contrasena &&
         usuarioActualizado.contrasena.trim() !== ""
@@ -180,9 +188,6 @@ const UsuariosPrincipal = () => {
         }
       );
 
-      console.log("✅ Usuario actualizado:", response.data);
-
-      // 2. Actualizar roles
       await axios.post(
         `http://127.0.0.1:8000/api/users/${usuarioActualizado.id}/roles`,
         { role_ids: usuarioActualizado.rolesSeleccionados || [] },
@@ -193,20 +198,20 @@ const UsuariosPrincipal = () => {
           },
         }
       );
-      console.log("✅ Roles actualizados:", usuarioActualizado.rolesSeleccionados);
 
-      cerrarModales();
       await recargarUsuarios();
+      cerrarModales();
+      return response.data;
     } catch (error) {
       console.error("❌ Error al actualizar usuario:", error);
       alert(
         "Error al actualizar usuario: " +
         (error.response?.data?.message || error.message)
       );
+      throw error;
     }
   };
 
-  // Función para eliminar usuario
   const eliminarUsuario = async (usuario) => {
     if (!usuario) {
       cerrarModales();
@@ -223,10 +228,8 @@ const UsuariosPrincipal = () => {
         },
       });
 
-      console.log("✅ Usuario eliminado:", usuario);
-
-      cerrarModales();
       await recargarUsuarios();
+      cerrarModales();
     } catch (error) {
       console.error("❌ Error al eliminar usuario:", error);
 
@@ -252,6 +255,29 @@ const UsuariosPrincipal = () => {
     }
   };
 
+  if (error) {
+    return (
+      <PrincipalComponente>
+        <div className="usuarios-error-container">
+          <div className="usuarios-error-box">
+            <h2 className="usuarios-error-title">
+              ❌ Error al cargar usuarios
+            </h2>
+            <p className="usuarios-error-message">
+              {error}
+            </p>
+            <button
+              onClick={recargarUsuarios}
+              className="usuarios-error-button"
+            >
+              🔄 Reintentar
+            </button>
+          </div>
+        </div>
+      </PrincipalComponente>
+    );
+  }
+
   return (
     <PrincipalComponente>
       <div className="usuarios-principal">
@@ -262,9 +288,10 @@ const UsuariosPrincipal = () => {
           onEditar={manejarEditar}
           onEliminar={manejarEliminar}
           onAgregar={manejarAgregar}
+          cargando={cargando}
+          onRecargar={recargarUsuarios}
         />
 
-        {/* Modal VER USUARIO */}
         {modalVerAbierto && usuarioSeleccionado && (
           <ModalVerUsuario
             usuario={usuarioSeleccionado}
@@ -273,7 +300,6 @@ const UsuariosPrincipal = () => {
           />
         )}
 
-        {/* Modal EDITAR USUARIO */}
         {modalEditarAbierto && usuarioSeleccionado && (
           <ModalEditarUsuario
             usuario={usuarioSeleccionado}
@@ -283,7 +309,6 @@ const UsuariosPrincipal = () => {
           />
         )}
 
-        {/* Modal ELIMINAR USUARIO */}
         {modalEliminarAbierto && usuarioSeleccionado && (
           <ModalEliminarUsuario
             usuario={usuarioSeleccionado}
@@ -291,7 +316,6 @@ const UsuariosPrincipal = () => {
           />
         )}
 
-        {/* Modal AGREGAR USUARIO */}
         {modalAgregarAbierto && (
           <ModalAgregarUsuario
             onGuardar={agregarUsuario}
@@ -303,5 +327,4 @@ const UsuariosPrincipal = () => {
     </PrincipalComponente>
   );
 };
-
 export default UsuariosPrincipal;

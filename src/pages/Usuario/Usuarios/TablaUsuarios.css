@@ -1,4 +1,3 @@
-/* TablaUsuarios.css - Versión Optimizada */
 .usuarios-contenedor-principal {
   width: 100%;
   background: #ffffff;
@@ -9,7 +8,6 @@
   margin: 1rem;
 }
 
-/* Header */
 .usuarios-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
   padding: 2rem;
@@ -65,7 +63,6 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Estadísticas */
 .usuarios-contenedor-estadisticas {
   display: flex;
   gap: 2rem;
@@ -115,7 +112,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Controles */
 .usuarios-controles {
   padding: 1.5rem 2rem;
   display: flex;
@@ -225,7 +221,6 @@
   pointer-events: none;
 }
 
-/* Contenedor Tabla */
 .usuarios-contenedor-tabla {
   overflow-x: auto;
   border: 1px solid #dee2e6;
@@ -252,7 +247,6 @@
   background: #3b82f6;
 }
 
-/* Tabla */
 .usuarios-tabla {
   width: 100%;
   border-collapse: separate;
@@ -285,7 +279,6 @@
   border-right: none;
 }
 
-/* Filas */
 .usuarios-fila-usuario {
   border-bottom: 1px solid #dbeafe;
   transition: background-color 0.2s ease;
@@ -315,7 +308,6 @@
   border-right: none;
 }
 
-/* Columna ID */
 .usuarios-columna-id .usuarios-badge-id {
   background: linear-gradient(135deg, #dbeafe, #bfdbfe);
   color: #1e40af;
@@ -326,7 +318,6 @@
   display: inline-block;
 }
 
-/* Info Usuario */
 .usuarios-info-usuario {
   display: flex;
   align-items: center;
@@ -378,13 +369,11 @@
   text-overflow: ellipsis;
 }
 
-/* Correo */
 .usuarios-texto-correo {
   color: #64748b;
   font-size: 0.8rem;
 }
 
-/* Roles */
 .usuarios-contenedor-roles {
   display: flex;
   flex-wrap: wrap;
@@ -425,7 +414,6 @@
   font-weight: 500;
 }
 
-/* Estado */
 .usuarios-badge-estado {
   display: inline-block;
   padding: 0.35rem 0.75rem;
@@ -446,7 +434,6 @@
   color: #991b1b;
 }
 
-/* Acciones */
 .usuarios-botones-accion {
   display: flex;
   gap: 0.35rem;
@@ -496,7 +483,6 @@
   transform: translateY(-1px);
 }
 
-/* Footer */
 .usuarios-pie-tabla {
   padding: 1.5rem 2rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -574,7 +560,6 @@
   color: white;
 }
 
-/* Estado vacío */
 .usuarios-estado-vacio {
   text-align: center;
   padding: 3rem 2rem;
@@ -600,7 +585,6 @@
   color: #6b7280;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .usuarios-encabezado {
     flex-direction: column;
@@ -619,4 +603,13 @@
   .usuarios-entrada-buscar {
     width: 100%;
   }
+}
+.usuarios-mensaje-cargando {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #3d3d3d;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border-radius: 8px;
 }

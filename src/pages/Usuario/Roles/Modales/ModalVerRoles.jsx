@@ -77,7 +77,6 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
     },
   ];
 
-  // ⭐ AGREGAR ESTA FUNCIÓN COMPLETA
   const transformarIdsAPermisos = (permissionsArray) => {
     const estructura = {
       dashboard: { activo: false, ver: false, editar: false, eliminar: false },
@@ -137,14 +136,12 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
       const partes = permiso.nombre.split(".");
 
       if (partes.length === 2) {
-        // Módulo sin submódulos (ej: dashboard.ver)
         const [modulo, accion] = partes;
         if (estructura[modulo] && !estructura[modulo].modulos) {
           estructura[modulo][accion] = true;
           estructura[modulo].activo = true;
         }
       } else if (partes.length === 3) {
-        // Módulo con submódulos (ej: ventas.clientes.ver)
         const [modulo, submodulo, accion] = partes;
         if (estructura[modulo]?.modulos?.[submodulo]) {
           estructura[modulo].modulos[submodulo][accion] = true;
@@ -329,15 +326,12 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
   return (
     <div className="mvr-overlay" onClick={onCerrar}>
       <div className="mvr-contenido" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="mvr-header">
           <h2>Detalles del Rol</h2>
           <button onClick={onCerrar} className="mvr-btn-cerrar">
             <X size={24} />
           </button>
         </div>
-
-        {/* Tabs */}
         <div className="mvr-tabs">
           <button
             onClick={() => setSeccionActiva("general")}
@@ -357,13 +351,11 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
           </button>
         </div>
 
-        {/* Content */}
         <div className="mvr-content">
           {seccionActiva === "general" && renderSeccionGeneral()}
           {seccionActiva === "permisos" && renderSeccionPermisos()}
         </div>
 
-        {/* Footer */}
         <div className="mvr-footer">
           <button onClick={onCerrar} className="mvr-btn-cerrar-footer">
             Cerrar
@@ -383,5 +375,4 @@ const PermisoIndicador = ({ icono, texto, activo, small }) => (
     <span>{texto}</span>
   </div>
 );
-
 export default ModalVerRoles;

@@ -1,19 +1,17 @@
-/* ModalAgregarRol.css - Prefijo: mar- (Modal Agregar Rol) */
 
-/* Overlay */
 .mar-overlay {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: rgba(0, 0, 0, 0.5) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: 9999 !important;
-  padding: 1rem !important;
-  animation: fadeIn 0.2s ease-out !important;
+  position: fixed ;
+  top: 0 ;
+  left: 0 ;
+  right: 0 ;
+  bottom: 0 ;
+  background: rgba(0, 0, 0, 0.5) ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+  z-index: 9999 ;
+  padding: 1rem ;
+  animation: fadeIn 0.2s ease-out ;
 }
 
 @keyframes marFadeIn {
@@ -26,18 +24,17 @@
   }
 }
 
-/* Contenedor Principal */
 .mar-contenido {
-  background: white !important;
-  border-radius: 16px !important;
-  width: 90% !important;
-  max-width: 1200px !important;
-  max-height: 90vh !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  animation: slideUp 0.3s ease-out !important;
-  position: relative !important;
+  background: white ;
+  border-radius: 16px ;
+  width: 90% ;
+  max-width: 1200px ;
+  max-height: 90vh ;
+  display: flex ;
+  flex-direction: column ;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) ;
+  animation: slideUp 0.3s ease-out ;
+  position: relative ;
   transform: scale(0.85) !important;
 }
 
@@ -53,7 +50,6 @@
   }
 }
 
-/* Header */
 .mar-header {
   padding: 2rem 2.5rem;
   border-bottom: 1px solid #e5e7eb;
@@ -96,7 +92,6 @@
   transform: scale(1.05);
 }
 
-/* Tabs de Navegación */
 .mar-tabs {
   display: flex;
   background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
@@ -144,7 +139,6 @@
   border-radius: 3px 3px 0 0;
 }
 
-/* Formulario */
 .mar-form {
   flex: 1;
   overflow-y: auto;
@@ -168,7 +162,6 @@
   background: #94a3b8;
 }
 
-/* Grid de Formulario */
 .mar-form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -202,7 +195,6 @@
   margin-left: 2px;
 }
 
-/* Inputs */
 .mar-form-group input,
 .mar-form-group textarea,
 .mar-form-group select {
@@ -246,7 +238,6 @@
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-/* Estados de validación */
 .mar-form-group input.input-error,
 .mar-form-group select.input-error,
 .mar-form-group textarea.input-error {
@@ -260,7 +251,6 @@
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
-/* Mensajes de error */
 .mar-error-mensaje {
   margin: 0.5rem 0 0 0;
   font-size: 0.875rem;
@@ -271,7 +261,6 @@
   font-weight: 500;
 }
 
-/* Campos de archivo */
 .mar-form-group input[type="file"] {
   padding: 0.875rem 1rem;
   border: 2px dashed #d1d5db;
@@ -304,7 +293,6 @@
   margin-top: 0.625rem;
 }
 
-/* Estilos de Permisos (reutilizados) */
 .permisos-header {
   display: flex;
   align-items: center;
@@ -334,7 +322,6 @@
   color: #075985;
 }
 
-/* Card de permiso */
 .permiso-card {
   background: white;
   border: 2px solid #e5e7eb;
@@ -384,7 +371,6 @@
   line-height: 1.3;
 }
 
-/* Switch toggle */
 .permiso-switch {
   position: relative;
   display: inline-block;
@@ -426,7 +412,6 @@
   transform: translateX(24px);
 }
 
-/* Acciones del módulo principal */
 .permiso-acciones {
   display: flex;
   gap: 1rem;
@@ -476,7 +461,6 @@
   color: #5f10b9;
 }
 
-/* Submódulos */
 .permisos-submodulos {
   padding: 1rem;
   background: #fafafa;
@@ -519,7 +503,6 @@
   user-select: none;
 }
 
-/* Acciones de submódulos */
 .permiso-acciones-sub {
   display: flex;
   gap: 0.5rem;
@@ -563,7 +546,6 @@
   color: #5f10b9;
 }
 
-/* Footer */
 .mar-footer {
   padding: 2rem 2.5rem;
   border-top: 1px solid #e5e7eb;
@@ -629,7 +611,6 @@
   transform: none;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .mar-contenido {
     max-height: 95vh;

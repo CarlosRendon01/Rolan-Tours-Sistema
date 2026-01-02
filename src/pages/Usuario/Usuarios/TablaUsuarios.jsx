@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Search,
   Edit,
@@ -21,12 +20,29 @@ const TablaUsuarios = ({
   onEditar,
   onEliminar,
   onAgregar,
+  cargando,
+  onRecargar
 }) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
+  const [puntosCarga, setPuntosCarga] = useState('');
 
-  // Filtrar usuarios
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const usuariosFiltrados = usuarios.filter((usuario) => {
     const busqueda = terminoBusqueda.toLowerCase();
     return (
@@ -36,14 +52,12 @@ const TablaUsuarios = ({
     );
   });
 
-  // Paginación
   const totalRegistros = usuariosFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const usuariosPaginados = usuariosFiltrados.slice(indiceInicio, indiceFin);
-
-  // Estadísticas
+  
   const totalUsuarios = usuarios.length;
   const usuariosActivos = usuarios.filter((u) => u.estado === "activo").length;
 
@@ -164,7 +178,29 @@ const TablaUsuarios = ({
         </div>
       </div>
 
-      {usuariosPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="usuarios-contenedor-tabla">
+          <table className="usuarios-tabla">
+            <thead>
+              <tr className="usuarios-fila-encabezado">
+                <th>ID</th>
+                <th>USUARIO</th>
+                <th>CORREO</th>
+                <th>ROLES</th>
+                <th>ESTADO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="6" className="usuarios-mensaje-cargando">
+                  Cargando la información de los usuarios{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : usuariosPaginados.length === 0 ? (
         <div className="usuarios-estado-vacio">
           <div className="usuarios-icono-vacio">
             <Users size={80} strokeWidth={1.5} />

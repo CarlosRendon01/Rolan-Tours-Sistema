@@ -72,7 +72,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
         className="modal-ver-usuario-contenido"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="modal-ver-usuario-header">
           <h2>Información del Usuario</h2>
           <button
@@ -84,9 +83,7 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
           </button>
         </div>
 
-        {/* Body */}
         <div className="modal-ver-usuario-body">
-          {/* Foto de perfil */}
           <div className="modal-ver-usuario-foto-section">
             <div className="modal-ver-usuario-foto-container">
               {usuario.foto ? (
@@ -99,9 +96,7 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
             </div>
           </div>
 
-          {/* Grid de información */}
           <div className="modal-ver-usuario-info-grid">
-            {/* Nombre completo */}
             <div className="modal-ver-usuario-info-item modal-ver-usuario-info-item-full">
               <span className="modal-ver-usuario-label">
                 <User size={16} />
@@ -112,7 +107,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
               </span>
             </div>
 
-            {/* Correo electrónico */}
             <div className="modal-ver-usuario-info-item">
               <span className="modal-ver-usuario-label">
                 <Mail size={16} />
@@ -127,7 +121,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
               </span>
             </div>
 
-            {/* Género */}
             <div className="modal-ver-usuario-info-item">
               <span className="modal-ver-usuario-label">
                 <User size={16} />
@@ -147,7 +140,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
               )}
             </div>
 
-            {/* Rol */}
             <div className="modal-ver-usuario-info-item modal-ver-usuario-info-item-full">
               <span className="modal-ver-usuario-label">
                 <Shield size={16} />
@@ -158,7 +150,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
               </span>
             </div>
 
-            {/* Estado */}
             <div className="modal-ver-usuario-info-item">
               <span className="modal-ver-usuario-label">
                 {usuario.estado === "activo" ? (
@@ -185,7 +176,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
               </div>
             </div>
 
-            {/* ID de Usuario */}
             <div className="modal-ver-usuario-info-item">
               <span className="modal-ver-usuario-label">
                 <User size={16} />
@@ -196,7 +186,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
               </span>
             </div>
 
-            {/* Fecha de registro */}
             {usuario.created_at && (
               <div className="modal-ver-usuario-info-item modal-ver-usuario-info-item-full">
                 <span className="modal-ver-usuario-label">
@@ -209,7 +198,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
               </div>
             )}
 
-            {/* Fecha de modificación */}
             {usuario.updated_at && (
               <div className="modal-ver-usuario-info-item modal-ver-usuario-info-item-full">
                 <span className="modal-ver-usuario-label">
@@ -224,7 +212,6 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
           </div>
         </div>
 
-        {/* Footer */}
         <div className="modal-ver-usuario-footer">
           <button
             type="button"
@@ -238,5 +225,4 @@ const ModalVerUsuario = ({ usuario, onCerrar, roles = [] }) => {
     </div>
   );
 };
-
 export default ModalVerUsuario;

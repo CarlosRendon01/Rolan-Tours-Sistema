@@ -51,13 +51,9 @@ const ModalEliminarUsuario = ({ usuario, alConfirmar }) => {
   const manejarEliminar = async () => {
     try {
       setCargando(true);
-
-      // Ejecutar la eliminación
       await alConfirmar(usuario);
-
       setCargando(false);
 
-      // Mostrar notificación de éxito
       mostrarNotificacionExito();
     } catch (error) {
       console.error("Error al eliminar usuario:", error);
@@ -147,5 +143,4 @@ const ModalEliminarUsuario = ({ usuario, alConfirmar }) => {
     </div>
   );
 };
-
 export default ModalEliminarUsuario;

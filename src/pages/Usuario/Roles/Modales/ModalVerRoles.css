@@ -1,6 +1,4 @@
-/* ModalVerRoles.css */
 
-/* Animaciones */
 @keyframes mvr-fadeIn {
   from {
     opacity: 0;
@@ -23,38 +21,35 @@
   }
 }
 
-/* Overlay */
 .mvr-overlay {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: rgba(0, 0, 0, 0.5) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: 9999 !important;
-  padding: 1rem !important;
-  animation: fadeIn 0.2s ease-out !important;
+  position: fixed ;
+  top: 0 ;
+  left: 0 ;
+  right: 0 ;
+  bottom: 0 ;
+  background: rgba(0, 0, 0, 0.5) ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+  z-index: 9999 ;
+  padding: 1rem ;
+  animation: fadeIn 0.2s ease-out ;
 }
 
-/* Contenedor principal */
 .mvr-contenido {
-  background: white !important;
-  border-radius: 16px !important;
-  width: 90% !important;
-  max-width: 1200px !important;
-  max-height: 90vh !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  animation: slideUp 0.3s ease-out !important;
-  position: relative !important;
+  background: white ;
+  border-radius: 16px ;
+  width: 90% ;
+  max-width: 1200px ;
+  max-height: 90vh ;
+  display: flex ;
+  flex-direction: column ;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) ;
+  animation: slideUp 0.3s ease-out ;
+  position: relative ;
   transform: scale(0.85) !important;
 }
 
-/* Header */
 .mvr-header {
   padding: 2rem 2.5rem;
   border-bottom: 1px solid #e5e7eb;
@@ -92,7 +87,6 @@
   transform: scale(1.05);
 }
 
-/* Tabs */
 .mvr-tabs {
   display: flex;
   background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
@@ -137,13 +131,11 @@
   border-radius: 3px 3px 0 0;
 }
 
-/* Content */
 .mvr-content {
   flex: 1;
   overflow: auto;
 }
 
-/* Sección General */
 .mvr-seccion-general {
   display: grid;
   gap: 1.5rem;
@@ -184,7 +176,6 @@
   gap: 1.5rem;
 }
 
-/* Estado badge */
 .mvr-estado-badge {
   display: inline-flex;
   align-items: center;
@@ -205,7 +196,6 @@
   color: #dc2626;
 }
 
-/* Sección Permisos */
 .mvr-seccion-permisos {
   padding: 1.5rem;
 }
@@ -234,13 +224,11 @@
   font-size: 0.875rem;
 }
 
-/* Grid de módulos */
 .mvr-modulos-grid {
   display: grid;
   gap: 1rem;
 }
 
-/* Card de módulo */
 .mvr-modulo-card {
   border: 2px solid #e5e7eb;
   border-radius: 0.75rem;
@@ -323,7 +311,6 @@
   color: #dc2626;
 }
 
-/* Permisos del módulo */
 .mvr-modulo-permisos {
   display: flex;
   gap: 0.75rem;
@@ -332,7 +319,6 @@
   border-top: 1px solid #e5e7eb;
 }
 
-/* Submódulos */
 .mvr-submodulos {
   padding: 1rem;
   background: #fafafa;
@@ -397,7 +383,6 @@
   border-top: 1px solid #e5e7eb;
 }
 
-/* Indicador de permiso */
 .mvr-permiso-indicador {
   flex: 1;
   display: flex;
@@ -430,7 +415,6 @@
   color: #9ca3af;
 }
 
-/* Footer */
 .mvr-footer {
   padding: 2rem 2.5rem;
   border-top: 1px solid #e5e7eb;
@@ -442,24 +426,23 @@
 }
 
 .mvr-btn-cerrar-footer {
-  padding: 0.875rem 2rem !important;
-  border: 2px solid #949393 !important;
-  background: white !important;
-  color: #374151 !important;
-  border-radius: 10px !important;
-  font-weight: 600 !important;
-  font-size: 1rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s !important;
+  padding: 0.875rem 2rem ;
+  border: 2px solid #949393 ;
+  background: white ;
+  color: #374151 ;
+  border-radius: 10px ;
+  font-weight: 600 ;
+  font-size: 1rem ;
+  cursor: pointer ;
+  transition: all 0.2s ;
 }
 
 .mvr-btn-cerrar-footer:hover {
-  background: #ef4444 !important;
-  border-color: #ef4444 !important;
-  color: white !important;
+  background: #ef4444 ;
+  border-color: #ef4444 ;
+  color: white ;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .mvr-contenido {
     max-height: 95vh;

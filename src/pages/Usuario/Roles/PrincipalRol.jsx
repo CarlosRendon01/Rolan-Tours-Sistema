@@ -11,32 +11,54 @@ import "./PrincipalRol.css";
 const RolesPrincipal = () => {
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
-
-  // Estados para controlar los modales de ROLES
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
   const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
   const [rolSeleccionado, setRolSeleccionado] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     recargarRoles();
-    recargarPermisos(); // ⭐ Cargar permisos al iniciar
+    recargarPermisos();
   }, []);
 
   const recargarRoles = async () => {
+    setCargando(true);
+    setError(null);
+
     try {
       const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("No hay token de autenticaciÃ³n");
+      }
+
       const response = await axios.get("http://127.0.0.1:8000/api/roles", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
+        timeout: 10000
       });
+
       setRoles(response.data);
-      console.log('✅ Roles recargados');
+
     } catch (error) {
-      console.error('❌ Error al recargar roles:', error);
+      console.error('âŒ Error al recargar roles:', error);
+
+      if (error.code === 'ECONNABORTED') {
+        setError('La conexiÃ³n tardÃ³ demasiado. Verifica tu servidor.');
+      } else if (error.response) {
+        setError(`Error del servidor: ${error.response.status}`);
+      } else if (error.request) {
+        setError('No se pudo conectar con el servidor. Verifica que estÃ© corriendo.');
+      } else {
+        setError(error.message);
+      }
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -50,9 +72,8 @@ const RolesPrincipal = () => {
         }
       });
       setPermissions(response.data);
-      console.log('✅ Permisos cargados');
     } catch (error) {
-      console.error('❌ Error al cargar permisos:', error);
+      console.error('âŒ Error al cargar permisos:', error);
     }
   };
 
@@ -61,7 +82,6 @@ const RolesPrincipal = () => {
 
     Object.entries(permisos).forEach(([moduloKey, moduloData]) => {
       if (moduloData.activo) {
-        // Si tiene submódulos
         if (moduloData.modulos) {
           Object.entries(moduloData.modulos).forEach(([subKey, subData]) => {
             if (subData.ver) ids.push(obtenerIdPermiso(`${moduloKey}.${subKey}.ver`));
@@ -69,7 +89,6 @@ const RolesPrincipal = () => {
             if (subData.eliminar) ids.push(obtenerIdPermiso(`${moduloKey}.${subKey}.eliminar`));
           });
         } else {
-          // Módulo sin submódulos
           if (moduloData.ver) ids.push(obtenerIdPermiso(`${moduloKey}.ver`));
           if (moduloData.editar) ids.push(obtenerIdPermiso(`${moduloKey}.editar`));
           if (moduloData.eliminar) ids.push(obtenerIdPermiso(`${moduloKey}.eliminar`));
@@ -77,40 +96,33 @@ const RolesPrincipal = () => {
       }
     });
 
-    return ids.filter(id => id !== null); // Filtrar IDs no encontrados
+    return ids.filter(id => id !== null);
   };
 
-  // ⭐ NUEVA FUNCIÓN: Mapear nombre de permiso a ID
   const obtenerIdPermiso = (nombrePermiso) => {
     const permiso = permissions.find(p => p.nombre === nombrePermiso);
     return permiso ? permiso.id : null;
   };
 
-  // Funciones para manejar los modales de ROLES
   const manejarVer = (rol) => {
     setRolSeleccionado(rol);
     setModalVerAbierto(true);
-    console.log("Ver rol:", rol);
   };
 
   const manejarEditar = (rol) => {
     setRolSeleccionado(rol);
     setModalEditarAbierto(true);
-    console.log("Editar rol:", rol);
   };
 
   const manejarEliminar = (rol) => {
     setRolSeleccionado(rol);
     setModalEliminarAbierto(true);
-    console.log("Eliminar rol:", rol);
   };
 
   const manejarAgregar = () => {
     setModalAgregarAbierto(true);
-    console.log("Agregar nuevo rol");
   };
 
-  // Función para cerrar modales
   const cerrarModales = () => {
     setModalVerAbierto(false);
     setModalEditarAbierto(false);
@@ -119,12 +131,10 @@ const RolesPrincipal = () => {
     setRolSeleccionado(null);
   };
 
-  // Función para agregar rol
   const agregarRol = async (nuevoRol) => {
     try {
       const token = localStorage.getItem("token");
 
-      // 1. Crear el rol básico
       const rolData = {
         nombre: nuevoRol.nombre,
         descripcion: nuevoRol.descripcion || null,
@@ -141,9 +151,7 @@ const RolesPrincipal = () => {
         }
       );
 
-      console.log("✅ Rol creado:", response.data);
 
-      // 2. Transformar permisos y asignar
       const permissionIds = transformarPermisosAIds(nuevoRol.permisos);
 
       if (permissionIds.length > 0) {
@@ -157,13 +165,12 @@ const RolesPrincipal = () => {
             }
           }
         );
-        console.log("✅ Permisos asignados:", permissionIds);
       }
 
       cerrarModales();
       await recargarRoles();
     } catch (error) {
-      console.error("❌ Error al crear rol:", error);
+      console.error("âŒ Error al crear rol:", error);
       alert("Error al crear rol: " + (error.response?.data?.message || error.message));
     }
   };
@@ -172,14 +179,13 @@ const RolesPrincipal = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // 1. Actualizar datos básicos del rol
       const rolData = {
-        nombre: rolActualizado.nombre, // ⭐ Cambio: era nombre_rol
+        nombre: rolActualizado.nombre,
         descripcion: rolActualizado.descripcion || null,
       };
 
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/roles/${rolActualizado.id}`, // ⭐ Cambio: era id_rol
+        `http://127.0.0.1:8000/api/roles/${rolActualizado.id}`,
         rolData,
         {
           headers: {
@@ -189,13 +195,11 @@ const RolesPrincipal = () => {
         }
       );
 
-      console.log("✅ Rol actualizado:", response.data);
 
-      // 2. Transformar y actualizar permisos
       const permissionIds = transformarPermisosAIds(rolActualizado.permisos);
 
       await axios.post(
-        `http://127.0.0.1:8000/api/roles/${rolActualizado.id}/permissions`, // ⭐ Cambio: era id_rol
+        `http://127.0.0.1:8000/api/roles/${rolActualizado.id}/permissions`,
         { permission_ids: permissionIds },
         {
           headers: {
@@ -204,12 +208,11 @@ const RolesPrincipal = () => {
           }
         }
       );
-      console.log("✅ Permisos actualizados:", permissionIds);
 
       cerrarModales();
       await recargarRoles();
     } catch (error) {
-      console.error("❌ Error al actualizar rol:", error);
+      console.error("âŒ Error al actualizar rol:", error);
       alert("Error al actualizar rol: " + (error.response?.data?.message || error.message));
     }
   };
@@ -223,7 +226,6 @@ const RolesPrincipal = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // Llamada DELETE al backend
       await axios.delete(
         `http://127.0.0.1:8000/api/roles/${rol.id}`,
         {
@@ -234,19 +236,37 @@ const RolesPrincipal = () => {
         }
       );
 
-      console.log("✅ Rol eliminado:", rol);
-
-      // Cerrar modal primero
       cerrarModales();
-
-      // Recargar roles después de eliminar
       await recargarRoles();
 
     } catch (error) {
-      console.error("❌ Error al eliminar rol:", error);
+      console.error("âŒ Error al eliminar rol:", error);
       cerrarModales();
     }
   };
+
+  if (error) {
+    return (
+      <PrincipalComponente>
+        <div className="roles-error-container">
+          <div className="roles-error-box">
+            <h2 className="roles-error-title">
+              âŒ Error al cargar roles
+            </h2>
+            <p className="roles-error-message">
+              {error}
+            </p>
+            <button
+              onClick={recargarRoles}
+              className="roles-error-button"
+            >
+              ðŸ”„ Reintentar
+            </button>
+          </div>
+        </div>
+      </PrincipalComponente>
+    );
+  }
 
   return (
     <PrincipalComponente>
@@ -258,14 +278,14 @@ const RolesPrincipal = () => {
           onEditar={manejarEditar}
           onEliminar={manejarEliminar}
           onAgregar={manejarAgregar}
+          cargando={cargando}
+          onRecargar={recargarRoles}
         />
 
-        {/* Modal VER ROL */}
         {modalVerAbierto && rolSeleccionado && (
           <ModalVerRol rol={rolSeleccionado} onCerrar={cerrarModales} />
         )}
 
-        {/* Modal EDITAR ROL */}
         {modalEditarAbierto && rolSeleccionado && (
           <ModalEditarRol
             rol={rolSeleccionado}
@@ -276,15 +296,17 @@ const RolesPrincipal = () => {
           />
         )}
 
-        {/* Modal ELIMINAR ROL */}
         {modalEliminarAbierto && rolSeleccionado && (
           <ModalEliminarRol rol={rolSeleccionado} alConfirmar={eliminarRol} />
         )}
 
-        {/* Modal AGREGAR ROL */}
         {modalAgregarAbierto && (
-          <ModalAgregarRol onGuardar={agregarRol} onCerrar={cerrarModales} permissions={permissions}
-            recargarPermisos={recargarPermisos} />
+          <ModalAgregarRol
+            onGuardar={agregarRol}
+            onCerrar={cerrarModales}
+            permissions={permissions}
+            recargarPermisos={recargarPermisos}
+          />
         )}
       </div>
     </PrincipalComponente>

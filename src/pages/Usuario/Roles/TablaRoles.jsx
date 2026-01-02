@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Search,
   Edit,
@@ -19,14 +19,29 @@ const TablaRoles = ({
   onEditar,
   onEliminar,
   onAgregar,
+  cargando,
+  onRecargar
 }) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-  const [cargando, setCargando] = useState(true);
-  const [vistaActual, setVistaActual] = useState("roles"); // "roles" o "usuarios"
+  const [puntosCarga, setPuntosCarga] = useState('');
 
-  // Filtrar roles
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const rolesFiltrados = roles.filter((rol) => {
     const busqueda = terminoBusqueda.toLowerCase();
     return (
@@ -36,14 +51,12 @@ const TablaRoles = ({
     );
   });
 
-  // Paginación
   const totalRegistros = rolesFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const rolesPaginados = rolesFiltrados.slice(indiceInicio, indiceFin);
 
-  // Estadísticas
   const totalRoles = roles.length;
   const rolesActivos = roles.filter(
     (p) => p.estado === "activo" || !p.estado
@@ -59,7 +72,6 @@ const TablaRoles = ({
   };
 
   const obtenerPermisosDetallados = (permissions) => {
-    // ⭐ CAMBIO: Ahora recibe permissions que es un array de objetos
     if (!permissions || !Array.isArray(permissions) || permissions.length === 0) {
       return [];
     }
@@ -76,12 +88,10 @@ const TablaRoles = ({
 
     const permisosAgrupados = {};
 
-    // Agrupar permisos por módulo
     permissions.forEach((permiso) => {
       const partes = permiso.nombre.split('.');
 
       if (partes.length === 2) {
-        // Módulo sin submódulo (ej: dashboard.ver)
         const [modulo, accion] = partes;
         if (modulosConfig[modulo]) {
           if (!permisosAgrupados[modulo]) {
@@ -96,7 +106,6 @@ const TablaRoles = ({
           );
         }
       } else if (partes.length === 3) {
-        // Módulo con submódulo (ej: ventas.clientes.ver)
         const [modulo, submodulo, accion] = partes;
         const key = `${modulo}.${submodulo}`;
 
@@ -115,7 +124,6 @@ const TablaRoles = ({
       }
     });
 
-    // Convertir objeto a array
     return Object.values(permisosAgrupados);
   };
 
@@ -227,7 +235,28 @@ const TablaRoles = ({
         </div>
       </div>
 
-      {rolesPaginados.length === 0 ? (
+      {cargando ? (
+        <div className="roles-contenedor-tabla">
+          <table className="roles-tabla">
+            <thead>
+              <tr className="roles-fila-encabezado">
+                <th>ID</th>
+                <th>NOMBRE DE ROL</th>
+                <th>DESCRIPCIÓN</th>
+                <th>PERMISOS</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="5" className="roles-mensaje-cargando">
+                  Cargando la información de los roles{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : rolesPaginados.length === 0 ? (
         <div className="roles-estado-vacio">
           <div className="roles-icono-vacio">
             <Store size={80} strokeWidth={1.5} />
@@ -398,5 +427,4 @@ const TablaRoles = ({
     </div>
   );
 };
-
 export default TablaRoles;

@@ -246,14 +246,12 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
       const partes = permiso.nombre.split('.');
 
       if (partes.length === 2) {
-        // Módulo sin submódulos (ej: dashboard.ver)
         const [modulo, accion] = partes;
         if (estructura[modulo] && !estructura[modulo].modulos) {
           estructura[modulo][accion] = true;
           estructura[modulo].activo = true;
         }
       } else if (partes.length === 3) {
-        // Módulo con submódulos (ej: ventas.clientes.ver)
         const [modulo, submodulo, accion] = partes;
         if (estructura[modulo]?.modulos?.[submodulo]) {
           estructura[modulo].modulos[submodulo][accion] = true;
@@ -266,10 +264,8 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
     return estructura;
   };
 
-  // Alrededor de la línea 239
   useEffect(() => {
-    if (rol && permissions && permissions.length > 0) { // ⭐ Agregar verificación
-      // Transformar permissions (array de objetos) a estructura jerárquica
+    if (rol && permissions && permissions.length > 0) { 
       const permisosTransformados = transformarIdsAPermisos(rol.permissions || []);
 
       setFormData({
@@ -278,7 +274,6 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
         permisos: permisosTransformados,
       });
     } else if (rol) {
-      // Si no hay permissions aún, solo cargar datos básicos
       setFormData(prev => ({
         ...prev,
         nombre: rol.nombre || "",
@@ -503,13 +498,9 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
         };
 
         await onGuardar(rolData);
-
         setGuardando(false);
-
-        // Mostrar notificación de éxito
         mostrarNotificacionExito();
 
-        // Cerrar modal después de un breve delay
         setTimeout(() => {
           onCerrar();
         }, 500);
@@ -801,5 +792,4 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
     </div>
   );
 };
-
 export default ModalEditarRol;
