@@ -1,9 +1,3 @@
-/* ========================================
-   TABLAFACTURAS.CSS - ESTILOS INDEPENDIENTES
-   Solo para el componente TablaFacturas
-   ======================================== */
-
-/* Contenedor Principal */
 .facturas-contenedor-principal {
   width: 100% !important;
   background: #ffffff !important;
@@ -26,7 +20,6 @@
   box-shadow: 0 4px 12px rgba(147, 51, 234, 0.25) !important;
 }
 
-/* ========== HEADER ========== */
 .facturas-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
   padding: 2rem;
@@ -38,7 +31,7 @@
 }
 
 .facturas-encabezado::before {
-   content: none;
+  content: none;
 }
 
 .facturas-seccion-logo {
@@ -76,7 +69,6 @@
   font-weight: 400;
 }
 
-/* ========== ESTADÍSTICAS ========== */
 .facturas-estadisticas-header {
   display: flex;
   gap: 1.5rem;
@@ -103,9 +95,11 @@
 }
 
 .facturas-tarjeta-estadistica.total {
-  background: linear-gradient(135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(29, 78, 216, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.2),
+    rgba(29, 78, 216, 0.3)
+  );
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
@@ -116,9 +110,11 @@
 }
 
 .facturas-tarjeta-estadistica.pagados {
-  background: linear-gradient(135deg,
-      rgba(16, 185, 129, 0.2),
-      rgba(5, 150, 105, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.2),
+    rgba(5, 150, 105, 0.3)
+  );
   border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
@@ -129,9 +125,11 @@
 }
 
 .facturas-tarjeta-estadistica.pendientes {
-  background: linear-gradient(135deg,
-      rgba(245, 158, 11, 0.2),
-      rgba(217, 119, 6, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.2),
+    rgba(217, 119, 6, 0.3)
+  );
   border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
@@ -142,9 +140,11 @@
 }
 
 .facturas-tarjeta-estadistica.vencidos {
-  background: linear-gradient(135deg,
-      rgba(239, 68, 68, 0.2),
-      rgba(220, 38, 38, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.2),
+    rgba(220, 38, 38, 0.3)
+  );
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
@@ -181,7 +181,6 @@
   z-index: 2;
 }
 
-/* ========== CONTROLES ========== */
 .facturas-controles {
   display: flex;
   justify-content: space-between;
@@ -286,7 +285,6 @@
   cursor: not-allowed;
 }
 
-/* ========== BÚSQUEDA ========== */
 .facturas-control-busqueda {
   position: relative;
 }
@@ -322,7 +320,6 @@
   pointer-events: none;
 }
 
-/* ========== TABLA ========== */
 .facturas-contenedor-tabla {
   overflow-x: auto;
   background: white;
@@ -369,7 +366,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-
 .facturas-fila-pago td {
   padding: 1rem 1.5rem;
   vertical-align: middle;
@@ -404,7 +400,6 @@
   font-size: 0.8125rem;
 }
 
-/* ========== BADGES DE ESTADO ========== */
 .facturas-badge-estado {
   padding: 0.375rem 0.75rem;
   border-radius: 6px;
@@ -456,7 +451,6 @@
   background: #dc2626;
 }
 
-/* ========== BOTONES DE ACCIÓN ========== */
 .facturas-columna-acciones {
   width: 180px;
 }
@@ -524,7 +518,6 @@
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 
-/* ========== PIE DE TABLA ========== */
 .facturas-pie-tabla {
   display: flex;
   justify-content: space-between;
@@ -614,7 +607,6 @@
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.25);
 }
 
-/* ========== ESTADO VACÍO ========== */
 .facturas-estado-vacio {
   text-align: center;
   padding: 3rem 2rem;
@@ -640,7 +632,6 @@
   color: #6b7280;
 }
 
-/* ========== ESTADO DE CARGA ========== */
 .facturas-cargando {
   opacity: 0.6;
   pointer-events: none;
@@ -662,7 +653,6 @@
   z-index: 1000;
 }
 
-/* ========== ANIMACIONES ========== */
 @keyframes fac-fadeIn {
   from {
     opacity: 0;
@@ -685,7 +675,6 @@
   }
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 1024px) {
   .facturas-encabezado {
     padding: 1.5rem;
@@ -861,11 +850,6 @@
   }
 }
 
-/* ========================================
-   ESTILOS ADICIONALES PARA ROLES
-   ======================================== */
-
-/* Badge de Rol Administrador */
 .facturas-badge-rol-admin {
   display: inline-flex;
   align-items: center;
@@ -884,7 +868,6 @@
 }
 
 @keyframes facturas-badge-pulse {
-
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
@@ -895,11 +878,12 @@
   }
 }
 
-/* Tarjeta de Estadística - Eliminados */
 .facturas-tarjeta-estadistica.eliminados {
-  background: linear-gradient(135deg,
-      rgba(251, 146, 60, 0.2),
-      rgba(249, 115, 22, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(251, 146, 60, 0.2),
+    rgba(249, 115, 22, 0.3)
+  );
   border: 1px solid rgba(251, 146, 60, 0.4);
 }
 
@@ -909,7 +893,6 @@
   box-shadow: 0 10px 25px rgba(251, 146, 60, 0.4);
 }
 
-/* Botón Toggle Eliminados */
 .facturas-boton-toggle-eliminados {
   display: flex;
   align-items: center;
@@ -951,7 +934,6 @@
   cursor: not-allowed;
 }
 
-/* Fila Eliminada */
 .facturas-fila-eliminada {
   background: #fef3c7 !important;
   position: relative;
@@ -972,7 +954,6 @@
   box-shadow: 0 2px 8px rgba(251, 146, 60, 0.15) !important;
 }
 
-/* Badge Eliminado Mini */
 .facturas-badge-eliminado-mini {
   display: inline-flex;
   align-items: center;
@@ -988,7 +969,6 @@
   letter-spacing: 0.05em;
 }
 
-/* Estado Eliminado */
 .facturas-estado-eliminado {
   background: #fff7ed;
   color: #ea580c;
@@ -999,7 +979,6 @@
   background: #fb923c;
 }
 
-/* Botones de Acción - Regenerar */
 .facturas-boton-accion.facturas-regenerar {
   background: #3b82f6;
   color: #ffffff;
@@ -1012,7 +991,6 @@
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-/* Botones de Acción - Eliminar Definitivo */
 .facturas-boton-accion.facturas-eliminar-definitivo {
   background: #991b1b;
   color: #ffffff;
@@ -1025,7 +1003,6 @@
   box-shadow: 0 4px 12px rgba(153, 27, 27, 0.4);
 }
 
-/* Mejorar visibilidad de columnas en filas eliminadas */
 .facturas-fila-eliminada .facturas-columna-monto {
   color: #92400e;
 }
@@ -1034,7 +1011,6 @@
   color: #78716c;
 }
 
-/* Animación para filas eliminadas */
 @keyframes facturas-highlight-eliminado {
   0% {
     background: #fef3c7;
@@ -1053,7 +1029,6 @@
   animation: facturas-highlight-eliminado 2s ease-in-out;
 }
 
-/* Responsive adicional para roles */
 @media (max-width: 768px) {
   .facturas-badge-rol-admin {
     margin-left: 0;

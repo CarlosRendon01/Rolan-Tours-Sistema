@@ -26,7 +26,6 @@ import { modalEliminarFactura } from "../ModalesFactura/ModalEliminarFactura";
 import ModalRegenerarFactura from "../ModalesFactura/ModalRegenerarFactura";
 import ModalEliminarDefinitivoFactura from "../ModalesFactura/ModalEliminarDefinitivoFactura";
 
-// Constantes para estados de factura
 const ESTADOS_FACTURA = {
   TIMBRADA: "TIMBRADA",
   CANCELADA: "CANCELADA",
@@ -47,7 +46,6 @@ const TablaFacturas = ({
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
 
-  // Estados para modales
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
     useState(false);
@@ -73,13 +71,11 @@ const TablaFacturas = ({
 
       const facturas = res.data.data || [];
       setdatosFacturas(facturas);
-      console.log("Facturas cargadas:", facturas);
     } catch (error) {
       console.error("Error al cargar facturas:", error);
     }
   };
 
-  // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
     if (rolUsuario === "admin") {
       if (mostrarEliminados === true) {
@@ -88,14 +84,12 @@ const TablaFacturas = ({
       if (mostrarEliminados === false) {
         return datosFacturas.filter((f) => f.activo === true);
       }
-      return datosFacturas; // opción "todos"
+      return datosFacturas;
     } else {
       return datosFacturas.filter((f) => f.activo === true);
     }
-
   }, [datosFacturas, rolUsuario, mostrarEliminados]);
 
-  // Cálculo de estadísticas
   const estadisticas = useMemo(() => {
     const datos = rolUsuario === "admin" ? datosFacturas : datosSegunRol;
     const totalFacturas = datos.length;
@@ -114,7 +108,6 @@ const TablaFacturas = ({
     return { totalFacturas, timbradas, canceladas, eliminadas, montoTotal };
   }, [datosFacturas, datosSegunRol, rolUsuario]);
 
-  // Filtrar datos según búsqueda y estado
   const datosFiltrados = useMemo(() => {
     let datos = [...datosSegunRol];
 
@@ -140,7 +133,6 @@ const TablaFacturas = ({
     return datos;
   }, [datosSegunRol, terminoBusqueda, filtroEstado]);
 
-  // Calcular paginación
   const totalRegistros = datosFiltrados.length;
   const totalPaginas = Math.max(
     1,
@@ -177,7 +169,6 @@ const TablaFacturas = ({
     setPaginaActual(1);
   }, []);
 
-  // Manejadores de modales
   const abrirModalRegenerar = (factura) => {
     setFacturaSeleccionada(factura);
     setModalRegenerarAbierto(true);
@@ -191,7 +182,6 @@ const TablaFacturas = ({
   const manejarRegenerar = async (factura, motivo) => {
     try {
       await cargarFacturas();
-      console.log("✅ Factura regenerada:", factura.id);
 
       if (onRegenerar) {
         await onRegenerar(factura, motivo);
@@ -204,7 +194,6 @@ const TablaFacturas = ({
   const manejarEliminarDefinitivo = async (factura, motivo) => {
     try {
       await cargarFacturas();
-      console.log("✅ Factura eliminada definitivamente:", factura.id);
 
       if (onEliminarDefinitivo) {
         await onEliminarDefinitivo(factura, motivo);
@@ -214,14 +203,9 @@ const TablaFacturas = ({
     }
   };
 
-  // Función para descargar la plantilla Excel
   const descargarPlantillaExcel = async () => {
     try {
-      console.log("🔍 Iniciando descarga de plantilla Excel...");
-
       const response = await fetch("/Factura.xlsm");
-
-      console.log("📡 Status:", response.status);
 
       if (!response.ok) {
         throw new Error(
@@ -230,7 +214,6 @@ const TablaFacturas = ({
       }
 
       const blob = await response.blob();
-      console.log("📦 Archivo descargado, tamaño:", blob.size, "bytes");
 
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -240,8 +223,6 @@ const TablaFacturas = ({
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-
-      console.log("✅ Descarga completada");
     } catch (error) {
       console.error("❌ Error:", error.message);
       alert("Error al descargar: " + error.message);
@@ -260,13 +241,8 @@ const TablaFacturas = ({
             await generarPDFFacturaTimbrada(factura);
             break;
 
-          // Add this improved error handling in the descargarExcel case
-
           case "descargarExcel":
             try {
-              console.log('🔍 Iniciando descarga de Excel...');
-              console.log('🔍 ID de factura:', factura.id);
-
               const token = localStorage.getItem("token");
 
               const response = await axios.get(
@@ -275,39 +251,28 @@ const TablaFacturas = ({
                   headers: {
                     Authorization: `Bearer ${token}`,
                   },
-                  responseType: 'blob' // ✅ Esto es correcto
+                  responseType: "blob",
                 }
               );
 
-              console.log('✅ Respuesta recibida:', response.status);
-              console.log('✅ Content-Type:', response.headers['content-type']);
-              console.log('✅ Tamaño:', response.data.size, 'bytes');
-
-              // ✅ FIX: Crear el blob con el tipo MIME correcto
               const blob = new Blob([response.data], {
-                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
               });
 
               const url = window.URL.createObjectURL(blob);
-              const link = document.createElement('a');
+              const link = document.createElement("a");
               link.href = url;
 
-              // ✅ Asegurar extensión .xlsx
               const fileName = `Factura_${factura.numeroFactura}.xlsx`;
-              link.setAttribute('download', fileName);
+              link.setAttribute("download", fileName);
 
               document.body.appendChild(link);
               link.click();
 
-              // ✅ Cleanup
               document.body.removeChild(link);
               window.URL.revokeObjectURL(url);
 
-              console.log('✅ Descarga completada:', fileName);
-
-              // ✅ Notificar al usuario
               alert(`✅ Excel descargado exitosamente:\n${fileName}`);
-
             } catch (error) {
               console.error("❌ Error al descargar Excel:", error);
 
@@ -316,12 +281,17 @@ const TablaFacturas = ({
                 console.error("❌ Error del servidor:", text);
                 try {
                   const errorJson = JSON.parse(text);
-                  alert(`Error: ${errorJson.message || errorJson.error || text}`);
+                  alert(
+                    `Error: ${errorJson.message || errorJson.error || text}`
+                  );
                 } catch {
                   alert(`Error al descargar: ${text}`);
                 }
               } else {
-                alert("Error al descargar el archivo Excel: " + (error.response?.data?.message || error.message));
+                alert(
+                  "Error al descargar el archivo Excel: " +
+                    (error.response?.data?.message || error.message)
+                );
               }
             }
             break;
@@ -333,8 +303,8 @@ const TablaFacturas = ({
             if (emailCliente && emailCliente.includes("@")) {
               alert(
                 `✉️ Factura enviada correctamente a:\n${emailCliente}\n\n` +
-                `Factura: ${factura.numeroFactura}\n` +
-                `Cliente: ${factura.cliente}`
+                  `Factura: ${factura.numeroFactura}\n` +
+                  `Cliente: ${factura.cliente}`
               );
             } else if (emailCliente) {
               alert("❌ Correo inválido. Por favor ingresa un correo válido.");
@@ -419,10 +389,10 @@ const TablaFacturas = ({
 
   return (
     <div
-      className={`facturas-contenedor-principal ${cargando ? "facturas-cargando" : ""
-        }`}
+      className={`facturas-contenedor-principal ${
+        cargando ? "facturas-cargando" : ""
+      }`}
     >
-      {/* Header */}
       <div className="facturas-encabezado">
         <div className="facturas-seccion-logo">
           <div className="facturas-icono-principal">
@@ -482,7 +452,6 @@ const TablaFacturas = ({
         </div>
       </div>
 
-      {/* Controles */}
       <div className="facturas-controles">
         <div className="facturas-seccion-izquierda">
           <div className="facturas-control-registros">
@@ -551,7 +520,6 @@ const TablaFacturas = ({
               </select>
             </div>
           )}
-
         </div>
 
         <div className="facturas-seccion-derecha">
@@ -569,7 +537,6 @@ const TablaFacturas = ({
         </div>
       </div>
 
-      {/* Tabla */}
       <div className="facturas-contenedor-tabla">
         {datosPaginados.length === 0 ? (
           <div className="facturas-estado-vacio">
@@ -583,8 +550,8 @@ const TablaFacturas = ({
               {terminoBusqueda || filtroEstado !== "todos"
                 ? "Intenta ajustar los filtros de búsqueda"
                 : mostrarEliminados
-                  ? "No hay facturas eliminadas en el sistema"
-                  : "No hay facturas registradas en el sistema"}
+                ? "No hay facturas eliminadas en el sistema"
+                : "No hay facturas registradas en el sistema"}
             </p>
           </div>
         ) : (
@@ -605,8 +572,9 @@ const TablaFacturas = ({
               {datosPaginados.map((factura, indice) => (
                 <tr
                   key={factura.id}
-                  className={`facturas-fila-pago ${!factura.activo ? "facturas-fila-eliminada" : ""
-                    }`}
+                  className={`facturas-fila-pago ${
+                    !factura.activo ? "facturas-fila-eliminada" : ""
+                  }`}
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Factura" className="facturas-columna-factura">
@@ -710,8 +678,6 @@ const TablaFacturas = ({
                     <div className="facturas-botones-accion">
                       {factura.activo === true ? (
                         <>
-
-
                           <button
                             className="facturas-boton-accion facturas-ver"
                             onClick={() => manejarAccion("descargar", factura)}
@@ -720,7 +686,6 @@ const TablaFacturas = ({
                           >
                             <Download size={14} />
                           </button>
-
 
                           <button
                             className="recibos-boton-accion recibos-excel"
@@ -735,17 +700,6 @@ const TablaFacturas = ({
 
                           {factura.estado === ESTADOS_FACTURA.TIMBRADA && (
                             <>
-                              {/*  
-                              <button
-                                className="facturas-boton-accion facturas-editar"
-                                onClick={() => manejarAccion("enviar", factura)}
-                                title="Enviar por correo"
-                                disabled={cargando}
-                              >
-                                <Send size={14} />
-                              </button>
-                              */}
-
                               <button
                                 className="facturas-boton-accion facturas-eliminar"
                                 onClick={() =>
@@ -761,17 +715,6 @@ const TablaFacturas = ({
 
                           {factura.estado === ESTADOS_FACTURA.CANCELADA && (
                             <>
-                              {/*  
-                              <button
-                                className="facturas-boton-accion facturas-editar"
-                                onClick={() => manejarAccion("enviar", factura)}
-                                title="Reenviar documentos"
-                                disabled={cargando}
-                              >
-                                <Send size={14} />
-                              </button>
-                              */}
-
                               <button
                                 className="facturas-boton-accion facturas-eliminar"
                                 onClick={() =>
@@ -816,7 +759,6 @@ const TablaFacturas = ({
         )}
       </div>
 
-      {/* Pie de tabla */}
       {datosPaginados.length > 0 && (
         <div className="facturas-pie-tabla">
           <div className="facturas-informacion-registros">
@@ -852,8 +794,9 @@ const TablaFacturas = ({
                 ) : (
                   <button
                     key={numero}
-                    className={`facturas-numero-pagina ${paginaActual === numero ? "facturas-activo" : ""
-                      }`}
+                    className={`facturas-numero-pagina ${
+                      paginaActual === numero ? "facturas-activo" : ""
+                    }`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
                   >
@@ -875,7 +818,6 @@ const TablaFacturas = ({
         </div>
       )}
 
-      {/* Modales */}
       {modalRegenerarAbierto && facturaSeleccionada && (
         <ModalRegenerarFactura
           factura={facturaSeleccionada}

@@ -49,7 +49,6 @@ const TablaRecibos = ({
   const [filtroEstado, setFiltroEstado] = useState("todos");
 
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
-  // Estados para modales
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
     useState(false);
@@ -59,9 +58,8 @@ const TablaRecibos = ({
   const [pdfUrl, setPdfUrl] = useState(null);
   const [reciboPDFActual, setReciboPDFActual] = useState(null);
 
-  const API_URL = "http://127.0.0.1:8000/api/abonos"; // Ajusta al dominio/backend real
+  const API_URL = "http://127.0.0.1:8000/api/abonos";
 
-  // Datos de ejemplo mejorados
   const [datosRecibos, setdatosRecibos] = useState([]);
 
   useEffect(() => {
@@ -80,13 +78,11 @@ const TablaRecibos = ({
 
       const recibos = res.data.data || [];
       setdatosRecibos(recibos);
-      console.log("Recibos cargadas:", recibos);
     } catch (error) {
       console.error("Error al cargar recibos:", error);
     }
   };
 
-  // Formatear moneda
   const formatearMoneda = useCallback((monto) => {
     if (typeof monto === "string") {
       monto = parseFloat(monto.replace(/[$,]/g, ""));
@@ -97,7 +93,6 @@ const TablaRecibos = ({
     }).format(monto || 0);
   }, []);
 
-  // Formatear fecha
   const formatearFecha = useCallback((fecha) => {
     try {
       const date = new Date(fecha);
@@ -111,10 +106,8 @@ const TablaRecibos = ({
     }
   }, []);
 
-  // Filtrar datos según rol y vista
   const datosSegunRol = useMemo(() => {
     if (rolUsuario !== "admin") {
-      // Vendedor solo ve activos
       return datosRecibos.filter((r) => r.activo === true);
     }
 
@@ -124,11 +117,10 @@ const TablaRecibos = ({
       case "eliminados":
         return datosRecibos.filter((r) => r.activo === false);
       default:
-        return datosRecibos; // todos
+        return datosRecibos;
     }
   }, [datosRecibos, rolUsuario, filtroEstado]);
 
-  // Cálculo de estadísticas
   const estadisticas = useMemo(() => {
     const datos = rolUsuario === "admin" ? datosRecibos : datosSegunRol;
     const totalRecibos = datos.length;
@@ -168,7 +160,6 @@ const TablaRecibos = ({
     };
   }, [datosRecibos, datosSegunRol, rolUsuario]);
 
-  // Filtrar datos según búsqueda
   const datosFiltrados = useMemo(() => {
     let datos = [...datosSegunRol];
 
@@ -188,7 +179,6 @@ const TablaRecibos = ({
     return datos;
   }, [datosSegunRol, terminoBusqueda]);
 
-  // Calcular paginación
   const totalRegistros = datosFiltrados.length;
   const totalPaginas = Math.max(
     1,
@@ -226,7 +216,6 @@ const TablaRecibos = ({
     setPaginaActual(1);
   }, []);
 
-  // Exportar a CSV
   const exportarCSV = useCallback(() => {
     try {
       const headers = [
@@ -285,7 +274,6 @@ const TablaRecibos = ({
     }
   }, [datosFiltrados, rolUsuario, mostrarEliminados]);
 
-  // Manejadores de modales
   const abrirModalRegenerar = (recibo) => {
     setReciboSeleccionado(recibo);
     setModalRegenerarAbierto(true);
@@ -299,7 +287,6 @@ const TablaRecibos = ({
   const manejarRegenerar = async (recibo, motivo) => {
     try {
       await cargarRecibos();
-      console.log("✅ Recibo regenerado:", recibo.id);
 
       if (onRegenerar) {
         await onRegenerar(recibo, motivo);
@@ -312,7 +299,6 @@ const TablaRecibos = ({
   const manejarEliminarDefinitivo = async (recibo) => {
     try {
       await cargarRecibos();
-      console.log("✅ Recibo eliminado definitivamente:", recibo.id);
 
       if (onEliminarDefinitivo) {
         await onEliminarDefinitivo(recibo);
@@ -514,8 +500,6 @@ const TablaRecibos = ({
       link.download = `Recibo_${reciboPDFActual.fechaEmision}_${reciboPDFActual.numeroRecibo}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
-
-      console.log("PDF descargado correctamente");
     } catch (error) {
       console.error("Error al descargar PDF:", error);
       alert("Error al descargar el PDF. Por favor, intente nuevamente.");
@@ -563,7 +547,6 @@ const TablaRecibos = ({
         cargando ? "recibos-cargando" : ""
       }`}
     >
-      {/* Header */}
       <div className="recibos-encabezado">
         <div className="recibos-seccion-logo">
           <div className="recibos-icono-principal">
@@ -616,7 +599,6 @@ const TablaRecibos = ({
         </div>
       </div>
 
-      {/* Alerta de Error */}
       {error && (
         <div className="recibos-alerta-error" role="alert">
           <AlertCircle size={20} />
@@ -624,7 +606,6 @@ const TablaRecibos = ({
         </div>
       )}
 
-      {/* Controles */}
       <div className="recibos-controles">
         <div className="recibos-seccion-izquierda">
           <div className="recibos-control-registros">
@@ -661,7 +642,6 @@ const TablaRecibos = ({
             </select>
           </div>
 
-          {/* Filtro para admin */}
           {rolUsuario === "admin" && (
             <div className="recibos-filtro-estado-eliminados">
               <label style={{ marginRight: "8px" }}>Mostrar:</label>
@@ -717,7 +697,6 @@ const TablaRecibos = ({
         </div>
       </div>
 
-      {/* Tabla */}
       <div className="recibos-contenedor-tabla">
         {datosPaginados.length === 0 ? (
           <div className="recibos-estado-vacio">
@@ -819,7 +798,6 @@ const TablaRecibos = ({
                   >
                     <div className="recibos-botones-accion">
                       {recibo.activo === false && rolUsuario === "admin" ? (
-                        // Botones para recibos eliminados (solo admin)
                         <>
                           <button
                             className="recibos-boton-accion recibos-regenerar"
@@ -842,7 +820,6 @@ const TablaRecibos = ({
                           </button>
                         </>
                       ) : (
-                        // Botones normales para recibos activos
                         <>
                           <button
                             className="recibos-boton-accion recibos-pdf"
@@ -876,7 +853,6 @@ const TablaRecibos = ({
         )}
       </div>
 
-      {/* Paginación */}
       {datosPaginados.length > 0 && (
         <div className="recibos-pie-tabla">
           <div className="recibos-informacion-registros">
@@ -941,7 +917,6 @@ const TablaRecibos = ({
         </div>
       )}
 
-      {/* Modales */}
       <ModalRegenerarRecibo
         recibo={reciboSeleccionado}
         onConfirmar={manejarRegenerar}
