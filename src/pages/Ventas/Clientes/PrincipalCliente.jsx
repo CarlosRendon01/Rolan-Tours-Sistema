@@ -1,4 +1,3 @@
-import React from "react";
 import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
 import TablaClientes from "./TablaClientes";
 import "./PrincipalCliente.css";

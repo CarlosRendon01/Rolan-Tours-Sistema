@@ -56,7 +56,6 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
     lista: [],
   });
 
-  // ✅ Cargar extras desde el backend
   useEffect(() => {
     const fetchServicios = async () => {
       try {
@@ -120,7 +119,6 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
           })),
         });
       } catch (error) {
-        console.error("Error al cargar servicios:", error);
       }
     };
 
@@ -131,7 +129,6 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
 
   useEffect(() => {
     if (cliente) {
-      // ✅ Obtener el nombre del usuario logueado del localStorage
       const usuario = JSON.parse(localStorage.getItem("user") || "{}");
       const nombreUsuario = usuario.nombre || "";
 
@@ -178,7 +175,6 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
     if (!selected) return;
 
     setFormData((prev) => {
-      // Evitar duplicados
       const yaExiste = prev.servicios.find((s) => s.id === selected.id);
       if (yaExiste) return prev;
 
@@ -289,8 +285,6 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
       alCerrar();
       navigate("/cotizaciones", { replace: true });
     } catch (error) {
-      console.error("Error al crear cotización:", error);
-
       if (error.response?.status === 401) {
         Swal.fire({
           icon: "error",

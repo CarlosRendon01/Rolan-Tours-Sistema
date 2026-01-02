@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   User,
   Mail,
@@ -9,27 +9,55 @@ import {
   MapPin,
   X,
   IdCard,
-  Hash,
-  Building,
-  Clock
+  Hash
 } from 'lucide-react';
 import './ModalVerCliente.css';
 
+const formatearFecha = (fecha) => {
+  if (!fecha) return 'No disponible';
+  try {
+    return new Date(fecha).toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch {
+    return fecha;
+  }
+};
+
+const formatearTelefono = (telefono) => {
+  if (!telefono) return 'No disponible';
+  const numeroLimpio = telefono.replace(/\D/g, '');
+  if (numeroLimpio.length === 10) {
+    return `${numeroLimpio.slice(0, 3)}-${numeroLimpio.slice(3, 6)}-${numeroLimpio.slice(6)}`;
+  }
+  return telefono;
+};
+
 const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
-  // Función para restaurar el scroll completamente
-  const restaurarScroll = React.useCallback(() => {
+  const restaurarScroll = useCallback(() => {
     document.body.style.overflow = '';
     document.body.style.overflowY = '';
     document.documentElement.style.overflow = '';
   }, []);
 
-  // Función mejorada para cerrar el modal
-  const manejarCierre = React.useCallback(() => {
+  const manejarCierre = useCallback(() => {
     restaurarScroll();
     alCerrar();
   }, [alCerrar, restaurarScroll]);
 
-  React.useEffect(() => {
+  const telefonoFormateado = useMemo(
+    () => formatearTelefono(cliente?.telefono),
+    [cliente?.telefono]
+  );
+
+  const fechaFormateada = useMemo(
+    () => formatearFecha(cliente?.fecha_registro),
+    [cliente?.fecha_registro]
+  );
+
+  useEffect(() => {
     if (estaAbierto) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -37,32 +65,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
     }
   }, [estaAbierto, restaurarScroll]);
 
-  // Función para formatear fechas
-  const formatearFecha = (fecha) => {
-    if (!fecha) return 'No disponible';
-    try {
-      return new Date(fecha).toLocaleDateString('es-MX', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    } catch {
-      return fecha;
-    }
-  };
-
-  // Función para formatear teléfono
-  const formatearTelefono = (telefono) => {
-    if (!telefono) return 'No disponible';
-    const numeroLimpio = telefono.replace(/\D/g, '');
-    if (numeroLimpio.length === 10) {
-      return `${numeroLimpio.slice(0, 3)}-${numeroLimpio.slice(3, 6)}-${numeroLimpio.slice(6)}`;
-    }
-    return telefono;
-  };
-
-  // Manejar la tecla Escape y control del scroll
-  React.useEffect(() => {
+  useEffect(() => {
     const manejarTeclaEscape = (evento) => {
       if (evento.key === 'Escape') {
         manejarCierre();
@@ -102,7 +105,6 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
 
         <div className="cuerpo-modal-ver">
           <div className="lista-informacion-cliente-ver">
-            {/* ID del Cliente */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
                 <Hash size={16} />
@@ -113,7 +115,6 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
               </div>
             </div>
 
-            {/* Nombre Completo */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
                 <User size={16} />
@@ -124,7 +125,6 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
               </div>
             </div>
 
-            {/* Email */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
                 <Mail size={16} />
@@ -135,29 +135,16 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
               </div>
             </div>
 
-            {/* Teléfono */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
                 <Phone size={16} />
                 Teléfono
               </div>
               <div className="valor-informacion-ver">
-                {formatearTelefono(cliente.telefono)}
+                {telefonoFormateado}
               </div>
             </div>
 
-            {/* Número Lead */}
-            <div className="elemento-informacion-ver">
-              <div className="etiqueta-informacion-ver">
-                <FileText size={16} />
-                Número de Lead
-              </div>
-              <div className="valor-informacion-ver">
-                {cliente.numero_lead || 'No asignado'}
-              </div>
-            </div>
-
-            {/* Canal de Contacto */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
                 <Globe size={16} />
@@ -168,7 +155,6 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
               </div>
             </div>
 
-            {/* RFC */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
                 <IdCard size={16} />
@@ -179,7 +165,6 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
               </div>
             </div>
 
-            {/* Dirección */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
                 <MapPin size={16} />
@@ -190,19 +175,17 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
               </div>
             </div>
 
-            {/* Fecha de Registro */}
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">
                 <Calendar size={16} />
                 Fecha de Registro
               </div>
               <div className="valor-informacion-ver">
-                {formatearFecha(cliente.fecha_registro)}
+                {fechaFormateada}
               </div>
             </div>
           </div>
 
-          {/* Botón de cerrar en la parte inferior */}
           <div className="contenedor-boton-inferior-ver">
             <button
               className="boton-cerrar-inferior-ver"

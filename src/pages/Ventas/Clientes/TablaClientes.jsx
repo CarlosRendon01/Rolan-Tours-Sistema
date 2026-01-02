@@ -14,8 +14,8 @@ const TablaClientes = () => {
   const [roles, setRoles] = useState([]);
   const [datosClientes, setDatosClientes] = useState([]);
   const [pipelines, setPipelines] = useState([]);
+  const [puntosCarga, setPuntosCarga] = useState('');
 
-  // Filtros
   const [filtroActivo, setFiltroActivo] = useState({
     pipeline_id: null,
     etapa_id: null,
@@ -23,13 +23,11 @@ const TablaClientes = () => {
   });
   const [mostrarTodos, setMostrarTodos] = useState(true);
 
-  // Paginación y búsqueda
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [cargando, setCargando] = useState(true);
 
-  // Estados para los modales
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [modalCotizarAbierto, setModalCotizarAbierto] = useState(false);
@@ -38,11 +36,9 @@ const TablaClientes = () => {
   const [clienteAEliminarDefinitivo, setClienteAEliminarDefinitivo] = useState(null);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
 
-  // ✅ Cargar permisos y configuración al montar
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      console.error('No hay token, redirigir al login');
       setCargando(false);
       return;
     }
@@ -52,25 +48,35 @@ const TablaClientes = () => {
       setPermisos(userData.permisos || []);
       setRoles(userData.roles || []);
 
-      // Cargar configuración de pipelines primero
       cargarConfiguracionPipelines();
     } catch (error) {
-      console.error('Error al parsear usuario de localStorage:', error);
       setCargando(false);
     }
   }, []);
 
-  // ✅ Cargar clientes cuando cambia el filtro O cuando se cargan los pipelines
   useEffect(() => {
     if (pipelines.length > 0) {
       cargarClientes();
     }
   }, [filtroActivo, mostrarTodos, pipelines]);
 
-  const tienePermiso = (permiso) => permisos.includes(permiso);
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const esAdministrador = roles.includes('admin');
 
-  // ✅ Cargar configuración de pipelines
   const cargarConfiguracionPipelines = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -83,18 +89,15 @@ const TablaClientes = () => {
 
       setPipelines(response.data.pipelines);
     } catch (error) {
-      console.error('Error al cargar pipelines:', error);
     }
   };
 
-  // ✅ Cargar clientes (con o sin filtro)
   const cargarClientes = async () => {
     try {
       setCargando(true);
       const token = localStorage.getItem('token');
 
       if (!token) {
-        console.error('No hay token disponible');
         setCargando(false);
         return;
       }
@@ -102,7 +105,6 @@ const TablaClientes = () => {
       let url = 'http://127.0.0.1:8000/api/clientes';
       const params = new URLSearchParams();
 
-      // Si NO es "mostrar todos", aplicar filtros específicos
       if (!mostrarTodos && filtroActivo.pipeline_id) {
         url = 'http://127.0.0.1:8000/api/clientes/clientes-por-filtro';
         params.append('pipeline_id', filtroActivo.pipeline_id);
@@ -121,11 +123,9 @@ const TablaClientes = () => {
         }
       });
 
-      // Si viene con estructura {clientes: [], total: X}, extraer clientes
       const clientes = response.data.clientes || response.data;
       setDatosClientes(clientes);
     } catch (error) {
-      console.error('Error al cargar clientes:', error);
       if (error.response?.status === 401) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -138,7 +138,6 @@ const TablaClientes = () => {
     }
   };
 
-  // ✅ Seleccionar pipeline específico
   const seleccionarPipeline = (pipeline) => {
     setFiltroActivo({
       pipeline_id: pipeline.pipeline_id,
@@ -149,7 +148,6 @@ const TablaClientes = () => {
     setPaginaActual(1);
   };
 
-  // ✅ Mostrar todos los clientes (de los 3 pipelines)
   const mostrarTodosLosPipelines = () => {
     setMostrarTodos(true);
     setFiltroActivo({
@@ -160,7 +158,6 @@ const TablaClientes = () => {
     setPaginaActual(1);
   };
 
-  // ✅ Cambiar estado de un lead
   const cambiarEstadoLead = async (leadId, nuevoEstado) => {
     try {
       const token = localStorage.getItem('token');
@@ -178,7 +175,6 @@ const TablaClientes = () => {
 
       await cargarClientes();
     } catch (error) {
-      console.error('Error al actualizar estado:', error);
       alert('Error al actualizar estado del lead');
     }
   };
@@ -198,7 +194,6 @@ const TablaClientes = () => {
       await cargarClientes();
       cerrarModalEditar();
     } catch (error) {
-      console.error('Error al actualizar cliente:', error);
       alert(error.response?.data?.error || 'Error al actualizar cliente');
       throw error;
     }
@@ -223,7 +218,6 @@ const TablaClientes = () => {
       setClienteAEliminar(null);
       await cargarClientes();
     } catch (error) {
-      console.error('Error al desactivar cliente:', error);
       alert(error.response?.data?.error || 'Error al desactivar cliente');
       setClienteAEliminar(null);
       throw error;
@@ -245,7 +239,6 @@ const TablaClientes = () => {
       setClienteARestaurar(null);
       await cargarClientes();
     } catch (error) {
-      console.error('Error al restaurar cliente:', error);
       alert(error.response?.data?.error || 'Error al restaurar cliente');
     }
   };
@@ -264,21 +257,17 @@ const TablaClientes = () => {
       setClienteAEliminarDefinitivo(null);
       await cargarClientes();
     } catch (error) {
-      console.error('Error al eliminar definitivamente cliente:', error);
       alert(error.response?.data?.error || 'Error al eliminar definitivamente cliente');
     }
   };
 
-  // ✅ Filtrar clientes por búsqueda
   const clientesFiltrados = datosClientes.filter(cliente => {
     if (!cliente || !cliente.nombre) return false;
 
-    // Filtro por rol
     if (!esAdministrador && !cliente.activo) {
       return false;
     }
 
-    // Filtro de búsqueda
     if (!terminoBusqueda) return true;
 
     const busqueda = terminoBusqueda.toLowerCase();
@@ -292,14 +281,12 @@ const TablaClientes = () => {
     );
   });
 
-  // Paginación
   const totalRegistros = clientesFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const clientesPaginados = clientesFiltrados.slice(indiceInicio, indiceFin);
 
-  // Estadísticas
   const clientesActivos = datosClientes.filter(c => c.activo).length;
   const clientesInactivos = datosClientes.filter(c => !c.activo).length;
   const totalLeads = datosClientes.reduce((sum, c) => sum + (c.leads?.length || 0), 0);
@@ -402,7 +389,6 @@ const TablaClientes = () => {
 
   return (
     <div className="clientes-contenedor-principal">
-      {/* Header con estadísticas */}
       <div className="clientes-encabezado">
         <div className="clientes-seccion-logo">
           <div className="clientes-lineas-decorativas">
@@ -414,7 +400,6 @@ const TablaClientes = () => {
           <h1 className="clientes-titulo">Gestión de Clientes y Leads</h1>
         </div>
 
-        {/* Estadísticas */}
         <div className="clientes-contenedor-estadisticas">
           <div className="clientes-estadistica">
             <div className="clientes-icono-estadistica-circular">
@@ -445,7 +430,6 @@ const TablaClientes = () => {
         </div>
       </div>
 
-      {/* ✅ Filtros de Pipeline */}
       <div style={{
         display: 'flex',
         gap: '1rem',
@@ -456,7 +440,6 @@ const TablaClientes = () => {
         borderRadius: '10px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
       }}>
-        {/* Botón Mostrar Todos */}
         <button
           onClick={mostrarTodosLosPipelines}
           className={mostrarTodos ? 'clientes-filtro-activo' : 'clientes-filtro-inactivo'}
@@ -479,7 +462,6 @@ const TablaClientes = () => {
           Todos los Pipelines
         </button>
 
-        {/* Botones por Pipeline */}
         {pipelines.map((pipeline) => {
           const esActivo = !mostrarTodos && filtroActivo.pipeline_id === pipeline.pipeline_id;
           return (
@@ -516,7 +498,6 @@ const TablaClientes = () => {
         })}
       </div>
 
-      {/* Controles */}
       <div className="clientes-controles">
         <div className="clientes-control-registros">
           <label htmlFor="registros">Mostrar</label>
@@ -552,7 +533,6 @@ const TablaClientes = () => {
         </div>
       </div>
 
-      {/* Tabla */}
       <div className="clientes-contenedor-tabla">
         <table className="clientes-tabla">
           <thead>
@@ -567,158 +547,169 @@ const TablaClientes = () => {
             </tr>
           </thead>
           <tbody>
-            {clientesPaginados.map((cliente, index) => {
-              const leads = cliente.leads || [];
-              const numLeads = leads.length;
+            {cargando ? (
+              <tr>
+                <td colSpan="7" className="clientes-mensaje-cargando">
+                  Cargando la información de los clientes{puntosCarga}
+                </td>
+              </tr>
+            ) : clientesPaginados.length === 0 ? (
+              <tr>
+                <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                  No se encontraron clientes
+                </td>
+              </tr>
+            ) : (
 
-              return leads.length > 0 ? (
-                leads.map((lead, leadIndex) => (
-                  <tr
-                    key={`${cliente.id}-${lead.id}`}
-                    className="clientes-fila-cliente"
-                    style={{
-                      animationDelay: `${(index + leadIndex) * 0.05}s`,
-                      background: cliente.activo ? 'white' : '#f8d7da'
-                    }}
-                  >
-                    {/* Cliente - Solo en primera fila */}
-                    {leadIndex === 0 && (
-                      <>
-                        <td data-label="ID" className="clientes-columna-id" rowSpan={numLeads}>
-                          <span className="clientes-badge-id">#{cliente.id.toString().padStart(3, '0')}</span>
-                        </td>
-                        <td data-label="Nombre" className="clientes-columna-nombre" rowSpan={numLeads}>
-                          <div className="clientes-info-usuario">
-                            <div className="clientes-avatar">
-                              <Users size={16} />
+              clientesPaginados.map((cliente, index) => {
+                const leads = cliente.leads || [];
+                const numLeads = leads.length;
+
+                return leads.length > 0 ? (
+                  leads.map((lead, leadIndex) => (
+                    <tr
+                      key={`${cliente.id}-${lead.id}`}
+                      className="clientes-fila-cliente"
+                      style={{
+                        animationDelay: `${(index + leadIndex) * 0.05}s`,
+                        background: cliente.activo ? 'white' : '#f8d7da'
+                      }}
+                    >
+                      {leadIndex === 0 && (
+                        <>
+                          <td data-label="ID" className="clientes-columna-id" rowSpan={numLeads}>
+                            <span className="clientes-badge-id">#{cliente.id.toString().padStart(3, '0')}</span>
+                          </td>
+                          <td data-label="Nombre" className="clientes-columna-nombre" rowSpan={numLeads}>
+                            <div className="clientes-info-usuario">
+                              <div className="clientes-avatar">
+                                <Users size={16} />
+                              </div>
+                              <div className="clientes-datos-usuario">
+                                <span className="clientes-nombre-principal">{cliente.nombre}</span>
+                                <span className="clientes-subtexto">
+                                  {cliente.activo ? 'Cliente activo' : 'Cliente inactivo'}
+                                </span>
+                              </div>
                             </div>
-                            <div className="clientes-datos-usuario">
-                              <span className="clientes-nombre-principal">{cliente.nombre}</span>
-                              <span className="clientes-subtexto">
-                                {cliente.activo ? 'Cliente activo' : 'Cliente inactivo'}
-                              </span>
-                            </div>
+                          </td>
+                          <td data-label="Teléfono" className="clientes-columna-telefono" rowSpan={numLeads}>
+                            <span className="clientes-telefono">{cliente.telefono}</span>
+                          </td>
+                          <td data-label="Canal Contacto" className="clientes-columna-canal" rowSpan={numLeads}>
+                            <span className={`clientes-badge-canal ${cliente.canal_contacto ? `clientes-canal-${cliente.canal_contacto.toLowerCase().replace(' ', '-')}` : 'clientes-canal-sin-datos'}`}>
+                              {cliente.canal_contacto || 'Sin canal'}
+                            </span>
+                          </td>
+                        </>
+                      )}
+
+                      <td data-label="Lead" className="clientes-columna-lead">
+                        <div style={{ fontSize: '0.9rem' }}>
+                          <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{lead.nombre}</div>
+                          <div style={{ fontSize: '0.8rem', color: '#6b7280' }}>
+                            Pipeline: {lead.pipeline_id} | Etapa: {lead.etapa_id}
                           </div>
-                        </td>
-                        <td data-label="Teléfono" className="clientes-columna-telefono" rowSpan={numLeads}>
-                          <span className="clientes-telefono">{cliente.telefono}</span>
-                        </td>
-                        <td data-label="Canal Contacto" className="clientes-columna-canal" rowSpan={numLeads}>
-                          <span className={`clientes-badge-canal ${cliente.canal_contacto ? `clientes-canal-${cliente.canal_contacto.toLowerCase().replace(' ', '-')}` : 'clientes-canal-sin-datos'}`}>
-                            {cliente.canal_contacto || 'Sin canal'}
-                          </span>
-                        </td>
-                      </>
-                    )}
-
-                    {/* Lead Info */}
-                    <td data-label="Lead" className="clientes-columna-lead">
-                      <div style={{ fontSize: '0.9rem' }}>
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{lead.nombre}</div>
-                        <div style={{ fontSize: '0.8rem', color: '#6b7280' }}>
-                          Pipeline: {lead.pipeline_id} | Etapa: {lead.etapa_id}
+                          {lead.precio && (
+                            <div style={{ fontSize: '0.85rem', color: '#10b981', fontWeight: '600' }}>
+                              ${lead.precio.toLocaleString()}
+                            </div>
+                          )}
                         </div>
-                        {lead.precio && (
-                          <div style={{ fontSize: '0.85rem', color: '#10b981', fontWeight: '600' }}>
-                            ${lead.precio.toLocaleString()}
-                          </div>
-                        )}
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Estado Lead */}
-                    <td data-label="Estado Lead" className="clientes-columna-estado">
-                      <select
-                        value={lead.estado_lead || 'contactado'}
-                        onChange={(e) => cambiarEstadoLead(lead.id, e.target.value)}
-                        style={{
-                          padding: '0.5rem',
-                          borderRadius: '6px',
-                          border: `2px solid ${getEstadoColor(lead.estado_lead)}`,
-                          backgroundColor: `${getEstadoColor(lead.estado_lead)}15`,
-                          color: getEstadoColor(lead.estado_lead),
-                          fontWeight: '600',
-                          fontSize: '0.85rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <option value="contactado">Contactado</option>
-                        <option value="ganado">Ganado</option>
-                        <option value="perdido">Perdido</option>
-                      </select>
-                    </td>
+                      <td data-label="Estado Lead" className="clientes-columna-estado">
+                        <select
+                          value={lead.estado_lead || 'contactado'}
+                          onChange={(e) => cambiarEstadoLead(lead.id, e.target.value)}
+                          style={{
+                            padding: '0.5rem',
+                            borderRadius: '6px',
+                            border: `2px solid ${getEstadoColor(lead.estado_lead)}`,
+                            backgroundColor: `${getEstadoColor(lead.estado_lead)}15`,
+                            color: getEstadoColor(lead.estado_lead),
+                            fontWeight: '600',
+                            fontSize: '0.85rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <option value="contactado">Contactado</option>
+                          <option value="ganado">Ganado</option>
+                          <option value="perdido">Perdido</option>
+                        </select>
+                      </td>
 
-                    {/* Acciones - Solo en primera fila */}
-                    {leadIndex === 0 && (
-                      <td data-label="Acciones" className="clientes-columna-acciones" rowSpan={numLeads}>
-                        <div className="clientes-botones-accion">
-                          <button
-                            className="clientes-boton-accion clientes-ver"
-                            onClick={() => manejarAccion('ver', cliente)}
-                            title="Ver cliente"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          <button
-                            className="clientes-boton-accion clientes-editar"
-                            onClick={() => manejarAccion('editar', cliente)}
-                            title="Editar cliente"
-                          >
-                            <Edit size={16} />
-                          </button>
-
-                          {esAdministrador && !cliente.activo && (
+                      {leadIndex === 0 && (
+                        <td data-label="Acciones" className="clientes-columna-acciones" rowSpan={numLeads}>
+                          <div className="clientes-botones-accion">
                             <button
-                              className="clientes-boton-accion clientes-restaurar"
-                              onClick={() => manejarAccion('restaurar', cliente)}
-                              title="Restaurar cliente"
+                              className="clientes-boton-accion clientes-ver"
+                              onClick={() => manejarAccion('ver', cliente)}
+                              title="Ver cliente"
+                            >
+                              <Eye size={16} />
+                            </button>
+                            <button
+                              className="clientes-boton-accion clientes-editar"
+                              onClick={() => manejarAccion('editar', cliente)}
+                              title="Editar cliente"
+                            >
+                              <Edit size={16} />
+                            </button>
+
+                            {esAdministrador && !cliente.activo && (
+                              <button
+                                className="clientes-boton-accion clientes-restaurar"
+                                onClick={() => manejarAccion('restaurar', cliente)}
+                                title="Restaurar cliente"
+                                style={{
+                                  background: 'linear-gradient(45deg, #28a745, #218838)',
+                                  color: 'white'
+                                }}
+                              >
+                                <RotateCcw size={16} />
+                              </button>
+                            )}
+
+                            <button
+                              className="clientes-boton-accion clientes-eliminar"
+                              onClick={() => manejarAccion('eliminar', cliente)}
+                              title={esAdministrador && !cliente.activo ? 'Eliminar definitivamente' : 'Desactivar cliente'}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+
+                            <button
+                              className="clientes-boton-accion clientes-cotizar"
+                              onClick={() => manejarAccion('cotizar', cliente)}
+                              title="Crear cotización"
                               style={{
-                                background: 'linear-gradient(45deg, #28a745, #218838)',
+                                background: 'linear-gradient(45deg, #10b981, #059669)',
                                 color: 'white'
                               }}
                             >
-                              <RotateCcw size={16} />
+                              <FileText size={16} />
                             </button>
-                          )}
-
-                          <button
-                            className="clientes-boton-accion clientes-eliminar"
-                            onClick={() => manejarAccion('eliminar', cliente)}
-                            title={esAdministrador && !cliente.activo ? 'Eliminar definitivamente' : 'Desactivar cliente'}
-                          >
-                            <Trash2 size={16} />
-                          </button>
-
-                           <button
-                          className="clientes-boton-accion clientes-cotizar"
-                          onClick={() => manejarAccion('cotizar', cliente)}
-                          title="Crear cotización"
-                          style={{
-                            background: 'linear-gradient(45deg, #10b981, #059669)',
-                            color: 'white'
-                          }}
-                        >
-                          <FileText size={16} />
-                        </button>
-                        </div>                       
-                      </td>
-                    )}
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                ) : (
+                  <tr key={cliente.id} className="clientes-fila-cliente" style={{ background: '#fff3cd' }}>
+                    <td colSpan="7" style={{ textAlign: 'center', padding: '1rem' }}>
+                      Cliente sin leads en los pipelines configurados
+                    </td>
                   </tr>
-                ))
-              ) : (
-                // Fallback si no tiene leads (no debería pasar)
-                <tr key={cliente.id} className="clientes-fila-cliente" style={{ background: '#fff3cd' }}>
-                  <td colSpan="7" style={{ textAlign: 'center', padding: '1rem' }}>
-                    Cliente sin leads en los pipelines configurados
-                  </td>
-                </tr>
-              );
-            })}
+                );
+              }
+              )
+            )
+            }
           </tbody>
         </table>
       </div>
 
-      {/* Paginación */}
       <div className="clientes-pie-tabla">
         <div className="clientes-informacion-registros">
           Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
@@ -790,7 +781,6 @@ const TablaClientes = () => {
         </div>
       </div>
 
-      {/* Modales */}
       <ModalVerCliente
         estaAbierto={modalVerAbierto}
         cliente={clienteSeleccionado}

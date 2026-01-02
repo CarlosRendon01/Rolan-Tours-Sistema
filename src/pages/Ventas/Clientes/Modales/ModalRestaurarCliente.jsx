@@ -45,19 +45,16 @@ const ModalRegenerarCliente = ({ cliente, alConfirmar, alCancelar }) => {
   const manejarConfirmar = async () => {
     try {
       setRestaurando(true);
-      
-      // Ejecutar la restauración
+
       await alConfirmar(cliente);
-      
+
       setRestaurando(false);
-      
-      // Mostrar notificación de éxito
+
       mostrarNotificacionExito();
-      
+
     } catch (error) {
-      console.error('Error al restaurar cliente:', error);
       setRestaurando(false);
-      
+
       if (typeof window !== 'undefined' && window.Swal) {
         window.Swal.fire({
           title: 'Error',
@@ -97,8 +94,8 @@ const ModalRegenerarCliente = ({ cliente, alConfirmar, alCancelar }) => {
             <h2 className="modal-regenerar-titulo">¿Restaurar Cliente?</h2>
             <p className="modal-regenerar-subtitulo">Restaurar cliente eliminado</p>
           </div>
-          <button 
-            className="modal-regenerar-boton-cerrar" 
+          <button
+            className="modal-regenerar-boton-cerrar"
             onClick={manejarCancelar}
             disabled={restaurando}
             aria-label="Cerrar"
@@ -115,16 +112,16 @@ const ModalRegenerarCliente = ({ cliente, alConfirmar, alCancelar }) => {
         </div>
 
         <div className="modal-regenerar-footer">
-          <button 
-            className="modal-regenerar-boton-secundario" 
+          <button
+            className="modal-regenerar-boton-secundario"
             onClick={manejarCancelar}
             disabled={restaurando}
           >
             <X size={18} />
             Cancelar
           </button>
-          <button 
-            className="modal-regenerar-boton-principal" 
+          <button
+            className="modal-regenerar-boton-principal"
             onClick={manejarConfirmar}
             disabled={restaurando}
           >

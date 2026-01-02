@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Edit, User, Mail, Phone, FileText, Globe, MapPin, X, Save, AlertCircle } from 'lucide-react';
 import './ModalEditarCliente.css';
 
@@ -7,7 +7,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
     nombre: '',
     email: '',
     telefono: '',
-    numero_lead: '',
     canal_contacto: '',
     rfc: '',
     direccion: '',
@@ -17,14 +16,19 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
 
-  // Cargar datos del cliente cuando se abre el modal
+  const manejarCerrar = useCallback(() => {
+    if (guardando) return;
+    setErrores({});
+    setGuardando(false);
+    alCerrar();
+  }, [guardando, alCerrar]);
+
   useEffect(() => {
     if (estaAbierto && cliente) {
       setDatosFormulario({
         nombre: cliente.nombre || '',
         email: cliente.email || '',
         telefono: cliente.telefono || '',
-        numero_lead: cliente.numero_lead || '',
         canal_contacto: cliente.canal_contacto || '',
         rfc: cliente.rfc || '',
         direccion: cliente.direccion || '',
@@ -34,7 +38,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
     }
   }, [estaAbierto, cliente]);
 
-  // Manejar la tecla Escape
   useEffect(() => {
     const manejarTeclaEscape = (evento) => {
       if (evento.key === 'Escape' && estaAbierto) {
@@ -51,7 +54,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
       document.removeEventListener('keydown', manejarTeclaEscape);
       document.body.style.overflow = 'unset';
     };
-  }, [estaAbierto]);
+  }, [estaAbierto, manejarCerrar]);
 
   const manejarCambioFormulario = (evento) => {
     const { name, value } = evento.target;
@@ -60,7 +63,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
       [name]: value
     }));
 
-    // Limpiar error del campo cuando el usuario empiece a escribir
     if (errores[name]) {
       setErrores(erroresAnteriores => ({
         ...erroresAnteriores,
@@ -88,10 +90,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
       nuevosErrores.telefono = 'El teléfono es obligatorio';
     } else if (!/^\d{10}$/.test(datosFormulario.telefono.replace(/\D/g, ''))) {
       nuevosErrores.telefono = 'El teléfono debe tener 10 dígitos';
-    }
-
-    if (!datosFormulario.numero_lead.trim()) {
-      nuevosErrores.numero_lead = 'El número de lead es obligatorio';
     }
 
     if (!datosFormulario.canal_contacto) {
@@ -170,7 +168,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
       setErrores(nuevosErrores);
       mostrarNotificacionError();
 
-      // Hacer scroll al primer campo con error
       const primerCampoConError = Object.keys(nuevosErrores)[0];
       const elemento = document.getElementById(primerCampoConError);
       if (elemento) {
@@ -184,29 +181,24 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
     setGuardando(true);
 
     try {
-      // Simular delay de guardado (remover en producción)
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Llamar a la función alGuardar con los datos actualizados
       const datosActualizados = {
         ...cliente,
         ...datosFormulario,
-        rfc: datosFormulario.rfc.toUpperCase(), // RFC siempre en mayúsculas
+        rfc: datosFormulario.rfc.toUpperCase(),
         fecha_actualizacion: new Date().toISOString()
       };
 
       await alGuardar(datosActualizados);
 
-      // Mostrar notificación de éxito
       mostrarNotificacionExito();
 
-      // Cerrar modal después de un breve delay
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         manejarCerrar();
       }, 500);
 
     } catch (error) {
-      console.error('Error al guardar:', error);
 
       if (typeof window !== 'undefined' && window.Swal) {
         window.Swal.fire({
@@ -228,14 +220,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
     } finally {
       setGuardando(false);
     }
-  };
-
-  const manejarCerrar = () => {
-    if (guardando) return; // No permitir cerrar mientras se guarda
-
-    setErrores({});
-    setGuardando(false);
-    alCerrar();
   };
 
   if (!estaAbierto || !cliente) return null;
@@ -261,7 +245,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
 
         <form onSubmit={manejarEnvio} className="cuerpo-modal-editar">
           <div className="cuadricula-formulario-editar">
-            {/* Nombre Completo */}
             <div className="campo-formulario-editar">
               <label htmlFor="nombre" className="etiqueta-formulario-editar">
                 <User size={18} />
@@ -286,7 +269,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
               )}
             </div>
 
-            {/* Email */}
             <div className="campo-formulario-editar">
               <label htmlFor="email" className="etiqueta-formulario-editar">
                 <Mail size={18} />
@@ -311,7 +293,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
               )}
             </div>
 
-            {/* Teléfono */}
             <div className="campo-formulario-editar">
               <label htmlFor="telefono" className="etiqueta-formulario-editar">
                 <Phone size={18} />
@@ -336,32 +317,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
               )}
             </div>
 
-            {/* Número Lead */}
-            <div className="campo-formulario-editar">
-              <label htmlFor="numero_lead" className="etiqueta-formulario-editar">
-                <FileText size={18} />
-                Número de Lead *
-              </label>
-              <input
-                type="text"
-                id="numero_lead"
-                name="numero_lead"
-                value={datosFormulario.numero_lead}
-                onChange={manejarCambioFormulario}
-                className={`entrada-formulario-editar ${errores.numero_lead ? 'entrada-error' : ''}`}
-                placeholder="LEAD-001"
-                disabled={guardando}
-                style={{ textTransform: 'uppercase' }}
-              />
-              {errores.numero_lead && (
-                <div className="mensaje-error">
-                  <AlertCircle size={14} />
-                  {errores.numero_lead}
-                </div>
-              )}
-            </div>
-
-            {/* Canal de Contacto */}
             <div className="campo-formulario-editar">
               <label htmlFor="canal_contacto" className="etiqueta-formulario-editar">
                 <Globe size={18} />
@@ -394,7 +349,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
               )}
             </div>
 
-            {/* RFC */}
             <div className="campo-formulario-editar">
               <label htmlFor="rfc" className="etiqueta-formulario-editar">
                 <FileText size={18} />
@@ -410,7 +364,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
                 placeholder="ABCD850102XXX"
                 disabled={guardando}
                 maxLength="13"
-                style={{ textTransform: 'uppercase' }}
               />
               {errores.rfc && (
                 <div className="mensaje-error">
@@ -420,8 +373,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
               )}
             </div>
 
-            {/* Dirección */}
-            <div className="campo-formulario-editar campo-completo-editar">
+            <div className="campo-formulario-editar">
               <label htmlFor="direccion" className="etiqueta-formulario-editar">
                 <MapPin size={18} />
                 Dirección Completa *

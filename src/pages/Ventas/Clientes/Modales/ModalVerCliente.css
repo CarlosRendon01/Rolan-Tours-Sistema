@@ -1,90 +1,46 @@
-/* ===============================
-   MODAL VER CLIENTE - ESTILO DE COTIZACIÓN
-   Adaptado del diseño de cotización
-   =============================== */
-
-/* Overlay del modal VER */
-.superposicion-modal-ver {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(4px) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: 1000 !important;
-  animation: mvoFadeIn 0.2s ease !important;
-}
-
-@keyframes fadeInVer {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-/* Contenido del modal VER */
-.contenido-modal-ver {
-  background: white !important;
-  border-radius: 16px !important;
-  max-width: 1200px !important;
-  width: 95% !important;
-  max-height: 90vh !important;
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
-  animation: mvoSlideUp 0.3s ease !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25)!important;
-  transform: scale(0.9) !important;
-}
-
-@keyframes slideInVer {
-  from {
-    opacity: 0 !important;
-    transform: translateY(-30px) scale(0.95)!important;
-  }
-
-  to {
-    opacity: 1 !important;
-    transform: translateY(0) scale(1)!important;
-  }
-}
-
-/* Header del modal VER */
-.encabezado-modal-ver {
-  padding: 2rem !important;
-  border-bottom: 1px solid #006eff !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-start !important;
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.50) !important;
-  border-top-left-radius: 12px !important;
-  border-top-right-radius: 12px !important;
-}
-
-.encabezado-modal-ver::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
+div.superposicion-modal-ver {
+  position: fixed;
+  top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      rgba(255, 255, 255, 0.1) 100%);
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: mvoFadeIn 0.2s ease;
 }
 
-.titulo-modal-ver {
+div.superposicion-modal-ver div.contenido-modal-ver {
+  background: white;
+  border-radius: 16px;
+  max-width: 1200px;
+  width: 95%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: mvoSlideUp 0.3s ease;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+div.contenido-modal-ver div.encabezado-modal-ver {
+  padding: 2rem;
+  border-bottom: 1px solid #006eff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  position: relative;
+}
+
+div.encabezado-modal-ver h2.titulo-modal-ver {
   margin: 0;
-  text-align: center;
   color: white;
   font-size: 22px;
   font-weight: 600;
@@ -95,12 +51,14 @@
   gap: 10px;
 }
 
-.titulo-modal-ver svg {
+h2.titulo-modal-ver svg {
   color: white;
   opacity: 0.9;
+  width: 24px;
+  height: 24px;
 }
 
-.boton-cerrar-modal-ver {
+div.encabezado-modal-ver button.boton-cerrar-modal-ver {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
@@ -117,52 +75,59 @@
   backdrop-filter: blur(10px);
 }
 
-.boton-cerrar-modal-ver:hover {
+button.boton-cerrar-modal-ver svg {
+  width: 20px;
+  height: 20px;
+}
+
+button.boton-cerrar-modal-ver:hover {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   transform: scale(1.05);
 }
 
-.boton-cerrar-modal-ver:active {
+button.boton-cerrar-modal-ver:active {
   transform: scale(0.95);
 }
 
-/* Cuerpo del modal VER */
-.cuerpo-modal-ver {
+button.boton-cerrar-modal-ver:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+div.contenido-modal-ver div.cuerpo-modal-ver {
   padding: 25px;
   background: #fff;
   max-height: calc(80vh - 100px);
   overflow-y: auto;
 }
 
-/* Scrollbar personalizado VER */
-.cuerpo-modal-ver::-webkit-scrollbar {
+div.cuerpo-modal-ver::-webkit-scrollbar {
   width: 6px;
 }
 
-.cuerpo-modal-ver::-webkit-scrollbar-track {
+div.cuerpo-modal-ver::-webkit-scrollbar-track {
   background: #f1f3f4;
   border-radius: 3px;
 }
 
-.cuerpo-modal-ver::-webkit-scrollbar-thumb {
+div.cuerpo-modal-ver::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 3px;
 }
 
-.cuerpo-modal-ver::-webkit-scrollbar-thumb:hover {
+div.cuerpo-modal-ver::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
-/* Lista de información del cliente VER */
-.lista-informacion-cliente-ver {
+div.cuerpo-modal-ver div.lista-informacion-cliente-ver {
   display: flex;
   flex-direction: column;
   gap: 18px;
   margin-bottom: 25px;
 }
 
-.elemento-informacion-ver {
+div.lista-informacion-cliente-ver div.elemento-informacion-ver {
   background: #fafbfc;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -170,13 +135,19 @@
   transition: all 0.3s ease;
 }
 
-.elemento-informacion-ver:hover {
+div.elemento-informacion-ver:hover {
   border-color: #1e40af;
   box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
   background: white;
 }
 
-.etiqueta-informacion-ver {
+div.elemento-informacion-ver:focus-within {
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+  background: white;
+}
+
+div.elemento-informacion-ver div.etiqueta-informacion-ver {
   font-weight: 500;
   font-size: 13px;
   color: #475569;
@@ -184,17 +155,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  text-transform: none;
-  letter-spacing: normal;
 }
 
-.etiqueta-informacion-ver svg {
+div.etiqueta-informacion-ver svg {
   color: #1e40af;
   width: 16px;
   height: 16px;
 }
 
-.valor-informacion-ver {
+div.elemento-informacion-ver div.valor-informacion-ver {
   font-size: 14px;
   font-weight: 500;
   color: #1e293b;
@@ -203,8 +172,7 @@
   min-height: 1.4rem;
 }
 
-/* Contenedor del botón inferior VER */
-.contenedor-boton-inferior-ver {
+div.cuerpo-modal-ver div.contenedor-boton-inferior-ver {
   display: flex;
   justify-content: center;
   padding-top: 20px;
@@ -212,100 +180,128 @@
   margin-top: 25px;
 }
 
-/* Botón de cerrar inferior VER */
-.boton-cerrar-inferior-ver {
-  background-color: white!important;
-  color: #d6dbd6 !important;
-  border: 2px solid #d6dbd6 !important;
-  border-radius: 8px !important;
-  padding: 11px 20px !important;
-  font-weight: 600 !important;
-  font-size: 14px !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  min-width: 90px !important;
-  position: relative !important;
-  overflow: hidden !important;
+div.contenedor-boton-inferior-ver button.boton-cerrar-inferior-ver {
+  background-color: white;
+  color: #d6dbd6;
+  border: 2px solid #d6dbd6;
+  border-radius: 8px;
+  padding: 11px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 90px;
+  position: relative;
+  overflow: hidden;
 }
 
-.boton-cerrar-inferior-ver::before {
-  content: "" !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  width: 0 !important;
-  height: 0 !important;
-  border-radius: 50% !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  transform: translate(-50%, -50%)!important;
-  transition: width 0.4s, height 0.4s!important;
+button.boton-cerrar-inferior-ver::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
 }
 
-.boton-cerrar-inferior-ver:hover::before {
-  width: 300px !important;
-  height: 300px!important;
+button.boton-cerrar-inferior-ver:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
-.boton-cerrar-inferior-ver:hover {
-  background-color: #dc2626 !important;
-  color: white!important;
-  transform: translateY(-2px)!important;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3)!important;
+button.boton-cerrar-inferior-ver:hover {
+  background-color: #dc2626;
+  color: white;
+  border-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
-.boton-cerrar-inferior-ver:active {
-  transform: translateY(0)!important;
+button.boton-cerrar-inferior-ver:active {
+  transform: translateY(0);
 }
 
-.boton-cerrar-inferior-ver:focus {
-  outline: 2px solid #dc2626 !important;
-  outline-offset: 2px !important;
+button.boton-cerrar-inferior-ver:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
 }
 
-/* Media Queries VER - Responsivo */
-@media screen and (max-width: 480px) {
-  .contenido-modal-ver {
-    width: 100%;
-    margin: 10px;
-    transform: scale(0.95);
+@keyframes mvoFadeIn {
+  from {
+    opacity: 0;
   }
 
-  .encabezado-modal-ver {
-    padding: 20px;
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mvoSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
   }
 
-  .titulo-modal-ver {
-    font-size: 18px;
-  }
-
-  .cuerpo-modal-ver {
-    padding: 20px;
-  }
-
-  .boton-cerrar-modal-ver {
-    right: 10px;
-    top: 10px;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
 @media screen and (max-width: 768px) {
-  .superposicion-modal-ver {
+  div.superposicion-modal-ver {
     padding: 20px;
   }
 
-  .contenido-modal-ver {
+  div.contenido-modal-ver {
     max-width: 95%;
+  }
+
+  div.encabezado-modal-ver {
+    padding: 1.5rem;
+  }
+
+  h2.titulo-modal-ver {
+    font-size: 20px;
+  }
+
+  div.cuerpo-modal-ver {
+    padding: 20px;
   }
 }
 
-/* Estados de enfoque para accesibilidad VER */
-.boton-cerrar-modal-ver:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 2px;
-}
+@media screen and (max-width: 480px) {
+  div.contenido-modal-ver {
+    width: 100%;
+    margin: 10px;
+  }
 
-.elemento-informacion-ver:focus-within {
-  border-color: #1e40af;
-  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-  background: white;
+  div.encabezado-modal-ver {
+    padding: 20px;
+  }
+
+  h2.titulo-modal-ver {
+    font-size: 18px;
+    gap: 8px;
+  }
+
+  h2.titulo-modal-ver svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  button.boton-cerrar-modal-ver {
+    right: 10px;
+    top: 10px;
+    padding: 6px;
+  }
+
+  button.boton-cerrar-modal-ver svg {
+    width: 18px;
+    height: 18px;
+  }
 }
