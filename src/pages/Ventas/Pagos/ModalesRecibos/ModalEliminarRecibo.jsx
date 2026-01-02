@@ -1,26 +1,20 @@
-import Swal from 'sweetalert2';
-import axios from 'axios';
-import './ModalEliminarRecibo.css';
+import Swal from "sweetalert2";
+import axios from "axios";
+import "./ModalEliminarRecibo.css";
 
-/**
- * Formatea una cantidad como moneda mexicana
- */
 const formatearMoneda = (cantidad) => {
-  return new Intl.NumberFormat('es-MX', {
-    style: 'currency',
-    currency: 'MXN'
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
   }).format(cantidad);
 };
 
-/**
- * Formatea una fecha
- */
 const formatearFecha = (fecha) => {
   try {
-    return new Date(fecha).toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(fecha).toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   } catch {
     return fecha;
@@ -34,14 +28,13 @@ const formatearFecha = (fecha) => {
  * @returns {Promise<boolean>} - true si se confirmó la eliminación, false si se canceló
  */
 export const modalEliminarRecibo = async (recibo, onConfirmar) => {
-  // Validar datos del recibo
   if (!recibo?.numeroRecibo || !recibo?.cliente || !recibo?.monto) {
-    await modalError('Información del recibo incompleta');
+    await modalError("Información del recibo incompleta");
     return false;
   }
 
   const resultado = await Swal.fire({
-    title: '¿Eliminar este recibo?',
+    title: "¿Eliminar este recibo?",
     html: `
       <div class="eliminar-recibo-contenido">
         <p class="eliminar-recibo-texto">¿Estás seguro de eliminar el recibo:</p>
@@ -51,27 +44,27 @@ export const modalEliminarRecibo = async (recibo, onConfirmar) => {
         <p class="eliminar-recibo-aviso">Esta acción no se puede deshacer</p>
       </div>
     `,
-    icon: 'warning',
+    icon: "warning",
     showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar",
     customClass: {
-      popup: 'eliminar-recibo-popup',
-      title: 'eliminar-recibo-titulo',
-      htmlContainer: 'eliminar-recibo-html',
-      confirmButton: 'eliminar-recibo-boton-confirmar',
-      cancelButton: 'eliminar-recibo-boton-cancelar',
-      icon: 'eliminar-recibo-icono',
-      actions: 'eliminar-recibo-acciones'
+      popup: "eliminar-recibo-popup",
+      title: "eliminar-recibo-titulo",
+      htmlContainer: "eliminar-recibo-html",
+      confirmButton: "eliminar-recibo-boton-confirmar",
+      cancelButton: "eliminar-recibo-boton-cancelar",
+      icon: "eliminar-recibo-icono",
+      actions: "eliminar-recibo-acciones",
     },
     buttonsStyling: false,
     reverseButtons: true,
     focusCancel: true,
-    width: '400px'
+    width: "400px",
   });
 
   if (resultado.isConfirmed) {
-    modalCargando('Eliminando recibo...');
+    modalCargando("Eliminando recibo...");
 
     try {
       const token = localStorage.getItem("token");
@@ -79,14 +72,14 @@ export const modalEliminarRecibo = async (recibo, onConfirmar) => {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-        }
+        },
       });
 
-      await new Promise(resolve => setTimeout(resolve, 600));
+      await new Promise((resolve) => setTimeout(resolve, 600));
       Swal.close();
 
       await Swal.fire({
-        title: '¡Eliminado!',
+        title: "¡Eliminado!",
         html: `
         <div class="eliminar-recibo-exito-contenido">
           <p class="eliminar-recibo-exito-texto">El recibo ha sido eliminado exitosamente</p>
@@ -96,18 +89,18 @@ export const modalEliminarRecibo = async (recibo, onConfirmar) => {
           <p class="eliminar-recibo-exito-detalle">Cliente: ${recibo.cliente}</p>
         </div>
       `,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
+        icon: "success",
+        confirmButtonText: "Aceptar",
         customClass: {
-          popup: 'eliminar-recibo-popup',
-          title: 'eliminar-recibo-titulo-exito',
-          htmlContainer: 'eliminar-recibo-html',
-          confirmButton: 'eliminar-recibo-boton-exito',
-          icon: 'eliminar-recibo-icono-exito'
+          popup: "eliminar-recibo-popup",
+          title: "eliminar-recibo-titulo-exito",
+          htmlContainer: "eliminar-recibo-html",
+          confirmButton: "eliminar-recibo-boton-exito",
+          icon: "eliminar-recibo-icono-exito",
         },
         buttonsStyling: false,
         timer: 3000,
-        timerProgressBar: true
+        timerProgressBar: true,
       });
 
       if (onConfirmar) await onConfirmar();
@@ -115,8 +108,8 @@ export const modalEliminarRecibo = async (recibo, onConfirmar) => {
       return true;
     } catch (error) {
       Swal.close();
-      await modalError('No se pudo eliminar el recibo. Intenta nuevamente.');
-      console.error('Error al eliminar recibo:', error);
+      await modalError("No se pudo eliminar el recibo. Intenta nuevamente.");
+      console.error("Error al eliminar recibo:", error);
       return false;
     }
   }
@@ -128,19 +121,21 @@ export const modalEliminarRecibo = async (recibo, onConfirmar) => {
  * Modal de error genérico
  * @param {string} mensaje - Mensaje de error a mostrar
  */
-export const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
+export const modalError = async (
+  mensaje = "Ocurrió un error al procesar la solicitud"
+) => {
   await Swal.fire({
-    title: 'Error',
+    title: "Error",
     text: mensaje,
-    icon: 'error',
-    confirmButtonText: 'Aceptar',
+    icon: "error",
+    confirmButtonText: "Aceptar",
     customClass: {
-      popup: 'eliminar-recibo-popup',
-      title: 'eliminar-recibo-titulo-error',
-      confirmButton: 'eliminar-recibo-boton-error',
-      icon: 'eliminar-recibo-icono-error'
+      popup: "eliminar-recibo-popup",
+      title: "eliminar-recibo-titulo-error",
+      confirmButton: "eliminar-recibo-boton-error",
+      icon: "eliminar-recibo-icono-error",
     },
-    buttonsStyling: false
+    buttonsStyling: false,
   });
 };
 
@@ -148,7 +143,7 @@ export const modalError = async (mensaje = 'Ocurrió un error al procesar la sol
  * Modal de cargando
  * @param {string} mensaje - Mensaje a mostrar mientras carga
  */
-export const modalCargando = (mensaje = 'Procesando...') => {
+export const modalCargando = (mensaje = "Procesando...") => {
   Swal.fire({
     title: mensaje,
     allowOutsideClick: false,
@@ -156,18 +151,15 @@ export const modalCargando = (mensaje = 'Procesando...') => {
     allowEnterKey: false,
     showConfirmButton: false,
     customClass: {
-      popup: 'eliminar-recibo-popup-cargando',
-      title: 'eliminar-recibo-titulo-cargando'
+      popup: "eliminar-recibo-popup-cargando",
+      title: "eliminar-recibo-titulo-cargando",
     },
     didOpen: () => {
       Swal.showLoading();
-    }
+    },
   });
 };
 
-/**
- * Cerrar modal de cargando
- */
 export const cerrarModalCargando = () => {
   Swal.close();
 };

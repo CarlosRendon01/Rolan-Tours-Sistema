@@ -1,5 +1,5 @@
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 /**
  * Genera un PDF del recibo usando html2canvas + jsPDF
@@ -8,34 +8,33 @@ import html2canvas from 'html2canvas';
  */
 export const generarPDFRecibo = async (recibo) => {
   try {
-    // Crear un contenedor temporal para el recibo
-    const contenedorTemp = document.createElement('div');
-    contenedorTemp.style.position = 'absolute';
-    contenedorTemp.style.left = '-9999px';
-    contenedorTemp.style.top = '0';
-    contenedorTemp.style.width = '210mm';
-    contenedorTemp.style.background = 'white';
-    contenedorTemp.style.padding = '20mm';
+    const contenedorTemp = document.createElement("div");
+    contenedorTemp.style.position = "absolute";
+    contenedorTemp.style.left = "-9999px";
+    contenedorTemp.style.top = "0";
+    contenedorTemp.style.width = "210mm";
+    contenedorTemp.style.background = "white";
+    contenedorTemp.style.padding = "20mm";
     document.body.appendChild(contenedorTemp);
 
     contenedorTemp.innerHTML = generarHTMLRecibo(recibo);
 
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const canvas = await html2canvas(contenedorTemp, {
       scale: 2,
       useCORS: true,
       logging: false,
-      backgroundColor: '#ffffff'
+      backgroundColor: "#ffffff",
     });
 
     document.body.removeChild(contenedorTemp);
 
-    const imgData = canvas.toDataURL('image/png');
+    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
     });
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -46,23 +45,25 @@ export const generarPDFRecibo = async (recibo) => {
     let heightLeft = imgHeight;
     let position = 0;
 
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
     heightLeft -= pdfHeight;
 
     while (heightLeft > 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
       heightLeft -= pdfHeight;
     }
 
-    const nombreArchivo = `Recibo_${recibo.numeroRecibo}_${new Date().toISOString().split('T')[0]}.pdf`;
+    const nombreArchivo = `Recibo_${recibo.numeroRecibo}_${
+      new Date().toISOString().split("T")[0]
+    }.pdf`;
     pdf.save(nombreArchivo);
 
     return true;
   } catch (error) {
-    console.error('Error al generar PDF:', error);
-    throw new Error('No se pudo generar el PDF del recibo');
+    console.error("Error al generar PDF:", error);
+    throw new Error("No se pudo generar el PDF del recibo");
   }
 };
 
@@ -72,10 +73,10 @@ export const generarPDFRecibo = async (recibo) => {
  */
 export const imprimirRecibo = (recibo) => {
   try {
-    const ventanaImpresion = window.open('', '_blank', 'width=800,height=600');
-    
+    const ventanaImpresion = window.open("", "_blank", "width=800,height=600");
+
     if (!ventanaImpresion) {
-      alert('Por favor, permite las ventanas emergentes para imprimir');
+      alert("Por favor, permite las ventanas emergentes para imprimir");
       return;
     }
 
@@ -123,11 +124,11 @@ export const imprimirRecibo = (recibo) => {
       </body>
       </html>
     `);
-    
+
     ventanaImpresion.document.close();
   } catch (error) {
-    console.error('Error al imprimir recibo:', error);
-    throw new Error('No se pudo imprimir el recibo');
+    console.error("Error al imprimir recibo:", error);
+    throw new Error("No se pudo imprimir el recibo");
   }
 };
 
@@ -137,25 +138,24 @@ export const imprimirRecibo = (recibo) => {
  * @returns {string} HTML del recibo
  */
 const generarHTMLRecibo = (recibo) => {
-  // ... (mantén todo el código existente de esta función sin cambios)
-  const fechaActual = new Date().toLocaleDateString('es-MX', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  const fechaActual = new Date().toLocaleDateString("es-MX", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 
   const formatearMoneda = (cantidad) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
     }).format(cantidad);
   };
 
   const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(fecha).toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -177,7 +177,9 @@ const generarHTMLRecibo = (recibo) => {
         <div style="text-align: right;">
           <div style="margin-bottom: 15px;">
             <p style="margin: 0; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">RECIBO No.</p>
-            <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: 700; color: #1e3a8a;">${recibo.numeroRecibo}</p>
+            <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: 700; color: #1e3a8a;">${
+              recibo.numeroRecibo
+            }</p>
           </div>
           <p style="margin: 0; font-size: 13px; color: #6b7280;">📅 ${fechaActual}</p>
         </div>
@@ -191,11 +193,15 @@ const generarHTMLRecibo = (recibo) => {
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
           <div>
             <p style="margin: 0; font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Nombre:</p>
-            <p style="margin: 3px 0 0 0; font-size: 14px; color: #1f2937; font-weight: 500;">${recibo.cliente}</p>
+            <p style="margin: 3px 0 0 0; font-size: 14px; color: #1f2937; font-weight: 500;">${
+              recibo.cliente
+            }</p>
           </div>
           <div>
             <p style="margin: 0; font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Fecha Emisión:</p>
-            <p style="margin: 3px 0 0 0; font-size: 14px; color: #1f2937; font-weight: 500;">${formatearFecha(recibo.fechaEmision)}</p>
+            <p style="margin: 3px 0 0 0; font-size: 14px; color: #1f2937; font-weight: 500;">${formatearFecha(
+              recibo.fechaEmision
+            )}</p>
           </div>
         </div>
       </div>
@@ -206,7 +212,9 @@ const generarHTMLRecibo = (recibo) => {
           📋 Concepto
         </h3>
         <div style="background: #f9fafb; border-radius: 8px; padding: 15px;">
-          <p style="margin: 0; font-size: 14px; color: #1f2937; line-height: 1.6;">${recibo.concepto}</p>
+          <p style="margin: 0; font-size: 14px; color: #1f2937; line-height: 1.6;">${
+            recibo.concepto
+          }</p>
         </div>
       </div>
 
@@ -220,16 +228,22 @@ const generarHTMLRecibo = (recibo) => {
         <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%); border: 2px solid #1e3a8a; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(102, 126, 234, 0.25);">
             <span style="font-size: 14px; color: #1e2022; font-weight: 600;">Monto del Recibo</span>
-            <span style="font-size: 32px; font-weight: 700; color: #1e3a8a;">${formatearMoneda(recibo.monto)}</span>
+            <span style="font-size: 32px; font-weight: 700; color: #1e3a8a;">${formatearMoneda(
+              recibo.monto
+            )}</span>
           </div>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
             <div style="display: flex; justify-content: space-between; font-size: 13px;">
               <span style="color: #6b7280; font-weight: 500;">Método de Pago:</span>
-              <span style="color: #1f2937; font-weight: 600;">${recibo.metodoPago}</span>
+              <span style="color: #1f2937; font-weight: 600;">${
+                recibo.metodoPago
+              }</span>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 13px;">
               <span style="color: #6b7280; font-weight: 500;">Fecha:</span>
-              <span style="color: #1f2937; font-weight: 600;">${formatearFecha(recibo.fechaEmision)}</span>
+              <span style="color: #1f2937; font-weight: 600;">${formatearFecha(
+                recibo.fechaEmision
+              )}</span>
             </div>
           </div>
         </div>
@@ -238,18 +252,28 @@ const generarHTMLRecibo = (recibo) => {
         <div style="background: #f9fafb; border-radius: 8px; padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; font-size: 15px; color: #1e2022; border-bottom: 1px solid #e5e7eb;">
             <span>Monto Recibido:</span>
-            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(recibo.monto)}</span>
+            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(
+              recibo.monto
+            )}</span>
           </div>
-          ${recibo.estado === 'Emitido' ? `
+          ${
+            recibo.estado === "Emitido"
+              ? `
           <div style="margin-top: 15px; padding: 12px; background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 6px; text-align: center;">
             <span style="color: #065f46; font-weight: 600; font-size: 14px;">✓ Recibo Emitido</span>
           </div>
-          ` : ''}
-          ${recibo.estado === 'Cancelado' ? `
+          `
+              : ""
+          }
+          ${
+            recibo.estado === "Cancelado"
+              ? `
           <div style="margin-top: 15px; padding: 12px; background: #fef3c7; border: 1px solid #fde68a; border-radius: 6px; text-align: center;">
             <span style="color: #92400e; font-weight: 600; font-size: 14px;">⚠ Recibo Cancelado</span>
           </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       </div>
 
@@ -269,7 +293,9 @@ const generarHTMLRecibo = (recibo) => {
         <div style="text-align: right;">
           <p style="margin: 3px 0; font-size: 11px; color: #9ca3af;">Documento generado electrónicamente</p>
           <p style="margin: 3px 0; font-size: 11px; color: #9ca3af;">Fecha de emisión: ${fechaActual}</p>
-          <p style="margin: 3px 0; font-size: 11px; color: #9ca3af;">Recibo No. ${recibo.numeroRecibo}</p>
+          <p style="margin: 3px 0; font-size: 11px; color: #9ca3af;">Recibo No. ${
+            recibo.numeroRecibo
+          }</p>
         </div>
       </div>
 
