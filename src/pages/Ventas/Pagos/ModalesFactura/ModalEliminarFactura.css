@@ -1,54 +1,54 @@
 .eliminar-factura-popup {
-  background: white !important;
-  border-radius: 16px !important;
-  width: 90% !important;
-  max-width: 450px !important;
-  max-height: 150vh !important;
-  display: flex !important;
-  flex-direction: column !important;
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 450px;
+  max-height: 150vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  animation: slideUp 0.3s ease-out !important;
-  position: relative !important;
-  transform: scale(0.9) !important;
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s ease-out;
+  position: relative;
+  transform: scale(0.9);
 }
 
 .eliminar-factura-popup-cargando {
-  border-radius: 16px !important;
-  padding: 2rem !important;
+  border-radius: 16px;
+  padding: 2rem;
 }
 
 .eliminar-factura-titulo {
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  color: #1f2937 !important;
-  margin-bottom: 0.25rem !important;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
 }
 
 .eliminar-factura-titulo-exito {
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  color: #059669 !important;
-  margin-bottom: 0 !important;
-  transform: scale(0.9) !important;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #059669;
+  margin-bottom: 0;
+  transform: scale(0.9);
 }
 
 .eliminar-factura-titulo-error {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  color: #dc2626 !important;
-  margin-bottom: 0.5rem !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #dc2626;
+  margin-bottom: 0.5rem;
 }
 
 .eliminar-factura-titulo-cargando {
-  font-size: 1.25rem !important;
-  font-weight: 600 !important;
-  color: #4b5563 !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #4b5563;
 }
 
 .eliminar-factura-html {
-  margin: 0 !important;
-  padding: 0.5rem 0 !important;
+  margin: 0;
+  padding: 0.5rem 0;
 }
 
 .eliminar-factura-contenido {
@@ -240,130 +240,130 @@
 }
 
 .eliminar-factura-icono {
-  border-color: #f59e0b !important;
-  color: #f59e0b !important;
-  font-size: 2.5rem !important;
-  margin: 0.5rem auto !important;
+  border-color: #f59e0b;
+  color: #f59e0b;
+  font-size: 2.5rem;
+  margin: 0.5rem auto;
 }
 
 .eliminar-factura-icono-exito {
-  border-color: #10b981 !important;
-  color: #10b981 !important;
+  border-color: #10b981;
+  color: #10b981;
 }
 
 .eliminar-factura-icono-error {
-  border-color: #ef4444 !important;
-  color: #ef4444 !important;
+  border-color: #ef4444;
+  color: #ef4444;
 }
 
 .eliminar-factura-acciones {
-  margin-top: 1rem !important;
+  margin-top: 1rem;
 }
 
 .eliminar-factura-boton-confirmar {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-  color: white !important;
-  border: none !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
 }
 
 .eliminar-factura-boton-confirmar:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4);
 }
 
 .eliminar-factura-boton-cancelar {
-  background: white !important;
-  color: #6b7280 !important;
-  border: 1.5px solid #e5e7eb !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  margin-right: 0.5rem !important;
+  background: white;
+  color: #6b7280;
+  border: 1.5px solid #e5e7eb;
+  padding: 0.625rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 0.5rem;
 }
 
 .eliminar-factura-boton-cancelar:hover {
-  background: #f9fafb !important;
-  border-color: #d1d5db !important;
+  background: #f9fafb;
+  border-color: #d1d5db;
 }
 
 .eliminar-factura-boton-exito {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  color: white !important;
-  border: none !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
 }
 
 .eliminar-factura-boton-exito:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
 }
 
 .eliminar-factura-boton-error {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-  color: white !important;
-  border: none !important;
-  padding: 0.75rem 2rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.9375rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .swal2-timer-progress-bar {
-  background: #10b981 !important;
+  background: #10b981;
 }
 
 .swal2-show {
-  animation: swal2-show 0.3s !important;
+  animation: swal2-show 0.3s;
 }
 
 .swal2-hide {
-  animation: swal2-hide 0.2s !important;
+  animation: swal2-hide 0.2s;
 }
 
 .swal2-loading {
-  border-color: #3b82f6 transparent #3b82f6 transparent !important;
+  border-color: #3b82f6 transparent #3b82f6 transparent;
 }
 
 @media (max-width: 640px) {
   .eliminar-factura-popup {
-    padding: 1.25rem !important;
-    width: 90% !important;
-    max-width: 380px !important;
+    padding: 1.25rem;
+    width: 90%;
+    max-width: 380px;
   }
 
   .eliminar-factura-titulo,
   .eliminar-factura-titulo-exito {
-    font-size: 1.125rem !important;
+    font-size: 1.125rem;
   }
 
   .eliminar-factura-numero {
-    font-size: 1rem !important;
+    font-size: 1rem;
   }
 
   .eliminar-factura-cliente {
-    font-size: 0.9375rem !important;
+    font-size: 0.9375rem;
   }
 
   .eliminar-factura-monto {
-    font-size: 1rem !important;
+    font-size: 1rem;
   }
 
   .eliminar-factura-info {
@@ -387,7 +387,7 @@
   .eliminar-factura-boton-confirmar,
   .eliminar-factura-boton-cancelar,
   .eliminar-factura-boton-exito {
-    padding: 0.5rem 1.25rem !important;
-    font-size: 0.8125rem !important;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.8125rem;
   }
 }

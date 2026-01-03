@@ -9,18 +9,6 @@ const formatearMoneda = (cantidad) => {
   }).format(cantidad);
 };
 
-const formatearFecha = (fecha) => {
-  try {
-    return new Date(fecha).toLocaleDateString("es-MX", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  } catch {
-    return fecha;
-  }
-};
-
 /**
  * Modal de confirmación para eliminar un recibo
  * @param {Object} recibo - Objeto con información del recibo a eliminar
@@ -148,7 +136,7 @@ export const modalCargando = (mensaje = "Procesando...") => {
     title: mensaje,
     allowOutsideClick: false,
     allowEscapeKey: false,
-    allowEnterKey: false,
+    // allowEnterKey: false,
     showConfirmButton: false,
     customClass: {
       popup: "eliminar-recibo-popup-cargando",

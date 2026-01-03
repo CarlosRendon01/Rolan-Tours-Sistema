@@ -38,7 +38,6 @@ export const modalEliminarPago = async (pago, onConfirm) => {
   });
 
   if (resultado.isConfirmed) {
-    // Ejecutar la función de eliminación
     const token = localStorage.getItem("token");
     await axios.delete(`http://127.0.0.1:8000/api/pagos/${pago.id}`, {
       headers: {
@@ -50,7 +49,6 @@ export const modalEliminarPago = async (pago, onConfirm) => {
       await onConfirm(pago);
     }
 
-    // Mostrar mensaje de éxito
     await Swal.fire({
       title: "¡Eliminado!",
       html: `

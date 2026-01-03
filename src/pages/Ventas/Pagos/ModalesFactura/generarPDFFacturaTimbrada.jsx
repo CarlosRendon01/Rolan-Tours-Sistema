@@ -1,5 +1,5 @@
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 /**
  * Genera un PDF de una factura timbrada usando html2canvas + jsPDF
@@ -8,33 +8,33 @@ import html2canvas from 'html2canvas';
  */
 export const generarPDFFacturaTimbrada = async (factura) => {
   try {
-    const contenedorTemp = document.createElement('div');
-    contenedorTemp.style.position = 'absolute';
-    contenedorTemp.style.left = '-9999px';
-    contenedorTemp.style.top = '0';
-    contenedorTemp.style.width = '210mm';
-    contenedorTemp.style.background = 'white';
-    contenedorTemp.style.padding = '20mm';
+    const contenedorTemp = document.createElement("div");
+    contenedorTemp.style.position = "absolute";
+    contenedorTemp.style.left = "-9999px";
+    contenedorTemp.style.top = "0";
+    contenedorTemp.style.width = "210mm";
+    contenedorTemp.style.background = "white";
+    contenedorTemp.style.padding = "20mm";
     document.body.appendChild(contenedorTemp);
 
     contenedorTemp.innerHTML = generarHTMLFacturaTimbrada(factura);
 
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const canvas = await html2canvas(contenedorTemp, {
       scale: 2,
       useCORS: true,
       logging: false,
-      backgroundColor: '#ffffff'
+      backgroundColor: "#ffffff",
     });
 
     document.body.removeChild(contenedorTemp);
 
-    const imgData = canvas.toDataURL('image/png');
+    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
     });
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -45,23 +45,26 @@ export const generarPDFFacturaTimbrada = async (factura) => {
     let heightLeft = imgHeight;
     let position = 0;
 
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
     heightLeft -= pdfHeight;
 
     while (heightLeft > 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
       heightLeft -= pdfHeight;
     }
 
-    const nombreArchivo = `${factura.numeroFactura}_${factura.cliente.replace(/\s+/g, '_')}.pdf`;
+    const nombreArchivo = `${factura.numeroFactura}_${factura.cliente.replace(
+      /\s+/g,
+      "_"
+    )}.pdf`;
     pdf.save(nombreArchivo);
 
     return true;
   } catch (error) {
-    console.error('Error al generar PDF de factura:', error);
-    throw new Error('No se pudo generar el PDF de la factura');
+    console.error("Error al generar PDF de factura:", error);
+    throw new Error("No se pudo generar el PDF de la factura");
   }
 };
 
@@ -71,10 +74,10 @@ export const generarPDFFacturaTimbrada = async (factura) => {
  */
 export const imprimirFacturaTimbrada = (factura) => {
   try {
-    const ventanaImpresion = window.open('', '_blank', 'width=900,height=700');
-    
+    const ventanaImpresion = window.open("", "_blank", "width=900,height=700");
+
     if (!ventanaImpresion) {
-      alert('Por favor, permite las ventanas emergentes para imprimir');
+      alert("Por favor, permite las ventanas emergentes para imprimir");
       return;
     }
 
@@ -122,11 +125,11 @@ export const imprimirFacturaTimbrada = (factura) => {
       </body>
       </html>
     `);
-    
+
     ventanaImpresion.document.close();
   } catch (error) {
-    console.error('Error al imprimir factura:', error);
-    throw new Error('No se pudo imprimir la factura');
+    console.error("Error al imprimir factura:", error);
+    throw new Error("No se pudo imprimir la factura");
   }
 };
 
@@ -137,52 +140,63 @@ export const imprimirFacturaTimbrada = (factura) => {
  */
 const generarHTMLFacturaTimbrada = (factura) => {
   const formatearMoneda = (cantidad) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
     }).format(cantidad || 0);
   };
 
   const formatearFecha = (fecha) => {
-    const [dia, mes, año] = fecha.split('/');
+    const [dia, mes, año] = fecha.split("/");
     const fechaObj = new Date(año, mes - 1, dia);
-    return fechaObj.toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return fechaObj.toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
-  // Datos de empresa
   const empresa = {
-    nombre: 'Oaxaca Tours S.A. de C.V.',
-    rfc: 'OAX123456ABC',
-    regimen: '601 - General de Ley Personas Morales',
-    direccion: 'Calle Hidalgo #123, Centro Histórico',
-    codigoPostal: '68000',
-    ciudad: 'Oaxaca de Juárez, Oaxaca',
-    telefono: '(951) 123-4567',
-    certificadoSAT: '00001000000123456789',
-    certificadoEmisor: '00001000000987654321'
+    nombre: "Oaxaca Tours S.A. de C.V.",
+    rfc: "OAX123456ABC",
+    regimen: "601 - General de Ley Personas Morales",
+    direccion: "Calle Hidalgo #123, Centro Histórico",
+    codigoPostal: "68000",
+    ciudad: "Oaxaca de Juárez, Oaxaca",
+    telefono: "(951) 123-4567",
+    certificadoSAT: "00001000000123456789",
+    certificadoEmisor: "00001000000987654321",
   };
 
-  // Cálculos fiscales
   const subtotal = factura.monto / 1.16;
   const iva = factura.monto - subtotal;
   const total = factura.monto;
 
-  const esCancelada = factura.estado === 'Cancelada' || factura.estado === 'CANCELADA';
+  const esCancelada =
+    factura.estado === "Cancelada" || factura.estado === "CANCELADA";
 
   return `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #1f2937; line-height: 1.5; max-width: 900px; margin: 0 auto; ${esCancelada ? 'opacity: 0.7;' : ''}">
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #1f2937; line-height: 1.5; max-width: 900px; margin: 0 auto; ${
+      esCancelada ? "opacity: 0.7;" : ""
+    }">
       
-      ${esCancelada ? `
+      ${
+        esCancelada
+          ? `
       <div style="background: #fee2e2; border: 2px solid #dc2626; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center;">
         <p style="margin: 0; font-size: 18px; font-weight: 700; color: #991b1b;">⚠️ FACTURA CANCELADA</p>
-        <p style="margin: 5px 0 0 0; font-size: 13px; color: #991b1b;">${factura.motivoCancelacion || 'Factura cancelada ante el SAT'}</p>
-        ${factura.fechaCancelacion ? `<p style="margin: 3px 0 0 0; font-size: 12px; color: #991b1b;">Fecha de cancelación: ${factura.fechaCancelacion}</p>` : ''}
+        <p style="margin: 5px 0 0 0; font-size: 13px; color: #991b1b;">${
+          factura.motivoCancelacion || "Factura cancelada ante el SAT"
+        }</p>
+        ${
+          factura.fechaCancelacion
+            ? `<p style="margin: 3px 0 0 0; font-size: 12px; color: #991b1b;">Fecha de cancelación: ${factura.fechaCancelacion}</p>`
+            : ""
+        }
       </div>
-      ` : ''}
+      `
+          : ""
+      }
 
       <!-- ENCABEZADO -->
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 3px solid #4338ca;">
@@ -192,9 +206,13 @@ const generarHTMLFacturaTimbrada = (factura) => {
           </h1>
           <div style="font-size: 12px; color: #6b7280; line-height: 1.6;">
             <p style="margin: 2px 0;"><strong>RFC:</strong> ${empresa.rfc}</p>
-            <p style="margin: 2px 0;"><strong>Régimen Fiscal:</strong> ${empresa.regimen}</p>
+            <p style="margin: 2px 0;"><strong>Régimen Fiscal:</strong> ${
+              empresa.regimen
+            }</p>
             <p style="margin: 2px 0;">${empresa.direccion}</p>
-            <p style="margin: 2px 0;">C.P. ${empresa.codigoPostal}, ${empresa.ciudad}</p>
+            <p style="margin: 2px 0;">C.P. ${empresa.codigoPostal}, ${
+    empresa.ciudad
+  }</p>
             <p style="margin: 2px 0;">Tel: ${empresa.telefono}</p>
           </div>
         </div>
@@ -207,22 +225,34 @@ const generarHTMLFacturaTimbrada = (factura) => {
           </div>
           <div style="margin-bottom: 12px;">
             <p style="margin: 0; font-size: 10px; color: #6b7280; text-transform: uppercase; font-weight: 600;">FOLIO:</p>
-            <p style="margin: 3px 0 0 0; font-size: 20px; font-weight: 700; color: #4338ca;">${factura.numeroFactura}</p>
-            <p style="margin: 3px 0 0 0; font-size: 11px; color: #6b7280;">Serie ${factura.serie} - Folio ${factura.folio}</p>
+            <p style="margin: 3px 0 0 0; font-size: 20px; font-weight: 700; color: #4338ca;">${
+              factura.numeroFactura
+            }</p>
+            <p style="margin: 3px 0 0 0; font-size: 11px; color: #6b7280;">Serie ${
+              factura.serie
+            } - Folio ${factura.folio}</p>
           </div>
           <div style="font-size: 11px; color: #6b7280;">
-            <p style="margin: 2px 0;"><strong>Fecha Emisión:</strong> ${factura.fechaEmision}</p>
-            <p style="margin: 2px 0;"><strong>Fecha Vencimiento:</strong> ${factura.fechaVencimiento}</p>
+            <p style="margin: 2px 0;"><strong>Fecha Emisión:</strong> ${
+              factura.fechaEmision
+            }</p>
+            <p style="margin: 2px 0;"><strong>Fecha Vencimiento:</strong> ${
+              factura.fechaVencimiento
+            }</p>
           </div>
-          ${esCancelada ? `
+          ${
+            esCancelada
+              ? `
           <div style="margin-top: 10px; padding: 6px 12px; background: #fee2e2; border: 1px solid #dc2626; border-radius: 6px;">
             <span style="color: #991b1b; font-weight: 600; font-size: 11px;">CANCELADA</span>
           </div>
-          ` : `
+          `
+              : `
           <div style="margin-top: 10px; padding: 6px 12px; background: #d1fae5; border: 1px solid #10b981; border-radius: 6px;">
             <span style="color: #065f46; font-weight: 600; font-size: 11px;">✓ TIMBRADA</span>
           </div>
-          `}
+          `
+          }
         </div>
       </div>
 
@@ -237,11 +267,15 @@ const generarHTMLFacturaTimbrada = (factura) => {
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600;">No. Certificado SAT:</p>
-            <p style="margin: 0; font-size: 12px; color: #1f2937; font-family: 'Courier New', monospace;">${empresa.certificadoSAT}</p>
+            <p style="margin: 0; font-size: 12px; color: #1f2937; font-family: 'Courier New', monospace;">${
+              empresa.certificadoSAT
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600;">No. Certificado Emisor:</p>
-            <p style="margin: 0; font-size: 12px; color: #1f2937; font-family: 'Courier New', monospace;">${empresa.certificadoEmisor}</p>
+            <p style="margin: 0; font-size: 12px; color: #1f2937; font-family: 'Courier New', monospace;">${
+              empresa.certificadoEmisor
+            }</p>
           </div>
         </div>
       </div>
@@ -254,23 +288,33 @@ const generarHTMLFacturaTimbrada = (factura) => {
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Nombre / Razón Social:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.cliente}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.cliente
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">RFC:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.rfc}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.rfc
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Uso CFDI:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.usoCfdi}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.usoCfdi
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Método de Pago:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.metodoPago}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.metodoPago
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Forma de Pago:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.formaPago}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.formaPago
+            }</p>
           </div>
         </div>
       </div>
@@ -300,11 +344,17 @@ const generarHTMLFacturaTimbrada = (factura) => {
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1f2937;">
                   <div>
                     <strong style="display: block; margin-bottom: 4px;">Servicio Turístico</strong>
-                    <span style="display: block; color: #6b7280; font-size: 11px;">Factura ${factura.numeroFactura}</span>
+                    <span style="display: block; color: #6b7280; font-size: 11px;">Factura ${
+                      factura.numeroFactura
+                    }</span>
                   </div>
                 </td>
-                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 600; white-space: nowrap; color: #1f2937;">${formatearMoneda(subtotal)}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 600; white-space: nowrap; color: #1f2937;">${formatearMoneda(subtotal)}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 600; white-space: nowrap; color: #1f2937;">${formatearMoneda(
+                  subtotal
+                )}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 600; white-space: nowrap; color: #1f2937;">${formatearMoneda(
+                  subtotal
+                )}</td>
               </tr>
             </tbody>
           </table>
@@ -316,11 +366,15 @@ const generarHTMLFacturaTimbrada = (factura) => {
         <div>
           <div style="margin-bottom: 12px;">
             <h4 style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; margin: 0 0 4px 0;">Método de Pago</h4>
-            <p style="font-size: 12px; color: #1f2937; margin: 0; font-weight: 500;">${factura.metodoPago}</p>
+            <p style="font-size: 12px; color: #1f2937; margin: 0; font-weight: 500;">${
+              factura.metodoPago
+            }</p>
           </div>
           <div style="margin-bottom: 12px;">
             <h4 style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; margin: 0 0 4px 0;">Forma de Pago</h4>
-            <p style="font-size: 12px; color: #1f2937; margin: 0; font-weight: 500;">${factura.formaPago}</p>
+            <p style="font-size: 12px; color: #1f2937; margin: 0; font-weight: 500;">${
+              factura.formaPago
+            }</p>
           </div>
           <div>
             <h4 style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; margin: 0 0 4px 0;">Moneda</h4>
@@ -331,11 +385,15 @@ const generarHTMLFacturaTimbrada = (factura) => {
         <div style="min-width: 280px; background: #f9fafb; padding: 15px; border-radius: 8px; border: 2px solid #e5e7eb;">
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font-size: 13px; color: #4b5563; border-bottom: 1px solid #e5e7eb;">
             <span>Subtotal:</span>
-            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(subtotal)}</span>
+            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(
+              subtotal
+            )}</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font-size: 13px; color: #4b5563; border-bottom: 1px solid #e5e7eb;">
             <span>IVA (16%):</span>
-            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(iva)}</span>
+            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(
+              iva
+            )}</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-top: 8px; border-top: 2px solid #4338ca; font-size: 16px; font-weight: 700; color: #4338ca;">
             <span>Total:</span>
@@ -344,14 +402,18 @@ const generarHTMLFacturaTimbrada = (factura) => {
         </div>
       </div>
 
-      ${factura.emailEnviado ? `
+      ${
+        factura.emailEnviado
+          ? `
       <div style="margin-top: 20px; padding: 12px; background: #d1fae5; border-left: 4px solid #10b981; border-radius: 4px;">
         <p style="margin: 0; font-size: 12px; color: #065f46;">
           <strong>✓ Factura enviada por correo electrónico</strong>
-          ${factura.fechaEnvio ? ` el ${factura.fechaEnvio}` : ''}
+          ${factura.fechaEnvio ? ` el ${factura.fechaEnvio}` : ""}
         </p>
       </div>
-      ` : ''}
+      `
+          : ""
+      }
 
       <!-- SELLOS DIGITALES -->
       <div style="margin-top: 20px;">
@@ -373,7 +435,9 @@ const generarHTMLFacturaTimbrada = (factura) => {
       <div style="margin-top: 15px; padding: 12px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
         <h4 style="font-size: 10px; color: #92400e; font-weight: 600; text-transform: uppercase; margin: 0 0 8px 0;">Cadena Original del Complemento de Certificación Digital del SAT</h4>
         <p style="font-size: 9px; color: #78350f; font-family: 'Courier New', monospace; word-break: break-all; line-height: 1.5; margin: 0;">
-          ||1.1|${factura.uuid}|${factura.fechaEmision}|${empresa.rfc}|${factura.cliente}|${total}|${empresa.certificadoSAT}||
+          ||1.1|${factura.uuid}|${factura.fechaEmision}|${empresa.rfc}|${
+    factura.cliente
+  }|${total}|${empresa.certificadoSAT}||
         </p>
       </div>
 
@@ -394,8 +458,12 @@ const generarHTMLFacturaTimbrada = (factura) => {
       <!-- FOOTER -->
       <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 2px solid #e5e7eb;">
         <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">Este documento fue generado electrónicamente y es válido sin firma autógrafa</p>
-        <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">Fecha de emisión: ${formatearFecha(factura.fechaEmision)}</p>
-        <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">${empresa.nombre} - RFC: ${empresa.rfc}</p>
+        <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">Fecha de emisión: ${formatearFecha(
+          factura.fechaEmision
+        )}</p>
+        <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">${
+          empresa.nombre
+        } - RFC: ${empresa.rfc}</p>
       </div>
 
     </div>

@@ -1,15 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  X,
-  Download,
-  Receipt,
-  Calendar,
-  User,
-  CreditCard,
-  FileText,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
+import { X, Receipt, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import "./ModalReciboAbono.css";
 import writtenNumber from "written-number";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";

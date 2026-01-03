@@ -13,15 +13,6 @@
   padding: 1rem;
 }
 
-@keyframes fadeIn-eliminar {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 .modal-contenido-eliminar {
   background: white;
   border-radius: 16px;
@@ -60,21 +51,6 @@
   background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
 }
 
-.modal-header-eliminar.paso2 {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-  animation: pulse-header 2s infinite;
-}
-
-@keyframes pulse-header {
-  0%,
-  100% {
-    box-shadow: inset 0 0 20px rgba(239, 68, 68, 0.1);
-  }
-  50% {
-    box-shadow: inset 0 0 40px rgba(239, 68, 68, 0.15);
-  }
-}
-
 .modal-header-icono-eliminar {
   width: 48px;
   height: 48px;
@@ -87,23 +63,6 @@
   flex-shrink: 0;
 }
 
-.modal-header-icono-eliminar.critico {
-  animation: shake 0.5s ease-in-out infinite;
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px) rotate(-5deg);
-  }
-  75% {
-    transform: translateX(5px) rotate(5deg);
-  }
-}
-
 .modal-titulo-eliminar {
   font-size: 20px;
   font-weight: 700;
@@ -111,21 +70,6 @@
   margin: 0;
   flex: 1;
   line-height: 1.3;
-}
-
-.modal-titulo-eliminar.critico {
-  font-size: 20px;
-  animation: pulse-text 2s infinite;
-}
-
-@keyframes pulse-text {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
 }
 
 .modal-boton-cerrar-eliminar {
@@ -167,27 +111,6 @@
   background: #fef2f2;
   border: 2px solid #fca5a5;
   margin-bottom: 24px;
-  position: relative;
-}
-
-@keyframes modalEliminarShake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: translateX(-3px);
-  }
-  20%,
-  40%,
-  60%,
-  80% {
-    transform: translateX(3px);
-  }
 }
 
 .eliminar-alerta-icono {
@@ -225,24 +148,6 @@
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 24px;
-}
-
-.eliminar-info-header {
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #fecaca;
-}
-
-.eliminar-info-titulo {
-  font-size: 14px;
-  font-weight: 700;
-  color: #991b1b;
-}
-
-.eliminar-info-detalle {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
 }
 
 .eliminar-info-fila {
@@ -302,88 +207,6 @@
   border: 1px solid #fecaca;
 }
 
-.eliminar-consecuencias {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 20px;
-}
-
-.eliminar-consecuencias-titulo {
-  font-size: 14px;
-  font-weight: 700;
-  color: #374151;
-  margin: 0 0 12px 0;
-}
-
-.eliminar-consecuencias-lista {
-  margin: 0;
-  padding-left: 20px;
-  color: #6b7280;
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-.eliminar-consecuencias-lista li {
-  margin-bottom: 8px;
-}
-
-.eliminar-consecuencias-lista li:last-child {
-  margin-bottom: 0;
-}
-
-.eliminar-consecuencias-lista li strong {
-  font-weight: 700;
-}
-
-.eliminar-alerta-critica {
-  display: flex;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 12px;
-  background: #fef2f2;
-  border: 2px solid #fca5a5;
-  margin-bottom: 24px;
-  position: relative;
-}
-
-.eliminar-alerta-critica svg {
-  color: #dc2626;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.eliminar-alerta-critica-titulo {
-  font-size: 14px;
-  font-weight: 700;
-  color: #991b1b;
-  margin: 0 0 6px 0;
-}
-
-.eliminar-alerta-critica-subtitulo {
-  font-size: 13px;
-  color: #7f1d1d;
-  margin: 0;
-  line-height: 1.6;
-}
-
-.eliminar-alerta-critica-subtitulo strong {
-  font-weight: 700;
-  text-decoration: underline;
-}
-
-.eliminar-mensaje-error {
-  margin: 12px 0 0 0;
-  padding: 10px 12px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
-  color: #991b1b;
-  font-size: 13px;
-  font-weight: 600;
-  text-align: center;
-}
-
 .modal-footer-eliminar {
   padding: 20px 24px;
   background: #fef2f2;
@@ -394,8 +217,6 @@
 }
 
 .boton-cancelar-eliminar,
-.boton-continuar-eliminar,
-.boton-volver-eliminar,
 .boton-eliminar-definitivo {
   flex: 1;
   padding: 12px 20px;
@@ -423,29 +244,6 @@
   color: #1e293b;
 }
 
-.boton-continuar-eliminar {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
-}
-
-.boton-continuar-eliminar:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4);
-}
-
-.boton-volver-eliminar {
-  background: white;
-  color: #64748b;
-  border: 1px solid #d1d5db;
-}
-
-.boton-volver-eliminar:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #9ca3af;
-  color: #1e293b;
-}
-
 .boton-eliminar-definitivo {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
@@ -458,12 +256,10 @@
 }
 
 .boton-cancelar-eliminar:disabled,
-.boton-continuar-eliminar:disabled,
-.boton-volver-eliminar:disabled,
 .boton-eliminar-definitivo:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none !important;
+  transform: none;
 }
 
 .spinner-eliminar {
@@ -478,19 +274,6 @@
 @keyframes spin-eliminar {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes modalEliminarTemblor {
-  0%,
-  100% {
-    transform: translateX(0) rotate(0deg);
-  }
-  25% {
-    transform: translateX(-2px) rotate(-5deg);
-  }
-  75% {
-    transform: translateX(2px) rotate(5deg);
   }
 }
 
@@ -512,18 +295,12 @@
     font-size: 18px;
   }
 
-  .modal-titulo-eliminar.critico {
-    font-size: 18px;
-  }
-
   .modal-footer-eliminar {
     flex-direction: column;
     padding: 16px 20px;
   }
 
   .boton-cancelar-eliminar,
-  .boton-continuar-eliminar,
-  .boton-volver-eliminar,
   .boton-eliminar-definitivo {
     width: 100%;
   }
@@ -542,17 +319,8 @@
     text-align: left;
   }
 
-  .eliminar-alerta-principal,
-  .eliminar-alerta-critica {
+  .eliminar-alerta-principal {
     padding: 14px;
-  }
-
-  .eliminar-confirmacion-input {
-    padding: 16px;
-  }
-
-  .eliminar-monto-grande {
-    font-size: 20px;
   }
 }
 
@@ -569,14 +337,7 @@
     font-size: 16px;
   }
 
-  .modal-titulo-eliminar.critico {
-    font-size: 16px;
-  }
-
-  .eliminar-info-pago,
-  .eliminar-consecuencias,
-  .eliminar-confirmacion-input,
-  .eliminar-datos-destacados {
+  .eliminar-info-pago {
     padding: 16px;
   }
 }

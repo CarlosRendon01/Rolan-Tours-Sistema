@@ -15,7 +15,6 @@ import {
   AlertCircle,
   Filter,
   RotateCcw,
-  XCircle,
 } from "lucide-react";
 import "./GestionPagos.css";
 import ModalVerPago from "../Modales/ModalVerPago";
@@ -79,7 +78,6 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
   ] = useState(false);
   const [pagoSeleccionado, establecerPagoSeleccionado] = useState(null);
   const [modalTodosAbierto, setModalTodosAbierto] = useState(false);
-
   const [datosPagos, establecerDatosPagos] = useState([]);
 
   useEffect(() => {
@@ -183,10 +181,6 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
     despachar({ tipo: "ESTABLECER_BUSQUEDA", valor: evento.target.value });
   };
 
-  const manejarFiltroEstado = (evento) => {
-    despachar({ tipo: "ESTABLECER_FILTRO_ESTADO", valor: evento.target.value });
-  };
-
   const manejarFiltroVisibilidad = (evento) => {
     despachar({
       tipo: "ESTABLECER_FILTRO_VISIBILIDAD",
@@ -235,10 +229,6 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
         "Ocurrió un error al procesar la acción. Por favor, intente nuevamente."
       );
     }
-  };
-
-  const abrirModalAgregar = () => {
-    alert("Se abrirá el modal para agregar un nuevo pago.");
   };
 
   const manejarGuardarEdicion = (pagoActualizado) => {
@@ -454,11 +444,10 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                 {datosPaginados.map((pago, indice) => (
                   <tr
                     key={pago.id}
-                    className="pagos-fila-pago"
-                    style={{
-                      animationDelay: `${indice * 0.05}s`,
-                      background: !pago.activo ? "#fee2e2" : "white",
-                    }}
+                    className={`pagos-fila-pago ${
+                      !pago.activo ? "pagos-fila-eliminada" : ""
+                    }`}
+                    style={{ animationDelay: `${indice * 0.05}s` }}
                   >
                     <td className="pagos-columna-id">
                       #{pago.id.toString().padStart(3, "0")}
@@ -473,7 +462,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                       {pago.fechaInicio ? (
                         <span>{pago.fechaInicio}</span>
                       ) : (
-                        <span style={{ color: "#9ca3af", fontStyle: "italic" }}>
+                        <span className="pagos-columna-fecha-sin-dato">
                           Sin fecha
                         </span>
                       )}
@@ -482,7 +471,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                       {pago.metodoPago ? (
                         <span>{pago.metodoPago}</span>
                       ) : (
-                        <span style={{ color: "#9ca3af", fontStyle: "italic" }}>
+                        <span className="pagos-columna-metodo-sin-dato">
                           Sin método
                         </span>
                       )}
@@ -500,17 +489,9 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                     {rolUsuario === "admin" && (
                       <td>
                         <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "0.25rem",
-                            padding: "0.25rem 0.5rem",
-                            borderRadius: "6px",
-                            fontSize: "0.75rem",
-                            fontWeight: "600",
-                            background: pago.activo ? "#d1fae5" : "#e5e7eb",
-                            color: pago.activo ? "#065f46" : "#374151",
-                          }}
+                          className={`pagos-badge-visibilidad ${
+                            pago.activo ? "pagos-visible" : "pagos-no-visible"
+                          }`}
                         >
                           {pago.activo ? "✓ Sí" : "✗ No"}
                         </span>
@@ -553,15 +534,10 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           <>
                             {!pago.activo && (
                               <button
-                                className="pagos-boton-accion"
+                                className="pagos-boton-accion pagos-reactivar"
                                 onClick={() => manejarAccion("regenerar", pago)}
                                 title="Reactivar pago"
                                 disabled={cargando}
-                                style={{
-                                  background: "#10b981",
-                                  color: "white",
-                                  border: "1px solid #a7f3d0",
-                                }}
                               >
                                 <RotateCcw size={14} />
                               </button>
@@ -584,7 +560,11 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                         )}
                         {pago.activo && (
                           <button
-                            className="pagos-boton-accion"
+                            className={`pagos-boton-accion pagos-crear-todos ${
+                              !puedeCrearOrden(pago)
+                                ? "pagos-crear-todos-deshabilitado"
+                                : ""
+                            }`}
                             onClick={() => manejarAccion("crearTodos", pago)}
                             title={
                               puedeCrearOrden(pago)
@@ -592,19 +572,6 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                                 : "Requiere al menos 50% pagado"
                             }
                             disabled={cargando || !puedeCrearOrden(pago)}
-                            style={{
-                              background: puedeCrearOrden(pago)
-                                ? "#8b5cf6"
-                                : "#9ca3af",
-                              color: "white",
-                              border: puedeCrearOrden(pago)
-                                ? "1px solid #c4b5fd"
-                                : "1px solid #d1d5db",
-                              cursor: puedeCrearOrden(pago)
-                                ? "pointer"
-                                : "not-allowed",
-                              opacity: puedeCrearOrden(pago) ? 1 : 0.5,
-                            }}
                           >
                             <Plus size={14} />
                           </button>
@@ -625,7 +592,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
               <strong>{Math.min(indiceFinal, totalRegistros)}</strong> de{" "}
               <strong>{totalRegistros}</strong> registros
               {(terminoBusqueda || filtroEstado !== "todos") && (
-                <span style={{ color: "#6b7280", marginLeft: "0.5rem" }}>
+                <span className="pagos-info-filtro">
                   (filtrado de {datosPagos.length} registros totales)
                 </span>
               )}
@@ -644,10 +611,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
               <div className="pagos-numeros-paginacion">
                 {generarNumerosPaginacion().map((numero, indice) =>
                   numero === "..." ? (
-                    <span
-                      key={`ellipsis-${indice}`}
-                      style={{ padding: "0.5rem", color: "#9ca3af" }}
-                    >
+                    <span key={`ellipsis-${indice}`} className="pagos-ellipsis">
                       ...
                     </span>
                   ) : (

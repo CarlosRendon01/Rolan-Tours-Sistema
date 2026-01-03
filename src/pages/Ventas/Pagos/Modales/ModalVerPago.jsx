@@ -6,32 +6,12 @@ import {
   Calendar,
   CreditCard,
   FileText,
-  Package,
   Clock,
   Hash,
 } from "lucide-react";
 import "./ModalVerPago.css";
 
 const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
-  const restaurarScroll = React.useCallback(() => {
-    document.body.style.overflow = "";
-    document.body.style.overflowY = "";
-    document.documentElement.style.overflow = "";
-  }, []);
-
-  const manejarCierre = React.useCallback(() => {
-    restaurarScroll();
-    alCerrar();
-  }, [alCerrar, restaurarScroll]);
-
-  React.useEffect(() => {
-    if (estaAbierto) {
-      document.body.style.overflow = "hidden";
-    } else {
-      restaurarScroll();
-    }
-  }, [estaAbierto, restaurarScroll]);
-
   const obtenerColorEstado = (estado) => {
     switch (estado?.toLowerCase()) {
       case "pagado":
@@ -44,29 +24,30 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
   };
 
   React.useEffect(() => {
+    if (!estaAbierto) return;
+
+    document.body.style.overflow = "hidden";
+
     const manejarTeclaEscape = (evento) => {
       if (evento.key === "Escape") {
-        manejarCierre();
+        alCerrar();
       }
     };
 
-    if (estaAbierto) {
-      document.addEventListener("keydown", manejarTeclaEscape);
-      document.body.style.overflow = "hidden";
-    }
+    document.addEventListener("keydown", manejarTeclaEscape);
 
     return () => {
+      document.body.style.overflow = "";
       document.removeEventListener("keydown", manejarTeclaEscape);
-      restaurarScroll();
     };
-  }, [estaAbierto, manejarCierre, restaurarScroll]);
+  }, [estaAbierto, alCerrar]);
 
   if (!estaAbierto || !pago) {
     return null;
   }
 
   return (
-    <div className="superposicion-modal-pago" onClick={manejarCierre}>
+    <div className="superposicion-modal-pago" onClick={alCerrar}>
       <div
         className="contenido-modal-pago"
         onClick={(e) => e.stopPropagation()}
@@ -74,7 +55,7 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
         <div className="encabezado-modal-pago">
           <button
             className="boton-cerrar-modal-pago"
-            onClick={manejarCierre}
+            onClick={alCerrar}
             aria-label="Cerrar modal"
             type="button"
           >
@@ -187,7 +168,7 @@ const ModalVerPago = ({ estaAbierto, alCerrar, pago }) => {
           <div className="contenedor-boton-inferior-pago">
             <button
               className="boton-cerrar-inferior-pago"
-              onClick={manejarCierre}
+              onClick={alCerrar}
               type="button"
             >
               Cerrar

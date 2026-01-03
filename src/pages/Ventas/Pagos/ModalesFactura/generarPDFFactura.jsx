@@ -1,5 +1,5 @@
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 /**
  * Genera un PDF de la factura usando html2canvas + jsPDF
@@ -9,33 +9,33 @@ import html2canvas from 'html2canvas';
  */
 export const generarPDFFactura = async (factura, empresa = {}) => {
   try {
-    const contenedorTemp = document.createElement('div');
-    contenedorTemp.style.position = 'absolute';
-    contenedorTemp.style.left = '-9999px';
-    contenedorTemp.style.top = '0';
-    contenedorTemp.style.width = '210mm';
-    contenedorTemp.style.background = 'white';
-    contenedorTemp.style.padding = '20mm';
+    const contenedorTemp = document.createElement("div");
+    contenedorTemp.style.position = "absolute";
+    contenedorTemp.style.left = "-9999px";
+    contenedorTemp.style.top = "0";
+    contenedorTemp.style.width = "210mm";
+    contenedorTemp.style.background = "white";
+    contenedorTemp.style.padding = "20mm";
     document.body.appendChild(contenedorTemp);
 
     contenedorTemp.innerHTML = generarHTMLFactura(factura, empresa);
 
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const canvas = await html2canvas(contenedorTemp, {
       scale: 2,
       useCORS: true,
       logging: false,
-      backgroundColor: '#ffffff'
+      backgroundColor: "#ffffff",
     });
 
     document.body.removeChild(contenedorTemp);
 
-    const imgData = canvas.toDataURL('image/png');
+    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
     });
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -46,24 +46,28 @@ export const generarPDFFactura = async (factura, empresa = {}) => {
     let heightLeft = imgHeight;
     let position = 0;
 
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
     heightLeft -= pdfHeight;
 
     while (heightLeft > 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
       heightLeft -= pdfHeight;
     }
 
-    const numeroFactura = factura.numeroFactura || `FAC-${String(factura.id || '0000').padStart(4, '0')}`;
-    const nombreArchivo = `Factura_${numeroFactura}_${new Date().toISOString().split('T')[0]}.pdf`;
+    const numeroFactura =
+      factura.numeroFactura ||
+      `FAC-${String(factura.id || "0000").padStart(4, "0")}`;
+    const nombreArchivo = `Factura_${numeroFactura}_${
+      new Date().toISOString().split("T")[0]
+    }.pdf`;
     pdf.save(nombreArchivo);
 
     return true;
   } catch (error) {
-    console.error('Error al generar PDF de factura:', error);
-    throw new Error('No se pudo generar el PDF de la factura');
+    console.error("Error al generar PDF de factura:", error);
+    throw new Error("No se pudo generar el PDF de la factura");
   }
 };
 
@@ -74,10 +78,10 @@ export const generarPDFFactura = async (factura, empresa = {}) => {
  */
 export const imprimirFactura = (factura, empresa = {}) => {
   try {
-    const ventanaImpresion = window.open('', '_blank', 'width=900,height=700');
-    
+    const ventanaImpresion = window.open("", "_blank", "width=900,height=700");
+
     if (!ventanaImpresion) {
-      alert('Por favor, permite las ventanas emergentes para imprimir');
+      alert("Por favor, permite las ventanas emergentes para imprimir");
       return;
     }
 
@@ -87,7 +91,7 @@ export const imprimirFactura = (factura, empresa = {}) => {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Factura ${factura.numeroFactura || 'N/A'}</title>
+        <title>Factura ${factura.numeroFactura || "N/A"}</title>
         <style>
           * {
             margin: 0;
@@ -125,11 +129,11 @@ export const imprimirFactura = (factura, empresa = {}) => {
       </body>
       </html>
     `);
-    
+
     ventanaImpresion.document.close();
   } catch (error) {
-    console.error('Error al imprimir factura:', error);
-    throw new Error('No se pudo imprimir la factura');
+    console.error("Error al imprimir factura:", error);
+    throw new Error("No se pudo imprimir la factura");
   }
 };
 
@@ -140,40 +144,42 @@ export const imprimirFactura = (factura, empresa = {}) => {
  * @returns {string} HTML de la factura
  */
 const generarHTMLFactura = (factura, empresaParam = {}) => {
-  const fechaActual = new Date().toLocaleDateString('es-MX', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  const fechaActual = new Date().toLocaleDateString("es-MX", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 
   const formatearMoneda = (cantidad) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
     }).format(cantidad || 0);
   };
 
   const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(fecha).toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
-  const numeroFactura = factura.numeroFactura || `FAC-${String(factura.id || '0000').padStart(4, '0')}`;
-  const folioFiscal = factura.uuidFactura || factura.uuid || 'UUID-PENDIENTE';
+  const numeroFactura =
+    factura.numeroFactura ||
+    `FAC-${String(factura.id || "0000").padStart(4, "0")}`;
+  const folioFiscal = factura.uuidFactura || factura.uuid || "UUID-PENDIENTE";
 
   const empresa = {
-    nombre: empresaParam.nombre || 'Oaxaca Tours S.A. de C.V.',
-    rfc: empresaParam.rfc || 'OAX123456ABC',
-    regimen: empresaParam.regimen || '601 - General de Ley Personas Morales',
-    direccion: empresaParam.direccion || 'Calle Hidalgo #123, Centro Histórico',
-    codigoPostal: empresaParam.codigoPostal || '68000',
-    ciudad: empresaParam.ciudad || 'Oaxaca de Juárez, Oaxaca',
-    telefono: empresaParam.telefono || '(951) 123-4567',
-    certificadoSAT: empresaParam.certificadoSAT || '00001000000123456789',
-    certificadoEmisor: empresaParam.certificadoEmisor || '00001000000987654321'
+    nombre: empresaParam.nombre || "Oaxaca Tours S.A. de C.V.",
+    rfc: empresaParam.rfc || "OAX123456ABC",
+    regimen: empresaParam.regimen || "601 - General de Ley Personas Morales",
+    direccion: empresaParam.direccion || "Calle Hidalgo #123, Centro Histórico",
+    codigoPostal: empresaParam.codigoPostal || "68000",
+    ciudad: empresaParam.ciudad || "Oaxaca de Juárez, Oaxaca",
+    telefono: empresaParam.telefono || "(951) 123-4567",
+    certificadoSAT: empresaParam.certificadoSAT || "00001000000123456789",
+    certificadoEmisor: empresaParam.certificadoEmisor || "00001000000987654321",
   };
 
   const subtotal = factura.planPago?.montoTotal || factura.subtotal || 0;
@@ -192,9 +198,13 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
           </h1>
           <div style="font-size: 12px; color: #6b7280; line-height: 1.6;">
             <p style="margin: 2px 0;"><strong>RFC:</strong> ${empresa.rfc}</p>
-            <p style="margin: 2px 0;"><strong>Régimen Fiscal:</strong> ${empresa.regimen}</p>
+            <p style="margin: 2px 0;"><strong>Régimen Fiscal:</strong> ${
+              empresa.regimen
+            }</p>
             <p style="margin: 2px 0;">${empresa.direccion}</p>
-            <p style="margin: 2px 0;">C.P. ${empresa.codigoPostal}, ${empresa.ciudad}</p>
+            <p style="margin: 2px 0;">C.P. ${empresa.codigoPostal}, ${
+    empresa.ciudad
+  }</p>
             <p style="margin: 2px 0;">Tel: ${empresa.telefono}</p>
           </div>
         </div>
@@ -227,11 +237,15 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600;">No. Certificado SAT:</p>
-            <p style="margin: 0; font-size: 12px; color: #1f2937; font-family: 'Courier New', monospace;">${empresa.certificadoSAT}</p>
+            <p style="margin: 0; font-size: 12px; color: #1f2937; font-family: 'Courier New', monospace;">${
+              empresa.certificadoSAT
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600;">No. Certificado Emisor:</p>
-            <p style="margin: 0; font-size: 12px; color: #1f2937; font-family: 'Courier New', monospace;">${empresa.certificadoEmisor}</p>
+            <p style="margin: 0; font-size: 12px; color: #1f2937; font-family: 'Courier New', monospace;">${
+              empresa.certificadoEmisor
+            }</p>
           </div>
         </div>
       </div>
@@ -244,27 +258,39 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Nombre / Razón Social:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.cliente?.nombre || 'N/A'}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.cliente?.nombre || "N/A"
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">RFC:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.cliente?.rfc || 'XAXX010101000'}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.cliente?.rfc || "XAXX010101000"
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Email:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.cliente?.email || 'N/A'}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.cliente?.email || "N/A"
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Uso CFDI:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.usoCFDI || 'G03'} - Gastos en general</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.usoCFDI || "G03"
+            } - Gastos en general</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Régimen Fiscal:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${factura.cliente?.regimen || '605 - Sueldos y Salarios'}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">${
+              factura.cliente?.regimen || "605 - Sueldos y Salarios"
+            }</p>
           </div>
           <div>
             <p style="margin: 0 0 3px 0; font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Domicilio Fiscal:</p>
-            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">C.P. ${factura.cliente?.codigoPostal || '68000'}</p>
+            <p style="margin: 0; font-size: 13px; color: #1f2937; font-weight: 500;">C.P. ${
+              factura.cliente?.codigoPostal || "68000"
+            }</p>
           </div>
         </div>
       </div>
@@ -293,14 +319,28 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1f2937;">E48 - Servicio</td>
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1f2937;">
                   <div>
-                    <strong style="display: block; margin-bottom: 4px;">${factura.servicio?.tipo || 'Servicio Turístico'}</strong>
-                    <span style="display: block; color: #6b7280; font-size: 11px; margin-bottom: 2px;">${factura.servicio?.descripcion || 'Servicio de tour'}</span>
-                    <span style="display: block; color: #9ca3af; font-size: 10px;">Fecha del Tour: ${formatearFecha(factura.servicio?.fechaTour || new Date())}</span>
-                    ${factura.numeroContrato ? `<span style="display: block; color: #9ca3af; font-size: 10px;">Contrato: ${factura.numeroContrato}</span>` : ''}
+                    <strong style="display: block; margin-bottom: 4px;">${
+                      factura.servicio?.tipo || "Servicio Turístico"
+                    }</strong>
+                    <span style="display: block; color: #6b7280; font-size: 11px; margin-bottom: 2px;">${
+                      factura.servicio?.descripcion || "Servicio de tour"
+                    }</span>
+                    <span style="display: block; color: #9ca3af; font-size: 10px;">Fecha del Tour: ${formatearFecha(
+                      factura.servicio?.fechaTour || new Date()
+                    )}</span>
+                    ${
+                      factura.numeroContrato
+                        ? `<span style="display: block; color: #9ca3af; font-size: 10px;">Contrato: ${factura.numeroContrato}</span>`
+                        : ""
+                    }
                   </div>
                 </td>
-                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 600; white-space: nowrap; color: #1f2937;">${formatearMoneda(subtotal)}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 600; white-space: nowrap; color: #1f2937;">${formatearMoneda(subtotal)}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 600; white-space: nowrap; color: #1f2937;">${formatearMoneda(
+                  subtotal
+                )}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 600; white-space: nowrap; color: #1f2937;">${formatearMoneda(
+                  subtotal
+                )}</td>
               </tr>
             </tbody>
           </table>
@@ -316,7 +356,9 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
           </div>
           <div style="margin-bottom: 12px;">
             <h4 style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; margin: 0 0 4px 0;">Forma de Pago</h4>
-            <p style="font-size: 12px; color: #1f2937; margin: 0; font-weight: 500;">${factura.metodoPago || 'Mixto (Efectivo, Transferencia, Tarjeta)'}</p>
+            <p style="font-size: 12px; color: #1f2937; margin: 0; font-weight: 500;">${
+              factura.metodoPago || "Mixto (Efectivo, Transferencia, Tarjeta)"
+            }</p>
           </div>
           <div>
             <h4 style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; margin: 0 0 4px 0;">Moneda</h4>
@@ -327,11 +369,15 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
         <div style="min-width: 280px; background: #f9fafb; padding: 15px; border-radius: 8px; border: 2px solid #e5e7eb;">
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font-size: 13px; color: #4b5563; border-bottom: 1px solid #e5e7eb;">
             <span>Subtotal:</span>
-            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(subtotal)}</span>
+            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(
+              subtotal
+            )}</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font-size: 13px; color: #4b5563; border-bottom: 1px solid #e5e7eb;">
             <span>IVA (${(tasaIVA * 100).toFixed(0)}%):</span>
-            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(iva)}</span>
+            <span style="font-weight: 600; color: #1f2937;">${formatearMoneda(
+              iva
+            )}</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-top: 8px; border-top: 2px solid #4338ca; font-size: 16px; font-weight: 700; color: #4338ca;">
             <span>Total:</span>
@@ -340,13 +386,17 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
         </div>
       </div>
 
-      ${factura.historialAbonos?.length > 0 ? `
+      ${
+        factura.historialAbonos?.length > 0
+          ? `
       <!-- HISTORIAL DE PAGOS -->
       <div style="margin-top: 20px;">
         <h3 style="font-size: 14px; font-weight: 600; color: #374151; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb;">
           💳 HISTORIAL DE PAGOS
         </h3>
-        ${factura.historialAbonos.map((abono, index) => `
+        ${factura.historialAbonos
+          .map(
+            (abono, index) => `
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 8px;">
             <div style="display: flex; align-items: center; gap: 8px; color: #10b981; font-weight: 600; font-size: 12px;">
               <span>✓</span>
@@ -354,30 +404,44 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
             </div>
             <div style="display: flex; align-items: center; gap: 15px; font-size: 11px; color: #6b7280;">
               <span>${formatearFecha(abono.fecha)}</span>
-              <span>${abono.metodoPago || 'Efectivo'}</span>
-              <span style="font-weight: 600; color: #1f2937; font-size: 12px;">${formatearMoneda(abono.monto)}</span>
+              <span>${abono.metodoPago || "Efectivo"}</span>
+              <span style="font-weight: 600; color: #1f2937; font-size: 12px;">${formatearMoneda(
+                abono.monto
+              )}</span>
             </div>
           </div>
-        `).join('')}
+        `
+          )
+          .join("")}
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #e0e7ff; border-radius: 8px; font-weight: 600; color: #4338ca; margin-top: 12px;">
           <span>Total de Abonos Realizados:</span>
-          <span style="font-size: 15px;">${factura.planPago?.abonosRealizados || factura.historialAbonos.length} abonos</span>
+          <span style="font-size: 15px;">${
+            factura.planPago?.abonosRealizados || factura.historialAbonos.length
+          } abonos</span>
         </div>
       </div>
-      ` : ''}
+      `
+          : ""
+      }
 
       <!-- SELLOS DIGITALES -->
       <div style="margin-top: 20px;">
         <div style="margin-bottom: 15px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
           <h4 style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; margin: 0 0 8px 0;">Sello Digital del CFDI</h4>
           <p style="font-size: 9px; color: #1f2937; font-family: 'Courier New', monospace; word-break: break-all; line-height: 1.5; margin: 0; background: white; padding: 8px; border-radius: 4px;">
-            ${factura.selloCFDI || 'hA3kL9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH=='}
+            ${
+              factura.selloCFDI ||
+              "hA3kL9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH=="
+            }
           </p>
         </div>
         <div style="margin-bottom: 15px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
           <h4 style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; margin: 0 0 8px 0;">Sello Digital del SAT</h4>
           <p style="font-size: 9px; color: #1f2937; font-family: 'Courier New', monospace; word-break: break-all; line-height: 1.5; margin: 0; background: white; padding: 8px; border-radius: 4px;">
-            ${factura.selloSAT || 'xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH=='}
+            ${
+              factura.selloSAT ||
+              "xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH3sK9mP2xR5tY8vN1qW4jF7cZ0bD6gH=="
+            }
           </p>
         </div>
       </div>
@@ -386,7 +450,12 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
       <div style="margin-top: 15px; padding: 12px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
         <h4 style="font-size: 10px; color: #92400e; font-weight: 600; text-transform: uppercase; margin: 0 0 8px 0;">Cadena Original del Complemento de Certificación Digital del SAT</h4>
         <p style="font-size: 9px; color: #78350f; font-family: 'Courier New', monospace; word-break: break-all; line-height: 1.5; margin: 0;">
-          ${factura.cadenaOriginal || `||1.1|${folioFiscal}|${fechaActual}|${empresa.rfc}|${factura.cliente?.nombre || 'N/A'}|${total}|${empresa.certificadoSAT}||`}
+          ${
+            factura.cadenaOriginal ||
+            `||1.1|${folioFiscal}|${fechaActual}|${empresa.rfc}|${
+              factura.cliente?.nombre || "N/A"
+            }|${total}|${empresa.certificadoSAT}||`
+          }
         </p>
       </div>
 
@@ -407,8 +476,12 @@ const generarHTMLFactura = (factura, empresaParam = {}) => {
       <!-- FOOTER -->
       <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 2px solid #e5e7eb;">
         <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">Este documento fue generado electrónicamente y es válido sin firma autógrafa</p>
-        <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">Fecha y hora de certificación: ${new Date().toLocaleString('es-MX')}</p>
-        <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">${empresa.nombre} - RFC: ${empresa.rfc}</p>
+        <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">Fecha y hora de certificación: ${new Date().toLocaleString(
+          "es-MX"
+        )}</p>
+        <p style="font-size: 10px; color: #9ca3af; margin: 3px 0;">${
+          empresa.nombre
+        } - RFC: ${empresa.rfc}</p>
       </div>
 
     </div>

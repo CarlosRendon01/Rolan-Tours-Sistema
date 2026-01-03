@@ -192,11 +192,6 @@ const ModalAgregarAbono = ({
   const montoIngresado = parseFloat(formulario.montoAbono) || 0;
   const nuevoSaldo = saldoPendiente - montoIngresado;
   const seCompletara = nuevoSaldo === 0;
-  const porcentajeActual = (
-    (pagoSeleccionado.planPago.montoPagado /
-      pagoSeleccionado.planPago.montoTotal) *
-    100
-  ).toFixed(1);
   const nuevoPorcentaje = (
     ((pagoSeleccionado.planPago.montoPagado + montoIngresado) /
       pagoSeleccionado.planPago.montoTotal) *

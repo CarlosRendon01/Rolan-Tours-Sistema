@@ -15,16 +15,16 @@
 }
 
 .modal-recibo-superposicion {
-  position: fixed !important;
-  inset: 0 !important;
-  background: rgba(0, 0, 0, 0.65) !important;
-  backdrop-filter: blur(4px) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: 10000 !important;
-  padding: 1rem !important;
-  animation: modalReciboFadeIn 0.2s ease-out !important;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+  animation: modalReciboFadeIn 0.2s ease-out;
 }
 
 @keyframes modalReciboFadeIn {
@@ -37,17 +37,17 @@
 }
 
 .modal-recibo-contenedor {
-  background: var(--recibo-bg-white) !important;
-  border-radius: 12px !important;
-  width: 100% !important;
-  max-width: 900px !important;
-  max-height: 90vh !important;
-  display: flex !important;
-  flex-direction: column !important;
+  background: var(--recibo-bg-white);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  animation: modalReciboSlideUp 0.3s ease-out !important;
-  overflow: hidden !important;
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: modalReciboSlideUp 0.3s ease-out;
+  overflow: hidden;
 }
 
 @keyframes modalReciboSlideUp {
@@ -62,254 +62,254 @@
 }
 
 .modal-recibo-encabezado {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  padding: 1.5rem !important;
-  border-bottom: 1px solid var(--recibo-border) !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--recibo-border);
   background: linear-gradient(
     135deg,
     var(--recibo-primary) 0%,
     var(--recibo-secondary) 100%
-  ) !important;
-  color: white !important;
-  border-radius: 12px 12px 0 0 !important;
-  gap: 1rem !important;
+  );
+  color: white;
+  border-radius: 12px 12px 0 0;
+  gap: 1rem;
 }
 
 .modal-recibo-encabezado-contenido {
-  display: flex !important;
-  align-items: center !important;
-  gap: 1rem !important;
-  flex: 1 !important;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
 }
 
 .modal-recibo-envoltorio-icono {
-  flex-shrink: 0 !important;
-  color: white !important;
+  flex-shrink: 0;
+  color: white;
 }
 
 .modal-recibo-titulo {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  margin: 0 !important;
-  color: white !important;
-  line-height: 1.2 !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: white;
+  line-height: 1.2;
 }
 
 .modal-recibo-subtitulo {
-  font-size: 0.875rem !important;
-  margin: 0.25rem 0 0 0 !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  font-weight: 400 !important;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
 }
 
 .modal-recibo-boton-cerrar {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 8px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  color: white !important;
-  transition: all 0.2s ease !important;
-  flex-shrink: 0 !important;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .modal-recibo-boton-cerrar:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
-  transform: rotate(90deg) !important;
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
 }
 
 .modal-recibo-cuerpo {
-  flex: 1 !important;
-  overflow-y: auto !important;
-  padding: 2rem !important;
-  background: var(--recibo-bg-gray) !important;
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background: var(--recibo-bg-gray);
 }
 
 .modal-recibo-cuerpo::-webkit-scrollbar {
-  width: 8px !important;
+  width: 8px;
 }
 
 .modal-recibo-cuerpo::-webkit-scrollbar-track {
-  background: var(--recibo-border-light) !important;
+  background: var(--recibo-border-light);
 }
 
 .modal-recibo-cuerpo::-webkit-scrollbar-thumb {
-  background: #cbd5e1 !important;
-  border-radius: 4px !important;
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 .modal-recibo-cuerpo::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8 !important;
+  background: #94a3b8;
 }
 
 .modal-recibo-documento {
-  background: var(--recibo-bg-white) !important;
-  padding: 3rem !important;
-  border-radius: 8px !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-  max-width: 800px !important;
-  margin: 0 auto !important;
+  background: var(--recibo-bg-white);
+  padding: 3rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .modal-recibo-doc-encabezado {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-start !important;
-  margin-bottom: 2rem !important;
-  gap: 2rem !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 2rem;
 }
 
 .modal-recibo-logo {
-  flex: 1 !important;
+  flex: 1;
 }
 
 .modal-recibo-empresa-nombre {
-  font-size: 1.875rem !important;
-  font-weight: 700 !important;
-  color: var(--recibo-text-primary) !important;
-  margin: 0 0 0.5rem 0 !important;
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--recibo-text-primary);
+  margin: 0 0 0.5rem 0;
   background: linear-gradient(
     135deg,
     var(--recibo-primary) 0%,
     var(--recibo-secondary) 100%
-  ) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-  line-height: 1.2 !important;
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
 }
 
 .modal-recibo-empresa-datos {
-  font-size: 0.875rem !important;
-  color: var(--recibo-text-tertiary) !important;
-  margin: 0.25rem 0 !important;
-  line-height: 1.5 !important;
+  font-size: 0.875rem;
+  color: var(--recibo-text-tertiary);
+  margin: 0.25rem 0;
+  line-height: 1.5;
 }
 
 .modal-recibo-doc-info {
-  text-align: right !important;
-  flex-shrink: 0 !important;
+  text-align: right;
+  flex-shrink: 0;
 }
 
 .modal-recibo-doc-titulo {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.25rem !important;
-  margin-bottom: 1rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 .modal-recibo-etiqueta {
-  font-size: 0.75rem !important;
-  color: var(--recibo-text-tertiary) !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
-  font-weight: 600 !important;
+  font-size: 0.75rem;
+  color: var(--recibo-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 .modal-recibo-doc-numero {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  color: var(--recibo-primary) !important;
-  line-height: 1 !important;
-  margin: 0 !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--recibo-primary);
+  line-height: 1;
+  margin: 0;
 }
 
 .modal-recibo-doc-fecha {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 0.5rem !important;
-  font-size: 0.875rem !important;
-  color: var(--recibo-text-tertiary) !important;
-  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--recibo-text-tertiary);
+  margin: 0;
 }
 
 .modal-recibo-doc-fecha svg {
-  color: var(--recibo-primary) !important;
+  color: var(--recibo-primary);
 }
 
 .modal-recibo-separador {
-  height: 2px !important;
+  height: 2px;
   background: linear-gradient(
     90deg,
     transparent,
     var(--recibo-primary),
     transparent
-  ) !important;
-  margin: 2rem 0 !important;
-  border: none !important;
+  );
+  margin: 2rem 0;
+  border: none;
 }
 
 .modal-recibo-seccion {
-  margin-bottom: 2rem !important;
+  margin-bottom: 2rem;
 }
 
 .modal-recibo-seccion:last-child {
-  margin-bottom: 0 !important;
+  margin-bottom: 0;
 }
 
 .modal-recibo-seccion-titulo {
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-  color: var(--recibo-text-secondary) !important;
-  margin: 0 0 1rem 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  padding-bottom: 0.5rem !important;
-  border-bottom: 2px solid var(--recibo-border) !important;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--recibo-text-secondary);
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--recibo-border);
 }
 
 .modal-recibo-seccion-titulo svg {
-  color: var(--recibo-primary) !important;
-  flex-shrink: 0 !important;
+  color: var(--recibo-primary);
+  flex-shrink: 0;
 }
 
 .modal-recibo-seccion-contenido {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.5rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .modal-recibo-dato {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-start !important;
-  gap: 0.75rem !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
 }
 
 .modal-recibo-dato-label {
-  font-size: 0.75rem !important;
-  font-weight: 600 !important;
-  color: var(--recibo-text-tertiary) !important;
-  min-width: 100px !important;
-  flex-shrink: 0 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--recibo-text-tertiary);
+  min-width: 100px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .modal-recibo-dato-valor {
-  font-size: 0.9375rem !important;
-  color: var(--recibo-text-primary) !important;
-  text-align: right !important;
-  flex: 1 !important;
-  font-weight: 500 !important;
-  line-height: 1.4 !important;
+  font-size: 0.9375rem;
+  color: var(--recibo-text-primary);
+  text-align: right;
+  flex: 1;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .modal-recibo-codigo {
   font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
-    "Courier New", monospace !important;
-  background: #f3f4f6 !important;
-  padding: 0.125rem 0.375rem !important;
-  border-radius: 4px !important;
-  display: inline-block !important;
+    "Courier New", monospace;
+  background: #f3f4f6;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  display: inline-block;
 }
 
 .modal-recibo-total-contenedor {
@@ -317,144 +317,144 @@
     135deg,
     rgba(102, 126, 234, 0.08) 0%,
     rgba(118, 75, 162, 0.08) 100%
-  ) !important;
-  border: 2px solid var(--recibo-primary) !important;
-  border-radius: 8px !important;
-  padding: 1.5rem !important;
-  margin: 1.5rem 0 !important;
+  );
+  border: 2px solid var(--recibo-primary);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
 }
 
 .modal-recibo-total {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .modal-recibo-total-label {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  font-size: 0.875rem !important;
-  font-weight: 600 !important;
-  color: var(--recibo-text-secondary) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--recibo-text-secondary);
 }
 
 .modal-recibo-total-label svg {
-  color: var(--recibo-primary) !important;
+  color: var(--recibo-primary);
 }
 
 .modal-recibo-total-monto {
-  font-size: 2rem !important;
-  font-weight: 700 !important;
-  color: var(--recibo-primary) !important;
-  line-height: 1 !important;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--recibo-primary);
+  line-height: 1;
   font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
-    "Courier New", monospace !important;
+    "Courier New", monospace;
 }
 
 .modal-recibo-estado-finalizado {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.75rem !important;
-  padding: 1rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
   background: linear-gradient(
     135deg,
     rgba(16, 185, 129, 0.08) 0%,
     rgba(5, 150, 105, 0.08) 100%
-  ) !important;
-  border: 2px solid var(--recibo-success) !important;
-  border-radius: 8px !important;
-  color: #065f46 !important;
-  font-weight: 600 !important;
-  font-size: 1.125rem !important;
-  margin: 1.5rem 0 !important;
+  );
+  border: 2px solid var(--recibo-success);
+  border-radius: 8px;
+  color: #065f46;
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin: 1.5rem 0;
 }
 
 .modal-recibo-estado-finalizado svg {
-  color: var(--recibo-success) !important;
-  flex-shrink: 0 !important;
+  color: var(--recibo-success);
+  flex-shrink: 0;
 }
 
 .modal-recibo-doc-pie {
-  margin-top: 3rem !important;
-  padding-top: 2rem !important;
-  border-top: 2px solid var(--recibo-border) !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-end !important;
-  flex-wrap: wrap !important;
-  gap: 1.5rem !important;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--recibo-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
 
 .modal-recibo-firma {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .modal-recibo-linea-firma {
-  width: 200px !important;
-  height: 1px !important;
-  background: var(--recibo-text-light) !important;
-  margin-bottom: 0.5rem !important;
+  width: 200px;
+  height: 1px;
+  background: var(--recibo-text-light);
+  margin-bottom: 0.5rem;
 }
 
 .modal-recibo-firma-texto {
-  font-size: 0.75rem !important;
-  color: var(--recibo-text-tertiary) !important;
-  margin: 0 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+  font-size: 0.75rem;
+  color: var(--recibo-text-tertiary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .modal-recibo-nota {
-  text-align: right !important;
+  text-align: right;
 }
 
 .modal-recibo-nota p {
-  font-size: 0.75rem !important;
-  color: var(--recibo-text-light) !important;
-  margin: 0.25rem 0 !important;
-  line-height: 1.5 !important;
+  font-size: 0.75rem;
+  color: var(--recibo-text-light);
+  margin: 0.25rem 0;
+  line-height: 1.5;
 }
 
 .modal-recibo-pie {
-  display: flex !important;
-  justify-content: flex-end !important;
-  gap: 0.75rem !important;
-  padding: 1.25rem 1.5rem !important;
-  border-top: 1px solid var(--recibo-border) !important;
-  background: var(--recibo-bg-white) !important;
-  border-radius: 0 0 12px 12px !important;
-  flex-wrap: wrap !important;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--recibo-border);
+  background: var(--recibo-bg-white);
+  border-radius: 0 0 12px 12px;
+  flex-wrap: wrap;
 }
 
 .modal-recibo-boton-secundario,
 .modal-recibo-boton-primario {
-  padding: 0.625rem 1.25rem !important;
-  border-radius: 8px !important;
-  font-size: 0.9375rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  border: none !important;
-  white-space: nowrap !important;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  white-space: nowrap;
 }
 
 .modal-recibo-boton-secundario {
-  background: var(--recibo-bg-light) !important;
-  color: var(--recibo-text-secondary) !important;
-  border: 1.5px solid var(--recibo-border) !important;
+  background: var(--recibo-bg-light);
+  color: var(--recibo-text-secondary);
+  border: 1.5px solid var(--recibo-border);
 }
 
 .modal-recibo-boton-secundario:hover:not(:disabled) {
-  background: var(--recibo-border) !important;
-  border-color: var(--recibo-text-tertiary) !important;
+  background: var(--recibo-border);
+  border-color: var(--recibo-text-tertiary);
 }
 
 .modal-recibo-boton-primario {
@@ -462,228 +462,228 @@
     135deg,
     var(--recibo-primary) 0%,
     var(--recibo-secondary) 100%
-  ) !important;
-  color: white !important;
-  box-shadow: 0 2px 4px rgb(50, 80, 212) !important;
+  );
+  color: white;
+  box-shadow: 0 2px 4px rgb(50, 80, 212);
 }
 
 .modal-recibo-boton-primario:hover:not(:disabled) {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .modal-recibo-boton-secundario:disabled,
 .modal-recibo-boton-primario:disabled {
-  opacity: 0.6 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .modal-recibo-boton-secundario svg,
 .modal-recibo-boton-primario svg {
-  flex-shrink: 0 !important;
+  flex-shrink: 0;
 }
 
 .no-print {
-  display: flex !important;
+  display: flex;
 }
 
 @media print {
   .no-print {
-    display: none !important;
+    display: none;
   }
 
   .modal-recibo-superposicion {
-    background: white !important;
-    position: static !important;
-    padding: 0 !important;
-    backdrop-filter: none !important;
+    background: white;
+    position: static;
+    padding: 0;
+    backdrop-filter: none;
   }
 
   .modal-recibo-contenedor {
-    max-width: none !important;
-    max-height: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
+    max-width: none;
+    max-height: none;
+    box-shadow: none;
+    border-radius: 0;
   }
 
   .modal-recibo-cuerpo {
-    padding: 0 !important;
-    background: white !important;
-    overflow: visible !important;
+    padding: 0;
+    background: white;
+    overflow: visible;
   }
 
   .modal-recibo-documento {
-    box-shadow: none !important;
-    padding: 1rem !important;
+    box-shadow: none;
+    padding: 1rem;
   }
 
   .modal-recibo-total-contenedor {
-    border: 1px solid var(--recibo-border) !important;
-    background: white !important;
+    border: 1px solid var(--recibo-border);
+    background: white;
   }
 
   .modal-recibo-estado-finalizado {
-    border: 1px solid var(--recibo-success) !important;
-    background: white !important;
+    border: 1px solid var(--recibo-success);
+    background: white;
   }
 
   .modal-recibo-seccion,
   .modal-recibo-total-contenedor,
   .modal-recibo-estado-finalizado {
-    page-break-inside: avoid !important;
+    page-break-inside: avoid;
   }
 }
 
 @media (max-width: 768px) {
   .modal-recibo-superposicion {
-    padding: 0 !important;
-    align-items: flex-end !important;
+    padding: 0;
+    align-items: flex-end;
   }
 
   .modal-recibo-contenedor {
-    max-width: 100% !important;
-    max-height: 100vh !important;
-    border-radius: 16px 16px 0 0 !important;
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 16px 16px 0 0;
   }
 
   .modal-recibo-encabezado {
-    border-radius: 16px 16px 0 0 !important;
-    padding: 1rem !important;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem;
   }
 
   .modal-recibo-titulo {
-    font-size: 1.25rem !important;
+    font-size: 1.25rem;
   }
 
   .modal-recibo-subtitulo {
-    font-size: 0.8125rem !important;
+    font-size: 0.8125rem;
   }
 
   .modal-recibo-boton-cerrar {
-    width: 36px !important;
-    height: 36px !important;
+    width: 36px;
+    height: 36px;
   }
 
   .modal-recibo-cuerpo {
-    padding: 1rem !important;
+    padding: 1rem;
   }
 
   .modal-recibo-documento {
-    padding: 1.5rem !important;
+    padding: 1.5rem;
   }
 
   .modal-recibo-doc-encabezado {
-    flex-direction: column !important;
-    gap: 1.5rem !important;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
   .modal-recibo-doc-info {
-    text-align: left !important;
-    width: 100% !important;
+    text-align: left;
+    width: 100%;
   }
 
   .modal-recibo-doc-fecha {
-    justify-content: flex-start !important;
+    justify-content: flex-start;
   }
 
   .modal-recibo-empresa-nombre {
-    font-size: 1.5rem !important;
+    font-size: 1.5rem;
   }
 
   .modal-recibo-dato {
-    flex-direction: column !important;
-    gap: 0.125rem !important;
+    flex-direction: column;
+    gap: 0.125rem;
   }
 
   .modal-recibo-dato-label {
-    min-width: auto !important;
+    min-width: auto;
   }
 
   .modal-recibo-dato-valor {
-    text-align: left !important;
+    text-align: left;
   }
 
   .modal-recibo-total {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.5rem !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .modal-recibo-total-monto {
-    font-size: 1.75rem !important;
+    font-size: 1.75rem;
   }
 
   .modal-recibo-doc-pie {
-    flex-direction: column !important;
-    gap: 2rem !important;
-    align-items: center !important;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
   }
 
   .modal-recibo-nota {
-    text-align: center !important;
+    text-align: center;
   }
 
   .modal-recibo-pie {
-    flex-direction: column !important;
-    padding: 1rem !important;
+    flex-direction: column;
+    padding: 1rem;
   }
 
   .modal-recibo-boton-secundario,
   .modal-recibo-boton-primario {
-    width: 100% !important;
-    justify-content: center !important;
+    width: 100%;
+    justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
   .modal-recibo-encabezado {
-    padding: 0.875rem !important;
+    padding: 0.875rem;
   }
 
   .modal-recibo-titulo {
-    font-size: 1.125rem !important;
+    font-size: 1.125rem;
   }
 
   .modal-recibo-documento {
-    padding: 1rem !important;
+    padding: 1rem;
   }
 
   .modal-recibo-empresa-nombre {
-    font-size: 1.25rem !important;
+    font-size: 1.25rem;
   }
 
   .modal-recibo-doc-numero {
-    font-size: 1.25rem !important;
+    font-size: 1.25rem;
   }
 
   .modal-recibo-total-monto {
-    font-size: 1.5rem !important;
+    font-size: 1.5rem;
   }
 
   .modal-recibo-seccion-titulo {
-    font-size: 0.9375rem !important;
+    font-size: 0.9375rem;
   }
 }
 
 .modal-recibo-boton-secundario:focus-visible,
 .modal-recibo-boton-primario:focus-visible {
-  outline: 2px solid var(--recibo-primary) !important;
-  outline-offset: 2px !important;
+  outline: 2px solid var(--recibo-primary);
+  outline-offset: 2px;
 }
 
 .modal-recibo-boton-cerrar:focus-visible {
-  outline: 2px solid white !important;
-  outline-offset: 2px !important;
+  outline: 2px solid white;
+  outline-offset: 2px;
 }
 
 @media (prefers-contrast: high) {
   .modal-recibo-contenedor {
-    border: 2px solid var(--recibo-text-primary) !important;
+    border: 2px solid var(--recibo-text-primary);
   }
 
   .modal-recibo-documento {
-    border: 1px solid var(--recibo-border) !important;
+    border: 1px solid var(--recibo-border);
   }
 }
 
@@ -693,8 +693,8 @@
   .modal-recibo-boton-secundario,
   .modal-recibo-boton-primario,
   .modal-recibo-boton-cerrar {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
   }
 }

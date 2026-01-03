@@ -1,41 +1,40 @@
 .modal-editar-overlay {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: rgba(0, 0, 0, 0.5) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: 9999 !important;
-  padding: 1rem !important;
-  animation: fadeIn 0.2s ease-out !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
 }
 
 @keyframes modal-editar-fade-in {
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
 }
 
 .modal-editar-contenedor {
-  background: white !important;
-  border-radius: 16px !important;
-  width: 90% !important;
-  max-width: 1100px !important;
-  max-height: 90vh !important;
-  display: flex !important;
-  flex-direction: column !important;
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 1100px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  animation: slideUp 0.3s ease-out !important;
-  position: relative !important;
-  transform: scale(0.88) !important;
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s ease-out;
+  position: relative;
+  transform: scale(0.88);
 }
 
 @keyframes modal-editar-slide-up {
@@ -43,7 +42,6 @@
     transform: translateY(20px);
     opacity: 0;
   }
-
   to {
     transform: translateY(0);
     opacity: 1;
@@ -51,275 +49,274 @@
 }
 
 .modal-editar-header {
-  padding: 0.65rem 1.25rem !important;
-  min-height: 135px !important;
-  border-bottom: 0px solid #e5e7eb !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
-  border-top-left-radius: 16px !important;
-  border-top-right-radius: 16px !important;
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 10 !important;
-  margin: 0 !important;
+  padding: 0.65rem 1.25rem;
+  min-height: 135px;
+  border-bottom: 0px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin: 0;
 }
 
 .modal-editar-header::after {
-  content: "" !important;
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 4px !important;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0.1) 0%,
     rgba(255, 255, 255, 0.3) 50%,
     rgba(255, 255, 255, 0.1) 100%
-  ) !important;
+  );
 }
 
 .modal-editar-header-contenido {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.1rem !important;
-  z-index: 2 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  z-index: 2;
 }
 
 .modal-editar-icono-principal {
-  width: 48px !important;
-  height: 48px !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  border-radius: 10px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .modal-editar-titulo {
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  margin: 0 !important;
-  color: white !important;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: white;
 }
 
 .modal-editar-subtitulo {
-  font-size: 0.875rem !important;
-  margin: 0.25rem 0 0 0 !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .modal-editar-boton-cerrar {
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 8px !important;
-  border: none !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  backdrop-filter: blur(10px) !important;
-  z-index: 2 !important;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  z-index: 2;
 }
 
 .modal-editar-boton-cerrar:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3) !important;
-  transform: rotate(90deg) !important;
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
 }
 
 .modal-editar-boton-cerrar:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .modal-editar-body {
-  padding: 1.5rem !important;
-  overflow-y: auto !important;
-  flex: 1 !important;
-  background: white !important;
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  background: white;
 }
 
 .modal-editar-formulario {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1.25rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .modal-editar-campo {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.5rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .modal-editar-label {
-  font-size: 0.875rem !important;
-  font-weight: 600 !important;
-  color: #374151 !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
 }
 
 .modal-editar-requerido {
-  color: #ef4444 !important;
-  margin-left: 0.25rem !important;
+  color: #ef4444;
+  margin-left: 0.25rem;
 }
 
 .modal-editar-input,
 .modal-editar-select,
 .modal-editar-textarea {
-  width: 100% !important;
-  padding: 0.75rem !important;
-  border: 1.5px solid #d1d5db !important;
-  border-radius: 8px !important;
-  font-size: 0.9375rem !important;
-  font-family: inherit !important;
-  transition: all 0.2s !important;
-  background: white !important;
-  color: #111827 !important;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  background: white;
+  color: #111827;
 }
 
 .modal-editar-input:focus,
 .modal-editar-select:focus,
 .modal-editar-textarea:focus {
-  outline: none !important;
-  border-color: #2563eb !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .modal-editar-input:disabled,
 .modal-editar-select:disabled,
 .modal-editar-textarea:disabled {
-  background: #f3f4f6 !important;
-  cursor: not-allowed !important;
-  opacity: 0.6 !important;
+  background: #f3f4f6;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .modal-editar-input-error {
-  border-color: #ef4444 !important;
+  border-color: #ef4444;
 }
 
 .modal-editar-input-error:focus {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 .modal-editar-mensaje-error {
-  font-size: 0.8125rem !important;
-  color: #ef4444 !important;
-  margin-top: -0.25rem !important;
+  font-size: 0.8125rem;
+  color: #ef4444;
+  margin-top: -0.25rem;
 }
 
 .modal-editar-input-grupo {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .modal-editar-input-prefijo {
-  position: absolute !important;
-  left: 0.75rem !important;
-  font-weight: 600 !important;
-  color: #6b7280 !important;
-  pointer-events: none !important;
+  position: absolute;
+  left: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  pointer-events: none;
 }
 
 .modal-editar-input-monto {
-  padding-left: 2rem !important;
+  padding-left: 2rem;
 }
 
 .modal-editar-textarea {
-  resize: vertical !important;
-  min-height: 80px !important;
+  resize: vertical;
+  min-height: 80px;
 }
-
 .modal-editar-select {
-  cursor: pointer !important;
-  appearance: none !important;
-  background-color: #ffffff !important;
-  color: #111827 !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 0.75rem center !important;
-  padding-right: 2.5rem !important;
+  cursor: pointer;
+  appearance: none;
+  background-color: #ffffff;
+  color: #111827;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.5rem;
 }
 
 .modal-editar-footer {
-  padding: 1rem 1.5rem !important;
-  border-top: 1px solid #e5e7eb !important;
-  display: flex !important;
-  justify-content: flex-end !important;
-  gap: 0.75rem !important;
-  background: #f9fafb !important;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background: #f9fafb;
 }
 
 .modal-editar-boton-cancelar,
 .modal-editar-boton-guardar {
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  border: none !important;
+  padding: 0.625rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
 }
 
 .modal-editar-boton-cancelar {
-  background: white !important;
-  color: #6b7280 !important;
-  border: 1.5px solid #d1d5db !important;
+  background: white;
+  color: #6b7280;
+  border: 1.5px solid #d1d5db;
 }
 
 .modal-editar-boton-cancelar:hover:not(:disabled) {
-  background: #dc2626 !important;
-  color: #ffffff !important;
-  border-color: #dc2626 !important;
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
 }
 
 .modal-editar-boton-guardar {
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
-  color: white !important;
-  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3) !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
 }
 
 .modal-editar-boton-guardar:hover:not(:disabled) {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4);
 }
 
 .modal-editar-boton-guardar:disabled,
 .modal-editar-boton-cancelar:disabled {
-  opacity: 0.6 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .modal-editar-loading {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: 10 !important;
-  backdrop-filter: blur(4px) !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(4px);
 }
 
 .modal-editar-spinner {
-  width: 48px !important;
-  height: 48px !important;
-  border: 4px solid #e5e7eb !important;
-  border-top-color: #2563eb !important;
-  border-radius: 50% !important;
-  animation: modal-editar-spin 0.8s linear infinite !important;
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: modal-editar-spin 0.8s linear infinite;
 }
 
 @keyframes modal-editar-spin {
@@ -329,54 +326,54 @@
 }
 
 .modal-editar-body::-webkit-scrollbar {
-  width: 8px !important;
+  width: 8px;
 }
 
 .modal-editar-body::-webkit-scrollbar-track {
-  background: #f1f5f9 !important;
-  border-radius: 4px !important;
+  background: #f1f5f9;
+  border-radius: 4px;
 }
 
 .modal-editar-body::-webkit-scrollbar-thumb {
-  background: #cbd5e1 !important;
-  border-radius: 4px !important;
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 .modal-editar-body::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8 !important;
+  background: #94a3b8;
 }
 
 @media (max-width: 640px) {
   .modal-editar-overlay {
-    padding: 0 !important;
+    padding: 0;
   }
 
   .modal-editar-contenedor {
-    max-width: 100% !important;
-    max-height: 100vh !important;
-    border-radius: 20px !important;
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 20px;
   }
 
   .modal-editar-header {
-    padding: 1.25rem !important;
+    padding: 1.25rem;
   }
 
   .modal-editar-titulo {
-    font-size: 1.125rem !important;
+    font-size: 1.125rem;
   }
 
   .modal-editar-body {
-    padding: 1.25rem !important;
+    padding: 1.25rem;
   }
 
   .modal-editar-footer {
-    flex-direction: column-reverse !important;
+    flex-direction: column-reverse;
   }
 
   .modal-editar-boton-cancelar,
   .modal-editar-boton-guardar {
-    width: 100% !important;
-    justify-content: center !important;
+    width: 100%;
+    justify-content: center;
   }
 }
 

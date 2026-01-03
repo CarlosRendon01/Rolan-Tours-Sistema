@@ -315,7 +315,6 @@
   color: #6b7280;
   pointer-events: none;
 }
-
 .abonos-contenedor-tabla {
   overflow-x: auto;
   background: white;
@@ -372,6 +371,10 @@
   color: #374151;
 }
 
+.abonos-fila-pago.eliminado {
+  background: #fee2e2;
+}
+
 .abonos-columna-id {
   font-weight: 600;
   color: #6b7280;
@@ -398,6 +401,91 @@
   font-weight: 500;
   color: #6b7280;
   font-size: 0.8125rem;
+}
+
+.abonos-info-servicio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.abonos-tipo-servicio {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.abonos-descripcion-servicio {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.abonos-contenedor-progreso {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.abonos-barra-progreso-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.abonos-barra-progreso {
+  width: 80px;
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.abonos-barra-progreso-fill {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.abonos-barra-progreso-fill.completo {
+  background: #10b981;
+}
+
+.abonos-barra-progreso-fill.proceso {
+  background: #3b82f6;
+}
+
+.abonos-porcentaje-progreso {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.abonos-monto-progreso {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.abonos-conteo-abonos {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.abonos-info-ultimo-abono {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.abonos-fecha-abono {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.abonos-sin-abonos {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.abonos-texto-finalizado {
+  color: #10b981;
+  font-weight: 600;
 }
 
 .abonos-badge-estado {
@@ -449,6 +537,26 @@
 
 .abonos-estado-vencido .abonos-indicador-estado {
   background: #dc2626;
+}
+
+.abonos-badge-visibilidad {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.abonos-badge-visibilidad.visible {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.abonos-badge-visibilidad.oculto {
+  background: #e5e7eb;
+  color: #374151;
 }
 
 .abonos-columna-acciones {
@@ -564,7 +672,6 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
 }
-
 .abonos-pie-tabla {
   display: flex;
   justify-content: space-between;
@@ -581,6 +688,11 @@
   font-size: 0.875rem;
   font-weight: 500;
   flex: 1;
+}
+
+.abonos-filtrado-info {
+  color: #6b7280;
+  margin-left: 0.5rem;
 }
 
 .abonos-controles-paginacion {
@@ -654,6 +766,11 @@
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.25);
 }
 
+.abonos-ellipsis {
+  padding: 0.5rem;
+  color: #9ca3af;
+}
+
 .abonos-estado-vacio {
   text-align: center;
   padding: 3rem 2rem;
@@ -705,7 +822,6 @@
     opacity: 0;
     transform: translateY(10px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -716,7 +832,6 @@
   0% {
     transform: translate(-50%, -50%) rotate(0deg);
   }
-
   100% {
     transform: translate(-50%, -50%) rotate(360deg);
   }

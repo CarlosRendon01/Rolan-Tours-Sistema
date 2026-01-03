@@ -12,15 +12,6 @@
   backdrop-filter: blur(6px);
 }
 
-@keyframes modalEliminarFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 .modal-eliminar-contenedor {
   background: white;
   border-radius: 16px;
@@ -65,18 +56,6 @@
   justify-content: center;
   color: white;
   flex-shrink: 0;
-}
-
-@keyframes modalEliminarPulsar {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
-  }
 }
 
 .modal-eliminar-titulo-seccion {
@@ -132,27 +111,6 @@
   background: #fef2f2;
   border: 2px solid #fca5a5;
   margin-bottom: 24px;
-  position: relative;
-}
-
-@keyframes modalEliminarShake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: translateX(-3px);
-  }
-  20%,
-  40%,
-  60%,
-  80% {
-    transform: translateX(3px);
-  }
 }
 
 .modal-eliminar-alerta svg {
@@ -182,28 +140,6 @@
 .modal-eliminar-alerta-texto strong {
   font-weight: 700;
   text-decoration: underline;
-}
-
-.modal-eliminar-alerta-cerrar {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  border: none;
-  background: #fee2e2;
-  color: #991b1b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.modal-eliminar-alerta-cerrar:hover {
-  background: #fecaca;
-  color: #7f1d1d;
 }
 
 .modal-eliminar-recibo-info {
@@ -243,124 +179,6 @@
   color: #dc2626;
   font-size: 16px;
   font-weight: 700;
-}
-
-.modal-eliminar-confirmacion-seccion {
-  background: #fffbeb;
-  border: 2px solid #fcd34d;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
-}
-
-.modal-eliminar-confirmacion-instruccion {
-  font-size: 14px;
-  color: #78350f;
-  margin: 0 0 16px 0;
-  line-height: 1.6;
-}
-
-.modal-eliminar-texto-requerido {
-  color: #dc2626;
-  font-weight: 700;
-  font-size: 15px;
-  background: #fef2f2;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid #fca5a5;
-}
-
-.modal-eliminar-form-group {
-  position: relative;
-}
-
-.modal-eliminar-form-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  font-family: inherit;
-  font-weight: 600;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-  letter-spacing: 1px;
-}
-
-.modal-eliminar-form-input:focus {
-  outline: none;
-  border-color: #fbbf24;
-  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
-}
-
-.modal-eliminar-form-input.modal-eliminar-input-valido {
-  border-color: #10b981;
-  background: #f0fdf4;
-  color: #065f46;
-}
-
-.modal-eliminar-form-input.modal-eliminar-input-valido:focus {
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
-}
-
-.modal-eliminar-confirmacion-valida {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 10px 12px;
-  background: #f0fdf4;
-  border: 1px solid #86efac;
-  border-radius: 8px;
-  color: #065f46;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-@keyframes modalEliminarSlideIn {
-  from {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.modal-eliminar-confirmacion-valida svg {
-  color: #10b981;
-}
-
-.modal-eliminar-consecuencias {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 20px;
-}
-
-.modal-eliminar-consecuencias-titulo {
-  font-size: 14px;
-  font-weight: 700;
-  color: #374151;
-  margin: 0 0 12px 0;
-}
-
-.modal-eliminar-consecuencias-lista {
-  margin: 0;
-  padding-left: 20px;
-  color: #6b7280;
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-.modal-eliminar-consecuencias-lista li {
-  margin-bottom: 8px;
-}
-
-.modal-eliminar-consecuencias-lista li:last-child {
-  margin-bottom: 0;
 }
 
 .modal-eliminar-footer {
@@ -414,20 +232,6 @@
 .modal-eliminar-boton-peligro:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none !important;
-}
-
-@keyframes modalEliminarTemblor {
-  0%,
-  100% {
-    transform: translateX(0) rotate(0deg);
-  }
-  25% {
-    transform: translateX(-2px) rotate(-5deg);
-  }
-  75% {
-    transform: translateX(2px) rotate(5deg);
-  }
 }
 
 @media (max-width: 640px) {
@@ -465,9 +269,5 @@
 
   .modal-eliminar-alerta {
     padding: 14px;
-  }
-
-  .modal-eliminar-confirmacion-seccion {
-    padding: 16px;
   }
 }

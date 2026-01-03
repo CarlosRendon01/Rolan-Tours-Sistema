@@ -6,7 +6,6 @@ import {
   ChevronRight,
   FileText,
   Download,
-  Send,
   BarChart3,
   CheckCircle,
   DollarSign,
@@ -14,8 +13,6 @@ import {
   XCircle,
   Trash2,
   RefreshCw,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import "./TablaFacturas.css";
 import {
@@ -45,15 +42,13 @@ const TablaFacturas = ({
   const [cargando, setCargando] = useState(false);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
-
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
     useState(false);
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
+  const [datosFacturas, setdatosFacturas] = useState([]);
 
   const API_URL = "http://127.0.0.1:8000/api/facturas";
-
-  const [datosFacturas, setdatosFacturas] = useState([]);
 
   useEffect(() => {
     cargarFacturas();
@@ -182,7 +177,6 @@ const TablaFacturas = ({
   const manejarRegenerar = async (factura, motivo) => {
     try {
       await cargarFacturas();
-
       if (onRegenerar) {
         await onRegenerar(factura, motivo);
       }
@@ -194,38 +188,11 @@ const TablaFacturas = ({
   const manejarEliminarDefinitivo = async (factura, motivo) => {
     try {
       await cargarFacturas();
-
       if (onEliminarDefinitivo) {
         await onEliminarDefinitivo(factura, motivo);
       }
     } catch (error) {
       console.error("Error al eliminar definitivamente:", error);
-    }
-  };
-
-  const descargarPlantillaExcel = async () => {
-    try {
-      const response = await fetch("/Factura.xlsm");
-
-      if (!response.ok) {
-        throw new Error(
-          "Archivo no encontrado. Verifica que Factura.xlsm esté en public/"
-        );
-      }
-
-      const blob = await response.blob();
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "Factura.xlsm";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("❌ Error:", error.message);
-      alert("Error al descargar: " + error.message);
     }
   };
 
@@ -244,13 +211,10 @@ const TablaFacturas = ({
           case "descargarExcel":
             try {
               const token = localStorage.getItem("token");
-
               const response = await axios.get(
                 `http://127.0.0.1:8000/api/facturas/${factura.id}/descargar-excel`,
                 {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
+                  headers: { Authorization: `Bearer ${token}` },
                   responseType: "blob",
                 }
               );
@@ -262,20 +226,16 @@ const TablaFacturas = ({
               const url = window.URL.createObjectURL(blob);
               const link = document.createElement("a");
               link.href = url;
-
               const fileName = `Factura_${factura.numeroFactura}.xlsx`;
               link.setAttribute("download", fileName);
-
               document.body.appendChild(link);
               link.click();
-
               document.body.removeChild(link);
               window.URL.revokeObjectURL(url);
 
               alert(`✅ Excel descargado exitosamente:\n${fileName}`);
             } catch (error) {
               console.error("❌ Error al descargar Excel:", error);
-
               if (error.response?.data instanceof Blob) {
                 const text = await error.response.data.text();
                 console.error("❌ Error del servidor:", text);
@@ -293,21 +253,6 @@ const TablaFacturas = ({
                     (error.response?.data?.message || error.message)
                 );
               }
-            }
-            break;
-
-          case "enviar":
-            const emailCliente = prompt(
-              `Enviar factura ${factura.numeroFactura} por correo\n\nIngresa el correo del cliente:`
-            );
-            if (emailCliente && emailCliente.includes("@")) {
-              alert(
-                `✉️ Factura enviada correctamente a:\n${emailCliente}\n\n` +
-                  `Factura: ${factura.numeroFactura}\n` +
-                  `Cliente: ${factura.cliente}`
-              );
-            } else if (emailCliente) {
-              alert("❌ Correo inválido. Por favor ingresa un correo válido.");
             }
             break;
 
@@ -578,22 +523,11 @@ const TablaFacturas = ({
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Factura" className="facturas-columna-factura">
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.25rem",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: "600",
-                          color: factura.activo ? "#94a3b8" : "#111827",
-                        }}
-                      >
+                    <div className="facturas-info-factura">
+                      <span className="facturas-numero-factura">
                         {factura.numeroFactura}
                       </span>
-                      <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>
+                      <span className="facturas-serie-folio">
                         Serie {factura.serie} - Folio {factura.folio}
                       </span>
                       {!factura.activo && (
@@ -604,11 +538,7 @@ const TablaFacturas = ({
                       )}
                     </div>
                   </td>
-                  <td
-                    data-label="Cliente"
-                    className="facturas-columna-cliente"
-                    style={{ color: factura.activo ? "#94a3b8" : "#111827" }}
-                  >
+                  <td data-label="Cliente" className="facturas-columna-cliente">
                     {factura.cliente}
                   </td>
                   <td data-label="RFC" className="facturas-columna-factura">
@@ -621,24 +551,16 @@ const TablaFacturas = ({
                     })}
                   </td>
                   <td data-label="Fecha Emisión">
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.25rem",
-                      }}
-                    >
+                    <div className="facturas-info-fechas">
                       <span>{factura.fechaEmision}</span>
                       {factura.estado === ESTADOS_FACTURA.CANCELADA &&
                         factura.fechaCancelacion && (
-                          <span
-                            style={{ fontSize: "0.75rem", color: "#dc2626" }}
-                          >
+                          <span className="facturas-fecha-cancelacion">
                             Cancelada: {factura.fechaCancelacion}
                           </span>
                         )}
                       {!factura.activo && factura.fechaEliminacion && (
-                        <span style={{ fontSize: "0.75rem", color: "#f59e0b" }}>
+                        <span className="facturas-fecha-eliminacion">
                           Eliminada: {factura.fechaEliminacion}
                         </span>
                       )}
@@ -646,15 +568,7 @@ const TablaFacturas = ({
                   </td>
                   <td data-label="UUID">
                     <div
-                      style={{
-                        maxWidth: "150px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        fontSize: "0.75rem",
-                        fontFamily: "monospace",
-                        color: "#6b7280",
-                      }}
+                      className="facturas-uuid-contenedor"
                       title={factura.uuid}
                     >
                       {factura.uuid}
@@ -698,35 +612,14 @@ const TablaFacturas = ({
                             <FileText size={16} />
                           </button>
 
-                          {factura.estado === ESTADOS_FACTURA.TIMBRADA && (
-                            <>
-                              <button
-                                className="facturas-boton-accion facturas-eliminar"
-                                onClick={() =>
-                                  manejarAccion("eliminar", factura)
-                                }
-                                title="Eliminar factura"
-                                disabled={cargando}
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </>
-                          )}
-
-                          {factura.estado === ESTADOS_FACTURA.CANCELADA && (
-                            <>
-                              <button
-                                className="facturas-boton-accion facturas-eliminar"
-                                onClick={() =>
-                                  manejarAccion("eliminar", factura)
-                                }
-                                title="Eliminar registro"
-                                disabled={cargando}
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </>
-                          )}
+                          <button
+                            className="facturas-boton-accion facturas-eliminar"
+                            onClick={() => manejarAccion("eliminar", factura)}
+                            title="Eliminar factura"
+                            disabled={cargando}
+                          >
+                            <Trash2 size={14} />
+                          </button>
                         </>
                       ) : factura.activo === false && rolUsuario === "admin" ? (
                         <>
@@ -766,7 +659,7 @@ const TablaFacturas = ({
             <strong>{indiceFinal}</strong> de <strong>{totalRegistros}</strong>{" "}
             registros
             {(terminoBusqueda || filtroEstado !== "todos") && (
-              <span style={{ color: "#6b7280", marginLeft: "0.5rem" }}>
+              <span className="facturas-filtrado-info">
                 (filtrado de {datosFacturas.length} registros totales)
               </span>
             )}
@@ -787,7 +680,7 @@ const TablaFacturas = ({
                 numero === "..." ? (
                   <span
                     key={`ellipsis-${indice}`}
-                    style={{ padding: "0.5rem", color: "#9ca3af" }}
+                    className="facturas-ellipsis"
                   >
                     ...
                   </span>

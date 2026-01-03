@@ -31,8 +31,6 @@ const ModalEliminarDefinitivoAbono = ({
         },
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 800));
-
       if (alEliminar) {
         await alEliminar();
       }

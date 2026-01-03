@@ -5,14 +5,9 @@ import {
   Printer,
   Download,
   FileText,
-  Calendar,
   User,
-  Building2,
   CheckCircle,
   AlertCircle,
-  Hash,
-  Package,
-  CreditCard,
   Coins,
 } from "lucide-react";
 import "./ModalFacturaAbono.css";
@@ -36,11 +31,11 @@ const ModalFacturaAbono = ({
 
   if (!abierto || !pagoSeleccionado) return null;
 
-  const formatearFecha = (fecha, opciones = {}) => {
-    const opcionesDefecto = { year: "numeric", month: "long", day: "numeric" };
+  const formatearFecha = (fecha) => {
     return new Date(fecha).toLocaleDateString("es-MX", {
-      ...opcionesDefecto,
-      ...opciones,
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -50,6 +45,7 @@ const ModalFacturaAbono = ({
       currency: "MXN",
     }).format(cantidad || 0);
   };
+
   const abonosSinFacturar =
     pagoSeleccionado.historialAbonos?.filter(
       (abono) => !abono.facturaGenerada
@@ -65,7 +61,6 @@ const ModalFacturaAbono = ({
     const tasaIVA = 0.16;
     const iva = subtotal * tasaIVA;
     const total = subtotal + iva;
-
     return { subtotal, iva, tasaIVA, total };
   };
 
@@ -224,9 +219,7 @@ const ModalFacturaAbono = ({
         error.message || "Error al imprimir la factura. Intente nuevamente."
       );
     } finally {
-      setTimeout(() => {
-        setImprimiendo(false);
-      }, 500);
+      setTimeout(() => setImprimiendo(false), 500);
     }
   };
 
@@ -269,29 +262,17 @@ const ModalFacturaAbono = ({
         </div>
 
         {error && (
-          <div
-            className="modal-factura-alerta"
-            style={{
-              background: "#fee2e2",
-              borderBottom: "1px solid #fecaca",
-              color: "#991b1b",
-            }}
-          >
+          <div className="modal-factura-alerta error">
             <AlertCircle size={20} />
             <div>
               <p className="modal-factura-alerta-titulo">Error</p>
-              <p
-                className="modal-factura-alerta-texto"
-                style={{ whiteSpace: "pre-line" }}
-              >
-                {error}
-              </p>
+              <p className="modal-factura-alerta-texto">{error}</p>
             </div>
           </div>
         )}
 
         <div className="modal-factura-contenido" ref={facturaRef}>
-          <div className="factura-documento" style={{ marginBottom: "1.5rem" }}>
+          <div className="factura-documento">
             <div className="factura-seccion">
               <h3 className="factura-seccion-titulo">
                 <User size={18} />
@@ -326,7 +307,7 @@ const ModalFacturaAbono = ({
             </div>
           </div>
 
-          <div className="factura-documento" style={{ marginBottom: "1.5rem" }}>
+          <div className="factura-documento">
             <div className="factura-seccion">
               <h3 className="factura-seccion-titulo">
                 <Coins size={18} />
@@ -334,24 +315,12 @@ const ModalFacturaAbono = ({
               </h3>
 
               {abonosSinFacturar.length === 0 ? (
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "2rem",
-                    color: "#6b7280",
-                    background: "#f9fafb",
-                    borderRadius: "8px",
-                    border: "1px solid #e5e7eb",
-                  }}
-                >
-                  <AlertCircle
-                    size={48}
-                    style={{ margin: "0 auto 1rem", color: "#d1d5db" }}
-                  />
-                  <p style={{ margin: 0, fontWeight: "600", color: "#374151" }}>
+                <div className="factura-sin-datos">
+                  <AlertCircle size={48} className="factura-sin-datos-icono" />
+                  <p className="factura-sin-datos-titulo">
                     No hay abonos pendientes de facturar
                   </p>
-                  <p style={{ margin: "0.5rem 0 0 0", fontSize: "0.875rem" }}>
+                  <p className="factura-sin-datos-texto">
                     Todos los abonos ya tienen factura generada
                   </p>
                 </div>
@@ -366,47 +335,22 @@ const ModalFacturaAbono = ({
                       <div
                         key={abono.numeroAbono}
                         onClick={() => setAbonoSeleccionado(abono)}
-                        style={{
-                          position: "relative",
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                        }}
-                        className="factura-historial-item"
+                        className="factura-historial-item seleccionable"
                       >
                         {esSeleccionado && (
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: "0.75rem",
-                              right: "0.75rem",
-                              background: "#4338ca",
-                              color: "white",
-                              borderRadius: "50%",
-                              width: "24px",
-                              height: "24px",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
+                          <div className="factura-check-icono">
                             <CheckCircle size={16} />
                           </div>
                         )}
                         <div
-                          style={{
-                            border: esSeleccionado
-                              ? "2px solid #4338ca"
-                              : "1px solid #e5e7eb",
-                            background: esSeleccionado ? "#f0f4ff" : "#f9fafb",
-                            borderRadius: "8px",
-                            padding: "1rem",
-                          }}
+                          className={`factura-historial-item-contenido ${
+                            esSeleccionado ? "seleccionado" : ""
+                          }`}
                         >
                           <div
-                            className="factura-historial-numero"
-                            style={{
-                              color: esSeleccionado ? "#4338ca" : "#10b981",
-                            }}
+                            className={`factura-historial-numero ${
+                              esSeleccionado ? "seleccionado" : ""
+                            }`}
                           >
                             <Coins size={16} />
                             <span>Abono #{abono.numeroAbono}</span>
@@ -418,18 +362,8 @@ const ModalFacturaAbono = ({
                               {formatearMoneda(abono.monto)}
                             </span>
                           </div>
-                          <div
-                            style={{
-                              marginTop: "0.5rem",
-                              paddingTop: "0.5rem",
-                              borderTop: "1px solid #e5e7eb",
-                              fontSize: "0.75rem",
-                              color: "#6b7280",
-                            }}
-                          >
-                            <strong style={{ color: "#374151" }}>
-                              Total con IVA:
-                            </strong>{" "}
+                          <div className="factura-historial-info-extra">
+                            <strong>Total con IVA:</strong>{" "}
                             {formatearMoneda(impuestosTemp.total)}
                           </div>
                         </div>
@@ -442,18 +376,9 @@ const ModalFacturaAbono = ({
           </div>
 
           {abonoSeleccionado && impuestosAbono && (
-            <div
-              className="factura-documento"
-              style={{
-                border: "2px solid #4338ca",
-                background: "linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%)",
-              }}
-            >
+            <div className="factura-documento preview">
               <div className="factura-seccion">
-                <h3
-                  className="factura-seccion-titulo"
-                  style={{ color: "#4338ca" }}
-                >
+                <h3 className="factura-seccion-titulo preview">
                   <FileText size={18} />
                   Preview de Factura - Abono #{abonoSeleccionado.numeroAbono}
                 </h3>
@@ -463,19 +388,13 @@ const ModalFacturaAbono = ({
                     <span className="factura-campo-etiqueta">
                       Número de Factura:
                     </span>
-                    <span
-                      className="factura-campo-valor"
-                      style={{ color: "#4338ca", fontWeight: "700" }}
-                    >
+                    <span className="factura-campo-valor destacado">
                       FAC-{String(pagoSeleccionado.id).padStart(4, "0")}-
                       {abonoSeleccionado.numeroAbono}
                     </span>
                   </div>
 
-                  <div
-                    className="factura-divisor"
-                    style={{ margin: "1rem 0" }}
-                  ></div>
+                  <div className="factura-divisor compact"></div>
 
                   <div className="factura-totales">
                     <div className="factura-total-linea">
@@ -494,12 +413,9 @@ const ModalFacturaAbono = ({
                     </div>
                   </div>
 
-                  <div className="factura-cadena" style={{ marginTop: "1rem" }}>
+                  <div className="factura-cadena nota">
                     <h4>Nota Importante</h4>
-                    <p
-                      className="factura-cadena-texto"
-                      style={{ fontFamily: "inherit" }}
-                    >
+                    <p className="factura-cadena-texto inherit-font">
                       Esta factura corresponde únicamente al{" "}
                       <strong>Abono #{abonoSeleccionado.numeroAbono}</strong>{" "}
                       realizado el {formatearFecha(abonoSeleccionado.fecha)}{" "}
@@ -514,7 +430,7 @@ const ModalFacturaAbono = ({
           )}
 
           {abonosFacturados.length > 0 && (
-            <div className="factura-documento" style={{ marginTop: "1.5rem" }}>
+            <div className="factura-documento">
               <div className="factura-seccion">
                 <h3 className="factura-seccion-titulo">
                   <CheckCircle size={18} />
@@ -524,40 +440,14 @@ const ModalFacturaAbono = ({
                   {abonosFacturados.map((abono) => (
                     <div
                       key={abono.numeroAbono}
-                      className="factura-historial-item"
-                      style={{
-                        background: "#d1fae5",
-                        border: "1px solid #a7f3d0",
-                      }}
+                      className="factura-historial-item facturado"
                     >
                       <div>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                            marginBottom: "0.5rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: "600",
-                              color: "#065f46",
-                              fontSize: "0.875rem",
-                            }}
-                          >
+                        <div className="factura-historial-header">
+                          <span className="factura-historial-numero-factura">
                             {abono.numeroFactura}
                           </span>
-                          <span
-                            style={{
-                              background: "#059669",
-                              color: "white",
-                              padding: "2px 8px",
-                              borderRadius: "4px",
-                              fontSize: "0.625rem",
-                              fontWeight: "600",
-                            }}
-                          >
+                          <span className="factura-historial-badge">
                             FACTURADO
                           </span>
                         </div>
@@ -569,34 +459,16 @@ const ModalFacturaAbono = ({
                           </span>
                         </div>
                         {abono.uuid && (
-                          <div
-                            style={{
-                              fontSize: "0.6875rem",
-                              color: "#047857",
-                              fontFamily: "monospace",
-                              marginTop: "0.5rem",
-                              wordBreak: "break-all",
-                            }}
-                          >
+                          <div className="factura-historial-uuid">
                             UUID: {abono.uuid}
                           </div>
                         )}
                       </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "0.5rem",
-                          marginTop: "0.5rem",
-                        }}
-                      >
+                      <div className="factura-historial-acciones">
                         <button
                           onClick={() => manejarImprimirFactura(abono)}
                           disabled={imprimiendo}
-                          className="modal-factura-boton secundario"
-                          style={{
-                            padding: "0.5rem 1rem",
-                            fontSize: "0.8125rem",
-                          }}
+                          className="modal-factura-boton secundario small"
                         >
                           <Printer size={14} />
                           Imprimir
@@ -604,11 +476,7 @@ const ModalFacturaAbono = ({
                         <button
                           onClick={() => manejarDescargarFactura(abono)}
                           disabled={imprimiendo}
-                          className="modal-factura-boton primario"
-                          style={{
-                            padding: "0.5rem 1rem",
-                            fontSize: "0.8125rem",
-                          }}
+                          className="modal-factura-boton primario small"
                         >
                           <Download size={14} />
                           PDF
@@ -646,41 +514,9 @@ const ModalFacturaAbono = ({
         </div>
 
         {(generandoFactura || imprimiendo) && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: "rgba(0, 0, 0, 0.5)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-              zIndex: 9999,
-              borderRadius: "12px",
-            }}
-          >
-            <div
-              style={{
-                width: "48px",
-                height: "48px",
-                border: "4px solid rgba(255, 255, 255, 0.3)",
-                borderTop: "4px solid white",
-                borderRadius: "50%",
-                animation: "spin 1s linear infinite",
-              }}
-            ></div>
-            <p
-              style={{
-                color: "white",
-                fontSize: "0.9375rem",
-                fontWeight: "600",
-                margin: 0,
-              }}
-            >
+          <div className="modal-factura-cargando">
+            <div className="modal-factura-spinner"></div>
+            <p className="modal-factura-cargando-texto">
               {generandoFactura
                 ? "Generando y timbrando factura ante el SAT..."
                 : "Procesando..."}
@@ -688,13 +524,6 @@ const ModalFacturaAbono = ({
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

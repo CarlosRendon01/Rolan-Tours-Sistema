@@ -6,7 +6,6 @@ import {
   Eye,
   ChevronLeft,
   ChevronRight,
-  Trash2,
   Coins,
   Plus,
   Receipt,
@@ -60,10 +59,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
     cargando,
   } = estado;
 
-  const [rolUsuario, setRolUsuario] = useState(
-    localStorage.getItem("rol") || "vendedor"
-  );
-
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
   const [modalNuevoPagoAbierto, setModalNuevoPagoAbierto] = useState(false);
   const [modalAgregarAbonoAbierto, setModalAgregarAbonoAbierto] =
     useState(false);
@@ -72,7 +68,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
   const [modalReciboAbierto, setModalReciboAbierto] = useState(false);
   const [modalFacturaAbierto, setModalFacturaAbierto] = useState(false);
   const [pagoSeleccionado, setPagoSeleccionado] = useState(null);
-
   const [datosAbonos, setDatosAbonos] = useState([]);
 
   useEffect(() => {
@@ -186,22 +181,6 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
       tipo: "ESTABLECER_FILTRO_VISIBILIDAD",
       valor: evento.target.value,
     });
-  };
-
-  const facturarAbono = async () => {
-    await cargarAbonos();
-  };
-
-  const guardarNuevoPago = async () => {
-    await cargarAbonos();
-  };
-
-  const guardarAbono = async () => {
-    await cargarAbonos();
-  };
-
-  const guardarEdicionPago = async () => {
-    await cargarAbonos();
   };
 
   const manejarAccion = (accion, pago) => {
@@ -460,11 +439,10 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                   return (
                     <tr
                       key={pago.id}
-                      className="abonos-fila-pago"
-                      style={{
-                        animationDelay: `${indice * 0.05}s`,
-                        background: !pago.activo ? "#fee2e2" : "white",
-                      }}
+                      className={`abonos-fila-pago ${
+                        !pago.activo ? "eliminado" : ""
+                      }`}
+                      style={{ animationDelay: `${indice * 0.05}s` }}
                     >
                       <td data-label="ID" className="abonos-columna-id">
                         #{pago.id.toString().padStart(3, "0")}
@@ -476,74 +454,35 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                         {pago.cliente.nombre}
                       </td>
                       <td data-label="Servicio">
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "0.25rem",
-                          }}
-                        >
-                          <span
-                            style={{ fontWeight: "600", fontSize: "0.875rem" }}
-                          >
+                        <div className="abonos-info-servicio">
+                          <span className="abonos-tipo-servicio">
                             {pago.servicio.tipo}
                           </span>
-                          <span
-                            style={{ fontSize: "0.75rem", color: "#6b7280" }}
-                          >
+                          <span className="abonos-descripcion-servicio">
                             {pago.servicio.descripcion}
                           </span>
                         </div>
                       </td>
                       <td data-label="Progreso">
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "0.5rem",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "0.5rem",
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: "80px",
-                                height: "8px",
-                                background: "#f3f4f6",
-                                borderRadius: "4px",
-                                overflow: "hidden",
-                              }}
-                            >
+                        <div className="abonos-contenedor-progreso">
+                          <div className="abonos-barra-progreso-wrapper">
+                            <div className="abonos-barra-progreso">
                               <div
-                                style={{
-                                  width: `${progreso}%`,
-                                  height: "100%",
-                                  background:
-                                    progreso === 100 ? "#10b981" : "#3b82f6",
-                                  transition: "width 0.3s",
-                                }}
+                                className={`abonos-barra-progreso-fill ${
+                                  progreso === 100 ? "completo" : "proceso"
+                                }`}
+                                style={{ width: `${progreso}%` }}
                               ></div>
                             </div>
-                            <span
-                              style={{ fontSize: "0.75rem", fontWeight: "600" }}
-                            >
+                            <span className="abonos-porcentaje-progreso">
                               {progreso}%
                             </span>
                           </div>
-                          <div
-                            style={{ fontSize: "0.75rem", color: "#6b7280" }}
-                          >
+                          <div className="abonos-monto-progreso">
                             ${pago.planPago.montoPagado.toLocaleString()} / $
                             {pago.planPago.montoTotal.toLocaleString()}
                           </div>
-                          <div
-                            style={{ fontSize: "0.75rem", color: "#6b7280" }}
-                          >
+                          <div className="abonos-conteo-abonos">
                             {pago.planPago.abonosRealizados} de{" "}
                             {pago.planPago.abonosPlaneados} abonos
                           </div>
@@ -551,33 +490,21 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                       </td>
                       <td data-label="Último Abono">
                         {ultimoAbono ? (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "0.25rem",
-                            }}
-                          >
+                          <div className="abonos-info-ultimo-abono">
                             <span className="abonos-columna-monto">
                               ${ultimoAbono.monto.toLocaleString()}
                             </span>
-                            <span
-                              style={{ fontSize: "0.75rem", color: "#6b7280" }}
-                            >
+                            <span className="abonos-fecha-abono">
                               {ultimoAbono.fecha}
                             </span>
                           </div>
                         ) : (
-                          <span
-                            style={{ fontSize: "0.75rem", color: "#9ca3af" }}
-                          >
-                            Sin abonos
-                          </span>
+                          <span className="abonos-sin-abonos">Sin abonos</span>
                         )}
                       </td>
                       <td data-label="Próximo Venc.">
                         {pago.proximoVencimiento === "Finalizado" ? (
-                          <span style={{ color: "#10b981", fontWeight: "600" }}>
+                          <span className="abonos-texto-finalizado">
                             Finalizado
                           </span>
                         ) : (
@@ -601,17 +528,9 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                       {rolUsuario === "admin" && (
                         <td data-label="Visible">
                           <span
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "0.25rem",
-                              padding: "0.25rem 0.5rem",
-                              borderRadius: "6px",
-                              fontSize: "0.75rem",
-                              fontWeight: "600",
-                              background: pago.activo ? "#d1fae5" : "#e5e7eb",
-                              color: pago.activo ? "#065f46" : "#374151",
-                            }}
+                            className={`abonos-badge-visibilidad ${
+                              pago.activo ? "visible" : "oculto"
+                            }`}
                           >
                             {pago.activo ? "✓ Sí" : "✗ No"}
                           </span>
@@ -700,7 +619,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
               <strong>{Math.min(indiceFinal, totalRegistros)}</strong> de{" "}
               <strong>{totalRegistros}</strong> registros
               {terminoBusqueda && (
-                <span style={{ color: "#6b7280", marginLeft: "0.5rem" }}>
+                <span className="abonos-filtrado-info">
                   (filtrado de {datosAbonos.length} registros totales)
                 </span>
               )}
@@ -721,7 +640,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                   numero === "..." ? (
                     <span
                       key={`ellipsis-${indice}`}
-                      style={{ padding: "0.5rem", color: "#9ca3af" }}
+                      className="abonos-ellipsis"
                     >
                       ...
                     </span>
@@ -756,13 +675,13 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
       <ModalNuevoPago
         abierto={modalNuevoPagoAbierto}
         onCerrar={() => setModalNuevoPagoAbierto(false)}
-        onGuardar={guardarNuevoPago}
+        onGuardar={cargarAbonos}
       />
 
       <ModalAgregarAbono
         abierto={modalAgregarAbonoAbierto}
         onCerrar={() => setModalAgregarAbonoAbierto(false)}
-        onGuardar={guardarAbono}
+        onGuardar={cargarAbonos}
         pagoSeleccionado={pagoSeleccionado}
       />
 
@@ -776,7 +695,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
       <ModalEditarAbono
         abierto={modalEditarPagoAbierto}
         onCerrar={() => setModalEditarPagoAbierto(false)}
-        onGuardar={guardarEdicionPago}
+        onGuardar={cargarAbonos}
         pagoSeleccionado={pagoSeleccionado}
       />
 
@@ -790,7 +709,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         abierto={modalFacturaAbierto}
         onCerrar={() => setModalFacturaAbierto(false)}
         pagoSeleccionado={pagoSeleccionado}
-        onFacturar={facturarAbono}
+        onFacturar={cargarAbonos}
       />
     </>
   );

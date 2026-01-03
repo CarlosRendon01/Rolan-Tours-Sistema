@@ -7,10 +7,7 @@ import "./ModalEditarPago.css";
 const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
   const formatearFechaParaInput = (fecha) => {
     if (!fecha) return "";
-    if (fecha.includes(" ")) {
-      return fecha.split(" ")[0];
-    }
-    return fecha;
+    return fecha.includes(" ") ? fecha.split(" ")[0] : fecha;
   };
 
   const [formulario, establecerFormulario] = useState({
@@ -69,10 +66,7 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
       nuevosErrores.monto = "El monto debe ser mayor que 0";
     }
 
-    if (
-      !formulario.fechaVencimiento.trim() ||
-      !formulario.fechaVencimiento.trim()
-    ) {
+    if (!formulario.fechaVencimiento.trim()) {
       nuevosErrores.fechaVencimiento = "La fecha de vencimiento es requerida";
     }
 

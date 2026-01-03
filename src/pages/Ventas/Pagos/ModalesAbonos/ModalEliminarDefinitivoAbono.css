@@ -9,17 +9,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: modalEliminarFadeIn 0.2s ease-out;
   backdrop-filter: blur(4px);
-}
-
-@keyframes modalEliminarFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 .modal-eliminar-contenedor {
@@ -33,18 +23,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  animation: modalEliminarSlideUp 0.3s ease-out;
-}
-
-@keyframes modalEliminarSlideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 .modal-eliminar-header {
@@ -120,17 +98,6 @@
   background: #fef2f2;
   border: 1px solid #fecaca;
   margin-bottom: 24px;
-  animation: modalEliminarPulse 2s ease-in-out infinite;
-}
-
-@keyframes modalEliminarPulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
-  }
-  50% {
-    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
-  }
 }
 
 .modal-eliminar-alerta svg {
@@ -244,10 +211,10 @@
 }
 
 .modal-eliminar-icono-girando {
-  animation: modalEliminarSpin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
-@keyframes modalEliminarSpin {
+@keyframes spin {
   from {
     transform: rotate(0deg);
   }

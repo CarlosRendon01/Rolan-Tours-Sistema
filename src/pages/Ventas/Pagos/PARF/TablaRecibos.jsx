@@ -6,8 +6,6 @@ import {
   ChevronRight,
   Trash2,
   Receipt,
-  Download,
-  Printer,
   BarChart3,
   CheckCircle,
   Clock,
@@ -16,7 +14,6 @@ import {
   X,
   FileSpreadsheet,
   RefreshCw,
-  Shield,
 } from "lucide-react";
 import "./TablaRecibos.css";
 import {
@@ -47,20 +44,17 @@ const TablaRecibos = ({
   const [error, setError] = useState(null);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState("todos");
-
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
     useState(false);
   const [reciboSeleccionado, setReciboSeleccionado] = useState(null);
-
   const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [reciboPDFActual, setReciboPDFActual] = useState(null);
+  const [datosRecibos, setdatosRecibos] = useState([]);
 
   const API_URL = "http://127.0.0.1:8000/api/abonos";
-
-  const [datosRecibos, setdatosRecibos] = useState([]);
 
   useEffect(() => {
     cargarRecibos();
@@ -190,7 +184,6 @@ const TablaRecibos = ({
     totalRegistros
   );
   const datosPaginados = datosFiltrados.slice(indiceInicio, indiceFinal);
-
   const cambiarPagina = useCallback(
     (nuevaPagina) => {
       if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
@@ -391,7 +384,6 @@ const TablaRecibos = ({
       const firstPage = pages[0];
 
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
       const dibujar = (texto, x, y, size) => {
         if (texto) {
@@ -407,11 +399,12 @@ const TablaRecibos = ({
 
       const fechaActual = new Date();
       const formatoActual = {
-        weeyday: "long",
+        weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric",
       };
+
       function capitalize(text) {
         if (!text) return "";
         return text.charAt(0).toUpperCase() + text.slice(1);
@@ -446,19 +439,12 @@ const TablaRecibos = ({
           y: 88,
           z: 9,
         },
-
         {
           valor: `Oaxaca de Juárez, Oaxaca a ${fechaCompleta}`,
           x: 290,
           y: 272,
           z: 10,
         },
-
-        //Se dejó los valores de dirección para cuando esté normalizada en un futuro
-        // { valor: recibo.calle, x: 180, y: 155 },
-        // { valor: recibo.colonia, x: 180, y: 155 },
-        // { valor: recibo.numero, x: 180, y: 155 },
-        // { valor: recibo.ciudad, x: 180, y: 155 },
       ];
 
       campos.forEach(({ valor, x, y, z }) => dibujar(valor, x, y, z));
@@ -540,7 +526,6 @@ const TablaRecibos = ({
 
     return numeros;
   }, [totalPaginas, paginaActual]);
-
   return (
     <div
       className={`recibos-contenedor-principal ${
@@ -644,7 +629,7 @@ const TablaRecibos = ({
 
           {rolUsuario === "admin" && (
             <div className="recibos-filtro-estado-eliminados">
-              <label style={{ marginRight: "8px" }}>Mostrar:</label>
+              <label>Mostrar:</label>
               <select
                 id="filtro-eliminados"
                 value={filtroEstado}
@@ -741,7 +726,6 @@ const TablaRecibos = ({
                   className={`recibos-fila-pago ${
                     recibo.activo === false ? "recibos-fila-eliminada" : ""
                   }`}
-                  style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Recibo" className="recibos-columna-factura">
                     {recibo.numeroRecibo}
@@ -757,12 +741,7 @@ const TablaRecibos = ({
                   </td>
                   <td data-label="Concepto">
                     <div
-                      style={{
-                        maxWidth: "200px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
+                      className="recibos-concepto-truncado"
                       title={recibo.concepto}
                     >
                       {recibo.concepto}
@@ -824,7 +803,7 @@ const TablaRecibos = ({
                           <button
                             className="recibos-boton-accion recibos-pdf"
                             onClick={() => manejarAccion("pdf", recibo)}
-                            title="Descargar recibo"
+                            title="Ver PDF"
                           >
                             <FileText size={16} />
                           </button>
@@ -852,7 +831,6 @@ const TablaRecibos = ({
           </table>
         )}
       </div>
-
       {datosPaginados.length > 0 && (
         <div className="recibos-pie-tabla">
           <div className="recibos-informacion-registros">
@@ -860,7 +838,7 @@ const TablaRecibos = ({
             <strong>{indiceFinal}</strong> de <strong>{totalRegistros}</strong>{" "}
             registros
             {terminoBusqueda && (
-              <span style={{ color: "#6b7280", marginLeft: "0.5rem" }}>
+              <span className="recibos-texto-filtrado">
                 (filtrado de {datosRecibos.length} registros totales)
               </span>
             )}
@@ -882,7 +860,7 @@ const TablaRecibos = ({
                 numero === "..." ? (
                   <span
                     key={`ellipsis-${indice}`}
-                    style={{ padding: "0.5rem", color: "#9ca3af" }}
+                    className="recibos-ellipsis-paginacion"
                     aria-hidden="true"
                   >
                     ...
