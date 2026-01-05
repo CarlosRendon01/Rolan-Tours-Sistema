@@ -21,7 +21,6 @@ import PrincipalRol from "./pages/Usuario/Roles/PrincipalRol.jsx";
 import PrincipalUsuario from "./pages/Usuario/Usuarios/PrincipalUsuario.jsx";
 import VehiculosPrincipal from "./pages/Operaciones/Vehiculos/VehiculosPrincipal.jsx";
 
-// Componente temporal para páginas vacías
 const PaginaTemporal = ({ titulo }) => {
   return (
     <div style={{
@@ -50,7 +49,6 @@ function App() {
         <PrincipalLogin onLogin={manejarLogin} />
       ) : (
         <Routes>
-          {/* Rutas existentes */}
           <Route path="/" element={<Dashboard />} />
           <Route path="/clientes" element={<PrincipalCliente />} />
           <Route path="/cotizaciones" element={<PrincipalCotizacion />} />
@@ -58,24 +56,16 @@ function App() {
           <Route path="/contratos" element={<PrincipalContrato titulo="Contratos" />} />
           <Route path="/orden-servicio" element={<PrincipalOrden titulo="Órdenes de Servicio" />} />
           <Route path="/reservas" element={<ReservasPrincipal titulo="Reservas" />} />
-
-          {/* Rutas de Operaciones */}
           <Route path="/operadores" element={<OperadoresPrincipal />} />
           <Route path="/vehiculos" element={<VehiculosPrincipal />} />
           <Route path="/guias" element={<GuiasPrincipal />} />
           <Route path="/proveedores" element={<ProveedoresPrincipal titulo="Proveedores" />} />
           <Route path="/coordinadores" element={<CoordinadoresPrincipal titulo="Coordinadores" />} />
-
-          {/* Rutas de Servicios */}
           <Route path="/transporte" element={<TransportePrincipal titulo="Transporte" />} />
           <Route path="/restaurantes" element={<RestaurantePrincipal titulo="Restaurantes" />} />
           <Route path="/tours" element={<ToursPrincipal titulo="Tours" />} />
           <Route path="/hospedaje" element={<HospedajePrincipal titulo="Hospedaje" />} />
-
-          {/* Rutas de Mantenimiento */}
           <Route path="/mantenimiento-vehiculos" element={<MantenimientoPrincipal titulo="Mantenimiento de Vehículos" />} />
-
-          {/* Ruta de Administración */}
           <Route path="/administracion" element={<PaginaTemporal titulo="Administración" />} />
 
           <Route path="/roles" element={<PrincipalRol titulo="Roles" />} />
@@ -85,5 +75,4 @@ function App() {
     </Router>
   );
 }
-
 export default App;

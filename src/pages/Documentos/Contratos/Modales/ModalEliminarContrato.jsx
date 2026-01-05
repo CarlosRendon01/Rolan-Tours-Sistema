@@ -2,16 +2,10 @@ import React, { useEffect } from 'react';
 import Swal from 'sweetalert2';
 import './ModalEliminarContrato.css';
 
-/**
- * Componente Modal para eliminar contrato usando SweetAlert2
- * Se renderiza cuando contratoAEliminar tiene valor
- */
 const ModalEliminarContrato = ({ contrato, alConfirmar, esAdministrador }) => {
   useEffect(() => {
     if (!contrato) return;
-
     const mostrarModal = async () => {
-      // Validar datos del contrato
       if (!contrato?.nombre_cliente) {
         await modalError('Información del contrato incompleta');
         alConfirmar(null);
@@ -58,15 +52,9 @@ const ModalEliminarContrato = ({ contrato, alConfirmar, esAdministrador }) => {
         modalCargando('Eliminando contrato...');
 
         try {
-          // Ejecutar la función de eliminación proporcionada
           await alConfirmar(contrato);
-
-          // Delay mínimo para UX
           await new Promise(resolve => setTimeout(resolve, 600));
-
           Swal.close();
-
-          // Mostrar éxito
           await Swal.fire({
             title: '¡Eliminado!',
             html: `
@@ -94,22 +82,15 @@ const ModalEliminarContrato = ({ contrato, alConfirmar, esAdministrador }) => {
           console.error('Error al eliminar contrato:', error);
         }
       } else {
-        // Usuario canceló
         alConfirmar(null);
       }
     };
 
     mostrarModal();
   }, [contrato, alConfirmar]);
-
-  // Este componente no renderiza nada visible, el modal es manejado por SweetAlert2
   return null;
 };
 
-/**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
- */
 const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
     title: 'Error',
@@ -126,10 +107,6 @@ const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud'
   });
 };
 
-/**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
- */
 const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
     title: mensaje,
@@ -146,5 +123,4 @@ const modalCargando = (mensaje = 'Procesando...') => {
     }
   });
 };
-
 export default ModalEliminarContrato;

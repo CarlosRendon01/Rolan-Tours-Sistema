@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // ⭐ Agregar useEffect
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Search,
@@ -30,7 +30,6 @@ const TablaContratos = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [contratoAEliminar, setContratoAEliminar] = useState(null);
@@ -48,7 +47,6 @@ const TablaContratos = () => {
     cargarContratos();
   }, []);
 
-  // ⭐ AGREGAR: Función para cargar contratos
   const cargarContratos = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -60,7 +58,6 @@ const TablaContratos = () => {
       });
 
       setDatosContratos(response.data);
-      console.log("✅ Contratos cargados:", response.data.length);
     } catch (error) {
       console.error("❌ Error al cargar contratos:", error);
     }
@@ -93,7 +90,6 @@ const TablaContratos = () => {
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const contratosPaginados = contratosFiltrados.slice(indiceInicio, indiceFin);
-
   const contratosActivos = datosContratos.filter((c) => c.activo).length;
   const contratosInactivos = datosContratos.filter((c) => !c.activo).length;
 
@@ -198,7 +194,6 @@ const TablaContratos = () => {
         }
       };
 
-      // Función para dibujar texto ajustable en primera página
       const dibujarTextoAjustable = (
         texto,
         x,
@@ -219,7 +214,6 @@ const TablaContratos = () => {
           anchoEstimado = textoStr.length * size * 0.5;
         }
 
-        // Calcular posición X si se requiere centrado
         let posX = x;
         if (centrar) {
           const anchoTexto = textoStr.length * size * 0.5;
@@ -235,7 +229,6 @@ const TablaContratos = () => {
         });
       };
 
-      // Función para dibujar texto ajustable en segunda página
       const dibujarTextoAjustableSegundaPagina = (
         texto,
         x,
@@ -256,7 +249,6 @@ const TablaContratos = () => {
           anchoEstimado = textoStr.length * size * 0.5;
         }
 
-        // Calcular posición X si se requiere centrado
         let posX = x;
         if (centrar) {
           const anchoTexto = textoStr.length * size * 0.5;
@@ -456,7 +448,6 @@ const TablaContratos = () => {
         },
       ];
 
-      // Campos ajustables de la segunda página
       const camposAjustablesSegundaPagina = [
         {
           valor: fechaCompleta,
@@ -615,7 +606,6 @@ const TablaContratos = () => {
   const fixHora = (h) => {
     if (!h || typeof h !== "string") return null;
     if (h.includes("AM") || h.includes("PM")) {
-      // Convertir AM/PM a 24h
       const [time, modifier] = h.split(" ");
       let [hours, minutes] = time.split(":");
 
@@ -641,18 +631,13 @@ const TablaContratos = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // Crear objeto con los datos para el backend
       const datosContrato = {
         representante_empresa: datosActualizados.representante_empresa,
         domicilio: datosActualizados.domicilio,
-
-        // Datos del cliente
         nombre_cliente: datosActualizados.nombre_cliente,
         nacionalidad: datosActualizados.nacionalidad,
         rfc: datosActualizados.rfc,
         telefono_cliente: datosActualizados.telefono_cliente,
-
-        // Servicio
         ciudad_origen: datosActualizados.ciudad_origen,
         punto_intermedio: datosActualizados.punto_intermedio,
         destino: datosActualizados.destino,
@@ -670,16 +655,11 @@ const TablaContratos = () => {
           datosActualizados.horario_final_servicio
         ),
         itinerario_detallado: datosActualizados.itinerario_detallado,
-
-        // Costos
         importe_servicio: datosActualizados.importe_servicio,
         anticipo: datosActualizados.anticipo,
         fecha_liquidacion: datosActualizados.fecha_liquidacion,
         costos_cubiertos: fixArray(datosActualizados.costos_cubiertos),
-
         otro_costo_especificacion: datosActualizados.otro_costo_especificacion,
-
-        // Vehículo
         marca_vehiculo: datosActualizados.marca_vehiculo,
         modelo_vehiculo: datosActualizados.modelo_vehiculo,
         placa_vehiculo: datosActualizados.placa_vehiculo,
@@ -688,7 +668,6 @@ const TablaContratos = () => {
         asientos_reclinables: datosActualizados.asientos_reclinables,
       };
 
-      // ⭐ AGREGAR: Actualizar en backend
       await axios.put(
         `http://127.0.0.1:8000/api/contratos/${datosActualizados.id}`,
         datosContrato,
@@ -701,10 +680,8 @@ const TablaContratos = () => {
         }
       );
 
-      // ⭐ AGREGAR: Recargar datos
       await cargarContratos();
 
-      console.log("✅ Contrato actualizado en backend");
       return Promise.resolve();
     } catch (error) {
       console.error("❌ Error al actualizar contrato:", error);
@@ -721,7 +698,6 @@ const TablaContratos = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // ⭐ AGREGAR: Eliminar en backend
       await axios.delete(`http://127.0.0.1:8000/api/contratos/${contrato.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -729,11 +705,9 @@ const TablaContratos = () => {
         },
       });
 
-      // ⭐ AGREGAR: Recargar datos
       await cargarContratos();
 
       setContratoAEliminar(null);
-      console.log("✅ Contrato eliminado del backend");
       return Promise.resolve();
     } catch (error) {
       console.error("❌ Error al eliminar contrato:", error);
@@ -746,7 +720,6 @@ const TablaContratos = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // ⭐ AGREGAR: Restaurar en backend
       await axios.post(
         `http://127.0.0.1:8000/api/contratos/${contrato.id}/restore`,
         {},
@@ -758,11 +731,9 @@ const TablaContratos = () => {
         }
       );
 
-      // ⭐ AGREGAR: Recargar datos
       await cargarContratos();
 
       setContratoARestaurar(null);
-      console.log("✅ Contrato restaurado en backend");
     } catch (error) {
       console.error("❌ Error al restaurar contrato:", error);
     }
@@ -772,7 +743,6 @@ const TablaContratos = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // ⭐ AGREGAR: Forzar eliminación permanente
       await axios.delete(
         `http://127.0.0.1:8000/api/contratos/${contrato.id}/force`,
         {
@@ -783,11 +753,9 @@ const TablaContratos = () => {
         }
       );
 
-      // ⭐ AGREGAR: Recargar datos
       await cargarContratos();
 
       setContratoAEliminarDefinitivo(null);
-      console.log("✅ Contrato eliminado DEFINITIVAMENTE del backend");
     } catch (error) {
       console.error("❌ Error al eliminar definitivamente contrato:", error);
     }
@@ -797,7 +765,7 @@ const TablaContratos = () => {
     try {
       setContratoPDFActual(contrato);
       setModalPDFAbierto(true);
-      setPdfUrl(null); // Mostrar loading
+      setPdfUrl(null); 
 
       const pdfBytes = await generarPDF(contrato);
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
@@ -823,7 +791,6 @@ const TablaContratos = () => {
       link.click();
       window.URL.revokeObjectURL(url);
 
-      console.log("PDF descargado correctamente");
     } catch (error) {
       console.error("Error al descargar PDF:", error);
       alert("Error al descargar el PDF. Por favor, intente nuevamente.");
@@ -1124,5 +1091,4 @@ const TablaContratos = () => {
     </div>
   );
 };
-
 export default TablaContratos;

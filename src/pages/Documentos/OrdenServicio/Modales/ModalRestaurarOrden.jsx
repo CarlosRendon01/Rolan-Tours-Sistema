@@ -160,5 +160,4 @@ const ModalRestaurarOrden = ({ orden, alConfirmar, alCancelar }) => {
     </div>
   );
 };
-
 export default ModalRestaurarOrden;

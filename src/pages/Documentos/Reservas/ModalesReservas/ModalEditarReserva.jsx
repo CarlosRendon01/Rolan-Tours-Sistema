@@ -22,7 +22,6 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
 
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
-
   useEffect(() => {
     if (reserva) {
       setFormData({
@@ -188,16 +187,9 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
 
         const nombreCliente = formData.nombreCliente;
         const folioReserva = formData.folio;
-
         await onGuardar(reservaData);
-
-        console.log("✅ Reserva actualizada, cerrando modal primero...");
-
         onCerrar();
-
         await new Promise((resolve) => setTimeout(resolve, 300));
-
-        console.log("✅ Mostrando alerta...");
         await Swal.fire({
           icon: "success",
           title: "¡Reserva Actualizada!",
@@ -226,14 +218,10 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
           },
         });
 
-        console.log("✅ Alerta cerrada");
       } catch (error) {
         console.error("❌ Error al actualizar:", error);
-
         onCerrar();
-
         await new Promise((resolve) => setTimeout(resolve, 300));
-
         await Swal.fire({
           icon: "error",
           title: "Error al Actualizar",
@@ -547,5 +535,4 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
     </div>
   );
 };
-
 export default ModalEditarReserva;

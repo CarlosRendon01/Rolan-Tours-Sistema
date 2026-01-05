@@ -21,7 +21,6 @@ import "./ModalVerReserva.css";
 const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
   const [seccionActiva, setSeccionActiva] = useState("basicos");
 
-  // VALIDACIÓN TEMPRANA - Debe ir al inicio
   if (!estaAbierto || !reserva) {
     return null;
   }
@@ -34,7 +33,6 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
   };
 
   const fotoTransferenciaUrl = obtenerUrlArchivo(reserva.fotoTransferencia);
-
   const formatearTelefono = (telefono) => {
     if (!telefono) return "N/A";
     const limpio = telefono.replace(/\D/g, "");
@@ -441,5 +439,4 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
     </div>
   );
 };
-
 export default ModalVerReserva;

@@ -106,5 +106,4 @@ const ModalRestaurarContrato = ({ contrato, alConfirmar, alCancelar }) => {
     </div>
   );
 };
-
 export default ModalRestaurarContrato;

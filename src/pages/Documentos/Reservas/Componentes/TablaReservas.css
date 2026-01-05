@@ -91,10 +91,6 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ============================================
-   ESTADÍSTICAS DEL ENCABEZADO
-   ============================================ */
-
 .reservas-contenedor-estadisticas {
   display: flex;
   gap: 2rem;
@@ -145,10 +141,6 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
-/* ============================================
-   CONTROLES Y BÚSQUEDA
-   ============================================ */
 
 .reservas-controles {
   padding: 1.5rem 2rem;
@@ -333,10 +325,6 @@
   vertical-align: middle;
   font-size: 0.85rem;
 }
-
-/* ============================================
-   COLUMNAS Y BADGES
-   ============================================ */
 
 .reservas-columna-id .reservas-badge-id {
   background: linear-gradient(135deg, #fee2e2, #fecaca);
@@ -832,4 +820,14 @@
   .reservas-titulo {
     font-size: 1.25rem;
   }
+}
+
+.reservas-mensaje-cargando {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #88898a;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border-radius: 8px;
 }

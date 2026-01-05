@@ -30,7 +30,6 @@ const TablaOrdenes = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [ordenAEliminar, setOrdenAEliminar] = useState(null);
@@ -38,12 +37,9 @@ const TablaOrdenes = () => {
   const [ordenAEliminarDefinitivo, setOrdenAEliminarDefinitivo] =
     useState(null);
   const [ordenSeleccionado, setOrdenSeleccionado] = useState(null);
-
-  // Estados para el modal de visualización PDF
   const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [ordenPDFActual, setOrdenPDFActual] = useState(null);
-
   const [datosOrdenes, setDatosOrdenes] = useState([]);
 
   useEffect(() => {
@@ -53,8 +49,6 @@ const TablaOrdenes = () => {
   const cargarDatos = async () => {
     try {
       const token = localStorage.getItem("token");
-
-      // Cargar órdenes, vehículos y conductores en paralelo
       const [ordenesRes, vehiculosRes, conductoresRes] = await Promise.all([
         axios.get("http://127.0.0.1:8000/api/ordenes-servicio", {
           headers: {
@@ -85,12 +79,6 @@ const TablaOrdenes = () => {
       setDatosOrdenes(ordenesRes.data);
       setVehiculosDisponibles(vehiculosRes.data);
       setConductoresDisponibles(conductoresRes.data);
-
-      console.log("✅ Datos cargados:", {
-        ordenes: ordenesRes.data.length,
-        vehiculos: vehiculosRes.data.length,
-        conductores: conductoresRes.data.length,
-      });
     } catch (error) {
       console.error("❌ Error al cargar datos:", error);
     }
@@ -100,7 +88,6 @@ const TablaOrdenes = () => {
     if (rolUsuario === "admin" && !orden.activo) {
       return true;
     }
-
     const busqueda = terminoBusqueda.toLowerCase();
     return (
       orden.id.toString().includes(busqueda) ||
@@ -122,10 +109,8 @@ const TablaOrdenes = () => {
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const ordenesPaginados = ordenesFiltrados.slice(indiceInicio, indiceFin);
-
   const ordenesActivos = datosOrdenes.filter((c) => c.activo).length;
   const ordenesInactivos = datosOrdenes.filter((c) => !c.activo).length;
-
   const cambiarPagina = (nuevaPagina) => {
     if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
       setPaginaActual(nuevaPagina);
@@ -192,7 +177,6 @@ const TablaOrdenes = () => {
   const fixHora = (h) => {
     if (!h || typeof h !== "string") return null;
     if (h.includes("AM") || h.includes("PM")) {
-      // Convertir AM/PM a 24h
       const [time, modifier] = h.split(" ");
       let [hours, minutes] = time.split(":");
 
@@ -211,23 +195,18 @@ const TablaOrdenes = () => {
   const manejarGuardarOrden = async (datosActualizados) => {
     try {
       const token = localStorage.getItem("token");
-
-      // Crear objeto con los datos mapeados
       const datosOrden = {
         folio: datosActualizados.folio,
         fecha_orden_servicio: datosActualizados.fecha_orden_servicio,
         nombre_prestador:
           datosActualizados.nombre_prestador || "Antonio Alonso Meza",
 
-        // Conductor
         operador_id: datosActualizados.operador_id || null,
         nombre_conductor: datosActualizados.nombre_conductor || null,
         apellido_paterno_conductor: datosActualizados.apellido_paterno_conductor || null,
         apellido_materno_conductor: datosActualizados.apellido_materno_conductor || null,
         telefono_conductor: datosActualizados.telefono_conductor || null,
         licencia_conductor: datosActualizados.licencia_conductor || null,
-
-        // Servicio
         nombre_cliente: datosActualizados.nombre_cliente,
         telefono_cliente: datosActualizados.telefono_cliente,
         ciudad_origen: datosActualizados.ciudad_origen,
@@ -245,8 +224,6 @@ const TablaOrdenes = () => {
         horario_final_real: fixHora(datosActualizados.horario_final_real),
         itinerario_detallado: datosActualizados.itinerario_detallado,
         direccion_retorno: datosActualizados.direccion_retorno,
-
-        // Vehículo
         vehiculo_id: datosActualizados.vehiculo_id,
         marca: datosActualizados.marca,
         modelo: datosActualizados.modelo,
@@ -255,12 +232,10 @@ const TablaOrdenes = () => {
         km_final: datosActualizados.km_final,
         litros_consumidos: datosActualizados.litros_consumidos,
         rendimiento: datosActualizados.rendimiento,
-
         coordinador_id: datosActualizados.coordinador_id,
         guia_id: datosActualizados.guia_id,
       };
 
-      // ⭐ AGREGAR: Actualizar en backend
       await axios.put(
         `http://127.0.0.1:8000/api/ordenes-servicio/${datosActualizados.id}`,
         datosOrden,
@@ -273,10 +248,7 @@ const TablaOrdenes = () => {
         }
       );
 
-      // ⭐ AGREGAR: Recargar datos
       await cargarDatos();
-
-      console.log("✅ Orden actualizada en backend");
       return Promise.resolve();
     } catch (error) {
       console.error("❌ Error al actualizar orden:", error);
@@ -293,7 +265,6 @@ const TablaOrdenes = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // ⭐ AGREGAR: Eliminar en backend
       await axios.delete(
         `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}`,
         {
@@ -304,11 +275,9 @@ const TablaOrdenes = () => {
         }
       );
 
-      // ⭐ AGREGAR: Recargar datos
       await cargarDatos();
-
       setOrdenAEliminar(null);
-      console.log("✅ Orden eliminada del backend");
+ 
       return Promise.resolve();
     } catch (error) {
       console.error("❌ Error al eliminar orden:", error);
@@ -321,7 +290,6 @@ const TablaOrdenes = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // ⭐ AGREGAR: Restaurar en backend
       await axios.post(
         `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}/restore`,
         {},
@@ -333,11 +301,9 @@ const TablaOrdenes = () => {
         }
       );
 
-      // ⭐ AGREGAR: Recargar datos
       await cargarDatos();
-
       setOrdenARestaurar(null);
-      console.log("✅ Orden restaurada en backend");
+     
     } catch (error) {
       console.error("❌ Error al restaurar orden:", error);
     }
@@ -347,7 +313,6 @@ const TablaOrdenes = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // ⭐ AGREGAR: Forzar eliminación permanente
       await axios.delete(
         `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}/force`,
         {
@@ -358,17 +323,13 @@ const TablaOrdenes = () => {
         }
       );
 
-      // ⭐ AGREGAR: Recargar datos
       await cargarDatos();
 
       setOrdenAEliminarDefinitivo(null);
-      console.log("✅ Orden eliminada DEFINITIVAMENTE del backend");
     } catch (error) {
       console.error("❌ Error al eliminar definitivamente orden:", error);
     }
   };
-
-  // 🔧 FUNCIÓN CORREGIDA - generarPDF con manejo de valores null
 
   const generarPDF = async (orden) => {
     try {
@@ -380,17 +341,13 @@ const TablaOrdenes = () => {
       const pdfDoc = await PDFDocument.load(plantillaBytes);
       const pages = pdfDoc.getPages();
       const firstPage = pages[0];
-
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-      // ✅ FUNCIÓN AUXILIAR - Convierte null/undefined a string vacío
       const toStr = (value) => {
         if (value === null || value === undefined) return "";
         return String(value);
       };
 
-      // ✅ FUNCIÓN AUXILIAR - Convierte números a string, maneja null
       const toNum = (value) => {
         if (value === null || value === undefined || value === "") return "0";
         const num = Number(value);
@@ -398,7 +355,7 @@ const TablaOrdenes = () => {
       };
 
       const dividirTexto = (texto, ancho) => {
-        if (!texto) return [""]; // ✅ Manejar texto vacío
+        if (!texto) return [""];
 
         const palabras = texto.split(" ");
         const lineas = [];
@@ -417,7 +374,6 @@ const TablaOrdenes = () => {
         return lineas.length > 0 ? lineas : [""];
       };
 
-      // ✅ FECHA ORDEN (con validación)
       const fechaOrden = orden.fecha_inicio_servicio
         ? new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX")
         : "";
@@ -430,7 +386,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ FOLIO (convertir a string)
       firstPage.drawText(toStr(orden.folio), {
         x: 530,
         y: 718.5,
@@ -439,7 +394,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ TELÉFONO CONDUCTOR (manejar null)
       firstPage.drawText(toStr(orden.telefono_conductor), {
         x: 110,
         y: 668,
@@ -448,7 +402,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ LICENCIA CONDUCTOR (manejar null)
       firstPage.drawText(toStr(orden.licencia_conductor), {
         x: 330,
         y: 671,
@@ -457,7 +410,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ NOMBRE CLIENTE (manejar null)
       firstPage.drawText(toStr(orden.nombre_cliente), {
         x: 120,
         y: 641,
@@ -466,7 +418,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ TELÉFONO CLIENTE (manejar null)
       firstPage.drawText(toStr(orden.telefono_cliente), {
         x: 435,
         y: 639,
@@ -475,7 +426,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ CIUDAD ORIGEN (manejar null)
       firstPage.drawText(toStr(orden.ciudad_origen), {
         x: 88,
         y: 606,
@@ -484,7 +434,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ DESTINO (manejar null)
       firstPage.drawText(toStr(orden.destino), {
         x: 285,
         y: 606,
@@ -493,7 +442,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ NÚMERO PASAJEROS (manejar null)
       firstPage.drawText(toNum(orden.numero_pasajeros), {
         x: 478,
         y: 606,
@@ -502,7 +450,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ FECHA INICIO SERVICIO (con validación)
       const fechaInicio = orden.fecha_inicio_servicio
         ? new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX")
         : "";
@@ -515,7 +462,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ HORARIO INICIO SERVICIO (manejar null)
       firstPage.drawText(toStr(orden.horario_inicio_servicio), {
         x: 330,
         y: 586,
@@ -524,7 +470,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ FECHA FINAL SERVICIO (con validación)
       const fechaFinal = orden.fecha_final_servicio
         ? new Date(orden.fecha_final_servicio).toLocaleDateString("es-MX")
         : "";
@@ -537,7 +482,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ PUNTO INTERMEDIO (manejar null)
       firstPage.drawText(toStr(orden.punto_intermedio), {
         x: 150,
         y: 548,
@@ -546,7 +490,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ ITINERARIO con saltos de línea (manejar null)
       const itinerario = toStr(orden.itinerario_detallado);
       const lineas = dividirTexto(itinerario, 450);
       lineas.forEach((linea, i) => {
@@ -559,7 +502,6 @@ const TablaOrdenes = () => {
         });
       });
 
-      // ✅ DIRECCIÓN RETORNO (manejar null)
       firstPage.drawText(toStr(orden.direccion_retorno), {
         x: 150,
         y: 433,
@@ -568,7 +510,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ NOMBRE COMPLETO CONDUCTOR (manejar null en cada parte)
       const nombreCompletoConduct = `${toStr(orden.nombre_conductor)} ${toStr(
         orden.apellido_paterno_conductor
       )} ${toStr(orden.apellido_materno_conductor)}`.trim();
@@ -581,7 +522,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ MARCA VEHÍCULO (manejar null)
       firstPage.drawText(toStr(orden.marca), {
         x: 140,
         y: 392,
@@ -590,7 +530,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ PLACA VEHÍCULO (manejar null)
       firstPage.drawText(toStr(orden.placa), {
         x: 213,
         y: 392,
@@ -599,7 +538,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ KM INICIAL (manejar null)
       firstPage.drawText(`${toNum(orden.km_inicial)} Km`, {
         x: 130,
         y: 379,
@@ -608,7 +546,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ KM FINAL (manejar null)
       firstPage.drawText(`${toNum(orden.km_final)} Km`, {
         x: 205,
         y: 379,
@@ -617,7 +554,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ KM RECORRIDOS (manejar null)
       const kmRecorridos =
         orden.km_final && orden.km_inicial
           ? Math.trunc(orden.km_final - orden.km_inicial)
@@ -631,7 +567,6 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      // ✅ LITROS CONSUMIDOS (manejar null)
       firstPage.drawText(`${toNum(orden.litros_consumidos)} Litros`, {
         x: 130,
         y: 350,
@@ -652,7 +587,7 @@ const TablaOrdenes = () => {
     try {
       setOrdenPDFActual(orden);
       setModalPDFAbierto(true);
-      setPdfUrl(null); // Mostrar loading
+      setPdfUrl(null); 
 
       const pdfBytes = await generarPDF(orden);
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
@@ -678,7 +613,6 @@ const TablaOrdenes = () => {
       link.click();
       window.URL.revokeObjectURL(url);
 
-      console.log("PDF descargado correctamente");
     } catch (error) {
       console.error("Error al descargar PDF:", error);
       alert("Error al descargar el PDF. Por favor, intente nuevamente.");
@@ -966,5 +900,4 @@ const TablaOrdenes = () => {
     </div>
   );
 };
-
 export default TablaOrdenes;

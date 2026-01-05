@@ -25,11 +25,8 @@ const ModalEditarContrato = ({
   alGuardar,
 }) => {
   const [datosFormulario, setDatosFormulario] = useState({
-    // Datos de Contrato
     representante_empresa: "PEDRO HERNÁNDEZ RUÍZ",
     domicilio: "",
-
-    // Datos del Servicio
     nombre_cliente: "",
     nacionalidad: "",
     rfc: "",
@@ -46,15 +43,11 @@ const ModalEditarContrato = ({
     fecha_final_servicio: "",
     horario_final_servicio: "",
     itinerario_detallado: "",
-
-    // Costo Extra
     importe_servicio: "",
     anticipo: "",
     fecha_liquidacion: "",
     costos_cubiertos: [],
     otro_costo_especificacion: "",
-
-    // Datos Vehículo
     marca_vehiculo: "",
     modelo_vehiculo: "",
     placa_vehiculo: "",
@@ -66,7 +59,6 @@ const ModalEditarContrato = ({
   const [seccionActiva, setSeccionActiva] = useState("contrato");
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
-
   const opcionesTipoPasaje = [
     "Turismo Estatal",
     "Turismo Internacional",
@@ -112,13 +104,11 @@ const ModalEditarContrato = ({
         fecha_final_servicio: contrato.fecha_final_servicio || "",
         horario_final_servicio: contrato.horario_final_servicio || "",
         itinerario_detallado: contrato.itinerario_detallado || "",
-
         importe_servicio: contrato.importe_servicio || "",
         anticipo: contrato.anticipo || "",
         fecha_liquidacion: contrato.fecha_liquidacion || "",
         costos_cubiertos: contrato.costos_cubiertos || [],
         otro_costo_especificacion: contrato.otro_costo_especificacion || "",
-
         marca_vehiculo: contrato.marca_vehiculo || "",
         modelo_vehiculo: contrato.modelo_vehiculo || "",
         placa_vehiculo: contrato.placa_vehiculo || "",
@@ -993,5 +983,4 @@ const ModalEditarContrato = ({
     </div>
   );
 };
-
 export default ModalEditarContrato;

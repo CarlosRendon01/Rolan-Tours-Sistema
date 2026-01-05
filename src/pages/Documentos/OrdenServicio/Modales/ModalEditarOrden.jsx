@@ -24,20 +24,15 @@ const ModalEditarOrden = ({
   ordenesExistentes = [],
 }) => {
   const [datosFormulario, setDatosFormulario] = useState({
-    // Datos Orden de Servicio
     folio: "",
     fecha_orden_servicio: "",
     nombre_prestador: "Antonio Alonso Meza",
-
-    // Datos Conductor
     operador_id: "",
     nombre_conductor: "",
     apellido_paterno_conductor: "",
     apellido_materno_conductor: "",
     telefono_conductor: "",
     licencia_conductor: "",
-
-    // Datos Servicio
     nombre_cliente: "",
     telefono_cliente: "",
     ciudad_origen: "",
@@ -51,8 +46,6 @@ const ModalEditarOrden = ({
     horario_final_real: "",
     itinerario_detallado: "",
     direccion_retorno: "",
-
-    // Vehículo
     vehiculo_id: "",
     marca: "",
     modelo: "",
@@ -62,10 +55,8 @@ const ModalEditarOrden = ({
     litros_consumidos: "",
     rendimiento: "",
     vehiculo_dis: "",
-
     coordinador_id: "",
     nombre_coordinador: "",
-
     guia_id: "",
     nombre_guia: "",
   });
@@ -90,7 +81,6 @@ const ModalEditarOrden = ({
         apellido_materno_conductor: orden.apellido_materno_conductor || "",
         telefono_conductor: orden.telefono_conductor || "",
         licencia_conductor: orden.licencia_conductor || "",
-
         nombre_cliente: orden.nombre_cliente || "",
         telefono_cliente: orden.telefono_cliente || "",
         ciudad_origen: orden.ciudad_origen || "",
@@ -104,7 +94,6 @@ const ModalEditarOrden = ({
         horario_final_real: orden.horario_final_real || "",
         itinerario_detallado: orden.itinerario_detallado || "",
         direccion_retorno: orden.direccion_retorno || "",
-
         vehiculo_id: orden.vehiculo_id || "",
         marca: orden.marca || "",
         modelo: orden.modelo || "",
@@ -123,15 +112,11 @@ const ModalEditarOrden = ({
     }
   }, [estaAbierto, orden]);
 
-  // Efecto para filtrar vehículos disponibles
   useEffect(() => {
     if (vehiculosDisponibles.length > 0) {
-      // Obtener IDs de vehículos ya asignados en otras órdenes (excluyendo la orden actual)
       const vehiculosAsignados = ordenesExistentes
         .filter((o) => o.id !== orden?.id && o.vehiculo_id) // Excluir la orden actual
         .map((o) => parseInt(o.vehiculo_id));
-
-      // Filtrar vehículos disponibles
       const vehiculosLibres = vehiculosDisponibles.filter(
         (v) =>
           !vehiculosAsignados.includes(v.id) ||
@@ -147,15 +132,12 @@ const ModalEditarOrden = ({
     datosFormulario.vehiculo_id,
   ]);
 
-  // Efecto para filtrar conductores disponibles
   useEffect(() => {
     if (conductoresDisponibles.length > 0) {
-      // Obtener IDs de conductores ya asignados en otras órdenes (excluyendo la orden actual)
       const conductoresAsignados = ordenesExistentes
         .filter((o) => o.id !== orden?.id && o.operador_id)
         .map((o) => parseInt(o.operador_id));
 
-      // Filtrar conductores disponibles
       const conductoresLibres = conductoresDisponibles.filter(
         (c) =>
           !conductoresAsignados.includes(c.id) ||
@@ -229,7 +211,6 @@ const ModalEditarOrden = ({
   const validarFormulario = () => {
     const nuevosErrores = {};
 
-    // Validaciones Datos Orden de Servicio
     if (!datosFormulario.folio) {
       nuevosErrores.folio = "El folio es obligatorio";
     }
@@ -239,7 +220,6 @@ const ModalEditarOrden = ({
         "La fecha de orden de servicio es obligatoria";
     }
 
-    // Validaciones Datos Servicio
     if (!datosFormulario.nombre_cliente.trim()) {
       nuevosErrores.nombre_cliente = "El nombre del cliente es obligatorio";
     }
@@ -266,7 +246,6 @@ const ModalEditarOrden = ({
       nuevosErrores.fecha_final_servicio = "La fecha final es obligatoria";
     }
 
-    // Validar que fecha final sea posterior a fecha inicial
     if (
       datosFormulario.fecha_inicio_servicio &&
       datosFormulario.fecha_final_servicio
@@ -400,8 +379,8 @@ const ModalEditarOrden = ({
       const datosActualizados = {
         id: orden.id,
         ...datosLimpios,
-        operador_id: datosLimpios.operador_id ? parseInt(datosLimpios.operador_id) : null, // ✅ Convertir a número o null
-        vehiculo_id: datosLimpios.vehiculo_id ? parseInt(datosLimpios.vehiculo_id) : null, // ✅ Lo mismo para vehiculo
+        operador_id: datosLimpios.operador_id ? parseInt(datosLimpios.operador_id) : null, 
+        vehiculo_id: datosLimpios.vehiculo_id ? parseInt(datosLimpios.vehiculo_id) : null, 
         coordinador_id: datosLimpios.coordinador_id ? parseInt(datosLimpios.coordinador_id) : null,
         guia_id: datosLimpios.guia_id ? parseInt(datosLimpios.guia_id) : null,
         fecha_actualizacion: new Date().toISOString(),
@@ -637,7 +616,6 @@ const ModalEditarOrden = ({
 
   const renderSeccionExtras = () => (
     <div className="meo-form-grid">
-      {/* Coordinador */}
       <div className="meo-form-group form-group-full">
         <label htmlFor="coordinador_id">
           <Users size={18} />
@@ -693,7 +671,6 @@ const ModalEditarOrden = ({
         </div>
       )}
 
-      {/* Guía */}
       <div className="meo-form-group form-group-full">
         <label htmlFor="guia_id">
           <User size={18} />
@@ -1138,7 +1115,6 @@ const ModalEditarOrden = ({
         className="meo-contenido modal-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="meo-header">
           <h2>Editar Orden</h2>
           <button
@@ -1151,7 +1127,6 @@ const ModalEditarOrden = ({
           </button>
         </div>
 
-        {/* Tabs de Navegación */}
         <div className="meo-tabs">
           <button
             className={`meo-tab-button ${seccionActiva === "orden" ? "active" : ""
@@ -1200,7 +1175,6 @@ const ModalEditarOrden = ({
           </button>
         </div>
 
-        {/* Formulario (scrolleable) */}
         <form onSubmit={manejarEnvio} className="meo-form">
           {seccionActiva === "orden" && renderSeccionOrden()}
           {seccionActiva === "conductor" && renderSeccionConductor()}
@@ -1209,7 +1183,6 @@ const ModalEditarOrden = ({
           {seccionActiva === "extras" && renderSeccionExtras()}
         </form>
 
-        {/* Footer */}
         <div className="meo-footer">
           <div className="meo-botones-izquierda">
             <button
@@ -1237,5 +1210,4 @@ const ModalEditarOrden = ({
     </div>
   );
 };
-
 export default ModalEditarOrden;

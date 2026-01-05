@@ -300,7 +300,6 @@
   background-color: #fef2f2;
 }
 
-/* Estado inactivo */
 .Ordenes-fila-orden.Ordenes-fila-inactiva {
   background: #f8d7da !important;
 }
@@ -607,46 +606,46 @@
 }
 
 .swal-wide {
-  width: 600px !important;
-  max-width: 90% !important;
+  width: 600px ;
+  max-width: 90% ;
 }
 
 .swal2-html-container {
-  overflow: visible !important;
-  max-height: none !important;
+  overflow: visible ;
+  max-height: none ;
 }
 
 .swal2-title {
-  font-size: 1.75rem !important;
-  font-weight: 700 !important;
-  padding: 1rem 1.5rem 0.5rem !important;
+  font-size: 1.75rem ;
+  font-weight: 700 ;
+  padding: 1rem 1.5rem 0.5rem ;
 }
 
 .swal2-icon {
-  margin: 1.5rem auto 1rem !important;
+  margin: 1.5rem auto 1rem ;
 }
 
 .swal2-confirm,
 .swal2-cancel {
-  font-weight: 600 !important;
-  padding: 0.625rem 1.5rem !important;
-  border-radius: 6px !important;
-  font-size: 0.95rem !important;
-  transition: all 0.3s ease !important;
+  font-weight: 600 ;
+  padding: 0.625rem 1.5rem ;
+  border-radius: 6px ;
+  font-size: 0.95rem ;
+  transition: all 0.3s ease ;
 }
 
 .swal2-confirm:hover,
 .swal2-cancel:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(-2px) ;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) ;
 }
 
 .swal2-timer-progress-bar {
-  background: rgba(255, 255, 255, 0.6) !important;
+  background: rgba(255, 255, 255, 0.6) ;
 }
 
 .swal2-show {
-  animation: swal2-show 0.3s !important;
+  animation: swal2-show 0.3s ;
 }
 
 @media (min-width: 1024px) and (max-width: 1279px) {
@@ -840,13 +839,13 @@
   }
 
   .swal2-title {
-    font-size: 1.4rem !important;
+    font-size: 1.4rem ;
   }
 
   .swal2-confirm,
   .swal2-cancel {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem ;
+    font-size: 0.875rem ;
   }
 }
 

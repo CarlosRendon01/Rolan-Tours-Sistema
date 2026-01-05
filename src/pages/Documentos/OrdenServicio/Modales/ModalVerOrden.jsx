@@ -419,5 +419,4 @@ const ModalVerOrden = ({ estaAbierto, orden, alCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerOrden;

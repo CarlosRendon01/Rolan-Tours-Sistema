@@ -22,7 +22,12 @@ import ModalVerReserva from "../ModalesReservas/ModalVerReserva";
 import ModalVisualizarPDF from "../ModalesReservas/ModalVisualizarPDF";
 import "../ModalesReservas/ModalVisualizarPDF.css";
 
-const TablaReservas = () => {
+const TablaReservas = ({ 
+  reservasDatos, 
+  setReservasDatos, 
+  cargando, 
+  onRecargar 
+}) => {
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [reservaAEliminar, setReservaAEliminar] = useState(null);
@@ -30,37 +35,29 @@ const TablaReservas = () => {
   const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [reservaPDFActual, setReservaPDFActual] = useState(null);
-  const [reservasDatos, setReservasDatos] = useState([]);
-
-  useEffect(() => {
-    cargarReservas();
-  }, []);
-
-  // ⭐ AGREGAR ESTA FUNCIÓN - Carga datos del backend
-  const cargarReservas = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/reservas", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      setReservasDatos(response.data);
-      console.log("✅ Reservas cargadas:", response.data.length);
-    } catch (error) {
-      console.error("❌ Error al cargar reservas:", error);
-    }
-  };
+  const [puntosCarga, setPuntosCarga] = useState('');
 
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
+  useEffect(() => {
+    if (cargando) {
+      const interval = setInterval(() => {
+        setPuntosCarga(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setPuntosCarga('');
+    }
+  }, [cargando]);
+
   const reservasFiltradas = reservasDatos.filter((reserva) => {
     if (!reserva.activo) return false;
-
     const busqueda = terminoBusqueda.toLowerCase();
     const nombreCliente = reserva.nombreCliente.toLowerCase();
 
@@ -77,7 +74,6 @@ const TablaReservas = () => {
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const reservasPaginadas = reservasFiltradas.slice(indiceInicio, indiceFin);
-
   const totalReservas = reservasDatos.filter((r) => r.activo).length;
   const reservasPagadas = reservasDatos.filter(
     (r) => r.pagado === "pagado" && r.activo
@@ -168,7 +164,6 @@ const TablaReservas = () => {
     }
 
     try {
-      // ⭐ AGREGAR: Eliminar en backend
       const token = localStorage.getItem("token");
       await axios.delete(`http://127.0.0.1:8000/api/reservas/${reserva.id}`, {
         headers: {
@@ -177,11 +172,8 @@ const TablaReservas = () => {
         },
       });
 
-      // ⭐ AGREGAR: Recargar desde backend
-      await cargarReservas();
-
+      await onRecargar();
       setReservaAEliminar(null);
-      console.log("✅ Reserva eliminada");
       return Promise.resolve();
     } catch (error) {
       console.error("❌ Error al eliminar reserva:", error);
@@ -194,6 +186,7 @@ const TablaReservas = () => {
     setModalEditarAbierto(false);
     setReservaSeleccionado(null);
   };
+  
   const cerrarModalPDF = () => {
     setModalPDFAbierto(false);
     if (pdfUrl) {
@@ -206,12 +199,8 @@ const TablaReservas = () => {
   const manejarGuardarReserva = async (datosActualizados) => {
     try {
       const token = localStorage.getItem("token");
-
-      // ⭐ AGREGAR: Crear FormData para enviar al backend
       const formData = new FormData();
       formData.append("_method", "PUT");
-
-      // Mapear campos camelCase → snake_case
       const mapeo = {
         folio: "folio",
         fechaReserva: "fecha_reserva",
@@ -239,7 +228,6 @@ const TablaReservas = () => {
         }
       });
 
-      // ⭐ AGREGAR: Actualizar en backend
       await axios.post(
         `http://127.0.0.1:8000/api/reservas/${datosActualizados.id}`,
         formData,
@@ -252,10 +240,7 @@ const TablaReservas = () => {
         }
       );
 
-      // ⭐ AGREGAR: Recargar desde backend
-      await cargarReservas();
-
-      console.log("✅ Reserva actualizada");
+      await onRecargar();
       return Promise.resolve();
     } catch (error) {
       console.error("❌ Error al actualizar reserva:", error);
@@ -317,7 +302,7 @@ const TablaReservas = () => {
         { valor: reserva.telefono, x: 230, y: 208, z: 11 },
         { valor: `$ ${reserva.importe}`, x: 450, y: 208, z: 11 },
         { valor: reserva.nombreCliente, x: 108, y: 240, z: 11 },
-        { valor: reserva.servicio, x: 120, y: 174, z: 9 },//143
+        { valor: reserva.servicio, x: 120, y: 174, z: 9 },
         { valor: reserva.incluye, x: 128, y: 142 , z: 9 },
         { valor: reserva.noIncluye, x: 130, y: 108, z: 9 },
       ];
@@ -348,7 +333,7 @@ const TablaReservas = () => {
     try {
       setReservaPDFActual(reserva);
       setModalPDFAbierto(true);
-      setPdfUrl(null); // Mostrar loading
+      setPdfUrl(null); 
 
       const pdfBytes = await generarPDF(reserva);
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
@@ -374,7 +359,6 @@ const TablaReservas = () => {
       link.click();
       window.URL.revokeObjectURL(url);
 
-      console.log("PDF descargado correctamente");
     } catch (error) {
       console.error("Error al descargar PDF:", error);
       alert("Error al descargar el PDF. Por favor, intente nuevamente.");
@@ -454,7 +438,30 @@ const TablaReservas = () => {
         </div>
       </div>
 
-      {reservasPaginadas.length === 0 ? (
+      {cargando ? (
+        <div className="reservas-contenedor-tabla">
+          <table className="reservas-tabla">
+            <thead>
+              <tr className="reservas-fila-encabezado">
+                <th>FOLIO</th>
+                <th>CLIENTE</th>
+                <th>FECHA</th>
+                <th>PASAJEROS</th>
+                <th>IMPORTE</th>
+                <th>ESTADO PAGO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="7" className="reservas-mensaje-cargando">
+                  Cargando la información de las reservas{puntosCarga}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : reservasPaginadas.length === 0 ? (
         <div className="reservas-estado-vacio">
           <div className="reservas-icono-vacio">
             <FileText size={80} strokeWidth={1.5} />
@@ -697,5 +704,4 @@ const TablaReservas = () => {
     </div>
   );
 };
-
 export default TablaReservas;

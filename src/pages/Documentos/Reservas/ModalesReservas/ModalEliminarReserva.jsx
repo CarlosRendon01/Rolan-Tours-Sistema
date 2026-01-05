@@ -2,16 +2,11 @@ import React, { useEffect } from 'react';
 import Swal from 'sweetalert2';
 import './ModalEliminarReserva.css';
 
-/**
- * Componente Modal para eliminar reserva usando SweetAlert2
- * Se renderiza cuando reservaAEliminar tiene valor
- */
 const ModalEliminarReserva = ({ reserva, alConfirmar }) => {
   useEffect(() => {
     if (!reserva) return;
 
     const mostrarModal = async () => {
-      // Validar datos de la reserva
       if (!reserva?.nombreCliente && !reserva?.id) {
         await modalError('Información de la reserva incompleta');
         alConfirmar(null);
@@ -60,15 +55,9 @@ const ModalEliminarReserva = ({ reserva, alConfirmar }) => {
         modalCargando('Eliminando reserva...');
 
         try {
-          // Ejecutar la función de eliminación proporcionada
           await alConfirmar(reserva);
-
-          // Delay mínimo para UX
           await new Promise(resolve => setTimeout(resolve, 600));
-
           Swal.close();
-
-          // Mostrar éxito
           await Swal.fire({
             title: '¡Eliminada!',
             html: `
@@ -96,22 +85,15 @@ const ModalEliminarReserva = ({ reserva, alConfirmar }) => {
           console.error('Error al eliminar reserva:', error);
         }
       } else {
-        // Usuario canceló
         alConfirmar(null);
       }
     };
 
     mostrarModal();
   }, [reserva, alConfirmar]);
-
-  // Este componente no renderiza nada visible, el modal es manejado por SweetAlert2
   return null;
 };
 
-/**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
- */
 const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
     title: 'Error',
@@ -128,10 +110,6 @@ const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud'
   });
 };
 
-/**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
- */
 const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
     title: mensaje,
@@ -148,5 +126,4 @@ const modalCargando = (mensaje = 'Procesando...') => {
     }
   });
 };
-
 export default ModalEliminarReserva;

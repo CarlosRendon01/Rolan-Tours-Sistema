@@ -5,9 +5,7 @@ import './ModalEliminarOrden.css';
 const ModalEliminarOrden = ({ orden, alConfirmar, esAdministrador }) => {
   useEffect(() => {
     if (!orden) return;
-
     const mostrarModal = async () => {
-      // Validar datos de la orden
       if (!orden?.folio && !orden?.nombre_cliente) {
         await modalError('Información de la orden incompleta');
         alConfirmar(null);
@@ -56,15 +54,9 @@ const ModalEliminarOrden = ({ orden, alConfirmar, esAdministrador }) => {
         modalCargando('Eliminando orden...');
 
         try {
-          // Ejecutar la función de eliminación proporcionada
           await alConfirmar(orden);
-
-          // Delay mínimo para UX
           await new Promise(resolve => setTimeout(resolve, 600));
-
           Swal.close();
-
-          // Mostrar éxito
           await Swal.fire({
             title: '¡Eliminada!',
             html: `
@@ -92,22 +84,15 @@ const ModalEliminarOrden = ({ orden, alConfirmar, esAdministrador }) => {
           console.error('Error al eliminar orden:', error);
         }
       } else {
-        // Usuario canceló
         alConfirmar(null);
       }
     };
 
     mostrarModal();
   }, [orden, alConfirmar]);
-
-  // Este componente no renderiza nada visible, el modal es manejado por SweetAlert2
   return null;
 };
 
-/**
- * Modal de error genérico
- * @param {string} mensaje - Mensaje de error a mostrar
- */
 const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud') => {
   await Swal.fire({
     title: 'Error',
@@ -124,10 +109,6 @@ const modalError = async (mensaje = 'Ocurrió un error al procesar la solicitud'
   });
 };
 
-/**
- * Modal de cargando
- * @param {string} mensaje - Mensaje a mostrar mientras carga
- */
 const modalCargando = (mensaje = 'Procesando...') => {
   Swal.fire({
     title: mensaje,
@@ -144,5 +125,4 @@ const modalCargando = (mensaje = 'Procesando...') => {
     }
   });
 };
-
 export default ModalEliminarOrden;

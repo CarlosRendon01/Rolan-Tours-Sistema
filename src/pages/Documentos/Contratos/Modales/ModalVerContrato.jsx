@@ -18,8 +18,6 @@ import "./ModalVerContrato.css";
 
 const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
   const [seccionActiva, setSeccionActiva] = useState("contrato");
-
-  // ✅ FUNCIÓN HELPER PARA PARSEAR ARRAYS DE FORMA SEGURA
   const parsearArray = (valor) => {
     if (!valor) return [];
     if (Array.isArray(valor)) return valor;
@@ -207,7 +205,6 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
   );
 
   const renderSeccionCosto = () => {
-    // ✅ PARSEAR COSTOS_CUBIERTOS DE FORMA SEGURA
     const costosCubiertos = parsearArray(contrato.costos_cubiertos);
 
     return (
@@ -374,5 +371,4 @@ const ModalVerContrato = ({ estaAbierto, contrato, alCerrar }) => {
     </div>
   );
 };
-
 export default ModalVerContrato;

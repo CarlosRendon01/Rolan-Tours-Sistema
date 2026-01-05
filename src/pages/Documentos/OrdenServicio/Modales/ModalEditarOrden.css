@@ -394,29 +394,29 @@ select.meo-form-group select {
 }
 
 .swal-popup-custom-orden {
-  border-radius: 20px !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 20px ;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) ;
 }
 
 .swal-title-custom-orden {
-  font-size: 1.8rem !important;
-  font-weight: 700 !important;
-  color: #111827 !important;
-  padding-top: 1rem !important;
+  font-size: 1.8rem ;
+  font-weight: 700 ;
+  color: #111827 ;
+  padding-top: 1rem ;
 }
 
 .swal-confirm-custom-orden {
-  font-size: 1.1rem !important;
-  font-weight: 600 !important;
-  padding: 0.875rem 2.5rem !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
-  transition: all 0.2s ease !important;
+  font-size: 1.1rem ;
+  font-weight: 600 ;
+  padding: 0.875rem 2.5rem ;
+  border-radius: 12px ;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) ;
+  transition: all 0.2s ease ;
 }
 
 .swal-confirm-custom-orden:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
+  transform: translateY(-2px) ;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) ;
 }
 
 @media (max-width: 768px) {
