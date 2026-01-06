@@ -22,11 +22,11 @@ import ModalVerReserva from "../ModalesReservas/ModalVerReserva";
 import ModalVisualizarPDF from "../ModalesReservas/ModalVisualizarPDF";
 import "../ModalesReservas/ModalVisualizarPDF.css";
 
-const TablaReservas = ({ 
-  reservasDatos, 
-  setReservasDatos, 
-  cargando, 
-  onRecargar 
+const TablaReservas = ({
+  reservasDatos,
+  setReservasDatos,
+  cargando,
+  onRecargar,
 }) => {
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
@@ -35,26 +35,10 @@ const TablaReservas = ({
   const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [reservaPDFActual, setReservaPDFActual] = useState(null);
-  const [puntosCarga, setPuntosCarga] = useState('');
 
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-
-  useEffect(() => {
-    if (cargando) {
-      const interval = setInterval(() => {
-        setPuntosCarga(prev => {
-          if (prev === '...') return '';
-          return prev + '.';
-        });
-      }, 500);
-
-      return () => clearInterval(interval);
-    } else {
-      setPuntosCarga('');
-    }
-  }, [cargando]);
 
   const reservasFiltradas = reservasDatos.filter((reserva) => {
     if (!reserva.activo) return false;
@@ -156,7 +140,6 @@ const TablaReservas = ({
     setModalVerAbierto(false);
     setReservaSeleccionado(null);
   };
-
   const manejarEliminarReserva = async (reserva) => {
     if (!reserva) {
       setReservaAEliminar(null);
@@ -186,7 +169,7 @@ const TablaReservas = ({
     setModalEditarAbierto(false);
     setReservaSeleccionado(null);
   };
-  
+
   const cerrarModalPDF = () => {
     setModalPDFAbierto(false);
     if (pdfUrl) {
@@ -290,9 +273,9 @@ const TablaReservas = ({
         new Date(fecha).toLocaleDateString("es-MX");
       const formatearFecha2 = (fecha) =>
         new Date(fecha).toLocaleDateString("es-ES", formatoActual);
-      const convercionLetraMayuscula=(cadena)=>{
+      const convercionLetraMayuscula = (cadena) => {
         return `${cadena.charAt(0).toUpperCase()}${cadena.slice(1)}`;
-      }
+      };
 
       const campos = [
         { valor: reserva.folio.toString(), x: 495, y: 325, z: 12 },
@@ -303,7 +286,7 @@ const TablaReservas = ({
         { valor: `$ ${reserva.importe}`, x: 450, y: 208, z: 11 },
         { valor: reserva.nombreCliente, x: 108, y: 240, z: 11 },
         { valor: reserva.servicio, x: 120, y: 174, z: 9 },
-        { valor: reserva.incluye, x: 128, y: 142 , z: 9 },
+        { valor: reserva.incluye, x: 128, y: 142, z: 9 },
         { valor: reserva.noIncluye, x: 130, y: 108, z: 9 },
       ];
 
@@ -316,7 +299,7 @@ const TablaReservas = ({
       }
 
       if (reserva.pagado === "pagado") {
-        dibujar(convercionLetraMayuscula(reserva.pagado), 358, 75,11);
+        dibujar(convercionLetraMayuscula(reserva.pagado), 358, 75, 11);
       } else if (reserva.pagado === "no pagado") {
         dibujar(convercionLetraMayuscula(reserva.pagado), 358, 75, 11);
       }
@@ -333,7 +316,7 @@ const TablaReservas = ({
     try {
       setReservaPDFActual(reserva);
       setModalPDFAbierto(true);
-      setPdfUrl(null); 
+      setPdfUrl(null);
 
       const pdfBytes = await generarPDF(reserva);
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
@@ -358,13 +341,11 @@ const TablaReservas = ({
       link.download = `Reserva_${reservaPDFActual.nombreCliente}_${reservaPDFActual.folio}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
-
     } catch (error) {
       console.error("Error al descargar PDF:", error);
       alert("Error al descargar el PDF. Por favor, intente nuevamente.");
     }
   };
-
   return (
     <div className="reservas-contenedor-principal">
       <div className="reservas-encabezado">
@@ -438,8 +419,66 @@ const TablaReservas = ({
         </div>
       </div>
 
-      {cargando ? (
-        <div className="reservas-contenedor-tabla">
+      <div className="reservas-contenedor-tabla">
+        {cargando ? (
+          <div className="reservas-estado-cargando">
+            <p>
+              Cargando reservas{" "}
+              <svg
+                width="30"
+                height="30"
+                fill="hsla(227, 11%, 84%, 1.00)"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="4" cy="12" r="3">
+                  <animate
+                    id="spinner_qFRN"
+                    begin="0;spinner_OcgL.end+0.25s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="12" cy="12" r="3">
+                  <animate
+                    begin="spinner_qFRN.begin+0.1s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="20" cy="12" r="3">
+                  <animate
+                    id="spinner_OcgL"
+                    begin="spinner_qFRN.begin+0.2s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+              </svg>
+            </p>
+          </div>
+        ) : reservasPaginadas.length === 0 ? (
+          <div className="reservas-estado-vacio">
+            <div className="reservas-icono-vacio">
+              <FileText size={80} strokeWidth={1.5} />
+            </div>
+            <p className="reservas-mensaje-vacio">No se encontraron reservas</p>
+            <p className="reservas-submensaje-vacio">
+              {terminoBusqueda
+                ? "Intenta ajustar los filtros de búsqueda"
+                : "Comienza agregando una nueva reserva"}
+            </p>
+          </div>
+        ) : (
           <table className="reservas-tabla">
             <thead>
               <tr className="reservas-fila-encabezado">
@@ -453,224 +492,180 @@ const TablaReservas = ({
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colSpan="7" className="reservas-mensaje-cargando">
-                  Cargando la información de las reservas{puntosCarga}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      ) : reservasPaginadas.length === 0 ? (
-        <div className="reservas-estado-vacio">
-          <div className="reservas-icono-vacio">
-            <FileText size={80} strokeWidth={1.5} />
-          </div>
-          <p className="reservas-mensaje-vacio">No se encontraron reservas</p>
-          <p className="reservas-submensaje-vacio">
-            {terminoBusqueda
-              ? "Intenta ajustar los filtros de búsqueda"
-              : "Comienza agregando una nueva reserva"}
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="reservas-contenedor-tabla">
-            <table className="reservas-tabla">
-              <thead>
-                <tr className="reservas-fila-encabezado">
-                  <th>FOLIO</th>
-                  <th>CLIENTE</th>
-                  <th>FECHA</th>
-                  <th>PASAJEROS</th>
-                  <th>IMPORTE</th>
-                  <th>ESTADO PAGO</th>
-                  <th>ACCIONES</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reservasPaginadas.map((reserva, index) => (
-                  <tr
-                    key={reserva.id}
-                    className="reservas-fila-reserva"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <td data-label="Folio" className="reservas-columna-id">
-                      <span className="reservas-badge-id">
-                        #{reserva.folio}
-                      </span>
-                    </td>
+              {reservasPaginadas.map((reserva, index) => (
+                <tr
+                  key={reserva.id}
+                  className="reservas-fila-reserva"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <td data-label="Folio" className="reservas-columna-id">
+                    <span className="reservas-badge-id">#{reserva.folio}</span>
+                  </td>
 
-                    <td
-                      data-label="Cliente"
-                      className="reservas-columna-nombre"
-                    >
-                      <div className="reservas-info-reserva">
-                        <div className="reservas-avatar">
-                          {obtenerInicialesCliente(reserva.nombreCliente)}
-                        </div>
-                        <div className="reservas-datos-reserva">
-                          <span className="reservas-nombre-principal">
-                            {reserva.nombreCliente}
-                          </span>
-                          <span className="reservas-subtexto">
-                            {formatearTelefono(reserva.telefono)}
-                          </span>
-                        </div>
+                  <td data-label="Cliente" className="reservas-columna-nombre">
+                    <div className="reservas-info-reserva">
+                      <div className="reservas-avatar">
+                        {obtenerInicialesCliente(reserva.nombreCliente)}
                       </div>
-                    </td>
-
-                    <td data-label="Fecha" className="reservas-columna-edad">
-                      <span className="reservas-badge-edad">
-                        <Calendar size={14} style={{ marginRight: "4px" }} />
-                        {formatearFecha(reserva.fechaReserva)}
-                      </span>
-                    </td>
-
-                    <td
-                      data-label="Pasajeros"
-                      className="reservas-columna-genero"
-                    >
-                      <span className="reservas-badge-genero masculino">
-                        <User size={14} style={{ marginRight: "4px" }} />
-                        {reserva.numPasajeros} pax
-                      </span>
-                    </td>
-
-                    <td
-                      data-label="Importe"
-                      className="reservas-columna-telefono"
-                    >
-                      <span className="reservas-valor-telefono">
-                        {formatearMoneda(reserva.importe)}
-                      </span>
-                    </td>
-
-                    <td
-                      data-label="Estado Pago"
-                      className="reservas-columna-idiomas"
-                    >
-                      <div className="reservas-badge-idiomas">
-                        <span
-                          className={`reservas-idioma-tag ${
-                            reserva.pagado === "pagado"
-                              ? "reservas-pagado"
-                              : "reservas-no-pagado"
-                          }`}
-                        >
-                          {reserva.pagado === "pagado" ? (
-                            <>
-                              <CheckCircle
-                                size={14}
-                                style={{ marginRight: "4px" }}
-                              />
-                              PAGADO
-                            </>
-                          ) : (
-                            <>
-                              <XCircle
-                                size={14}
-                                style={{ marginRight: "4px" }}
-                              />
-                              NO PAGADO
-                            </>
-                          )}
+                      <div className="reservas-datos-reserva">
+                        <span className="reservas-nombre-principal">
+                          {reserva.nombreCliente}
+                        </span>
+                        <span className="reservas-subtexto">
+                          {formatearTelefono(reserva.telefono)}
                         </span>
                       </div>
-                    </td>
+                    </div>
+                  </td>
 
-                    <td
-                      data-label="Acciones"
-                      className="reservas-columna-acciones"
-                    >
-                      <div className="reservas-botones-accion">
-                        <button
-                          className="reservas-boton-accion reservas-ver"
-                          onClick={() => manejarAccion("ver", reserva)}
-                          title="Ver reserva"
-                        >
-                          <Eye size={16} />
-                        </button>
+                  <td data-label="Fecha" className="reservas-columna-edad">
+                    <span className="reservas-badge-edad">
+                      <Calendar size={14} style={{ marginRight: "4px" }} />
+                      {formatearFecha(reserva.fechaReserva)}
+                    </span>
+                  </td>
 
-                        <button
-                          className="Ordenes-boton-accion Reservas-descargar"
-                          onClick={() => manejarAccion("pdf", reserva)}
-                          title="Descargar reserva"
-                        >
-                          <FileText size={16} />
-                        </button>
-                        <button
-                          className="reservas-boton-accion reservas-editar"
-                          onClick={() => manejarAccion("editar", reserva)}
-                          title="Editar reserva"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
-                          className="reservas-boton-accion reservas-eliminar"
-                          onClick={() => manejarAccion("eliminar", reserva)}
-                          title="Eliminar reserva"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  <td
+                    data-label="Pasajeros"
+                    className="reservas-columna-genero"
+                  >
+                    <span className="reservas-badge-genero masculino">
+                      <User size={14} style={{ marginRight: "4px" }} />
+                      {reserva.numPasajeros} pax
+                    </span>
+                  </td>
+
+                  <td
+                    data-label="Importe"
+                    className="reservas-columna-telefono"
+                  >
+                    <span className="reservas-valor-telefono">
+                      {formatearMoneda(reserva.importe)}
+                    </span>
+                  </td>
+
+                  <td
+                    data-label="Estado Pago"
+                    className="reservas-columna-idiomas"
+                  >
+                    <div className="reservas-badge-idiomas">
+                      <span
+                        className={`reservas-idioma-tag ${
+                          reserva.pagado === "pagado"
+                            ? "reservas-pagado"
+                            : "reservas-no-pagado"
+                        }`}
+                      >
+                        {reserva.pagado === "pagado" ? (
+                          <>
+                            <CheckCircle
+                              size={14}
+                              style={{ marginRight: "4px" }}
+                            />
+                            PAGADO
+                          </>
+                        ) : (
+                          <>
+                            <XCircle size={14} style={{ marginRight: "4px" }} />
+                            NO PAGADO
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  </td>
+
+                  <td
+                    data-label="Acciones"
+                    className="reservas-columna-acciones"
+                  >
+                    <div className="reservas-botones-accion">
+                      <button
+                        className="reservas-boton-accion reservas-ver"
+                        onClick={() => manejarAccion("ver", reserva)}
+                        title="Ver reserva"
+                      >
+                        <Eye size={16} />
+                      </button>
+
+                      <button
+                        className="Ordenes-boton-accion Reservas-descargar"
+                        onClick={() => manejarAccion("pdf", reserva)}
+                        title="Descargar reserva"
+                      >
+                        <FileText size={16} />
+                      </button>
+                      <button
+                        className="reservas-boton-accion reservas-editar"
+                        onClick={() => manejarAccion("editar", reserva)}
+                        title="Editar reserva"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button
+                        className="reservas-boton-accion reservas-eliminar"
+                        onClick={() => manejarAccion("eliminar", reserva)}
+                        title="Eliminar reserva"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+      {!cargando && reservasPaginadas.length > 0 && (
+        <div className="reservas-pie-tabla">
+          <div className="reservas-informacion-registros">
+            Mostrando registros del {indiceInicio + 1} al{" "}
+            {Math.min(indiceFin, totalRegistros)} de un total de{" "}
+            {totalRegistros} registros
+            {terminoBusqueda && (
+              <span style={{ color: "#6c757d", marginLeft: "0.5rem" }}>
+                (filtrado de {reservasDatos.filter((r) => r.activo).length}{" "}
+                registros totales)
+              </span>
+            )}
           </div>
 
-          <div className="reservas-pie-tabla">
-            <div className="reservas-informacion-registros">
-              Mostrando registros del {indiceInicio + 1} al{" "}
-              {Math.min(indiceFin, totalRegistros)} de un total de{" "}
-              {totalRegistros} registros
-              {terminoBusqueda && (
-                <span style={{ color: "#6c757d", marginLeft: "0.5rem" }}>
-                  (filtrado de {reservasDatos.filter((r) => r.activo).length}{" "}
-                  registros totales)
-                </span>
+          <div className="reservas-controles-paginacion">
+            <button
+              className="reservas-boton-paginacion"
+              onClick={() => cambiarPagina(paginaActual - 1)}
+              disabled={paginaActual === 1}
+            >
+              <ChevronLeft size={18} />
+              Anterior
+            </button>
+
+            <div className="reservas-numeros-paginacion">
+              {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(
+                (numero) => (
+                  <button
+                    key={numero}
+                    className={`reservas-numero-pagina ${
+                      paginaActual === numero ? "reservas-activo" : ""
+                    }`}
+                    onClick={() => cambiarPagina(numero)}
+                  >
+                    {numero}
+                  </button>
+                )
               )}
             </div>
 
-            <div className="reservas-controles-paginacion">
-              <button
-                className="reservas-boton-paginacion"
-                onClick={() => cambiarPagina(paginaActual - 1)}
-                disabled={paginaActual === 1}
-              >
-                <ChevronLeft size={18} />
-                Anterior
-              </button>
-
-              <div className="reservas-numeros-paginacion">
-                {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(
-                  (numero) => (
-                    <button
-                      key={numero}
-                      className={`reservas-numero-pagina ${
-                        paginaActual === numero ? "reservas-activo" : ""
-                      }`}
-                      onClick={() => cambiarPagina(numero)}
-                    >
-                      {numero}
-                    </button>
-                  )
-                )}
-              </div>
-
-              <button
-                className="reservas-boton-paginacion"
-                onClick={() => cambiarPagina(paginaActual + 1)}
-                disabled={paginaActual === totalPaginas}
-              >
-                Siguiente
-                <ChevronRight size={18} />
-              </button>
-            </div>
+            <button
+              className="reservas-boton-paginacion"
+              onClick={() => cambiarPagina(paginaActual + 1)}
+              disabled={paginaActual === totalPaginas}
+            >
+              Siguiente
+              <ChevronRight size={18} />
+            </button>
           </div>
-        </>
+        </div>
       )}
 
       {modalVerAbierto && reservaSeleccionado && (
@@ -680,6 +675,7 @@ const TablaReservas = ({
           onCerrar={cerrarModalVer}
         />
       )}
+
       <ModalVisualizarPDF
         estaAbierto={modalPDFAbierto}
         pdfUrl={pdfUrl}
@@ -697,11 +693,14 @@ const TablaReservas = ({
         />
       )}
 
-      <ModalEliminarReserva
-        reserva={reservaAEliminar}
-        alConfirmar={manejarEliminarReserva}
-      />
+      {reservaAEliminar && (
+        <ModalEliminarReserva
+          reserva={reservaAEliminar}
+          alConfirmar={manejarEliminarReserva}
+        />
+      )}
     </div>
   );
 };
+
 export default TablaReservas;

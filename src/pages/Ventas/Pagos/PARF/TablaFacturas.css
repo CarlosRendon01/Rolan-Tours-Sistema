@@ -752,26 +752,31 @@
   letter-spacing: 0.05em;
 }
 
-.facturas-cargando {
-  opacity: 0.6;
-  pointer-events: none;
-  position: relative;
+.facturas-estado-cargando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  min-height: 300px;
+  text-align: center;
 }
 
-.facturas-cargando::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 24px;
-  height: 24px;
-  border: 2px solid #e5e7eb;
-  border-top: 2px solid #3b82f6;
-  border-radius: 50%;
-  animation: fac-spin 0.8s linear infinite;
-  z-index: 1000;
+.facturas-estado-cargando p {
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
+
+.facturas-estado-cargando svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 @keyframes fac-fadeIn {
   from {
     opacity: 0;

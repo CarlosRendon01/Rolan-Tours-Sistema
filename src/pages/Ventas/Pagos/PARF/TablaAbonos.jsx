@@ -28,7 +28,7 @@ const estadoInicial = {
   registrosPorPagina: 10,
   terminoBusqueda: "",
   filtroVisibilidad: "activos",
-  cargando: false,
+  cargando: true, // Cambiado a true
 };
 
 const reductor = (estado, accion) => {
@@ -76,6 +76,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
   const cargarAbonos = async () => {
     try {
+      despachar({ tipo: "ESTABLECER_CARGANDO", valor: true });
       const token = localStorage.getItem("token");
       const res = await axios.get(API_URL, {
         headers: {
@@ -96,6 +97,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
       }
     } catch (error) {
       console.error("Error al cargar abonos:", error);
+    } finally {
+      despachar({ tipo: "ESTABLECER_CARGANDO", valor: false });
     }
   };
 
@@ -267,11 +270,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
   return (
     <>
-      <div
-        className={`abonos-contenedor-principal ${
-          cargando ? "abonos-cargando" : ""
-        }`}
-      >
+      <div className="abonos-contenedor-principal">
         <div className="abonos-encabezado">
           <div className="abonos-seccion-logo">
             <div className="abonos-icono-principal">
@@ -397,7 +396,53 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         </div>
 
         <div className="abonos-contenedor-tabla">
-          {datosPaginados.length === 0 ? (
+          {cargando ? (
+            <div className="abonos-estado-cargando">
+              <p>
+                Cargando abonos{" "}
+                <svg
+                  width="30"
+                  height="30"
+                  fill="hsla(227, 11%, 84%, 1.00)"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="4" cy="12" r="3">
+                    <animate
+                      id="spinner_qFRN"
+                      begin="0;spinner_OcgL.end+0.25s"
+                      attributeName="cy"
+                      calcMode="spline"
+                      dur="0.6s"
+                      values="12;6;12"
+                      keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                    />
+                  </circle>
+                  <circle cx="12" cy="12" r="3">
+                    <animate
+                      begin="spinner_qFRN.begin+0.1s"
+                      attributeName="cy"
+                      calcMode="spline"
+                      dur="0.6s"
+                      values="12;6;12"
+                      keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                    />
+                  </circle>
+                  <circle cx="20" cy="12" r="3">
+                    <animate
+                      id="spinner_OcgL"
+                      begin="spinner_qFRN.begin+0.2s"
+                      attributeName="cy"
+                      calcMode="spline"
+                      dur="0.6s"
+                      values="12;6;12"
+                      keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                    />
+                  </circle>
+                </svg>
+              </p>
+            </div>
+          ) : datosPaginados.length === 0 ? (
             <div className="abonos-estado-vacio">
               <div className="abonos-icono-vacio">
                 <FileText size={64} />
@@ -612,7 +657,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
           )}
         </div>
 
-        {datosPaginados.length > 0 && (
+        {datosPaginados.length > 0 && !cargando && (
           <div className="abonos-pie-tabla">
             <div className="abonos-informacion-registros">
               Mostrando <strong>{indiceInicio + 1}</strong> a{" "}

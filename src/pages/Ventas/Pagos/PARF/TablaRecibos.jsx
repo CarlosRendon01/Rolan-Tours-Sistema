@@ -40,7 +40,7 @@ const TablaRecibos = ({
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-  const [cargando, setCargando] = useState(false);
+  const [cargando, setCargando] = useState(true); // Cambiado a true
   const [error, setError] = useState(null);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState("todos");
@@ -62,6 +62,7 @@ const TablaRecibos = ({
 
   const cargarRecibos = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
       const res = await axios.get(API_URL, {
         headers: {
@@ -74,6 +75,8 @@ const TablaRecibos = ({
       setdatosRecibos(recibos);
     } catch (error) {
       console.error("Error al cargar recibos:", error);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -303,15 +306,11 @@ const TablaRecibos = ({
 
   const manejarAccion = useCallback(
     async (accion, recibo) => {
-      setCargando(true);
       setError(null);
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
         switch (accion) {
           case "eliminar":
-            setCargando(false);
             const confirmado = await modalEliminarRecibo(recibo, async () => {
               await cargarRecibos();
             });
@@ -342,8 +341,6 @@ const TablaRecibos = ({
       } catch (err) {
         setError(`Error al ${accion}: ${err.message}`);
         setTimeout(() => setError(null), 3000);
-      } finally {
-        setCargando(false);
       }
     },
     [onEliminar, onDescargar, onImprimir]
@@ -527,11 +524,7 @@ const TablaRecibos = ({
     return numeros;
   }, [totalPaginas, paginaActual]);
   return (
-    <div
-      className={`recibos-contenedor-principal ${
-        cargando ? "recibos-cargando" : ""
-      }`}
-    >
+    <div className="recibos-contenedor-principal">
       <div className="recibos-encabezado">
         <div className="recibos-seccion-logo">
           <div className="recibos-icono-principal">
@@ -683,7 +676,53 @@ const TablaRecibos = ({
       </div>
 
       <div className="recibos-contenedor-tabla">
-        {datosPaginados.length === 0 ? (
+        {cargando ? (
+          <div className="recibos-estado-cargando">
+            <p>
+              Cargando recibos{" "}
+              <svg
+                width="30"
+                height="30"
+                fill="hsla(227, 11%, 84%, 1.00)"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="4" cy="12" r="3">
+                  <animate
+                    id="spinner_qFRN"
+                    begin="0;spinner_OcgL.end+0.25s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="12" cy="12" r="3">
+                  <animate
+                    begin="spinner_qFRN.begin+0.1s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="20" cy="12" r="3">
+                  <animate
+                    id="spinner_OcgL"
+                    begin="spinner_qFRN.begin+0.2s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+              </svg>
+            </p>
+          </div>
+        ) : datosPaginados.length === 0 ? (
           <div className="recibos-estado-vacio">
             <div className="recibos-icono-vacio">
               <FileText size={64} />
@@ -804,6 +843,7 @@ const TablaRecibos = ({
                             className="recibos-boton-accion recibos-pdf"
                             onClick={() => manejarAccion("pdf", recibo)}
                             title="Ver PDF"
+                            disabled={cargando}
                           >
                             <FileText size={16} />
                           </button>
@@ -831,7 +871,7 @@ const TablaRecibos = ({
           </table>
         )}
       </div>
-      {datosPaginados.length > 0 && (
+      {datosPaginados.length > 0 && !cargando && (
         <div className="recibos-pie-tabla">
           <div className="recibos-informacion-registros">
             Mostrando <strong>{indiceInicio + 1}</strong> a{" "}

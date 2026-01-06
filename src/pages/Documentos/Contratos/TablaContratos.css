@@ -435,11 +435,10 @@
 .Contratos-boton-accion.Contratos-editar {
   background: linear-gradient(45deg, #3b82f6, #2563eb);
   color: #ffffff;
-
 }
 
 .Contratos-boton-accion.Contratos-editar:hover {
-   background: linear-gradient(45deg, #2563eb, #1d4ed8);
+  background: linear-gradient(45deg, #2563eb, #1d4ed8);
   transform: translateY(-1px);
 }
 
@@ -558,7 +557,6 @@
 }
 
 @keyframes Contratos-pulse {
-
   0%,
   100% {
     transform: scaleY(1);
@@ -590,46 +588,96 @@
 }
 
 .swal-wide {
-  width: 600px ;
-  max-width: 90% ;
+  width: 600px;
+  max-width: 90%;
 }
 
 .swal2-html-container {
-  overflow: visible ;
-  max-height: none ;
+  overflow: visible;
+  max-height: none;
 }
 
 .swal2-title {
-  font-size: 1.75rem ;
-  font-weight: 700 ;
-  padding: 1rem 1.5rem 0.5rem ;
+  font-size: 1.75rem;
+  font-weight: 700;
+  padding: 1rem 1.5rem 0.5rem;
 }
 
 .swal2-icon {
-  margin: 1.5rem auto 1rem ;
+  margin: 1.5rem auto 1rem;
 }
 
 .swal2-confirm,
 .swal2-cancel {
-  font-weight: 600 ;
-  padding: 0.625rem 1.5rem ;
-  border-radius: 6px ;
-  font-size: 0.95rem ;
-  transition: all 0.3s ease ;
+  font-weight: 600;
+  padding: 0.625rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
 }
 
 .swal2-confirm:hover,
 .swal2-cancel:hover {
-  transform: translateY(-2px) ;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) ;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .swal2-timer-progress-bar {
-  background: rgba(255, 255, 255, 0.6) ;
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .swal2-show {
-  animation: swal2-show 0.3s ;
+  animation: swal2-show 0.3s;
+}
+
+.Contratos-estado-cargando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  min-height: 300px;
+  text-align: center;
+}
+
+.Contratos-estado-cargando p {
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.Contratos-estado-cargando svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.Contratos-estado-vacio {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6b7280;
+}
+
+.Contratos-icono-vacio {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  color: #d1d5db;
+}
+
+.Contratos-mensaje-vacio {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.Contratos-submensaje-vacio {
+  font-size: 0.875rem;
+  color: #6b7280;
 }
 
 @media (min-width: 1024px) and (max-width: 1279px) {
@@ -826,17 +874,17 @@
   }
 
   .swal-wide {
-    width: 95% ;
+    width: 95%;
   }
 
   .swal2-title {
-    font-size: 1.4rem ;
+    font-size: 1.4rem;
   }
 
   .swal2-confirm,
   .swal2-cancel {
-    padding: 0.5rem 1rem ;
-    font-size: 0.875rem ;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
   }
 }
 
@@ -869,7 +917,8 @@
     font-size: 0.7rem;
   }
 
-  .Contratos-numeros-paginacion .Contratos-numero-pagina:not(.Contratos-activo) {
+  .Contratos-numeros-paginacion
+    .Contratos-numero-pagina:not(.Contratos-activo) {
     display: none;
   }
 }

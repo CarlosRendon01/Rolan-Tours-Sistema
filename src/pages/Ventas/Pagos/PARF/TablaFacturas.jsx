@@ -39,7 +39,7 @@ const TablaFacturas = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("todos");
-  const [cargando, setCargando] = useState(false);
+  const [cargando, setCargando] = useState(true); // Cambiado a true
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
@@ -56,6 +56,7 @@ const TablaFacturas = ({
 
   const cargarFacturas = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
       const res = await axios.get(API_URL, {
         headers: {
@@ -68,6 +69,8 @@ const TablaFacturas = ({
       setdatosFacturas(facturas);
     } catch (error) {
       console.error("Error al cargar facturas:", error);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -198,11 +201,7 @@ const TablaFacturas = ({
 
   const manejarAccion = useCallback(
     async (accion, factura) => {
-      setCargando(true);
-
       try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
         switch (accion) {
           case "descargar":
             await generarPDFFacturaTimbrada(factura);
@@ -257,7 +256,6 @@ const TablaFacturas = ({
             break;
 
           case "eliminar":
-            setCargando(false);
             const confirmado = await modalEliminarFactura(factura, async () => {
               await cargarFacturas();
             });
@@ -276,8 +274,6 @@ const TablaFacturas = ({
       } catch (err) {
         console.error(`Error al ${accion}:`, err);
         alert(`Error al ${accion}: ${err.message}`);
-      } finally {
-        setCargando(false);
       }
     },
     [onEliminar]
@@ -333,11 +329,7 @@ const TablaFacturas = ({
   }, [paginaActual, totalPaginas]);
 
   return (
-    <div
-      className={`facturas-contenedor-principal ${
-        cargando ? "facturas-cargando" : ""
-      }`}
-    >
+    <div className="facturas-contenedor-principal">
       <div className="facturas-encabezado">
         <div className="facturas-seccion-logo">
           <div className="facturas-icono-principal">
@@ -483,7 +475,53 @@ const TablaFacturas = ({
       </div>
 
       <div className="facturas-contenedor-tabla">
-        {datosPaginados.length === 0 ? (
+        {cargando ? (
+          <div className="facturas-estado-cargando">
+            <p>
+              Cargando facturas{" "}
+              <svg
+                width="30"
+                height="30"
+                fill="hsla(227, 11%, 84%, 1.00)"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="4" cy="12" r="3">
+                  <animate
+                    id="spinner_qFRN"
+                    begin="0;spinner_OcgL.end+0.25s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="12" cy="12" r="3">
+                  <animate
+                    begin="spinner_qFRN.begin+0.1s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="20" cy="12" r="3">
+                  <animate
+                    id="spinner_OcgL"
+                    begin="spinner_qFRN.begin+0.2s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+              </svg>
+            </p>
+          </div>
+        ) : datosPaginados.length === 0 ? (
           <div className="facturas-estado-vacio">
             <div className="facturas-icono-vacio">
               <FileText size={64} />
@@ -652,7 +690,7 @@ const TablaFacturas = ({
         )}
       </div>
 
-      {datosPaginados.length > 0 && (
+      {datosPaginados.length > 0 && !cargando && (
         <div className="facturas-pie-tabla">
           <div className="facturas-informacion-registros">
             Mostrando <strong>{indiceInicio + 1}</strong> a{" "}

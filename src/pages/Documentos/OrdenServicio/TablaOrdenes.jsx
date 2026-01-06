@@ -41,6 +41,7 @@ const TablaOrdenes = () => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [ordenPDFActual, setOrdenPDFActual] = useState(null);
   const [datosOrdenes, setDatosOrdenes] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     cargarDatos();
@@ -48,6 +49,7 @@ const TablaOrdenes = () => {
 
   const cargarDatos = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
       const [ordenesRes, vehiculosRes, conductoresRes] = await Promise.all([
         axios.get("http://127.0.0.1:8000/api/ordenes-servicio", {
@@ -81,6 +83,8 @@ const TablaOrdenes = () => {
       setConductoresDisponibles(conductoresRes.data);
     } catch (error) {
       console.error("❌ Error al cargar datos:", error);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -111,6 +115,7 @@ const TablaOrdenes = () => {
   const ordenesPaginados = ordenesFiltrados.slice(indiceInicio, indiceFin);
   const ordenesActivos = datosOrdenes.filter((c) => c.activo).length;
   const ordenesInactivos = datosOrdenes.filter((c) => !c.activo).length;
+
   const cambiarPagina = (nuevaPagina) => {
     if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
       setPaginaActual(nuevaPagina);
@@ -203,8 +208,10 @@ const TablaOrdenes = () => {
 
         operador_id: datosActualizados.operador_id || null,
         nombre_conductor: datosActualizados.nombre_conductor || null,
-        apellido_paterno_conductor: datosActualizados.apellido_paterno_conductor || null,
-        apellido_materno_conductor: datosActualizados.apellido_materno_conductor || null,
+        apellido_paterno_conductor:
+          datosActualizados.apellido_paterno_conductor || null,
+        apellido_materno_conductor:
+          datosActualizados.apellido_materno_conductor || null,
         telefono_conductor: datosActualizados.telefono_conductor || null,
         licencia_conductor: datosActualizados.licencia_conductor || null,
         nombre_cliente: datosActualizados.nombre_cliente,
@@ -277,7 +284,7 @@ const TablaOrdenes = () => {
 
       await cargarDatos();
       setOrdenAEliminar(null);
- 
+
       return Promise.resolve();
     } catch (error) {
       console.error("❌ Error al eliminar orden:", error);
@@ -303,7 +310,6 @@ const TablaOrdenes = () => {
 
       await cargarDatos();
       setOrdenARestaurar(null);
-     
     } catch (error) {
       console.error("❌ Error al restaurar orden:", error);
     }
@@ -587,7 +593,7 @@ const TablaOrdenes = () => {
     try {
       setOrdenPDFActual(orden);
       setModalPDFAbierto(true);
-      setPdfUrl(null); 
+      setPdfUrl(null);
 
       const pdfBytes = await generarPDF(orden);
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
@@ -612,7 +618,6 @@ const TablaOrdenes = () => {
       link.download = `Orden_${ordenPDFActual.folio}_${ordenPDFActual.fecha_inicio_servicio}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
-
     } catch (error) {
       console.error("Error al descargar PDF:", error);
       alert("Error al descargar el PDF. Por favor, intente nuevamente.");
@@ -695,160 +700,236 @@ const TablaOrdenes = () => {
       </div>
 
       <div className="Ordenes-contenedor-tabla">
-        <table className="Ordenes-tabla">
-          <thead>
-            <tr className="Ordenes-fila-encabezado">
-              <th>FOLIO</th>
-              <th>FECHA ORDEN</th>
-              <th>CLIENTE</th>
-              <th>ORIGEN</th>
-              <th>DESTINO</th>
-              <th>FECHA INICIO</th>
-              <th>CONDUCTOR</th>
-              <th>ACCIONES</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ordenesPaginados.map((orden, index) => (
-              <tr
-                key={orden.id}
-                className={`Ordenes-fila-orden ${!orden.activo ? "Ordenes-fila-inactiva" : ""
-                  }`}
+        {cargando ? (
+          <div className="Ordenes-estado-cargando">
+            <p>
+              Cargando órdenes{" "}
+              <svg
+                width="30"
+                height="30"
+                fill="hsla(227, 11%, 84%, 1.00)"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <td data-label="Folio" className="Ordenes-columna-fecha">
-                  <span className="Ordenes-badge-lead">{orden.folio}</span>
-                </td>
-                <td data-label="Fecha Orden" className="Ordenes-columna-fecha">
-                  <span className="Ordenes-fecha">
-                    {new Date(orden.fecha_orden_servicio).toLocaleDateString(
-                      "es-MX"
-                    )}
-                  </span>
-                </td>
-                <td data-label="Cliente" className="Ordenes-columna-origen">
-                  <span className="Ordenes-ubicaciones">
-                    {orden.nombre_cliente}
-                  </span>
-                </td>
-                <td data-label="Origen" className="Ordenes-columna-origen">
-                  <span className="Ordenes-ubicacion">
-                    {orden.ciudad_origen}
-                  </span>
-                </td>
-                <td data-label="Destino" className="Ordenes-columna-destino">
-                  <span className="Ordenes-ubicacion">{orden.destino}</span>
-                </td>
-                <td data-label="Fecha Inicio" className="Ordenes-columna-fecha">
-                  <span className="Ordenes-fecha">
-                    {new Date(orden.fecha_inicio_servicio).toLocaleDateString(
-                      "es-MX"
-                    )}
-                  </span>
-                </td>
-                <td data-label="Conductor" className="Ordenes-columna-origen">
-                  <span className="Ordenes-nombre-principal">
-                    {orden.nombre_conductor} {orden.apellido_paterno_conductor}
-                  </span>
-                </td>
-                <td data-label="Acciones" className="Ordenes-columna-acciones">
-                  <div className="Ordenes-botones-accion">
-                    <button
-                      className="Ordenes-boton-accion Ordenes-ver"
-                      onClick={() => manejarAccion("ver", orden)}
-                      title="Ver orden"
-                    >
-                      <Eye size={16} />
-                    </button>
-                    <button
-                      className="Ordenes-boton-accion Ordenes-descargar"
-                      onClick={() => manejarAccion("pdf", orden)}
-                      title="Previsualizar y descargar orden"
-                    >
-                      <FileText size={16} />
-                    </button>
-                    <button
-                      className="Ordenes-boton-accion Ordenes-editar"
-                      onClick={() => manejarAccion("editar", orden)}
-                      title="Editar orden"
-                    >
-                      <Edit size={16} />
-                    </button>
-
-                    {rolUsuario === "admin" && !orden.activo && (
-                      <button
-                        className="Ordenes-boton-accion Ordenes-restaurar"
-                        onClick={() => manejarAccion("restaurar", orden)}
-                        title="Restaurar orden"
-                      >
-                        <RotateCcw size={16} />
-                      </button>
-                    )}
-
-                    <button
-                      className="Ordenes-boton-accion Ordenes-eliminar"
-                      onClick={() => manejarAccion("eliminar", orden)}
-                      title={
-                        rolUsuario === "admin" && !orden.activo
-                          ? "Eliminar definitivamente"
-                          : "Desactivar orden"
-                      }
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
+                <circle cx="4" cy="12" r="3">
+                  <animate
+                    id="spinner_qFRN"
+                    begin="0;spinner_OcgL.end+0.25s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="12" cy="12" r="3">
+                  <animate
+                    begin="spinner_qFRN.begin+0.1s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="20" cy="12" r="3">
+                  <animate
+                    id="spinner_OcgL"
+                    begin="spinner_qFRN.begin+0.2s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+              </svg>
+            </p>
+          </div>
+        ) : ordenesPaginados.length === 0 ? (
+          <div className="Ordenes-estado-vacio">
+            <div className="Ordenes-icono-vacio">
+              <FileText size={64} />
+            </div>
+            <h3 className="Ordenes-mensaje-vacio">No se encontraron órdenes</h3>
+            <p className="Ordenes-submensaje-vacio">
+              {terminoBusqueda
+                ? "Intenta ajustar los filtros de búsqueda"
+                : "No hay órdenes registradas en el sistema"}
+            </p>
+          </div>
+        ) : (
+          <table className="Ordenes-tabla">
+            <thead>
+              <tr className="Ordenes-fila-encabezado">
+                <th>FOLIO</th>
+                <th>FECHA ORDEN</th>
+                <th>CLIENTE</th>
+                <th>ORIGEN</th>
+                <th>DESTINO</th>
+                <th>FECHA INICIO</th>
+                <th>CONDUCTOR</th>
+                <th>ACCIONES</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {ordenesPaginados.map((orden, index) => (
+                <tr
+                  key={orden.id}
+                  className={`Ordenes-fila-orden ${
+                    !orden.activo ? "Ordenes-fila-inactiva" : ""
+                  }`}
+                >
+                  <td data-label="Folio" className="Ordenes-columna-fecha">
+                    <span className="Ordenes-badge-lead">{orden.folio}</span>
+                  </td>
+                  <td
+                    data-label="Fecha Orden"
+                    className="Ordenes-columna-fecha"
+                  >
+                    <span className="Ordenes-fecha">
+                      {new Date(orden.fecha_orden_servicio).toLocaleDateString(
+                        "es-MX"
+                      )}
+                    </span>
+                  </td>
+                  <td data-label="Cliente" className="Ordenes-columna-origen">
+                    <span className="Ordenes-ubicaciones">
+                      {orden.nombre_cliente}
+                    </span>
+                  </td>
+                  <td data-label="Origen" className="Ordenes-columna-origen">
+                    <span className="Ordenes-ubicacion">
+                      {orden.ciudad_origen}
+                    </span>
+                  </td>
+                  <td data-label="Destino" className="Ordenes-columna-destino">
+                    <span className="Ordenes-ubicacion">{orden.destino}</span>
+                  </td>
+                  <td
+                    data-label="Fecha Inicio"
+                    className="Ordenes-columna-fecha"
+                  >
+                    <span className="Ordenes-fecha">
+                      {new Date(orden.fecha_inicio_servicio).toLocaleDateString(
+                        "es-MX"
+                      )}
+                    </span>
+                  </td>
+                  <td data-label="Conductor" className="Ordenes-columna-origen">
+                    <span className="Ordenes-nombre-principal">
+                      {orden.nombre_conductor}{" "}
+                      {orden.apellido_paterno_conductor}
+                    </span>
+                  </td>
+                  <td
+                    data-label="Acciones"
+                    className="Ordenes-columna-acciones"
+                  >
+                    <div className="Ordenes-botones-accion">
+                      <button
+                        className="Ordenes-boton-accion Ordenes-ver"
+                        onClick={() => manejarAccion("ver", orden)}
+                        title="Ver orden"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      <button
+                        className="Ordenes-boton-accion Ordenes-descargar"
+                        onClick={() => manejarAccion("pdf", orden)}
+                        title="Previsualizar y descargar orden"
+                      >
+                        <FileText size={16} />
+                      </button>
+                      <button
+                        className="Ordenes-boton-accion Ordenes-editar"
+                        onClick={() => manejarAccion("editar", orden)}
+                        title="Editar orden"
+                      >
+                        <Edit size={16} />
+                      </button>
+
+                      {rolUsuario === "admin" && !orden.activo && (
+                        <button
+                          className="Ordenes-boton-accion Ordenes-restaurar"
+                          onClick={() => manejarAccion("restaurar", orden)}
+                          title="Restaurar orden"
+                        >
+                          <RotateCcw size={16} />
+                        </button>
+                      )}
+
+                      <button
+                        className="Ordenes-boton-accion Ordenes-eliminar"
+                        onClick={() => manejarAccion("eliminar", orden)}
+                        title={
+                          rolUsuario === "admin" && !orden.activo
+                            ? "Eliminar definitivamente"
+                            : "Desactivar orden"
+                        }
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       <div className="Ordenes-pie-tabla">
-        <div className="Ordenes-informacion-registros">
-          Mostrando registros del {indiceInicio + 1} al{" "}
-          {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros}{" "}
-          registros
-          {terminoBusqueda && (
-            <span className="Ordenes-texto-filtrado">
-              (filtrado de {datosOrdenes.length} registros totales)
-            </span>
-          )}
-        </div>
+        {!cargando && ordenesPaginados.length > 0 && (
+          <>
+            <div className="Ordenes-informacion-registros">
+              Mostrando registros del {indiceInicio + 1} al{" "}
+              {Math.min(indiceFin, totalRegistros)} de un total de{" "}
+              {totalRegistros} registros
+              {terminoBusqueda && (
+                <span className="Ordenes-texto-filtrado">
+                  (filtrado de {datosOrdenes.length} registros totales)
+                </span>
+              )}
+            </div>
 
-        <div className="Ordenes-controles-paginacion">
-          <button
-            className="Ordenes-boton-paginacion"
-            onClick={() => cambiarPagina(paginaActual - 1)}
-            disabled={paginaActual === 1}
-          >
-            <ChevronLeft size={18} />
-            Anterior
-          </button>
+            <div className="Ordenes-controles-paginacion">
+              <button
+                className="Ordenes-boton-paginacion"
+                onClick={() => cambiarPagina(paginaActual - 1)}
+                disabled={paginaActual === 1}
+              >
+                <ChevronLeft size={18} />
+                Anterior
+              </button>
 
-          <div className="Ordenes-numeros-paginacion">
-            {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(
-              (numero) => (
-                <button
-                  key={numero}
-                  className={`Ordenes-numero-pagina ${paginaActual === numero ? "Ordenes-activo" : ""
-                    }`}
-                  onClick={() => cambiarPagina(numero)}
-                >
-                  {numero}
-                </button>
-              )
-            )}
-          </div>
+              <div className="Ordenes-numeros-paginacion">
+                {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(
+                  (numero) => (
+                    <button
+                      key={numero}
+                      className={`Ordenes-numero-pagina ${
+                        paginaActual === numero ? "Ordenes-activo" : ""
+                      }`}
+                      onClick={() => cambiarPagina(numero)}
+                    >
+                      {numero}
+                    </button>
+                  )
+                )}
+              </div>
 
-          <button
-            className="Ordenes-boton-paginacion"
-            onClick={() => cambiarPagina(paginaActual + 1)}
-            disabled={paginaActual === totalPaginas}
-          >
-            Siguiente
-            <ChevronRight size={18} />
-          </button>
-        </div>
+              <button
+                className="Ordenes-boton-paginacion"
+                onClick={() => cambiarPagina(paginaActual + 1)}
+                disabled={paginaActual === totalPaginas}
+              >
+                Siguiente
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       <ModalVerOrden
@@ -900,4 +981,5 @@ const TablaOrdenes = () => {
     </div>
   );
 };
+
 export default TablaOrdenes;

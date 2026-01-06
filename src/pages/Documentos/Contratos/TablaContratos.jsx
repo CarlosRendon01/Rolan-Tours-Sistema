@@ -42,6 +42,7 @@ const TablaContratos = () => {
   const [contratoPDFActual, setContratoPDFActual] = useState(null);
 
   const [datosContratos, setDatosContratos] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     cargarContratos();
@@ -49,6 +50,7 @@ const TablaContratos = () => {
 
   const cargarContratos = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
       const response = await axios.get("http://127.0.0.1:8000/api/contratos", {
         headers: {
@@ -60,6 +62,8 @@ const TablaContratos = () => {
       setDatosContratos(response.data);
     } catch (error) {
       console.error("❌ Error al cargar contratos:", error);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -146,6 +150,7 @@ const TablaContratos = () => {
     setModalEditarAbierto(false);
     setContratoSeleccionado(null);
   };
+
   const cerrarModalPDF = () => {
     setModalPDFAbierto(false);
     if (pdfUrl) {
@@ -603,6 +608,7 @@ const TablaContratos = () => {
       throw error;
     }
   };
+
   const fixHora = (h) => {
     if (!h || typeof h !== "string") return null;
     if (h.includes("AM") || h.includes("PM")) {
@@ -765,7 +771,7 @@ const TablaContratos = () => {
     try {
       setContratoPDFActual(contrato);
       setModalPDFAbierto(true);
-      setPdfUrl(null); 
+      setPdfUrl(null);
 
       const pdfBytes = await generarPDF(contrato);
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
@@ -790,7 +796,6 @@ const TablaContratos = () => {
       link.download = `Contrato_${contratoPDFActual.nombre_cliente}_${contratoPDFActual.fecha_inicio_servicio}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
-
     } catch (error) {
       console.error("Error al descargar PDF:", error);
       alert("Error al descargar el PDF. Por favor, intente nuevamente.");
@@ -873,176 +878,242 @@ const TablaContratos = () => {
       </div>
 
       <div className="Contratos-contenedor-tabla">
-        <table className="Contratos-tabla">
-          <thead>
-            <tr className="Contratos-fila-encabezado">
-              <th>ID</th>
-              <th>CLIENTE</th>
-              <th>FECHA INICIO</th>
-              <th>FECHA FINAL</th>
-              <th>PASAJEROS</th>
-              <th>ORIGEN</th>
-              <th>DESTINO</th>
-              <th>ACCIONES</th>
-            </tr>
-          </thead>
-          <tbody>
-            {contratosPaginados.map((contrato, index) => (
-              <tr
-                key={contrato.id}
-                className="Contratos-fila-contrato"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                  background: contrato.activo ? "white" : "#f8d7da",
-                }}
+        {cargando ? (
+          <div className="Contratos-estado-cargando">
+            <p>
+              Cargando contratos{" "}
+              <svg
+                width="30"
+                height="30"
+                fill="hsla(227, 11%, 84%, 1.00)"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <td data-label="ID" className="Contratos-columna-id">
-                  <span className="Contratos-badge-id">
-                    #{contrato.id.toString().padStart(3, "0")}
-                  </span>
-                </td>
-                <td data-label="Cliente">
-                  <span style={{ fontWeight: 600 }}>
-                    {contrato.nombre_cliente}
-                  </span>
-                </td>
-                <td data-label="Fecha Inicio">
-                  <span className="Contratos-fecha">
-                    {new Date(
-                      contrato.fecha_inicio_servicio
-                    ).toLocaleDateString("es-MX")}
-                  </span>
-                </td>
-                <td data-label="Fecha Final">
-                  <span className="Contratos-fecha">
-                    {new Date(contrato.fecha_final_servicio).toLocaleDateString(
-                      "es-MX"
-                    )}
-                  </span>
-                </td>
-                <td data-label="Pasajeros">
-                  <span className="Contratos-badge-hora">
-                    {contrato.numero_pasajeros}
-                  </span>
-                </td>
-                <td data-label="Origen">
-                  <span className="Contratos-ubicacion">
-                    {contrato.ciudad_origen}
-                  </span>
-                </td>
-                <td data-label="Destino">
-                  <span className="Contratos-ubicacion">
-                    {contrato.destino}
-                  </span>
-                </td>
-                <td
-                  data-label="Acciones"
-                  className="Contratos-columna-acciones"
-                >
-                  <div className="Contratos-botones-accion">
-                    <button
-                      className="Contratos-boton-accion Contratos-ver"
-                      onClick={() => manejarAccion("ver", contrato)}
-                      title="Ver contrato"
-                    >
-                      <Eye size={16} />
-                    </button>
-                    <button
-                      className="Contratos-boton-accion Contratos-descargar"
-                      onClick={() => manejarAccion("pdf", contrato)}
-                      title="Descargar contrato"
-                    >
-                      <FileText size={16} />
-                    </button>
-                    <button
-                      className="Contratos-boton-accion Contratos-editar"
-                      onClick={() => manejarAccion("editar", contrato)}
-                      title="Editar contrato"
-                    >
-                      <Edit size={16} />
-                    </button>
-
-                    {rolUsuario === "admin" && !contrato.activo && (
-                      <button
-                        className="Contratos-boton-accion Contratos-restaurar"
-                        onClick={() => manejarAccion("restaurar", contrato)}
-                        title="Restaurar contrato"
-                        style={{
-                          background:
-                            "linear-gradient(45deg, #28a745, #218838)",
-                          color: "white",
-                        }}
-                      >
-                        <RotateCcw size={16} />
-                      </button>
-                    )}
-
-                    <button
-                      className="Contratos-boton-accion Contratos-eliminar"
-                      onClick={() => manejarAccion("eliminar", contrato)}
-                      title={
-                        rolUsuario === "admin" && !contrato.activo
-                          ? "Eliminar definitivamente"
-                          : "Desactivar contrato"
-                      }
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
+                <circle cx="4" cy="12" r="3">
+                  <animate
+                    id="spinner_qFRN"
+                    begin="0;spinner_OcgL.end+0.25s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="12" cy="12" r="3">
+                  <animate
+                    begin="spinner_qFRN.begin+0.1s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+                <circle cx="20" cy="12" r="3">
+                  <animate
+                    id="spinner_OcgL"
+                    begin="spinner_qFRN.begin+0.2s"
+                    attributeName="cy"
+                    calcMode="spline"
+                    dur="0.6s"
+                    values="12;6;12"
+                    keySplines=".33,.66,.66,1;.33,0,.66,.33"
+                  />
+                </circle>
+              </svg>
+            </p>
+          </div>
+        ) : contratosPaginados.length === 0 ? (
+          <div className="Contratos-estado-vacio">
+            <div className="Contratos-icono-vacio">
+              <FileText size={64} />
+            </div>
+            <h3 className="Contratos-mensaje-vacio">
+              No se encontraron contratos
+            </h3>
+            <p className="Contratos-submensaje-vacio">
+              {terminoBusqueda
+                ? "Intenta ajustar los filtros de búsqueda"
+                : "No hay contratos registrados en el sistema"}
+            </p>
+          </div>
+        ) : (
+          <table className="Contratos-tabla">
+            <thead>
+              <tr className="Contratos-fila-encabezado">
+                <th>ID</th>
+                <th>CLIENTE</th>
+                <th>FECHA INICIO</th>
+                <th>FECHA FINAL</th>
+                <th>PASAJEROS</th>
+                <th>ORIGEN</th>
+                <th>DESTINO</th>
+                <th>ACCIONES</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {contratosPaginados.map((contrato, index) => (
+                <tr
+                  key={contrato.id}
+                  className="Contratos-fila-contrato"
+                  style={{
+                    animationDelay: `${index * 0.1}s`,
+                    background: contrato.activo ? "white" : "#f8d7da",
+                  }}
+                >
+                  <td data-label="ID" className="Contratos-columna-id">
+                    <span className="Contratos-badge-id">
+                      #{contrato.id.toString().padStart(3, "0")}
+                    </span>
+                  </td>
+                  <td data-label="Cliente">
+                    <span style={{ fontWeight: 600 }}>
+                      {contrato.nombre_cliente}
+                    </span>
+                  </td>
+                  <td data-label="Fecha Inicio">
+                    <span className="Contratos-fecha">
+                      {new Date(
+                        contrato.fecha_inicio_servicio
+                      ).toLocaleDateString("es-MX")}
+                    </span>
+                  </td>
+                  <td data-label="Fecha Final">
+                    <span className="Contratos-fecha">
+                      {new Date(
+                        contrato.fecha_final_servicio
+                      ).toLocaleDateString("es-MX")}
+                    </span>
+                  </td>
+                  <td data-label="Pasajeros">
+                    <span className="Contratos-badge-hora">
+                      {contrato.numero_pasajeros}
+                    </span>
+                  </td>
+                  <td data-label="Origen">
+                    <span className="Contratos-ubicacion">
+                      {contrato.ciudad_origen}
+                    </span>
+                  </td>
+                  <td data-label="Destino">
+                    <span className="Contratos-ubicacion">
+                      {contrato.destino}
+                    </span>
+                  </td>
+                  <td
+                    data-label="Acciones"
+                    className="Contratos-columna-acciones"
+                  >
+                    <div className="Contratos-botones-accion">
+                      <button
+                        className="Contratos-boton-accion Contratos-ver"
+                        onClick={() => manejarAccion("ver", contrato)}
+                        title="Ver contrato"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      <button
+                        className="Contratos-boton-accion Contratos-descargar"
+                        onClick={() => manejarAccion("pdf", contrato)}
+                        title="Descargar contrato"
+                      >
+                        <FileText size={16} />
+                      </button>
+                      <button
+                        className="Contratos-boton-accion Contratos-editar"
+                        onClick={() => manejarAccion("editar", contrato)}
+                        title="Editar contrato"
+                      >
+                        <Edit size={16} />
+                      </button>
+
+                      {rolUsuario === "admin" && !contrato.activo && (
+                        <button
+                          className="Contratos-boton-accion Contratos-restaurar"
+                          onClick={() => manejarAccion("restaurar", contrato)}
+                          title="Restaurar contrato"
+                          style={{
+                            background:
+                              "linear-gradient(45deg, #28a745, #218838)",
+                            color: "white",
+                          }}
+                        >
+                          <RotateCcw size={16} />
+                        </button>
+                      )}
+
+                      <button
+                        className="Contratos-boton-accion Contratos-eliminar"
+                        onClick={() => manejarAccion("eliminar", contrato)}
+                        title={
+                          rolUsuario === "admin" && !contrato.activo
+                            ? "Eliminar definitivamente"
+                            : "Desactivar contrato"
+                        }
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       <div className="Contratos-pie-tabla">
-        <div className="Contratos-informacion-registros">
-          Mostrando registros del {indiceInicio + 1} al{" "}
-          {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros}{" "}
-          registros
-          {terminoBusqueda && (
-            <span style={{ color: "#6c757d", marginLeft: "0.5rem" }}>
-              (filtrado de {datosContratos.length} registros totales)
-            </span>
-          )}
-        </div>
+        {!cargando && contratosPaginados.length > 0 && (
+          <>
+            <div className="Contratos-informacion-registros">
+              Mostrando registros del {indiceInicio + 1} al{" "}
+              {Math.min(indiceFin, totalRegistros)} de un total de{" "}
+              {totalRegistros} registros
+              {terminoBusqueda && (
+                <span style={{ color: "#6c757d", marginLeft: "0.5rem" }}>
+                  (filtrado de {datosContratos.length} registros totales)
+                </span>
+              )}
+            </div>
 
-        <div className="Contratos-controles-paginacion">
-          <button
-            className="Contratos-boton-paginacion"
-            onClick={() => cambiarPagina(paginaActual - 1)}
-            disabled={paginaActual === 1}
-          >
-            <ChevronLeft size={18} />
-            Anterior
-          </button>
+            <div className="Contratos-controles-paginacion">
+              <button
+                className="Contratos-boton-paginacion"
+                onClick={() => cambiarPagina(paginaActual - 1)}
+                disabled={paginaActual === 1}
+              >
+                <ChevronLeft size={18} />
+                Anterior
+              </button>
 
-          <div className="Contratos-numeros-paginacion">
-            {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(
-              (numero) => (
-                <button
-                  key={numero}
-                  className={`Contratos-numero-pagina ${
-                    paginaActual === numero ? "Contratos-activo" : ""
-                  }`}
-                  onClick={() => cambiarPagina(numero)}
-                >
-                  {numero}
-                </button>
-              )
-            )}
-          </div>
+              <div className="Contratos-numeros-paginacion">
+                {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(
+                  (numero) => (
+                    <button
+                      key={numero}
+                      className={`Contratos-numero-pagina ${
+                        paginaActual === numero ? "Contratos-activo" : ""
+                      }`}
+                      onClick={() => cambiarPagina(numero)}
+                    >
+                      {numero}
+                    </button>
+                  )
+                )}
+              </div>
 
-          <button
-            className="Contratos-boton-paginacion"
-            onClick={() => cambiarPagina(paginaActual + 1)}
-            disabled={paginaActual === totalPaginas}
-          >
-            Siguiente
-            <ChevronRight size={18} />
-          </button>
-        </div>
+              <button
+                className="Contratos-boton-paginacion"
+                onClick={() => cambiarPagina(paginaActual + 1)}
+                disabled={paginaActual === totalPaginas}
+              >
+                Siguiente
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       <ModalVerContrato
@@ -1091,4 +1162,5 @@ const TablaContratos = () => {
     </div>
   );
 };
+
 export default TablaContratos;
