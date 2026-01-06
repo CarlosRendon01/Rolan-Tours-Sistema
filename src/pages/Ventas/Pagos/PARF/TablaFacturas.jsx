@@ -231,8 +231,6 @@ const TablaFacturas = ({
               link.click();
               document.body.removeChild(link);
               window.URL.revokeObjectURL(url);
-
-              alert(`✅ Excel descargado exitosamente:\n${fileName}`);
             } catch (error) {
               console.error("❌ Error al descargar Excel:", error);
               if (error.response?.data instanceof Blob) {

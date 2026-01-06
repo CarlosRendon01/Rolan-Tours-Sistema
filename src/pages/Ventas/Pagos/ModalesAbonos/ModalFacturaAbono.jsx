@@ -11,6 +11,7 @@ import {
   Coins,
 } from "lucide-react";
 import "./ModalFacturaAbono.css";
+import Swal from "sweetalert2";
 import {
   generarPDFFactura,
   imprimirFactura,
@@ -117,9 +118,37 @@ const ModalFacturaAbono = ({
         }
       );
 
-      alert(
-        `✅ Factura generada y timbrada exitosamente ante el SAT\n\nFolio: ${response.data.data.numero_factura}\nUUID: ${response.data.data.uuid}\nAbono: #${abonoSeleccionado.numeroAbono}`
-      );
+      await Swal.fire({
+        title: "¡Factura Generada!",
+        html: `
+    <div class="eliminar-exito-contenido">
+      <p class="eliminar-exito-texto">La factura ha sido generada y timbrada exitosamente ante el SAT</p>
+      <div style="margin-top: 1rem; text-align: left; background: #f3f4f6; padding: 1rem; border-radius: 8px;">
+        <p style="margin: 0.25rem 0; color: #374151; font-size: 0.875rem;">
+          <strong>Folio:</strong> ${response.data.data.numero_factura}
+        </p>
+        <p style="margin: 0.25rem 0; color: #374151; font-size: 0.875rem;">
+          <strong>UUID:</strong> ${response.data.data.uuid}
+        </p>
+        <p style="margin: 0.25rem 0; color: #374151; font-size: 0.875rem;">
+          <strong>Abono:</strong> #${abonoSeleccionado.numeroAbono}
+        </p>
+      </div>
+    </div>
+  `,
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        customClass: {
+          popup: "eliminar-popup",
+          title: "eliminar-titulo-exito",
+          htmlContainer: "eliminar-html",
+          confirmButton: "eliminar-boton-exito",
+          icon: "eliminar-icono-exito",
+        },
+        buttonsStyling: false,
+        timer: 4000,
+        timerProgressBar: true,
+      });
 
       if (onFacturar) {
         await onFacturar();
