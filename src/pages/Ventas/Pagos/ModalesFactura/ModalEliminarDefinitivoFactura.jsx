@@ -86,7 +86,7 @@ const ModalEliminarDefinitivoFactura = ({
             <AlertTriangle size={24} />
             <div>
               <p className="modal-eliminar-def-fact-alerta-titulo">
-                ⚠️ ADVERTENCIA CRÍTICA
+                ADVERTENCIA CRÍTICA
               </p>
               <p className="modal-eliminar-def-fact-alerta-texto">
                 Esta acción eliminará permanentemente la factura de la base de

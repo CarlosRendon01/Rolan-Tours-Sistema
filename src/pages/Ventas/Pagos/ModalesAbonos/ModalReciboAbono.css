@@ -31,6 +31,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -48,6 +49,8 @@
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: modalReciboSlideUp 0.3s ease-out;
   position: relative;
+  transform: scale(0.85) !important;
+
 }
 
 @keyframes modalReciboSlideUp {
@@ -55,6 +58,7 @@
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -67,11 +71,9 @@
   align-items: center;
   padding: 1.5rem;
   border-bottom: 1px solid var(--recibo-border);
-  background: linear-gradient(
-    135deg,
-    var(--recibo-primary) 0%,
-    var(--recibo-secondary) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--recibo-primary) 0%,
+      var(--recibo-secondary) 100%);
   color: white;
   border-radius: 12px 12px 0 0;
   gap: 1rem;
@@ -292,11 +294,9 @@
 }
 
 .modal-recibo-boton-primario {
-  background: linear-gradient(
-    135deg,
-    var(--recibo-primary) 0%,
-    var(--recibo-secondary) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--recibo-primary) 0%,
+      var(--recibo-secondary) 100%);
   color: white;
   box-shadow: 0 2px 4px rgb(50, 80, 212);
 }
@@ -423,6 +423,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .modal-recibo-overlay,
   .modal-recibo-contenedor,
   .modal-recibo-boton,

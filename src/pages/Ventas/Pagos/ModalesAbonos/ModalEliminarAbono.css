@@ -125,8 +125,8 @@
 }
 
 .eliminar-icono {
-  border-color: #f59e0b;
-  color: #f59e0b;
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
   font-size: 2.5rem;
   margin: 0.5rem auto;
 }

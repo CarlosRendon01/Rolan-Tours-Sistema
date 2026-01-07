@@ -40,7 +40,7 @@ const TablaRecibos = ({
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-  const [cargando, setCargando] = useState(true); // Cambiado a true
+  const [cargando, setCargando] = useState(true); 
   const [error, setError] = useState(null);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState("todos");
@@ -965,5 +965,4 @@ const TablaRecibos = ({
     </div>
   );
 };
-
 export default TablaRecibos;

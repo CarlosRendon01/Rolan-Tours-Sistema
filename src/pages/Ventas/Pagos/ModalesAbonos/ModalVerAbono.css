@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 500;
+  z-index: 1000;
   padding: 1rem;
   animation: fadeIn 0.2s ease-out;
 }
@@ -34,7 +34,7 @@
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: slideUp 0.3s ease-out;
   position: relative;
-  transform: scale(0.8);
+  transform: scale(0.85) !important;
 }
 
 @keyframes slideUp {

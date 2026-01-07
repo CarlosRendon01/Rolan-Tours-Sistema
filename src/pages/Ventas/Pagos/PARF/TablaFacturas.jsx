@@ -629,15 +629,6 @@ const TablaFacturas = ({
                       {factura.activo === true ? (
                         <>
                           <button
-                            className="facturas-boton-accion facturas-ver"
-                            onClick={() => manejarAccion("descargar", factura)}
-                            title="Descargar PDF"
-                            disabled={cargando}
-                          >
-                            <Download size={14} />
-                          </button>
-
-                          <button
                             className="recibos-boton-accion recibos-excel"
                             onClick={() =>
                               manejarAccion("descargarExcel", factura)

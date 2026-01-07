@@ -46,7 +46,7 @@
   flex-direction: column;
   animation: mvoSlideUp 0.3s ease;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  transform: scale(0.9);
+  transform: scale(0.85)!important;
 }
 
 .contenido-modal-ver.modal-xl {
