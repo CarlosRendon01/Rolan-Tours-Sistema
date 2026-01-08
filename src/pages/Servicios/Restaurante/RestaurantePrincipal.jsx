@@ -122,8 +122,16 @@ const RestaurantePrincipal = () => {
 
       const formData = new FormData();
       Object.keys(nuevoRestaurante).forEach(key => {
-        if (nuevoRestaurante[key] !== null && nuevoRestaurante[key] !== undefined) {
-          formData.append(key, nuevoRestaurante[key]);
+        const value = nuevoRestaurante[key];
+
+        if (key === 'disponibilidad') {
+          formData.append(key, value ? '1' : '0');
+        }
+        else if (value instanceof File) {
+          formData.append(key, value);
+        }
+        else if (value !== null && val1ue !== undefined && value !== '') {
+          formData.append(key, value);
         }
       });
 
@@ -152,13 +160,24 @@ const RestaurantePrincipal = () => {
       const token = localStorage.getItem("token");
 
       const formData = new FormData();
-      formData.append('_method', 'PUT');
 
       Object.keys(restauranteActualizado).forEach(key => {
-        if (restauranteActualizado[key] !== null && restauranteActualizado[key] !== undefined) {
-          formData.append(key, restauranteActualizado[key]);
+        const value = restauranteActualizado[key];
+
+        if (key === 'disponibilidad') {
+          formData.append(key, value ? '1' : '0');
+        }
+        else if (value instanceof File) {
+          formData.append(key, value);
+        }
+        else if (key === 'foto_servicio' && typeof value === 'string') {
+        }
+        else if (value !== null && value !== undefined && value !== '') {
+          formData.append(key, value);
         }
       });
+
+      formData.append('_method', 'PUT');
 
       const response = await axios.post(
         `http://127.0.0.1:8000/api/restaurantes/${restauranteActualizado.id}`,

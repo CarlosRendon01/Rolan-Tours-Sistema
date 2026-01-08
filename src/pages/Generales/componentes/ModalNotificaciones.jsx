@@ -14,22 +14,21 @@ import {
 } from "lucide-react";
 import "./ModalNotificaciones.css";
 
-const ModalNotificaciones = ({ 
-  isOpen, 
-  onClose, 
-  notificaciones = [], 
-  onMarcarComoLeida, 
-  onEliminarNotificacion, 
+const ModalNotificaciones = ({
+  isOpen,
+  onClose,
+  notificaciones = [],
+  onMarcarComoLeida,
+  onEliminarNotificacion,
   onMarcarTodasComoLeidas,
   onEliminarTodas,
-  responsive 
+  responsive
 }) => {
   const [filtroActivo, setFiltroActivo] = useState('todas');
   const [menuAbierto, setMenuAbierto] = useState(null);
   const modalRef = useRef(null);
   const menuRef = useRef(null);
 
-  // Tipos de notificaciones con sus configuraciones
   const tiposNotificacion = useMemo(() => ({
     mensaje: {
       icono: MessageCircle,
@@ -68,7 +67,6 @@ const ModalNotificaciones = ({
     }
   }), []);
 
-  // Filtros disponibles
   const filtros = useMemo(() => [
     { id: 'todas', nombre: 'Todas', icono: Bell },
     { id: 'mensaje', nombre: 'Mensajes', icono: MessageCircle },
@@ -76,18 +74,15 @@ const ModalNotificaciones = ({
     { id: 'sistema', nombre: 'Sistema', icono: Activity }
   ], []);
 
-  // Filtrar notificaciones según el filtro activo
   const notificacionesFiltradas = useMemo(() => {
     if (filtroActivo === 'todas') return notificaciones;
     return notificaciones.filter(notif => notif.tipo === filtroActivo);
   }, [notificaciones, filtroActivo]);
 
-  // Contar notificaciones no leídas
   const noLeidas = useMemo(() => {
     return notificaciones.filter(notif => !notif.leida).length;
   }, [notificaciones]);
 
-  // Formatear tiempo relativo
   const formatearTiempo = useCallback((fecha) => {
     const ahora = new Date();
     const fechaNotif = new Date(fecha);
@@ -101,7 +96,7 @@ const ModalNotificaciones = ({
     if (minutos < 60) return `Hace ${minutos} min`;
     if (horas < 24) return `Hace ${horas}h`;
     if (dias < 7) return `Hace ${dias}d`;
-    
+
     return fechaNotif.toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
@@ -109,21 +104,17 @@ const ModalNotificaciones = ({
     });
   }, []);
 
-  // Manejar clic en notificación
   const handleClickNotificacion = useCallback((notificacion) => {
     if (!notificacion.leida && onMarcarComoLeida) {
       onMarcarComoLeida(notificacion.id);
     }
-    // Aquí podrías agregar lógica para navegar o mostrar detalles
   }, [onMarcarComoLeida]);
 
-  // Manejar menú de opciones
   const toggleMenu = useCallback((notifId, e) => {
     e.stopPropagation();
     setMenuAbierto(menuAbierto === notifId ? null : notifId);
   }, [menuAbierto]);
 
-  // Cerrar modal con Escape
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -134,8 +125,7 @@ const ModalNotificaciones = ({
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
-      
-      // Enfocar modal para accesibilidad
+
       setTimeout(() => {
         if (modalRef.current) {
           modalRef.current.focus();
@@ -149,7 +139,6 @@ const ModalNotificaciones = ({
     };
   }, [isOpen, onClose]);
 
-  // Cerrar menú al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -163,24 +152,22 @@ const ModalNotificaciones = ({
     }
   }, [menuAbierto]);
 
-  // No renderizar si no está abierto
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="modal-notificaciones-overlay"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-notificaciones-titulo"
     >
-      <div 
+      <div
         ref={modalRef}
         className="modal-notificaciones-content"
         onClick={(e) => e.stopPropagation()}
         tabIndex={-1}
       >
-        {/* Header */}
         <div className="modal-notificaciones-header">
           <div className="header-info">
             <Bell size={20} className="header-icon" />
@@ -193,7 +180,7 @@ const ModalNotificaciones = ({
               )}
             </div>
           </div>
-          
+
           <div className="header-acciones">
             {noLeidas > 0 && (
               <button
@@ -205,7 +192,7 @@ const ModalNotificaciones = ({
                 {!responsive?.esMovil && <span>Marcar todas</span>}
               </button>
             )}
-            
+
             <button
               onClick={onClose}
               className="btn-cerrar-modal"
@@ -216,12 +203,11 @@ const ModalNotificaciones = ({
           </div>
         </div>
 
-        {/* Filtros */}
         <div className="modal-notificaciones-filtros">
           {filtros.map(filtro => {
             const IconoFiltro = filtro.icono;
-            const count = filtro.id === 'todas' 
-              ? notificaciones.length 
+            const count = filtro.id === 'todas'
+              ? notificaciones.length
               : notificaciones.filter(n => n.tipo === filtro.id).length;
 
             return (
@@ -239,14 +225,13 @@ const ModalNotificaciones = ({
           })}
         </div>
 
-        {/* Lista de notificaciones */}
         <div className="modal-notificaciones-lista">
           {notificacionesFiltradas.length === 0 ? (
             <div className="lista-vacia">
               <Bell size={48} className="icono-vacio" />
               <h3>No hay notificaciones</h3>
               <p>
-                {filtroActivo === 'todas' 
+                {filtroActivo === 'todas'
                   ? 'No tienes notificaciones en este momento'
                   : `No hay notificaciones de tipo "${filtros.find(f => f.id === filtroActivo)?.nombre}"`
                 }
@@ -272,15 +257,15 @@ const ModalNotificaciones = ({
                   }}
                 >
                   <div className="notificacion-contenido">
-                    <div 
+                    <div
                       className="notificacion-icono"
-                      style={{ 
+                      style={{
                         backgroundColor: config.bgColor,
-                        borderColor: config.borderColor 
+                        borderColor: config.borderColor
                       }}
                     >
-                      <IconoTipo 
-                        size={18} 
+                      <IconoTipo
+                        size={18}
                         style={{ color: config.color }}
                       />
                     </div>
@@ -300,7 +285,7 @@ const ModalNotificaciones = ({
                           </span>
                         </div>
                       </div>
-                      
+
                       <p className="notificacion-mensaje">
                         {notificacion.mensaje}
                       </p>
@@ -341,7 +326,7 @@ const ModalNotificaciones = ({
                               Marcar como leída
                             </button>
                           )}
-                          
+
                           {onEliminarNotificacion && (
                             <button
                               onClick={(e) => {
@@ -369,7 +354,6 @@ const ModalNotificaciones = ({
           )}
         </div>
 
-        {/* Footer con acciones */}
         {notificaciones.length > 0 && (
           <div className="modal-notificaciones-footer">
             <button
@@ -380,7 +364,7 @@ const ModalNotificaciones = ({
               <Trash2 size={16} />
               Eliminar todas
             </button>
-            
+
             <span className="total-notificaciones">
               Total: {notificaciones.length}
             </span>

@@ -94,8 +94,16 @@ const TransportePrincipal = () => {
 
       const formData = new FormData();
       Object.keys(nuevoTransporte).forEach(key => {
-        if (nuevoTransporte[key] !== null && nuevoTransporte[key] !== undefined) {
-          formData.append(key, nuevoTransporte[key]);
+        const value = nuevoTransporte[key];
+
+        if (key === 'disponibilidad') {
+          formData.append(key, value ? '1' : '0');
+        }
+        else if (value instanceof File) {
+          formData.append(key, value);
+        }
+        else if (value !== null && val1ue !== undefined && value !== '') {
+          formData.append(key, value);
         }
       });
 
@@ -124,13 +132,24 @@ const TransportePrincipal = () => {
       const token = localStorage.getItem("token");
 
       const formData = new FormData();
-      formData.append('_method', 'PUT');
 
       Object.keys(transporteActualizado).forEach(key => {
-        if (transporteActualizado[key] !== null && transporteActualizado[key] !== undefined) {
-          formData.append(key, transporteActualizado[key]);
+        const value = transporteActualizado[key];
+
+        if (key === 'disponibilidad') {
+          formData.append(key, value ? '1' : '0');
+        }
+        else if (value instanceof File) {
+          formData.append(key, value);
+        }
+        else if (key === 'foto_servicio' && typeof value === 'string') {
+        }
+        else if (value !== null && value !== undefined && value !== '') {
+          formData.append(key, value);
         }
       });
+
+      formData.append('_method', 'PUT');
 
       const response = await axios.post(
         `http://127.0.0.1:8000/api/transportes/${transporteActualizado.id}`,

@@ -28,24 +28,17 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
         if (usuario) {
           const rol = usuario.roles;
 
-          // Guardar datos en localStorage
           localStorage.setItem('token', token);
           localStorage.setItem('user', JSON.stringify(usuario));
           localStorage.setItem('rol', rol);
-
-          console.log('✅ Usuario logueado:', usuario);
-          console.log('🎭 Rol detectado:', rol);
-
-          alIniciarSesion(usuario); // Envía el usuario al componente padre
+          alIniciarSesion(usuario);
         } else {
           setMensajeError('No se recibió información del usuario.');
-          console.error('❌ Estructura inesperada del backend:', respuesta.data);
         }
       } else {
         setMensajeError('Respuesta inesperada del servidor.');
       }
     } catch (error) {
-      console.error('Error completo:', error);
       if (error.response) {
         setMensajeError(error.response.data.message || 'Credenciales incorrectas');
       } else {
@@ -62,7 +55,6 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
 
   return (
     <div className="seccion-formulario-transporte">
-      {/* Tarjeta del formulario */}
       <div className="tarjeta-login">
         <div className="encabezado-tarjeta">
           <div className="franjas-bandera">
@@ -85,7 +77,7 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
                 onChange={(evento) => setCorreo(evento.target.value)}
                 placeholder="alex@email.com"
               />
-              <div className="icono-entrada correo">
+              <div className="icono-entrada">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                 </svg>
@@ -103,7 +95,7 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
                 onChange={(evento) => setContraseña(evento.target.value)}
                 placeholder="Contraseña"
               />
-              <div className="icono-entrada contraseña">
+              <div className="icono-entrada">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
                 </svg>
@@ -134,7 +126,6 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
         </form>
       </div>
 
-      {/* Sección de transporte */}
       <div className="seccion-transporte">
         <div className="encabezado-transporte">
           <img

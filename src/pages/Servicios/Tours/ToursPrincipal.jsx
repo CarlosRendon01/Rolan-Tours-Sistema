@@ -13,7 +13,7 @@ const ToursPrincipal = () => {
     const [tours, setTours] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
-    
+
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
     const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
@@ -45,10 +45,8 @@ const ToursPrincipal = () => {
             });
 
             setTours(response.data);
-            console.log('✅ Tours recargados');
 
         } catch (error) {
-            console.error('❌ Error al recargar tours:', error);
 
             if (error.code === 'ECONNABORTED') {
                 setError('La conexión tardó demasiado. Verifica tu servidor.');
@@ -74,9 +72,7 @@ const ToursPrincipal = () => {
                 }
             });
             setProveedores(response.data);
-            console.log('✅ Proveedores recargados');
         } catch (error) {
-            console.error('❌ Error al recargar proveedores:', error);
         }
     };
 
@@ -100,10 +96,8 @@ const ToursPrincipal = () => {
                         Accept: "application/json",
                     }
                 });
-                console.log('✅ Tour eliminado');
                 await recargarTours();
             } catch (error) {
-                console.error('❌ Error al eliminar tour:', error);
             }
         });
     };
@@ -120,18 +114,45 @@ const ToursPrincipal = () => {
         setTourAVer(null);
     };
 
+    const formatearHora = (hora) => {
+        if (!hora || typeof hora !== 'string') return hora;
+
+        if (hora.includes(':')) {
+            const partes = hora.split(':');
+            if (partes.length === 3) {
+                return `${partes[0]}:${partes[1]}`;
+            }
+        }
+        return hora;
+    };
+
     const agregarTour = async (nuevoTour) => {
         try {
             const token = localStorage.getItem("token");
 
             const formData = new FormData();
             Object.keys(nuevoTour).forEach(key => {
-                if (nuevoTour[key] !== null && nuevoTour[key] !== undefined) {
-                    if (key === 'idiomas_disponibles') {
-                        formData.append(key, JSON.stringify(nuevoTour[key]));
-                    } else {
-                        formData.append(key, nuevoTour[key]);
+                const value = nuevoTour[key];
+
+                if (key === 'idiomas_disponibles') {
+                    formData.append(key, JSON.stringify(value));
+                }
+                else if (key === 'descuento_disponible' || key === 'iva_incluido' ||
+                    key === 'transporte_incluido' || key === 'seguro_incluido') {
+                    formData.append(key, value ? '1' : '0');
+                }
+
+                else if (key === 'hora_salida' || key === 'hora_regreso') {
+                    if (value && typeof value === 'string' && value.trim() !== '' && value.includes(':')) {
+                        const horaFormateada = formatearHora(value.trim());
+                        formData.append(key, horaFormateada);
                     }
+                }
+                else if (value instanceof File) {
+                    formData.append(key, value);
+                }
+                else if (value !== null && value !== undefined && value !== '') {
+                    formData.append(key, value);
                 }
             });
 
@@ -147,11 +168,9 @@ const ToursPrincipal = () => {
                 }
             );
 
-            console.log("✅ Tour creado:", response.data);
             cerrarModales();
             await recargarTours();
         } catch (error) {
-            console.error("❌ Error al crear tour:", error);
             throw error;
         }
     };
@@ -164,12 +183,29 @@ const ToursPrincipal = () => {
             formData.append('_method', 'PUT');
 
             Object.keys(tourActualizado).forEach(key => {
-                if (tourActualizado[key] !== null && tourActualizado[key] !== undefined) {
-                    if (key === 'idiomas_disponibles') {
-                        formData.append(key, JSON.stringify(tourActualizado[key]));
-                    } else {
-                        formData.append(key, tourActualizado[key]);
+                const value = tourActualizado[key];
+
+                if (key === 'idiomas_disponibles') {
+                    formData.append(key, JSON.stringify(value));
+                }
+                else if (key === 'descuento_disponible' || key === 'iva_incluido' ||
+                    key === 'transporte_incluido' || key === 'seguro_incluido') {
+                    formData.append(key, value ? '1' : '0');
+                }
+
+                else if (key === 'hora_salida' || key === 'hora_regreso') {
+                    if (value && typeof value === 'string' && value.trim() !== '' && value.includes(':')) {
+                        const horaFormateada = formatearHora(value.trim());
+                        formData.append(key, horaFormateada);
                     }
+                }
+                else if (value instanceof File) {
+                    formData.append(key, value);
+                }
+                else if (key === 'foto_tour' && typeof value === 'string') {
+                }
+                else if (value !== null && value !== undefined && value !== '') {
+                    formData.append(key, value);
                 }
             });
 
@@ -185,16 +221,13 @@ const ToursPrincipal = () => {
                 }
             );
 
-            console.log("✅ Tour actualizado:", response.data);
             cerrarModales();
             await recargarTours();
         } catch (error) {
-            console.error("❌ Error al actualizar tour:", error);
             throw error;
         }
     };
 
-    // Manejo de errores
     if (error) {
         return (
             <PrincipalComponente>

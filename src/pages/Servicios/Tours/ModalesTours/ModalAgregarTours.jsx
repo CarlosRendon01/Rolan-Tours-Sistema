@@ -37,7 +37,7 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
     numero_licencia_guia: '',
     foto_tour: null,
     codigo_tour: '',
-    estado: 'activo'
+    estado: 'Activo'
   });
 
   const [errores, setErrores] = useState({});
@@ -526,9 +526,9 @@ const ModalAgregarTours = ({ onGuardar, onCerrar, proveedores = [] }) => {
             value={formData.estado}
             onChange={handleChange}
           >
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
-            <option value="mantenimiento">Mantenimiento</option>
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+            <option value="Mantenimiento">Mantenimiento</option>
           </select>
         </div>
 

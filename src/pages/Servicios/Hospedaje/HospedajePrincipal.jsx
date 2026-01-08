@@ -13,7 +13,7 @@ const HospedajePrincipal = () => {
     const [hospedajes, setHospedajes] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
-    
+
     const [modalVerAbierto, setModalVerAbierto] = useState(false);
     const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
     const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
@@ -124,8 +124,16 @@ const HospedajePrincipal = () => {
 
             const formData = new FormData();
             Object.keys(nuevoHospedaje).forEach(key => {
-                if (nuevoHospedaje[key] !== null && nuevoHospedaje[key] !== undefined) {
-                    formData.append(key, nuevoHospedaje[key]);
+                const value = nuevoHospedaje[key];
+
+                if (key === 'disponibilidad') {
+                    formData.append(key, value ? '1' : '0');
+                }
+                else if (value instanceof File) {
+                    formData.append(key, value);
+                }
+                else if (value !== null && val1ue !== undefined && value !== '') {
+                    formData.append(key, value);
                 }
             });
 
@@ -155,13 +163,24 @@ const HospedajePrincipal = () => {
             const token = localStorage.getItem("token");
 
             const formData = new FormData();
-            formData.append('_method', 'PUT');
 
             Object.keys(hospedajeActualizado).forEach(key => {
-                if (hospedajeActualizado[key] !== null && hospedajeActualizado[key] !== undefined) {
-                    formData.append(key, hospedajeActualizado[key]);
+                const value = hospedajeActualizado[key];
+
+                if (key === 'disponibilidad') {
+                    formData.append(key, value ? '1' : '0');
+                }
+                else if (value instanceof File) {
+                    formData.append(key, value);
+                }
+                else if (key === 'foto_servicio' && typeof value === 'string') {
+                }
+                else if (value !== null && value !== undefined && value !== '') {
+                    formData.append(key, value);
                 }
             });
+
+            formData.append('_method', 'PUT');
 
             const response = await axios.post(
                 `http://127.0.0.1:8000/api/hospedajes/${hospedajeActualizado.id}`,

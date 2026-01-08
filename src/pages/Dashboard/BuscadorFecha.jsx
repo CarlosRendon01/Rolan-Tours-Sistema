@@ -19,7 +19,6 @@ const BuscadorFecha = () => {
   const [resultadosBusqueda, setResultadosBusqueda] = useState([]);
   const [errores, setErrores] = useState({});
 
-  // Obtener fecha actual en formato YYYY-MM-DD
   const fechaActual = new Date().toISOString().split('T')[0];
 
   const validarFechas = (desde, hasta) => {
@@ -28,7 +27,6 @@ const BuscadorFecha = () => {
     const fechaHastaObj = new Date(hasta);
     const fechaHoy = new Date(fechaActual);
 
-    // Validar que fecha hasta no sea menor que fecha desde
     if (desde && hasta && fechaHastaObj < fechaDesdeObj) {
       nuevosErrores.fechaHasta = "La fecha hasta debe ser posterior a la fecha desde";
     }
@@ -40,13 +38,11 @@ const BuscadorFecha = () => {
     const nuevaFecha = e.target.value;
     setFechaDesde(nuevaFecha);
 
-    // Si hay fecha hasta seleccionada, validar
     if (fechaHasta || nuevaFecha) {
       const erroresValidacion = validarFechas(nuevaFecha, fechaHasta);
       setErrores(erroresValidacion);
     }
 
-    // Si la nueva fecha desde es posterior a fecha hasta, limpiar fecha hasta
     if (fechaHasta && nuevaFecha && new Date(nuevaFecha) > new Date(fechaHasta)) {
       setFechaHasta("");
     }
@@ -56,7 +52,6 @@ const BuscadorFecha = () => {
     const nuevaFecha = e.target.value;
     setFechaHasta(nuevaFecha);
 
-    // Validar fechas
     const erroresValidacion = validarFechas(fechaDesde, nuevaFecha);
     setErrores(erroresValidacion);
   };
@@ -101,9 +96,6 @@ const BuscadorFecha = () => {
         }
       );
 
-      console.log('🔍 Resultados de búsqueda:', response.data);
-
-      // ✅ Transformar órdenes a formato de resultados
       const resultados = response.data.map(orden => ({
         id: orden.id,
         titulo: `${orden.destino || 'Sin destino'} - ${orden.nombre_cliente || 'Sin cliente'}`,
@@ -121,12 +113,9 @@ const BuscadorFecha = () => {
         puntuacion: 4.5
       }));
 
-      console.log('✅ Resultados transformados:', resultados);
-
       setResultadosBusqueda(resultados);
       setModalAbierto(true);
     } catch (error) {
-      console.error('Error al buscar órdenes:', error);
       setErrores({
         general: "Error al buscar. Intenta nuevamente."
       });
@@ -191,7 +180,7 @@ const BuscadorFecha = () => {
   };
 
   const eliminarDelHistorial = (id, e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setHistorial(prev => prev.filter(item => item.id !== id));
   };
 
@@ -200,15 +189,12 @@ const BuscadorFecha = () => {
       <div className="contenedor-buscador">
         <div className="tarjeta-buscador">
 
-          {/* Línea principal con todos los elementos */}
           <div className="linea-principal">
 
-            {/* Icono de calendario */}
             <div className="icono-principal">
               <Calendar size={24} />
             </div>
 
-            {/* Campo Fecha Desde */}
             <div className="contenedor-campo">
               <div className="encabezado-campo">
                 <label className="etiqueta-campo">FECHA DESDE</label>
@@ -237,7 +223,6 @@ const BuscadorFecha = () => {
               )}
             </div>
 
-            {/* Campo Fecha Hasta */}
             <div className="contenedor-campo">
               <div className="encabezado-campo">
                 <label className="etiqueta-campo">FECHA HASTA</label>
@@ -265,7 +250,6 @@ const BuscadorFecha = () => {
               )}
             </div>
 
-            {/* Botones de acción */}
             <div className="grupo-botones">
               <button
                 onClick={manejarLimpiar}
@@ -292,7 +276,6 @@ const BuscadorFecha = () => {
 
           </div>
 
-          {/* Mensaje de error general */}
           {errores.general && (
             <div className="error-general">
               <AlertCircle size={16} />
@@ -300,7 +283,6 @@ const BuscadorFecha = () => {
             </div>
           )}
 
-          {/* Indicador de estado */}
           <div className="contenedor-estado">
             {loading ? (
               <div className="estado-pendiente">
@@ -328,7 +310,6 @@ const BuscadorFecha = () => {
             )}
           </div>
 
-          {/* Historial de búsquedas */}
           {historial.length > 0 && (
             <div className="historial-container">
               <div className="historial-titulo">
@@ -371,7 +352,6 @@ const BuscadorFecha = () => {
         </div>
       </div>
 
-      {/* Modal de Resultados */}
       <ModalResultadosFechas
         isOpen={modalAbierto}
         onClose={cerrarModal}

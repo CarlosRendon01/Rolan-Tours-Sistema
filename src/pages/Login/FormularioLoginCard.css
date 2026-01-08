@@ -1,4 +1,3 @@
-/* CONTENEDOR PRINCIPAL - SISTEMA RESPONSIVO CORREGIDO */
 .seccion-formulario-transporte {
   display: flex;
   background: white;
@@ -8,7 +7,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 
-  /* DESKTOP: Posición absoluta (1200px+) */
   position: absolute;
   top: 50%;
   right: 50px;
@@ -18,7 +16,6 @@
   margin: 0;
 }
 
-/* Tarjeta del formulario */
 .tarjeta-login {
   flex: 1.3;
   background: white;
@@ -30,7 +27,6 @@
   z-index: 2;
 }
 
-/* Encabezado */
 .encabezado-tarjeta {
   margin-bottom: 20px;
   text-align: center;
@@ -78,7 +74,6 @@
   letter-spacing: 1px;
 }
 
-/* Formulario */
 .formulario-login {
   display: flex;
   flex-direction: column;
@@ -211,31 +206,6 @@
   opacity: 0.7;
 }
 
-.separador-o {
-  text-align: center;
-  margin: 15px 0 10px 0;
-  position: relative;
-}
-
-.separador-o::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e5e7eb;
-}
-
-.separador-o span {
-  background: white;
-  padding: 0 12px;
-  color: #9ca3af;
-  font-size: 10px;
-  font-weight: 500;
-}
-
-/* SECCIÓN DE TRANSPORTE */
 .seccion-transporte {
   flex: 1;
   background: white;
@@ -258,10 +228,10 @@
 }
 
 .logo-rolan-transporte-img {
-  width: 280px;  /* hazlo tan grande como lo quieras */
+  width: 280px;
   position: absolute;
-  top: -20px;     /* ajusta para subirlo/bajarlo */
-  right: 20px;   /* ajusta para moverlo a la derecha */
+  top: -20px;
+  right: 20px;
 }
 
 
@@ -283,7 +253,6 @@
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
-/* Elementos decorativos */
 .elementos-decorativos {
   position: absolute;
   width: 100%;
@@ -365,9 +334,6 @@
   border-radius: 3px;
 }
 
-/* ============ BREAKPOINTS RESPONSIVOS ============ */
-
-/* Laptops grandes (1200px - 1440px) */
 @media (max-width: 1440px) and (min-width: 1200px) {
   .seccion-formulario-transporte {
     width: 750px;
@@ -376,7 +342,6 @@
   }
 }
 
-/* Laptops medianos (1024px - 1199px) */
 @media (max-width: 1199px) and (min-width: 1024px) {
   .seccion-formulario-transporte {
     width: 650px;
@@ -393,23 +358,18 @@
   }
 }
 
-/* ============ TABLET BREAKPOINT (768px - 1023px) ============ */
 @media (max-width: 1023px) and (min-width: 768px) {
   .seccion-formulario-transporte {
-    /* Cambiar a posición estática */
     position: static;
     transform: none;
 
-    /* Centrar horizontalmente */
     margin: 20px auto;
 
-    /* Ajustar tamaño */
     width: calc(100% - 40px);
     max-width: 600px;
     height: auto;
     min-height: 450px;
 
-    /* Mantener layout horizontal en tablets */
     flex-direction: row;
   }
 
@@ -431,21 +391,17 @@
   }
 }
 
-/* ============ MOBILE BREAKPOINT (481px - 767px) ============ */
 @media (max-width: 767px) and (min-width: 481px) {
   .seccion-formulario-transporte {
-    /* Posición estática y centrado */
     position: static;
     transform: none;
     margin: 15px auto;
 
-    /* Ancho completo con margen */
     width: calc(100% - 30px);
     max-width: 450px;
     height: auto;
     min-height: 600px;
 
-    /* Cambiar a layout vertical */
     flex-direction: column;
 
     border-width: 3px;
@@ -484,7 +440,6 @@
   }
 }
 
-/* ============ MOBILE SMALL (320px - 480px) ============ */
 @media (max-width: 480px) {
   .seccion-formulario-transporte {
     position: static;
@@ -569,7 +524,6 @@
   }
 }
 
-/* ============ MOBILE EXTRA SMALL (menos de 360px) ============ */
 @media (max-width: 359px) {
   .seccion-formulario-transporte {
     width: calc(100% - 16px);
@@ -598,7 +552,6 @@
   }
 }
 
-/* ============ LANDSCAPE MOBILE ============ */
 @media (max-height: 500px) and (orientation: landscape) and (max-width: 896px) {
   .seccion-formulario-transporte {
     position: static;

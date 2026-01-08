@@ -20,10 +20,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const [mantenimientoAbierto, setMantenimientoAbierto] = useState(false);
   const [administracionAbierto, setAdministracionAbierto] = useState(false);
   const [tooltipAbierto, setTooltipAbierto] = useState(null);
-  /*const [modoOscuro, setModoOscuro] = useState(() => {
-    const modoGuardado = localStorage.getItem('modoOscuro');
-    return modoGuardado === 'true';
-  });/*/
   const modoOscuro = false;
   const [hoverExpandido, setHoverExpandido] = useState(false);
 
@@ -38,7 +34,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setElementoActivo('Principal');
         break;
 
-      // Ventas
       case '/clientes':
         setElementoActivo('Clientes');
         setVentasAbierto(true);
@@ -52,7 +47,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setVentasAbierto(true);
         break;
 
-      // Documentos
       case '/contratos':
         setElementoActivo('Contratos');
         setDocumentosAbierto(true);
@@ -66,7 +60,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setDocumentosAbierto(true);
         break;
 
-      // Operaciones
       case '/orden-servicio':
         setElementoActivo('OrdenServicio');
         setOperacionesAbierto(true);
@@ -96,7 +89,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setOperacionesAbierto(true);
         break;
 
-      // Servicios
       case '/transporte':
         setElementoActivo('Transporte');
         setServiciosAbierto(true);
@@ -114,13 +106,11 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setServiciosAbierto(true);
         break;
 
-      // Mantenimiento
       case '/mantenimiento-vehiculos':
         setElementoActivo('MantenimientoVehiculos');
         setMantenimientoAbierto(true);
         break;
 
-      // Administración
       case '/administracion':
         setElementoActivo("Administracion");
         break;
@@ -137,20 +127,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         break;
     }
   }, [location.pathname]);
-
-  /*useEffect(() => {
-    localStorage.setItem('modoOscuro', modoOscuro.toString());
-
-    if (modoOscuro) {
-      document.body.classList.add('modo-oscuro');
-    } else {
-      document.body.classList.remove('modo-oscuro');
-    }
-
-    return () => {
-      document.body.classList.remove('modo-oscuro');
-    };
-  }, [modoOscuro]);*/
 
   useEffect(() => {
     if (!estaAbierto) {
@@ -192,7 +168,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const alternarAdministracion = () => setAdministracionAbierto(!administracionAbierto);
   const alternarModoOscuro = () => setModoOscuro(!modoOscuro);
 
-  // ✅ FUNCIÓN PARA CERRAR SESIÓN - INTEGRADA AQUÍ
   const manejarCerrarSesion = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -201,15 +176,12 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         await axios.post('http://127.0.0.1:8000/api/logout');
       }
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);
     } finally {
-      // Limpiar todo
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('rol');
       delete axios.defaults.headers.common['Authorization'];
 
-      // Recargar la página para volver al login
       window.location.href = '/';
     }
   };
@@ -318,12 +290,10 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
   const manejarNavegacion = (elementoId) => {
     switch (elementoId) {
-      // Dashboard
       case 'Principal':
         navigate('/');
         break;
 
-      // Ventas
       case 'Clientes':
         navigate('/clientes');
         break;
@@ -334,7 +304,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         navigate('/pagos');
         break;
 
-      // Documentos
       case 'Contratos':
         navigate('/contratos');
         break;
@@ -345,7 +314,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         navigate('/recibos');
         break;
 
-      // Operaciones
       case 'OrdenServicio':
         navigate('/orden-servicio');
         break;
@@ -368,7 +336,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         navigate('/coordinadores');
         break;
 
-      // Servicios
       case 'Transporte':
         navigate('/transporte');
         break;
@@ -382,12 +349,10 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         navigate('/hospedaje');
         break;
 
-      // Mantenimiento
       case 'MantenimientoVehiculos':
         navigate('/mantenimiento-vehiculos');
         break;
 
-      // Administración
       case "Administracion":
         navigate("/administracion");
         break;
@@ -399,7 +364,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         break;
 
       default:
-        console.log(`Navegación para ${elementoId} no implementada aún`);
         break;
     }
   };
@@ -572,7 +536,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
             </div>
           )}
 
-          {/* ✅ BOTÓN DE CERRAR SESIÓN CON FUNCIÓN */}
           <div className="seccion-cerrar-sesion">
             <button
               className="btn-cerrar-sesion"
@@ -585,23 +548,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
               </span>
             </button>
           </div>
-
-
-          
-          {/* SECCIÓN MODO OSCURO */}
-          {/*<div className="seccion-modo-oscuro">
-            <button
-              className="btn-modo-oscuro"
-              onClick={alternarModoOscuro}
-              aria-label={modoOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-            >
-              {modoOscuro ? <Sun className="icono-modo-oscuro" /> : <Moon className="icono-modo-oscuro" />}
-              <span className={`texto-modo-oscuro ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
-                {modoOscuro ? 'Modo Claro' : 'Modo Oscuro'}
-              </span>
-              {(((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && <div className="toggle-modo-oscuro"></div>}
-            </button>
-          </div> */} 
         </nav>
       </aside>
     </div >

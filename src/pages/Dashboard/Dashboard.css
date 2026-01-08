@@ -1,24 +1,21 @@
-/* ===== DASHBOARD - ESTILOS AISLADOS ===== */
-
-/* ===== CONTENEDOR DEL DASHBOARD ===== */
+body .dashboard-contenedor-principal,
 .dashboard-contenedor-principal {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
 }
 
-/* ===== TÍTULOS ===== */
 .dashboard-titulo-pagina {
   font-size: 2.2rem;
   font-weight: 600;
-  color: #0400ff !important;
+  color: #0400ff;
   margin-bottom: 2rem;
   text-align: center;
   position: relative;
   letter-spacing: -0.025em;
-  margin-left: 435px !important;
+  margin-left: 435px;
 }
 
 .dashboard-titulo-pagina::after {
@@ -33,11 +30,10 @@
   border-radius: 2px;
 }
 
-/* ===== CONTENEDOR PRINCIPAL DE TARJETAS ===== */
 .dashboard-contenedor-tarjetas-principal {
   display: grid;
   grid-template-columns: repeat(4, 150px);
-  gap: 100px; 
+  gap: 100px;
   margin-bottom: 2rem;
   justify-content: center;
 }
@@ -48,7 +44,6 @@
   gap: 0.5rem;
 }
 
-/* ===== TARJETAS DE ESTADÍSTICAS ===== */
 .dashboard-tarjeta-estadistica {
   border-radius: 12px;
   padding: 1rem;
@@ -70,28 +65,30 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-/* Colores de tarjetas más profesionales */
+body .dashboard-tarjeta-azul,
 .dashboard-tarjeta-azul {
-  border-left: 4px solid #3b82f6 !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.05) 100%)!important;
+  border-left: 4px solid #3b82f6;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
+body .dashboard-tarjeta-verde,
 .dashboard-tarjeta-verde {
-  border-left: 4px solid #10b981 !important;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(110, 231, 183, 0.05) 100%)!important;
+  border-left: 4px solid #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(110, 231, 183, 0.05) 100%);
 }
 
+body .dashboard-tarjeta-purpura,
 .dashboard-tarjeta-purpura {
-  border-left: 4px solid #8b5cf6 !important;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(196, 181, 253, 0.05) 100%)!important;
+  border-left: 4px solid #8b5cf6;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(196, 181, 253, 0.05) 100%);
 }
 
+body .dashboard-tarjeta-naranja,
 .dashboard-tarjeta-naranja {
-  border-left: 4px solid #f59e0b !important;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(251, 191, 36, 0.05) 100%)!important;
+  border-left: 4px solid #f59e0b;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(251, 191, 36, 0.05) 100%);
 }
 
-/* Contenido de las tarjetas */
 .dashboard-tarjeta-contenido {
   display: flex;
   flex-direction: column;
@@ -186,7 +183,6 @@
   font-size: 0.7rem;
 }
 
-/* Iconos de las tarjetas */
 .dashboard-tarjeta-icono {
   margin-top: 0.3rem;
 }
@@ -222,7 +218,6 @@
   color: white;
 }
 
-/* ===== SECCIONES ===== */
 .dashboard-seccion-buscador {
   margin-bottom: 2.5rem;
   position: relative;
@@ -268,19 +263,19 @@
   transform: translateY(-2px);
 }
 
-/* ===== ANIMACIONES ===== */
 @keyframes dashboard-fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.dashboard-contenedor-principal > * {
+.dashboard-contenedor-principal>* {
   animation: dashboard-fadeInUp 0.5s ease-out;
   animation-fill-mode: both;
 }
@@ -301,38 +296,35 @@
   animation-delay: 0.4s;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
-
-/* Tablets grandes y laptops pequeñas */
 @media (max-width: 1024px) {
   .dashboard-contenedor-principal {
     max-width: 100%;
     padding: 16px;
   }
-  
+
   .dashboard-titulo-pagina {
     font-size: 2rem;
     margin-bottom: 1.8rem;
   }
-  
+
   .dashboard-contenedor-tarjetas-principal {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
     max-width: 600px;
   }
-  
+
   .dashboard-tarjeta-estadistica {
     width: 100%;
     min-width: 240px;
     height: 140px;
     padding: 1.25rem;
   }
-  
+
   .dashboard-tarjeta-valor {
     font-size: 1.6rem;
   }
-  
+
   .dashboard-icono {
     width: 2.5rem;
     height: 2.5rem;
@@ -340,35 +332,34 @@
   }
 }
 
-/* Tablets */
 @media (max-width: 768px) {
   .dashboard-contenedor-principal {
     padding: 12px;
   }
-  
+
   .dashboard-titulo-pagina {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .dashboard-contenedor-tarjetas-principal {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     margin-bottom: 1.5rem;
     max-width: 500px;
   }
-  
+
   .dashboard-tarjeta-estadistica {
     width: 100%;
     min-width: 200px;
     height: 130px;
     padding: 1rem;
   }
-  
+
   .dashboard-tarjeta-valor {
     font-size: 1.4rem;
   }
-  
+
   .dashboard-icono {
     width: 2.2rem;
     height: 2.2rem;
@@ -376,55 +367,54 @@
   }
 }
 
-/* Móviles */
 @media (max-width: 640px) {
   .dashboard-contenedor-principal {
     padding: 10px;
   }
-  
+
   .dashboard-titulo-pagina {
     font-size: 1.5rem;
     margin-bottom: 1.2rem;
   }
-  
+
   .dashboard-contenedor-tarjetas-principal {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
     margin-bottom: 1.5rem;
     max-width: 400px;
   }
-  
+
   .dashboard-tarjeta-estadistica {
     width: 100%;
     min-width: 150px;
     height: 120px;
     padding: 0.8rem;
   }
-  
+
   .dashboard-tarjeta-contenido {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 0.4rem;
   }
-  
+
   .dashboard-tarjeta-titulo {
     font-size: 0.7rem;
   }
-  
+
   .dashboard-tarjeta-valor {
     font-size: 1.2rem;
   }
-  
+
   .dashboard-tarjeta-subtitulo {
     font-size: 0.6rem;
   }
-  
+
   .dashboard-cambio-positiva,
   .dashboard-cambio-neutral {
     font-size: 0.6rem;
   }
-  
+
   .dashboard-icono {
     width: 1.8rem;
     height: 1.8rem;
@@ -432,28 +422,27 @@
   }
 }
 
-/* Móviles muy pequeños */
 @media (max-width: 480px) {
   .dashboard-contenedor-tarjetas-principal {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.6rem;
     max-width: 320px;
   }
-  
+
   .dashboard-tarjeta-estadistica {
     min-width: 120px;
     height: 110px;
     padding: 0.6rem;
   }
-  
+
   .dashboard-tarjeta-titulo {
     font-size: 0.65rem;
   }
-  
+
   .dashboard-tarjeta-valor {
     font-size: 1.1rem;
   }
-  
+
   .dashboard-icono {
     width: 1.6rem;
     height: 1.6rem;
@@ -461,89 +450,83 @@
   }
 }
 
-/* ===== MEJORAS DE ACCESIBILIDAD ===== */
 @media (prefers-reduced-motion: reduce) {
+
   .dashboard-contenedor-principal *,
   .dashboard-contenedor-principal *::before,
   .dashboard-contenedor-principal *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
   }
 }
 
-/* Focus visible para navegación por teclado */
 .dashboard-tarjeta-estadistica:focus-visible {
   outline: 2px solid #4f46e5;
   outline-offset: 2px;
 }
 
-/* ===== MODO OSCURO ===== */
 @media (prefers-color-scheme: dark) {
   .dashboard-contenedor-principal {
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     color: #e2e8f0;
   }
-  
+
   .dashboard-titulo-pagina {
     color: #60a5fa;
   }
-  
+
   .dashboard-tarjeta-estadistica {
     background: rgba(15, 23, 42, 0.9);
     border: 1px solid rgba(71, 85, 105, 0.3);
     backdrop-filter: blur(10px);
   }
-  
+
   .dashboard-tarjeta-estadistica:hover {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
-  
+
   .dashboard-seccion-resultados {
     background: rgba(15, 23, 42, 0.9);
     border: 1px solid rgba(71, 85, 105, 0.3);
   }
-  
+
   .dashboard-placeholder-contenido {
     color: #94a3b8;
   }
-  
+
   .dashboard-placeholder-contenido p {
     background: rgba(15, 23, 42, 0.8);
     border-color: #475569;
   }
-  
+
   .dashboard-placeholder-contenido p:hover {
     border-color: #60a5fa;
     color: #60a5fa;
   }
 }
 
-/* ===== ESTILOS PARA IMPRESIÓN ===== */
 @media print {
   .dashboard-contenedor-principal {
-    background: white !important;
-    color: black !important;
+    background: white;
+    color: black;
   }
-  
+
   .dashboard-tarjeta-estadistica {
-    background: white !important;
-    color: black !important;
-    border: 1px solid #000 !important;
+    background: white;
+    color: black;
+    border: 1px solid #000;
   }
-  
+
   .dashboard-titulo-pagina {
-    color: black !important;
+    color: black;
   }
-  
+
   .dashboard-titulo-pagina::after {
     display: none;
   }
 }
 
-/* Agregar al final del archivo Dashboard.css */
-
-/* Header del Dashboard */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -575,7 +558,6 @@
   cursor: not-allowed;
 }
 
-/* Mensaje de error */
 .dashboard-error-mensaje {
   background-color: #fee;
   border-left: 4px solid #e53e3e;
@@ -589,12 +571,10 @@
   gap: 0.5rem;
 }
 
-/* Animación de carga en las tarjetas */
 .dashboard-tarjeta-valor {
   min-height: 2rem;
 }
 
-/* Responsive para el header */
 @media (max-width: 768px) {
   .dashboard-header {
     flex-direction: column;

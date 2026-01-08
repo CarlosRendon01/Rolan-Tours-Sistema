@@ -1,61 +1,52 @@
-/* ===== COMPONENTE PRINCIPAL ===== */
 .principal-componente {
   min-height: 100vh;
   background-color: #ffffff;
   position: relative;
 }
 
-/* ===== CONTENIDO PRINCIPAL ===== */
 .contenido-principal {
   min-height: 100vh;
   transition: all 0.3s ease;
-  padding-top: 80px; /* altura del navbar */
-  margin-left: 72px; /* Por defecto, margen para sidebar colapsado */
+  padding-top: 80px;
+  margin-left: 72px;
 }
 
 .contenido-principal.con-sidebar {
-  margin-left: 280px; /* ancho del sidebar expandido */
+  margin-left: 280px;
 }
 
 .contenido-principal.ancho-completo {
-  margin-left: 72px; /* ancho del sidebar colapsado */
+  margin-left: 72px;
 }
 
-/* Adaptación para hover del sidebar */
 .contenido-principal.sidebar-hover-expandido {
-  margin-left: 280px; /* cuando el sidebar se expande por hover */
+  margin-left: 280px;
 }
 
-/* Ajustes del contenido de página según el estado del sidebar */
 .contenido-principal .contenido-pagina {
-  max-width: min(calc(100vw - 72px - 4rem), 1400px); /* Por defecto - sidebar colapsado (solo iconos) */
+  max-width: min(calc(100vw - 72px - 4rem), 1400px);
 }
 
 .contenido-principal.con-sidebar .contenido-pagina {
-  max-width: min(calc(100vw - 280px - 4rem), 1400px); /* Ancho disponible - sidebar expandido - padding */
+  max-width: min(calc(100vw - 280px - 4rem), 1400px);
 }
 
 .contenido-principal.ancho-completo .contenido-pagina {
-  max-width: min(calc(100vw - 72px - 4rem), 1400px); /* Ancho disponible - sidebar colapsado - padding */
+  max-width: min(calc(100vw - 72px - 4rem), 1400px);
 }
 
 .contenido-principal.sidebar-hover-expandido .contenido-pagina {
-  max-width: min(calc(100vw - 280px - 4rem), 1400px); /* Ancho disponible - sidebar hover expandido - padding */
+  max-width: min(calc(100vw - 280px - 4rem), 1400px);
 }
 
-/* ===== CONTENIDO DE LA PÁGINA ===== */
 .contenido-pagina {
   padding: 2rem;
   margin: 0 auto;
   min-height: calc(100vh - 80px);
   transition: all 0.3s ease;
   width: 100%;
-  /* max-width será establecido por las clases específicas del contenido-principal */
 }
 
-/* ===== RESPONSIVE MEJORADO ===== */
-
-/* Desktop grande */
 @media (min-width: 1441px) {
   .contenido-pagina {
     max-width: 1600px;
@@ -63,50 +54,48 @@
   }
 }
 
-/* Desktop y laptop */
 @media (min-width: 1025px) {
   .contenido-principal {
-    margin-left: 72px; /* Por defecto sidebar colapsado */
+    margin-left: 72px;
   }
-  
+
   .contenido-principal.con-sidebar {
     margin-left: 280px;
   }
-  
+
   .contenido-principal.ancho-completo {
     margin-left: 72px;
   }
-  
+
   .contenido-principal.sidebar-hover-expandido {
-    margin-left: 280px; /* Se adapta al hover */
+    margin-left: 280px;
   }
-  
-  /* Ajustes específicos del contenido en desktop */
+
   .contenido-principal .contenido-pagina {
-    max-width: min(calc(100vw - 72px - 4rem), 1400px); /* Por defecto sidebar solo iconos */
+    max-width: min(calc(100vw - 72px - 4rem), 1400px);
   }
-  
+
   .contenido-principal.con-sidebar .contenido-pagina {
     max-width: min(calc(100vw - 280px - 4rem), 1400px);
   }
-  
+
   .contenido-principal.ancho-completo .contenido-pagina {
     max-width: min(calc(100vw - 72px - 4rem), 1400px);
   }
-  
+
   .contenido-principal.sidebar-hover-expandido .contenido-pagina {
     max-width: min(calc(100vw - 280px - 4rem), 1400px);
   }
 }
 
-/* Tablet grande */
 @media (max-width: 1024px) and (min-width: 769px) {
+
   .contenido-principal.con-sidebar,
   .contenido-principal.ancho-completo,
   .contenido-principal.sidebar-hover-expandido {
     margin-left: 0;
   }
-  
+
   .contenido-principal.con-sidebar .contenido-pagina,
   .contenido-principal.ancho-completo .contenido-pagina,
   .contenido-principal.sidebar-hover-expandido .contenido-pagina {
@@ -115,18 +104,17 @@
   }
 }
 
-/* Tablet pequeño y móvil grande */
 @media (max-width: 768px) {
   .contenido-principal {
-    padding-top: 60px; /* altura del navbar móvil */
+    padding-top: 60px;
   }
-  
+
   .contenido-principal.con-sidebar,
   .contenido-principal.ancho-completo,
   .contenido-principal.sidebar-hover-expandido {
     margin-left: 0;
   }
-  
+
   .contenido-principal.con-sidebar .contenido-pagina,
   .contenido-principal.ancho-completo .contenido-pagina,
   .contenido-principal.sidebar-hover-expandido .contenido-pagina {
@@ -136,12 +124,11 @@
   }
 }
 
-/* Móvil pequeño */
 @media (max-width: 480px) {
   .contenido-principal {
-    padding-top: 56px; /* altura del navbar móvil pequeño */
+    padding-top: 56px;
   }
-  
+
   .contenido-principal.con-sidebar .contenido-pagina,
   .contenido-principal.ancho-completo .contenido-pagina,
   .contenido-principal.sidebar-hover-expandido .contenido-pagina {
@@ -151,12 +138,11 @@
   }
 }
 
-/* Móvil extra pequeño */
 @media (max-width: 360px) {
   .contenido-principal {
-    padding-top: 52px; /* altura del navbar móvil extra pequeño */
+    padding-top: 52px;
   }
-  
+
   .contenido-principal.con-sidebar .contenido-pagina,
   .contenido-principal.ancho-completo .contenido-pagina,
   .contenido-principal.sidebar-hover-expandido .contenido-pagina {
@@ -166,12 +152,11 @@
   }
 }
 
-/* Orientación landscape en móviles */
 @media (max-height: 500px) and (orientation: landscape) {
   .contenido-principal {
-    padding-top: 48px; /* navbar más pequeño en landscape */
+    padding-top: 48px;
   }
-  
+
   .contenido-principal.con-sidebar .contenido-pagina,
   .contenido-principal.ancho-completo .contenido-pagina,
   .contenido-principal.sidebar-hover-expandido .contenido-pagina {
@@ -181,9 +166,6 @@
   }
 }
 
-/* ===== UTILIDADES PARA EL CONTENIDO ===== */
-
-/* Contenedor centrado con ancho máximo */
 .contenedor-centrado {
   max-width: 1200px;
   margin: 0 auto;
@@ -203,7 +185,6 @@
   }
 }
 
-/* Espaciados estándar responsive */
 .seccion {
   margin-bottom: 2rem;
 }
@@ -224,7 +205,6 @@
   }
 }
 
-/* Títulos estándar responsive */
 .titulo-pagina {
   font-size: 2rem;
   font-weight: 700;
@@ -289,7 +269,6 @@
   }
 }
 
-/* Cards/Tarjetas responsive */
 .tarjeta {
   background: #ffffff;
   border-radius: 12px;
@@ -309,7 +288,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
-  
+
   .tarjeta:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
     transform: translateY(-1px);
@@ -368,7 +347,6 @@
   }
 }
 
-/* Grid responsivo mejorado */
 .grid-responsive {
   display: grid;
   gap: 1.5rem;
@@ -387,7 +365,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
-  
+
   .grid-responsive.cols-4 {
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
@@ -400,14 +378,12 @@
   }
 }
 
-/* Reducir gaps en móvil */
 @media (max-width: 480px) {
   .grid-responsive {
     gap: 1rem;
   }
 }
 
-/* Flexbox utilities responsive */
 .flex-centro {
   display: flex;
   align-items: center;
@@ -426,7 +402,7 @@
     gap: 0.75rem;
     align-items: stretch;
   }
-  
+
   .flex-entre.flex-row-mobile {
     flex-direction: row;
     align-items: center;
@@ -446,21 +422,21 @@
 }
 
 @media (max-width: 480px) {
+
   .flex-inicio,
   .flex-fin {
     justify-content: center;
   }
-  
+
   .flex-inicio.flex-start-mobile {
     justify-content: flex-start;
   }
-  
+
   .flex-fin.flex-end-mobile {
     justify-content: flex-end;
   }
 }
 
-/* Botones estándar responsive */
 .btn {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -493,7 +469,7 @@
     min-height: 2.25rem;
     width: 100%;
   }
-  
+
   .btn.btn-inline {
     width: auto;
   }
@@ -531,7 +507,6 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-/* Botones en grupos responsive */
 .grupo-botones {
   display: flex;
   gap: 0.75rem;
@@ -543,14 +518,13 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .grupo-botones.grupo-inline {
     flex-direction: row;
     gap: 0.5rem;
   }
 }
 
-/* Estados de carga */
 .cargando {
   opacity: 0.6;
   pointer-events: none;
@@ -572,16 +546,21 @@
 }
 
 @keyframes girar {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
-/* Animaciones de entrada responsive */
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -594,6 +573,7 @@
       opacity: 0;
       transform: translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -611,7 +591,6 @@
   }
 }
 
-/* Scrollbar personalizado para el contenido */
 .contenido-pagina::-webkit-scrollbar {
   width: 8px;
 }
@@ -635,7 +614,6 @@
   }
 }
 
-/* Utilidades de espaciado responsive */
 .mt-responsive {
   margin-top: 2rem;
 }
@@ -655,20 +633,45 @@
 }
 
 @media (max-width: 768px) {
-  .mt-responsive { margin-top: 1.5rem; }
-  .mb-responsive { margin-bottom: 1.5rem; }
-  .px-responsive { padding-left: 1.5rem; padding-right: 1.5rem; }
-  .py-responsive { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  .mt-responsive {
+    margin-top: 1.5rem;
+  }
+
+  .mb-responsive {
+    margin-bottom: 1.5rem;
+  }
+
+  .px-responsive {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .py-responsive {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .mt-responsive { margin-top: 1rem; }
-  .mb-responsive { margin-bottom: 1rem; }
-  .px-responsive { padding-left: 1rem; padding-right: 1rem; }
-  .py-responsive { padding-top: 1rem; padding-bottom: 1rem; }
+  .mt-responsive {
+    margin-top: 1rem;
+  }
+
+  .mb-responsive {
+    margin-bottom: 1rem;
+  }
+
+  .px-responsive {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .py-responsive {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
 }
 
-/* Clases de visibilidad responsive */
 .oculto-movil {
   display: block;
 }
@@ -681,7 +684,7 @@
   .oculto-movil {
     display: none;
   }
-  
+
   .visible-solo-movil {
     display: block;
   }
@@ -699,7 +702,7 @@
   .oculto-tablet {
     display: none;
   }
-  
+
   .visible-solo-tablet {
     display: block;
   }
@@ -717,33 +720,30 @@
   .oculto-desktop {
     display: none;
   }
-  
+
   .visible-solo-desktop {
     display: block;
   }
 }
 
-/* Mejoras de accesibilidad */
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
   }
 }
 
-/* Alto contraste para mejor accesibilidad */
 @media (prefers-contrast: high) {
   .tarjeta {
     border: 2px solid #000;
   }
-  
+
   .btn {
     border: 2px solid currentColor;
   }
 }
 
-/* ===== MODO OSCURO ===== */
 .principal-componente.modo-oscuro {
   background-color: #1a202c;
 }
@@ -776,7 +776,6 @@
   color: #a0aec0;
 }
 
-/* Botones en modo oscuro */
 .principal-componente.modo-oscuro .btn-primario {
   background: linear-gradient(135deg, #e53e3e, #c53030);
 }
@@ -795,7 +794,6 @@
   background: #2d3748;
 }
 
-/* Scrollbar en modo oscuro */
 .principal-componente.modo-oscuro .contenido-pagina::-webkit-scrollbar-track {
   background: #2d3748;
 }

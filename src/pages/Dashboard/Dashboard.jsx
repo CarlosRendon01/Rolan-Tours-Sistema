@@ -15,7 +15,6 @@ const Dashboard = () => {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  // Cargar estadísticas al montar el componente
   useEffect(() => {
     cargarEstadisticas();
   }, []);
@@ -31,30 +30,21 @@ const Dashboard = () => {
 
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      // Obtener todas las órdenes de servicio
       const responseOrdenes = await axios.get('http://127.0.0.1:8000/api/ordenes-servicio');
       const ordenes = responseOrdenes.data;
 
-      console.log('📊 Órdenes recibidas para estadísticas:', ordenes);
-
-      // ✅ FUNCIÓN HELPER PARA CONVERTIR FECHA ISO
       const formatearFechaISO = (fechaISO) => {
         if (!fechaISO) return null;
         return fechaISO.split('T')[0];
       };
 
-      // Calcular estadísticas
       const hoy = new Date().toISOString().split('T')[0];
 
-      // Órdenes de hoy
       const ordenesHoy = ordenes.filter(orden => {
         const fechaOrden = formatearFechaISO(orden.fecha_inicio_servicio);
         return fechaOrden === hoy;
       }).length;
 
-      console.log('📅 Órdenes hoy:', ordenesHoy);
-
-      // Ingresos del mes
       const mesActual = new Date().getMonth();
       const añoActual = new Date().getFullYear();
 
@@ -67,19 +57,12 @@ const Dashboard = () => {
           fechaObj.getFullYear() === añoActual;
       });
 
-      console.log('📆 Órdenes del mes:', ordenesDelMes.length);
-
-      // Calcular ingresos estimados (precio promedio por orden)
       const ingresosEstimados = ordenesDelMes.length * 850;
 
-      // Calcular ocupación actual
       const ordenesActivas = ordenes.filter(orden => orden.activo).length;
       const capacidadTotal = 100;
       const ocupacion = Math.min(100, Math.round((ordenesActivas / capacidadTotal) * 100));
 
-      console.log('📈 Ocupación:', ocupacion + '%');
-
-      // Encontrar el destino más popular
       const destinosContador = {};
       ordenes.forEach(orden => {
         const destino = orden.destino || 'Sin destino';
@@ -88,8 +71,6 @@ const Dashboard = () => {
 
       const destinoMasPopular = Object.entries(destinosContador)
         .sort((a, b) => b[1] - a[1])[0] || ['Sin datos', 0];
-
-      console.log('🏆 Destino más popular:', destinoMasPopular);
 
       setEstadisticas({
         ordenesHoy,
@@ -103,7 +84,6 @@ const Dashboard = () => {
 
       setError(null);
     } catch (error) {
-      console.error('Error al cargar estadísticas:', error);
       setError('Error al cargar las estadísticas. Intenta recargar la página.');
 
       setEstadisticas({
@@ -117,10 +97,7 @@ const Dashboard = () => {
     }
   };
 
-  // Calcular cambios y tendencias (simulado - puedes hacerlo con datos históricos)
   const calcularCambio = (valorActual, tipo) => {
-    // Aquí podrías comparar con el mes/día anterior usando datos reales
-    // Por ahora, simulamos cambios aleatorios positivos
     const cambios = {
       ordenesHoy: Math.floor(Math.random() * 20) + 5,
       ingresosDelMes: Math.floor(Math.random() * 25) + 10,
@@ -195,7 +172,6 @@ const Dashboard = () => {
     <PrincipalComponente>
       <div className="dashboard-contenedor-principal">
 
-        {/* Título del Dashboard */}
         <div className="dashboard-header">
           <h1 className="dashboard-titulo-pagina">Panel de Control</h1>
           <button
@@ -207,24 +183,20 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Mensaje de error si existe */}
         {error && (
           <div className="dashboard-error-mensaje">
             <span>⚠️ {error}</span>
           </div>
         )}
 
-        {/* Todas las tarjetas en una sola fila */}
         <div className="dashboard-contenedor-tarjetas-principal">
           {tarjetasEstadisticas.map((stat, index) => renderTarjeta(stat, index))}
         </div>
 
-        {/* Sección del Buscador de Fechas */}
         <div className="dashboard-seccion-buscador">
           <BuscadorFecha />
         </div>
 
-        {/* Sección del Calendario */}
         <div className="dashboard-seccion-calendario">
           <CalendarioViajes onActualizarEstadisticas={cargarEstadisticas} />
         </div>

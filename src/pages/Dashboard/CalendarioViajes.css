@@ -1,6 +1,3 @@
-/* ===== CALENDARIO VIAJES - ESTILOS AISLADOS ===== */
-
-/* ===== CONTENEDOR PRINCIPAL ===== */
 .calendario-contenedor-principal {
   width: 100%;
   max-width: 1200px;
@@ -13,7 +10,6 @@
   position: relative;
 }
 
-/* ===== ENCABEZADO DEL CALENDARIO ===== */
 .calendario-encabezado {
   background: linear-gradient(135deg, #ed3a3a 100%, #ed3a3a 100%);
   color: white;
@@ -101,7 +97,6 @@
   transition: all 0.3s ease-in-out;
 }
 
-/* ===== LEYENDA DE TIPOS ===== */
 .calendario-leyenda-tipos {
   background: #f8fafc;
   padding: 20px 32px;
@@ -166,7 +161,6 @@
   color: #1e293b;
 }
 
-/* ===== DÍAS DE LA SEMANA ===== */
 .calendario-dias-semana {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -187,7 +181,6 @@
   border-right: none;
 }
 
-/* ===== CUADRÍCULA DEL CALENDARIO ===== */
 .calendario-cuadricula {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -307,7 +300,6 @@
   transition: font-size 0.3s ease-in-out;
 }
 
-/* ===== ESTADÍSTICAS RÁPIDAS ===== */
 .calendario-estadisticas-rapidas {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -384,7 +376,6 @@
   color: #6d28d9;
 }
 
-/* ===== MODAL ===== */
 .calendario-superposicion-modal {
   position: fixed;
   inset: 0;
@@ -583,7 +574,6 @@
   transform: translateY(-1px);
 }
 
-/* ===== ANIMACIONES ===== */
 @keyframes calendario-aparecer {
   from {
     opacity: 0;
@@ -626,7 +616,6 @@
   animation: calendario-aparecer 0.6s ease-out;
 }
 
-/* ===== INDICADORES ===== */
 .calendario-dia.calendario-con-eventos::after {
   content: '';
   position: absolute;
@@ -639,7 +628,6 @@
   animation: calendario-pulso 2s infinite;
 }
 
-/* ===== ESTADO DE CARGA ===== */
 .calendario-cargando {
   opacity: 0.7;
   pointer-events: none;
@@ -671,9 +659,6 @@
   }
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
-
-/* Tablets grandes (1024px y menos) */
 @media (max-width: 1024px) {
   .calendario-encabezado {
     padding: 20px 24px;
@@ -775,7 +760,6 @@
   }
 }
 
-/* Tablets (768px y menos) */
 @media (max-width: 768px) {
   .calendario-encabezado {
     padding: 16px 20px;
@@ -886,7 +870,6 @@
   }
 }
 
-/* Móviles grandes (640px y menos) */
 @media (max-width: 640px) {
   .calendario-encabezado {
     padding: 12px 16px;
@@ -1001,7 +984,6 @@
   }
 }
 
-/* Móviles (480px y menos) */
 @media (max-width: 480px) {
   .calendario-contenedor-principal {
     border-radius: 16px;
@@ -1182,7 +1164,6 @@
   }
 }
 
-/* Móviles muy pequeños (360px y menos) */
 @media (max-width: 360px) {
   .calendario-encabezado {
     padding: 8px 10px;
@@ -1237,19 +1218,17 @@
   }
 }
 
-/* ===== MEJORAS DE ACCESIBILIDAD ===== */
 @media (prefers-reduced-motion: reduce) {
 
   .calendario-contenedor-principal *,
   .calendario-contenedor-principal *::before,
   .calendario-contenedor-principal *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
   }
 }
 
-/* Focus visible para navegación por teclado */
 .calendario-dia:focus-visible,
 .calendario-btn-navegacion:focus-visible,
 .calendario-btn-cerrar-modal:focus-visible,
@@ -1258,7 +1237,6 @@
   outline-offset: 2px;
 }
 
-/* ===== MODO OSCURO ===== */
 @media (prefers-color-scheme: dark) {
   .calendario-contenedor-principal {
     background: #ffffff;
@@ -1369,7 +1347,6 @@
   }
 }
 
-/* ===== ESTILOS PARA IMPRESIÓN ===== */
 @media print {
   .calendario-contenedor-principal {
     box-shadow: none;
@@ -1378,7 +1355,7 @@
   }
 
   .calendario-encabezado {
-    background: #000000 !important;
+    background: #000000;
   }
 
   .calendario-superposicion-modal {

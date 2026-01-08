@@ -14,7 +14,6 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [cargando, setCargando] = useState(false);
 
-  // ✅ Cargar eventos desde la API
   useEffect(() => {
     cargarEventosDelMes();
   }, [fechaActual]);
@@ -25,7 +24,6 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
       const token = localStorage.getItem('token');
 
       if (!token) {
-        console.error('No hay token de autenticación');
         return;
       }
 
@@ -37,8 +35,6 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
       const fechaInicio = primerDia.toISOString().split('T')[0];
       const fechaFin = ultimoDia.toISOString().split('T')[0];
 
-      console.log('📅 Cargando eventos del:', fechaInicio, 'al', fechaFin);
-
       const response = await axios.get(
         `http://127.0.0.1:8000/api/ordenes-servicio/filtrar/rango-fechas`,
         {
@@ -49,24 +45,18 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
         }
       );
 
-      console.log('✅ Órdenes recibidas:', response.data);
-
-      // ✅ FUNCIÓN HELPER PARA CONVERTIR FECHA ISO A FORMATO YYYY-MM-DD
       const formatearFechaISO = (fechaISO) => {
         if (!fechaISO) return null;
-        // Extraer solo la parte de la fecha (YYYY-MM-DD)
         return fechaISO.split('T')[0];
       };
 
-      // Transformar órdenes a formato de eventos
       const eventosTransformados = response.data.map(orden => {
-        // ✅ Convertir fecha ISO a formato simple
         const fechaEvento = formatearFechaISO(orden.fecha_inicio_servicio);
 
         return {
           id: orden.id,
           titulo: `${orden.destino || 'Sin destino'} - ${orden.nombre_cliente || 'Sin cliente'}`,
-          fecha: fechaEvento, // ✅ Ahora está en formato YYYY-MM-DD
+          fecha: fechaEvento,
           hora_inicio: orden.horario_inicio_servicio || "08:00",
           hora_fin: orden.horario_final_servicio || "18:00",
           tipo: determinarTipoServicio(orden),
@@ -78,12 +68,7 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
         };
       });
 
-      console.log('🎯 Eventos transformados:', eventosTransformados);
-
-      // ✅ Filtrar eventos que tienen fecha válida
       const eventosValidos = eventosTransformados.filter(evento => evento.fecha !== null);
-
-      console.log('📋 Eventos válidos para mostrar:', eventosValidos);
       setEventos(eventosValidos);
 
       if (onActualizarEstadisticas) {
@@ -91,8 +76,6 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
       }
 
     } catch (error) {
-      console.error('❌ Error al cargar eventos:', error);
-      console.error('Detalles:', error.response?.data);
       setEventos([]);
     } finally {
       setCargando(false);
@@ -103,15 +86,12 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
     const destino = (orden.destino || '').toLowerCase();
     const servicio = (orden.servicio || '').toLowerCase();
 
-    // Palabras clave para tours
     const palabrasTour = ['tour', 'monte albán', 'hierve', 'mitla', 'teotitlán',
       'tule', 'mezcal', 'artesanías', 'excursión', 'paseo'];
 
-    // Palabras clave para traslados
     const palabrasTraslado = ['traslado', 'aeropuerto', 'hotel', 'terminal',
       'transporte', 'pickup', 'transfer'];
 
-    // Revisar en destino y servicio
     const textoCompleto = `${destino} ${servicio}`;
 
     if (palabrasTour.some(palabra => textoCompleto.includes(palabra))) {
@@ -122,7 +102,6 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
       return 'traslado';
     }
 
-    // Por defecto, si tiene más de 5 pasajeros, es tour
     return (orden.numero_pasajeros || orden.num_pasajeros || 0) > 5 ? 'tour' : 'traslado';
   };
 
@@ -215,13 +194,9 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
   };
 
   const manejarVerMas = () => {
-    console.log('Ver más detalles:', eventoSeleccionado);
-    // Aquí podrías navegar a una página de detalles o abrir un modal más completo
   };
 
   const manejarEditar = () => {
-    console.log('Editar evento:', eventoSeleccionado);
-    // Aquí podrías navegar a la página de edición
   };
 
   const renderizarDias = () => {
@@ -229,12 +204,10 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
     const diasEnMes = obtenerDiasEnMes(fechaActual);
     const dias = [];
 
-    // Espacios vacíos al inicio
     for (let i = 0; i < primerDia; i++) {
       dias.push(<div key={`vacio-${i}`} className="calendario-dia-vacio"></div>);
     }
 
-    // Días del mes
     for (let dia = 1; dia <= diasEnMes; dia++) {
       const fechaCompleta = formatearFecha(new Date(fechaActual.getFullYear(), fechaActual.getMonth(), dia));
       const eventosDelDia = obtenerEventosPorFecha(fechaCompleta);

@@ -20,29 +20,10 @@ const ModalPerfil = React.memo(({
 
   const originalOverflow = useRef(null);
 
-  // ✅ FUNCIÓN HELPER PARA OBTENER EL PRIMER ROL
   const obtenerPrimerRol = (roles) => {
-    if (!roles) return "Usuario";
-
-    // Si es un array de strings
-    if (Array.isArray(roles) && typeof roles[0] === 'string') {
-      return roles[0];
-    }
-
-    // Si es un array de objetos
-    if (Array.isArray(roles) && roles[0]?.nombre) {
-      return roles[0].nombre;
-    }
-
-    // Si es un string directo
-    if (typeof roles === 'string') {
-      return roles;
-    }
-
-    return "Usuario";
+    return roles?.[0]?.nombre || roles?.[0] || roles || "Usuario";
   };
 
-  // Información del usuario con fallbacks
   const usuario = {
     id: userInfo?.id || null,
     nombre: userInfo?.nombre || "Usuario",
@@ -54,7 +35,6 @@ const ModalPerfil = React.memo(({
     genero: userInfo?.genero || "Prefiero no decir"
   };
 
-  // Generar iniciales automáticamente
   const generarIniciales = useCallback((nombre) => {
     if (userInfo?.iniciales) return userInfo.iniciales;
 
@@ -67,7 +47,6 @@ const ModalPerfil = React.memo(({
 
   const iniciales = generarIniciales(usuario.nombre);
 
-  // Inicializar datos editados cuando se abre el modal
   useEffect(() => {
     if (isOpen) {
       setDatosEditados({
@@ -83,7 +62,6 @@ const ModalPerfil = React.memo(({
     }
   }, [isOpen, usuario.nombre, usuario.apellido_paterno, usuario.apellido_materno, usuario.email, usuario.genero]);
 
-  // Validar formulario
   const validarFormulario = () => {
     const nuevosErrores = {};
 
@@ -101,7 +79,6 @@ const ModalPerfil = React.memo(({
     return Object.keys(nuevosErrores).length === 0;
   };
 
-  // Manejar cambios en los inputs
   const manejarCambio = (campo, valor) => {
     setDatosEditados(prev => ({
       ...prev,
@@ -120,7 +97,6 @@ const ModalPerfil = React.memo(({
     }
   };
 
-  // Guardar cambios
   const manejarGuardarCambios = async () => {
     if (!validarFormulario()) return;
 
@@ -140,7 +116,6 @@ const ModalPerfil = React.memo(({
         setErrores({ general: resultado?.error || 'Error al actualizar perfil' });
       }
     } catch (error) {
-      console.error('Error al guardar cambios:', error);
       setErrores({ general: 'Error al actualizar perfil' });
     } finally {
       if (setCargandoPerfil) setCargandoPerfil(false);
@@ -306,7 +281,6 @@ const ModalPerfil = React.memo(({
             <h3 className="modal-perfil-section-title">Información Personal</h3>
 
             <div className="modal-perfil-info-grid">
-              {/* Nombre */}
               <div className="modal-perfil-info-item">
                 <div className="modal-perfil-icon-wrapper user">
                   <User size={16} />
@@ -333,7 +307,6 @@ const ModalPerfil = React.memo(({
                 </div>
               </div>
 
-              {/* Apellido Paterno */}
               <div className="modal-perfil-info-item">
                 <div className="modal-perfil-icon-wrapper user">
                   <User size={16} />
@@ -355,7 +328,6 @@ const ModalPerfil = React.memo(({
                 </div>
               </div>
 
-              {/* Apellido Materno */}
               <div className="modal-perfil-info-item">
                 <div className="modal-perfil-icon-wrapper user">
                   <User size={16} />
@@ -377,7 +349,6 @@ const ModalPerfil = React.memo(({
                 </div>
               </div>
 
-              {/* Correo */}
               <div className="modal-perfil-info-item">
                 <div className="modal-perfil-icon-wrapper email">
                   <Mail size={16} />
@@ -404,7 +375,6 @@ const ModalPerfil = React.memo(({
                 </div>
               </div>
 
-              {/* Rol - No editable */}
               <div className="modal-perfil-info-item">
                 <div className="modal-perfil-icon-wrapper role">
                   <Shield size={16} />
@@ -415,7 +385,6 @@ const ModalPerfil = React.memo(({
                 </div>
               </div>
 
-              {/* Género */}
               <div className="modal-perfil-info-item">
                 <div className="modal-perfil-icon-wrapper user">
                   <User size={16} />

@@ -62,24 +62,19 @@ const ModalResultadosFechas = ({
     return 'completo';
   };
 
-  // Datos de ejemplo mejorados para tours y traslados
   const eventosMock = resultados.length > 0 ? resultados : [];
 
-  // Filtrar eventos según el filtro activo
   const eventosFiltrados = eventosMock.filter(evento => {
-    // Primero filtrar por fecha si se proporcionan fechas
     if (fechaDesde && fechaHasta) {
       const fechaEvento = new Date(evento.fechaInicio);
       const fechaDesdeObj = new Date(fechaDesde);
       const fechaHastaObj = new Date(fechaHasta);
 
-      // Si el evento no está en el rango de fechas, no lo incluir
       if (fechaEvento < fechaDesdeObj || fechaEvento > fechaHastaObj) {
         return false;
       }
     }
 
-    // Luego filtrar por tipo según el filtro activo
     switch (filtroActivo) {
       case 'Tour':
         return evento.tipo === 'Tour';
@@ -107,7 +102,6 @@ const ModalResultadosFechas = ({
     >
       <div className="modal-resultados" onClick={(e) => e.stopPropagation()}>
 
-        {/* Header Principal */}
         <div className="resultados-header">
           <div className="header-contenido">
             <div className="header-info">
@@ -130,7 +124,6 @@ const ModalResultadosFechas = ({
           </div>
         </div>
 
-        {/* Filtros y Stats */}
         <div className="filtros-section">
           <div className="filtros-container">
             <div className="filtros-tabs">
@@ -149,7 +142,6 @@ const ModalResultadosFechas = ({
           </div>
         </div>
 
-        {/* Lista de Resultados */}
         <div className="resultados-contenido">
           {eventosFiltrados.length > 0 ? (
             eventosFiltrados.map((evento) => {
@@ -209,8 +201,6 @@ const ModalResultadosFechas = ({
                         className="boton-seleccionar"
                         disabled={estadoDisponibilidad === 'completo'}
                         onClick={() => {
-                          // Aquí iría la lógica para seleccionar el tour/traslado
-                          console.log('Seleccionado:', evento.titulo);
                         }}
                       >
                         {estadoDisponibilidad === 'completo' ? 'No disponible' : 'Seleccionar'}
@@ -236,7 +226,6 @@ const ModalResultadosFechas = ({
           )}
         </div>
 
-        {/* Footer */}
         <div className="resultados-footer">
           <div className="footer-info">
             Mostrando <strong>{eventosFiltrados.length}</strong> de <strong>{totalEventos}</strong> resultados

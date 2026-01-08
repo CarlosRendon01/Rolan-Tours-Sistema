@@ -16,16 +16,13 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
   const [modalNotificacionesAbierto, setModalNotificacionesAbierto] = useState(false);
   const [modalPerfilAbierto, setModalPerfilAbierto] = useState(false);
 
-  // ✅ CARGAR USUARIO DESDE LOCALSTORAGE
   const [usuario, setUsuario] = useState(() => {
     const userGuardado = localStorage.getItem('user');
     if (userGuardado) {
       try {
         const userData = JSON.parse(userGuardado);
-        console.log('📦 Usuario cargado desde localStorage:', userData);
         return userData;
       } catch (e) {
-        console.error('❌ Error al parsear usuario:', e);
         return null;
       }
     }
@@ -115,7 +112,6 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
     }
   }, [sidebarAbierto, setSidebarAbierto]);
 
-  // ✅ FUNCIÓN PARA CERRAR SESIÓN
   const manejarCerrarSesion = useCallback(async () => {
     try {
       setDesplegableAbierto(false);
@@ -126,7 +122,6 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
         await axios.post('http://127.0.0.1:8000/api/logout');
       }
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -136,7 +131,6 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
     }
   }, []);
 
-  // ✅ FUNCIÓN PARA EDITAR PERFIL
   const manejarEditarPerfil = useCallback(async (nuevosDatos) => {
     try {
       const token = localStorage.getItem('token');
@@ -155,7 +149,6 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
 
       return { success: true, data: usuarioActualizado };
     } catch (error) {
-      console.error('Error al editar perfil:', error);
       return {
         success: false,
         error: error.response?.data?.message || 'Error al actualizar perfil'
@@ -255,11 +248,7 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
     }
   }, []);
 
-  const tamañoIcono = useMemo(() => {
-    if (responsiveData.ancho <= 360) return 14;
-    if (responsiveData.esMovil) return 16;
-    return 18;
-  }, [responsiveData]);
+  const tamañoIcono = responsiveData.ancho <= 360 ? 14 : responsiveData.esMovil ? 16 : 18;
 
   const ComponenteNotificaciones = useMemo(() => (
     <div className="contenedor-notificacion">
@@ -314,7 +303,7 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
               </div>
             )}
 
-           
+
             {logoRolanCargado ? (
               <img
                 ref={refLogoRolan}
