@@ -1,17 +1,91 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { AlertTriangle, X, Trash2 } from 'lucide-react';
 import './ModalEliminarDefinitivo.css';
 
 const ModalEliminarDefinitivo = ({ cliente, alConfirmar, alCancelar }) => {
-  const manejarConfirmar = useCallback(() => {
-    if (cliente) {
-      alConfirmar(cliente);
+  const [eliminando, setEliminando] = useState(false);
+
+  const mostrarNotificacionExito = async () => {
+    if (typeof window !== 'undefined' && window.Swal) {
+      await window.Swal.fire({
+        title: '¡Eliminado Permanentemente!',
+        text: 'El cliente ha sido eliminado de forma definitiva de la base de datos',
+        icon: 'success',
+        iconHtml: '✓',
+        iconColor: '#dc2626',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#dc2626',
+        showClass: {
+          popup: 'animate__animated animate__fadeInUp animate__faster'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutDown animate__faster'
+        },
+        customClass: {
+          popup: 'swal-popup-custom-editar',
+          title: 'swal-title-custom-editar',
+          content: 'swal-content-custom-editar',
+          confirmButton: 'swal-button-custom-editar',
+          icon: 'swal-icon-success-custom'
+        },
+        background: '#ffffff',
+        backdrop: `
+          rgba(44, 62, 80, 0.8)
+          left top
+          no-repeat
+        `
+      });
+    } else {
+      alert('El cliente ha sido eliminado permanentemente');
     }
-  }, [cliente, alConfirmar]);
+  };
+
+  const mostrarNotificacionError = () => async () => {
+    if (typeof window !== 'undefined' && window.Swal) {
+      awaitwindow.Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al eliminar el cliente permanentemente. Por favor, intenta nuevamente.',
+        icon: 'error',
+        confirmButtonText: 'Reintentar',
+        confirmButtonColor: '#dc2626',
+        customClass: {
+          popup: 'swal-popup-custom-editar',
+          title: 'swal-title-custom-editar',
+          content: 'swal-content-custom-editar',
+          confirmButton: 'swal-button-error-editar'
+        }
+      });
+    } else {
+      alert('Error al eliminar el cliente. Intenta nuevamente.');
+    }
+  };
+
+  const manejarConfirmar = useCallback(async () => {
+    if (!cliente || eliminando) return;
+
+    try {
+      setEliminando(true);
+
+      await alConfirmar(cliente);
+
+      await mostrarNotificacionExito();
+
+      setEliminando(false);
+      setTimeout(() => {
+        alConfirmar(null);
+      }, 500);
+
+    } catch (error) {
+      setEliminando(false);
+      await mostrarNotificacionError();
+    }
+  }, [cliente, alConfirmar, alCancelar]);
 
   const manejarCancelar = useCallback(() => {
-    alCancelar();
-  }, [alCancelar]);
+    if (!eliminando) {
+      alCancelar();
+    }
+  }, [eliminando, alCancelar]);
 
   if (!cliente) return null;
 
@@ -28,7 +102,8 @@ const ModalEliminarDefinitivo = ({ cliente, alConfirmar, alCancelar }) => {
           </div>
           <button
             className="modal-eliminar-boton-cerrar"
-            onClick={alCancelar}
+            onClick={manejarCancelar}
+            disabled={eliminando}
             aria-label="Cerrar"
           >
             <X size={20} />
@@ -78,7 +153,8 @@ const ModalEliminarDefinitivo = ({ cliente, alConfirmar, alCancelar }) => {
         <div className="modal-eliminar-footer">
           <button
             className="modal-eliminar-boton-secundario"
-            onClick={alCancelar}
+            onClick={manejarCancelar}
+            disabled={eliminando}
           >
             <X size={16} />
             Cancelar
@@ -86,9 +162,19 @@ const ModalEliminarDefinitivo = ({ cliente, alConfirmar, alCancelar }) => {
           <button
             className="modal-eliminar-boton-peligro"
             onClick={manejarConfirmar}
+            disabled={eliminando}
           >
-            <Trash2 size={16} />
-            Eliminar Permanentemente
+            {eliminando ? (
+              <>
+                <Trash2 size={16} className="modal-eliminar-icono-girando" />
+                Eliminando...
+              </>
+            ) : (
+              <>
+                <Trash2 size={16} />
+                Eliminar Permanentemente
+              </>
+            )}
           </button>
         </div>
       </div>

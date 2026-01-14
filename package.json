@@ -15,7 +15,7 @@
     "@fortawesome/react-fontawesome": "^3.0.2",
     "axios": "^1.12.2",
     "html2canvas": "^1.4.1",
-    "jspdf": "^3.0.3",
+    "jspdf": "^4.0.0",
     "lucide-react": "^0.542.0",
     "pdf-lib": "^1.17.1",
     "prop-types": "^15.8.1",
