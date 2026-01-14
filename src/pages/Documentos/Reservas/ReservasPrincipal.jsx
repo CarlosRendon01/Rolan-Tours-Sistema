@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import TablaReservas from "./Componentes/TablaReservas";
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
+import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
 import "./ReservasPrincipal.css";
 
 const ReservasPrincipal = () => {

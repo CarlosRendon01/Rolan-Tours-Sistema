@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TablaGuias from './Componentes/TablaGuias';
-import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
+import PrincipalComponente from '../../Generales/Componentes/PrincipalComponente';
 import './GuiasPrincipal.css';
 import ModalAgregarGuia from './ModalesGuias/ModalAgregarGuia';
 import ModalVerGuia from './ModalesGuias/ModalVerGuia';

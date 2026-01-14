@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import TablaUsuarios from "./TablaUsuarios";
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
+import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
 import ModalAgregarUsuario from "./Modales/ModalAgregarUsuario";
 import ModalVerUsuario from "./Modales/ModalVerUsuarios";
 import ModalEditarUsuario from "./Modales/ModalEditarUsuario";
@@ -13,7 +13,7 @@ const UsuariosPrincipal = () => {
   const [roles, setRoles] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);

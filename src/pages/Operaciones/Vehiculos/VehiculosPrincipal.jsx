@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
+import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
 import TablaVehiculos from './Componentes/TablaVehiculos';
 import ModalVehiculo from './ModalesVehiculos/ModalVehiculo';
 import ModalEditarVehiculo from './ModalesVehiculos/ModalEditarVehiculo';

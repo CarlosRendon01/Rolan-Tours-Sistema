@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import "./nuevaCotizacion.css";
+import "./NuevaCotizacion.css";
 import axios from "axios";
 
 const NuevaCotizacion = ({
@@ -811,45 +811,40 @@ const NuevaCotizacion = ({
             <div className="cotizacion-tabs">
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 1 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 1 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(1)}
               >
                 Información General
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 2 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 2 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(2)}
               >
                 Datos del Cliente
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 3 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 3 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(3)}
               >
                 Datos del Servicio
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 4 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 4 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(4)}
               >
                 Detalles del Viaje
               </button>
               <button
                 type="button"
-                className={`cotizacion-tab-button ${
-                  pasoActual === 5 ? "active" : ""
-                }`}
+                className={`cotizacion-tab-button ${pasoActual === 5 ? "active" : ""
+                  }`}
                 onClick={() => setPasoActual(5)}
               >
                 Extras y Total

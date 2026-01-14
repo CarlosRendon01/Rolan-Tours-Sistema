@@ -1,5 +1,5 @@
 import React from "react";
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente.jsx";
+import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente.jsx";
 import VehiculosPrincipal from "./VehiculosPrincipal.jsx";
 
 const OperadorPrincipal = () => {

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
+import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
 import TablaTransporte from "./Componentes/TablaTransporte";
 import ModalAgregarTransporte from "./ModalesTransporte/ModalAgregarTransporte";
 import ModalEditarTransporte from "./ModalesTransporte/ModalEditarTransporte";
 import ModalVerTransporte from "./ModalesTransporte/ModalVerTransporte";
-import { modalEliminarTransporte } from "./ModalesTransporte/Modaleliminartransporte";
+import { modalEliminarTransporte } from "../ModalesTransporte/ModalEliminarTransporte";
 import "./TransportePrincipal.css";
 
 const TransportePrincipal = () => {

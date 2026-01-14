@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import PrincipalComponente from "../Generales/componentes/PrincipalComponente";
+import PrincipalComponente from "../Generales/Componentes/PrincipalComponente";
 import BuscadorFecha from "./BuscadorFecha";
 import CalendarioViajes from "./CalendarioViajes";
 import "./Dashboard.css";

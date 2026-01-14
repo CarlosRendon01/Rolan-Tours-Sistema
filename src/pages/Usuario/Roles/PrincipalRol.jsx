@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import TablaRoles from "./TablaRoles";
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
+import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
 import ModalAgregarRol from "./Modales/ModalAgregarRol";
 import ModalVerRol from "./Modales/ModalVerRoles";
 import ModalEditarRol from "./Modales/ModalEditarRol";

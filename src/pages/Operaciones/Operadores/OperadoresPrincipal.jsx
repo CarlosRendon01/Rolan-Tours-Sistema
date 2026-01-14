@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TablaOperadores from './Componentes/TablaOperadores';
-import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
+import PrincipalComponente from '../../Generales/Componentes/PrincipalComponente';
 import './OperadoresPrincipal.css';
 import ModalAgregarOperador from './ModalesOperadores/ModalAgregarOperador';
 import ModalVerOperador from './ModalesOperadores/ModalVerOperador';

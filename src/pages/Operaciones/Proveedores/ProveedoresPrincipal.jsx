@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TablaProveedores from './Componentes/TablaProveedores';
-import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
+import PrincipalComponente from '../../Generales/Componentes/PrincipalComponente';
 import ModalAgregarProveedor from './ModalesProveedores/ModalAgregarProovedor';
 import ModalVerProveedor from './ModalesProveedores/ModalVerProveedor';
 import ModalEditarProveedor from './ModalesProveedores/ModalEditarProveedor';

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TablaCoordinadores from './Componentes/TablaCoordinadores';
-import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
+import PrincipalComponente from '../../Generales/Componentes/PrincipalComponente';
 import ModalAgregarCoordinador from './ModalesCoordinadores/ModalAgregarCoordinador';
 import ModalVerCoordinador from './ModalesCoordinadores/ModalVerCoordinador';
 import ModalEditarCoordinador from './ModalesCoordinadores/ModalEditarCoordinador';
-import { modalEliminarCoordinador } from './ModalesCoordinadores/Modaleliminarcoordinador';
+import { modalEliminarCoordinador } from '../ModalesCoordinadores/ModalEliminarCoordinador';
 import './CoordinadoresPrincipal.css';
 
 const CoordinadoresPrincipal = () => {

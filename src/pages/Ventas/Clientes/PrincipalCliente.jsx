@@ -1,4 +1,4 @@
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
+import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
 import TablaClientes from "./TablaClientes";
 import "./PrincipalCliente.css";
 

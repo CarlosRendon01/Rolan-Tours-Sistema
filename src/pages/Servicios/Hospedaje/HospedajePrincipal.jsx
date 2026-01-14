@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TablaHospedaje from './Componentes/TablaHospedaje';
-import PrincipalComponente from '../../Generales/componentes/PrincipalComponente';
+import PrincipalComponente from '../../Generales/Componentes/PrincipalComponente';
 import './HospedajePrincipal.css';
 import ModalAgregarHospedaje from './ModalesHospedaje/ModalAgregarHospedaje';
 import ModalVerHospedaje from './ModalesHospedaje/ModalVerHospedaje';

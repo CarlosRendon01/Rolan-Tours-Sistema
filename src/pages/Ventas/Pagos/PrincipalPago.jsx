@@ -1,5 +1,5 @@
 import React from "react";
-import PrincipalComponente from "../../Generales/componentes/PrincipalComponente";
+import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
 import TablaPagos from "./TablaPagos";
 import "./PrincipalPago.css";
 

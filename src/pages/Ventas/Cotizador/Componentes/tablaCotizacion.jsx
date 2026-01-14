@@ -23,7 +23,7 @@ import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import ModalCrearPagoDesdeCotizacion from "../Modales/ModalCrearPagoDesdeCotizacion";
 
-import "./tablaCotizacion.css";
+import "./TablaCotizacion.css";
 
 const TablaCotizacion = ({
   cotizaciones = [],

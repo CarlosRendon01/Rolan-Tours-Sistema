@@ -1,9 +1,9 @@
 import React, { useCallback, useState, useEffect } from "react";
 import axios from "axios";
-import NuevaCotizacion from "./Componentes/nuevaCotizacion";
-import TablaCotizacion from "./Componentes/tablaCotizacion";
+import NuevaCotizacion from "./Componentes/NuevaCotizacion";
+import TablaCotizacion from "./Componentes/TablaCotizacion";
 import "./Componentes/nuevaCotizacion.css";
-import "./cotizaciones.css";
+import "./Cotizaciones.css";
 
 const Cotizacion = () => {
   const [cotizaciones, setCotizaciones] = useState([]);
