@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import PrincipalComponente from "../Generales/Componentes/PrincipalComponente";
-import CardVehiculo from "../Componentes/CardVehiculo";
-import ModalMantenimiento from "./ModalRegistrarMantenimiento";
-import ModalRegistrarMantenimiento from "../ModalesMantenimiento/ModalRegistrarMantenimiento";
+import CardVehiculo from "./Componentes/CardVehiculo";
+import ModalMantenimiento from "./ModalesMantenimiento/ModalMantenimiento";
+import ModalRegistrarMantenimiento from "./ModalesMantenimiento/ModalRegistrarMantenimiento";
 import {
   Search,
   Filter,

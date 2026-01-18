@@ -5,7 +5,7 @@ import TablaTransporte from "./Componentes/TablaTransporte";
 import ModalAgregarTransporte from "./ModalesTransporte/ModalAgregarTransporte";
 import ModalEditarTransporte from "./ModalesTransporte/ModalEditarTransporte";
 import ModalVerTransporte from "./ModalesTransporte/ModalVerTransporte";
-import { modalEliminarTransporte } from "../ModalesTransporte/ModalEliminarTransporte";
+import { modalEliminarTransporte } from "./ModalesTransporte/ModalEliminarTransporte";
 import "./TransportePrincipal.css";
 
 const TransportePrincipal = () => {

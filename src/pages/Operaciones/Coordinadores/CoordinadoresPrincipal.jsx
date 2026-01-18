@@ -5,7 +5,7 @@ import PrincipalComponente from '../../Generales/Componentes/PrincipalComponente
 import ModalAgregarCoordinador from './ModalesCoordinadores/ModalAgregarCoordinador';
 import ModalVerCoordinador from './ModalesCoordinadores/ModalVerCoordinador';
 import ModalEditarCoordinador from './ModalesCoordinadores/ModalEditarCoordinador';
-import { modalEliminarCoordinador } from '../ModalesCoordinadores/ModalEliminarCoordinador';
+import { modalEliminarCoordinador } from './ModalesCoordinadores/ModalEliminarCoordinador';
 import './CoordinadoresPrincipal.css';
 
 const CoordinadoresPrincipal = () => {

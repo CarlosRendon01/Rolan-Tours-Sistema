@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import axios from "axios";
 import NuevaCotizacion from "./Componentes/NuevaCotizacion";
 import TablaCotizacion from "./Componentes/TablaCotizacion";
-import "./Componentes/nuevaCotizacion.css";
+import "./Componentes/NuevaCotizacion.css";
 import "./Cotizaciones.css";
 
 const Cotizacion = () => {

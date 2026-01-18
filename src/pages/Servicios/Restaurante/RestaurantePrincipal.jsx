@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
-import TablaRestaurante from "../Componentes/TablaRestaurante";
+import TablaRestaurante from "./Componentes/TablaRestaurante";
 import ModalAgregarRestaurante from "./ModalesRestaurante/ModalAgregarRestaurante";
 import ModalEditarRestaurante from "./ModalesRestaurante/ModalEditarRestaurante";
 import ModalVerRestaurante from "./ModalesRestaurante/ModalVerRestaurante";
