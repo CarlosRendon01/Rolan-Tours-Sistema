@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import "./ModalEditarOrden.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalEditarOrden = ({
   estaAbierto,
@@ -159,13 +160,13 @@ const ModalEditarOrden = ({
         const token = localStorage.getItem("token");
 
         const [coordinadores, guias] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/coordinadores", {
+          axios.get(`${API_CONFIG.BASE_URL}/coordinadores`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          axios.get("http://127.0.0.1:8000/api/guias", {
+          axios.get(`${API_CONFIG.BASE_URL}/guias`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",

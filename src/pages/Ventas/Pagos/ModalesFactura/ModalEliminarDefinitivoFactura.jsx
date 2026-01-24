@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { X, AlertTriangle, Trash2 } from "lucide-react";
 import "./ModalEliminarDefinitivoFactura.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalEliminarDefinitivoFactura = ({
   factura,
@@ -27,7 +28,7 @@ const ModalEliminarDefinitivoFactura = ({
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://127.0.0.1:8000/api/facturas/${factura.id}/force`,
+        `${API_CONFIG.BASE_URL}/facturas/${factura.id}/force`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

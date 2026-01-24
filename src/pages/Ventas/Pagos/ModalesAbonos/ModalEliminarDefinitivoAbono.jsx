@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { X, Trash2, AlertTriangle } from "lucide-react";
 import "./ModalEliminarDefinitivoAbono.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalEliminarDefinitivoAbono = ({
   estaAbierto,
@@ -24,7 +25,7 @@ const ModalEliminarDefinitivoAbono = ({
     setProcesando(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/abonos/${abono.id}/force`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/abonos/${abono.id}/force`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

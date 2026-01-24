@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useResponsive } from "../../../utils/useResponsive";
 import "./Sidebar.css";
+import { API_CONFIG } from "../../../config/api";
 
 const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const [elementoActivo, setElementoActivo] = useState("Principal");
@@ -173,7 +174,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       const token = localStorage.getItem('token');
       if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        await axios.post('http://127.0.0.1:8000/api/logout');
+        await axios.post(`${API_CONFIG.BASE_URL}/logout`);
       }
     } catch (error) {
     } finally {

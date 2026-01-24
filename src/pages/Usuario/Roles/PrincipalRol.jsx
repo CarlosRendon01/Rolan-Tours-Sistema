@@ -7,6 +7,7 @@ import ModalVerRol from "./Modales/ModalVerRoles";
 import ModalEditarRol from "./Modales/ModalEditarRol";
 import ModalEliminarRol from "./Modales/ModalEliminarRol";
 import "./PrincipalRol.css";
+import { API_CONFIG } from "../../../config/api";
 
 const RolesPrincipal = () => {
   const [roles, setRoles] = useState([]);
@@ -35,7 +36,7 @@ const RolesPrincipal = () => {
         throw new Error("No hay token de autenticaciÃ³n");
       }
 
-      const response = await axios.get("http://127.0.0.1:8000/api/roles", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/roles`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -65,7 +66,7 @@ const RolesPrincipal = () => {
   const recargarPermisos = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/permissions", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/permissions`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -141,7 +142,7 @@ const RolesPrincipal = () => {
       };
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/roles",
+        `${API_CONFIG.BASE_URL}/roles`,
         rolData,
         {
           headers: {
@@ -156,7 +157,7 @@ const RolesPrincipal = () => {
 
       if (permissionIds.length > 0) {
         await axios.post(
-          `http://127.0.0.1:8000/api/roles/${response.data.data.id}/permissions`,
+          `${API_CONFIG.BASE_URL}/roles/${response.data.data.id}/permissions`,
           { permission_ids: permissionIds },
           {
             headers: {
@@ -185,7 +186,7 @@ const RolesPrincipal = () => {
       };
 
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/roles/${rolActualizado.id}`,
+        `${API_CONFIG.BASE_URL}/roles/${rolActualizado.id}`,
         rolData,
         {
           headers: {
@@ -199,7 +200,7 @@ const RolesPrincipal = () => {
       const permissionIds = transformarPermisosAIds(rolActualizado.permisos);
 
       await axios.post(
-        `http://127.0.0.1:8000/api/roles/${rolActualizado.id}/permissions`,
+        `${API_CONFIG.BASE_URL}/roles/${rolActualizado.id}/permissions`,
         { permission_ids: permissionIds },
         {
           headers: {
@@ -227,7 +228,7 @@ const RolesPrincipal = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://127.0.0.1:8000/api/roles/${rol.id}`,
+        `${API_CONFIG.BASE_URL}/roles/${rol.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

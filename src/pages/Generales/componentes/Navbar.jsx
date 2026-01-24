@@ -6,7 +6,9 @@ import {
 import { useResponsive } from "../../../utils/useResponsive";
 import ModalNotificaciones from "./ModalNotificaciones";
 import ModalPerfil from "./ModalPerfil";
+import notificacionesService from "../../../services/notificacionesService";
 import "./Navbar.css";
+import {API_CONFIG} from "../../../config/api";
 
 const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) => {
   const [desplegableAbierto, setDesplegableAbierto] = useState(false);
@@ -29,40 +31,9 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
     return null;
   });
 
-  const [notificaciones, setNotificaciones] = useState([
-    {
-      id: 1,
-      tipo: 'mensaje',
-      titulo: 'Nuevo mensaje de cliente',
-      mensaje: 'Juan Pérez ha enviado una consulta sobre el tour de Oaxaca.',
-      fecha: new Date(Date.now() - 5 * 60 * 1000),
-      leida: false,
-      datos: {
-        'Cliente': 'Juan Pérez',
-        'Tour': 'Oaxaca Cultural'
-      }
-    },
-    {
-      id: 2,
-      tipo: 'alerta',
-      titulo: 'Reservación cancelada',
-      mensaje: 'La reservación #1234 ha sido cancelada por el cliente.',
-      fecha: new Date(Date.now() - 15 * 60 * 1000),
-      leida: false,
-      datos: {
-        'Reservación': '#1234',
-        'Motivo': 'Cambio de planes'
-      }
-    },
-    {
-      id: 3,
-      tipo: 'sistema',
-      titulo: 'Actualización del sistema',
-      mensaje: 'El sistema se actualizó correctamente a la versión 2.1.5.',
-      fecha: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      leida: true
-    }
-  ]);
+  // ⬇️ REEMPLAZAR EL ESTADO DE NOTIFICACIONES
+  const [notificaciones, setNotificaciones] = useState([]);
+  const [cargandoNotificaciones, setCargandoNotificaciones] = useState(false);
 
   const refDesplegable = useRef(null);
   const refAvatarImg = useRef(null);
@@ -106,6 +77,28 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
     return notificaciones.filter(notif => !notif.leida).length;
   }, [notificaciones]);
 
+  // ⬇️ FUNCIÓN PARA CARGAR NOTIFICACIONES DESDE EL BACKEND
+  const cargarNotificaciones = useCallback(async () => {
+    try {
+      setCargandoNotificaciones(true);
+      const data = await notificacionesService.obtenerNotificaciones();
+      setNotificaciones(data.notificaciones || []);
+    } catch (error) {
+      console.error('Error al cargar notificaciones:', error);
+    } finally {
+      setCargandoNotificaciones(false);
+    }
+  }, []);
+
+  // ⬇️ CARGAR NOTIFICACIONES AL MONTAR EL COMPONENTE
+  useEffect(() => {
+    cargarNotificaciones();
+
+    // Auto-refresh cada 30 segundos
+    const intervalo = setInterval(cargarNotificaciones, 30000);
+    return () => clearInterval(intervalo);
+  }, [cargarNotificaciones]);
+
   const alternarSidebar = useCallback(() => {
     if (setSidebarAbierto) {
       setSidebarAbierto(!sidebarAbierto);
@@ -119,7 +112,7 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
       const token = localStorage.getItem('token');
       if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        await axios.post('http://127.0.0.1:8000/api/logout');
+        await axios.post(`${API_CONFIG.BASE_URL}/logout`);
       }
     } catch (error) {
     } finally {
@@ -139,7 +132,7 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/users/${usuario.id}`,
+        `${API_CONFIG.BASE_URL}/users/${usuario.id}`,
         nuevosDatos
       );
 
@@ -164,27 +157,42 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
     setModalNotificacionesAbierto(false);
   }, []);
 
-  const marcarComoLeida = useCallback((id) => {
-    setNotificaciones(prev =>
-      prev.map(notif =>
-        notif.id === id ? { ...notif, leida: true } : notif
-      )
-    );
-  }, []);
+  // ⬇️ ACTUALIZAR FUNCIONES PARA USAR EL SERVICIO
+  const marcarComoLeida = useCallback(async (id) => {
+    try {
+      await notificacionesService.marcarComoLeida(id);
+      await cargarNotificaciones(); // Recargar notificaciones
+    } catch (error) {
+      console.error('Error al marcar como leída:', error);
+    }
+  }, [cargarNotificaciones]);
 
-  const eliminarNotificacion = useCallback((id) => {
-    setNotificaciones(prev => prev.filter(notif => notif.id !== id));
-  }, []);
+  const eliminarNotificacion = useCallback(async (id) => {
+    try {
+      await notificacionesService.eliminarNotificacion(id);
+      await cargarNotificaciones(); // Recargar notificaciones
+    } catch (error) {
+      console.error('Error al eliminar notificación:', error);
+    }
+  }, [cargarNotificaciones]);
 
-  const marcarTodasComoLeidas = useCallback(() => {
-    setNotificaciones(prev =>
-      prev.map(notif => ({ ...notif, leida: true }))
-    );
-  }, []);
+  const marcarTodasComoLeidas = useCallback(async () => {
+    try {
+      await notificacionesService.marcarTodasComoLeidas();
+      await cargarNotificaciones(); // Recargar notificaciones
+    } catch (error) {
+      console.error('Error al marcar todas como leídas:', error);
+    }
+  }, [cargarNotificaciones]);
 
-  const eliminarTodas = useCallback(() => {
-    setNotificaciones([]);
-  }, []);
+  const eliminarTodas = useCallback(async () => {
+    try {
+      await notificacionesService.eliminarTodas();
+      await cargarNotificaciones(); // Recargar notificaciones
+    } catch (error) {
+      console.error('Error al eliminar todas:', error);
+    }
+  }, [cargarNotificaciones]);
 
   const abrirModalPerfil = useCallback(() => {
     setModalPerfilAbierto(true);
@@ -302,7 +310,6 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
                 <div className="barra-roja"></div>
               </div>
             )}
-
 
             {logoRolanCargado ? (
               <img

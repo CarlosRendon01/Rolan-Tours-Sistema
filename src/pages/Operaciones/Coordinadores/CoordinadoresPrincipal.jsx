@@ -7,6 +7,7 @@ import ModalVerCoordinador from './ModalesCoordinadores/ModalVerCoordinador';
 import ModalEditarCoordinador from './ModalesCoordinadores/ModalEditarCoordinador';
 import { modalEliminarCoordinador } from './ModalesCoordinadores/ModalEliminarCoordinador';
 import './CoordinadoresPrincipal.css';
+import { API_CONFIG } from '../../../config/api';
 
 const CoordinadoresPrincipal = () => {
     const [coordinadores, setCoordinadores] = useState([]);
@@ -33,7 +34,7 @@ const CoordinadoresPrincipal = () => {
                 throw new Error("No hay token de autenticación");
             }
 
-            const response = await axios.get("http://127.0.0.1:8000/api/coordinadores", {
+            const response = await axios.get(`${API_CONFIG.BASE_URL}/coordinadores`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -114,7 +115,7 @@ const CoordinadoresPrincipal = () => {
             };
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/coordinadores",
+                `${API_CONFIG.BASE_URL}/coordinadores`,
                 coordinadorData,
                 {
                     headers: {
@@ -158,7 +159,7 @@ const CoordinadoresPrincipal = () => {
             };
 
             const response = await axios.put(
-                `http://127.0.0.1:8000/api/coordinadores/${coordinadorActualizado.id}`,
+                `${API_CONFIG.BASE_URL}/coordinadores/${coordinadorActualizado.id}`,
                 coordinadorData,
                 {
                     headers: {

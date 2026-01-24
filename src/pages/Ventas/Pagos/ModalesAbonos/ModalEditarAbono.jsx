@@ -14,6 +14,7 @@ import {
   Info,
 } from "lucide-react";
 import "./ModalEditarAbono.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const TIPOS_SERVICIO = [
   "Tour Arqueológico",
@@ -343,7 +344,7 @@ const ModalEditarAbono = ({
       };
 
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/pagos/${pagoSeleccionado.id}`,
+        `${API_CONFIG.BASE_URL}/pagos/${pagoSeleccionado.id}`,
         datosActualizados,
         {
           headers: {
@@ -490,11 +491,10 @@ const ModalEditarAbono = ({
                   name="nombreCliente"
                   value={formData.nombreCliente}
                   onChange={manejarCambio}
-                  className={`modal-editar-abono-input modal-editar-abono-input-sin-icono ${
-                    errores.nombreCliente
-                      ? "modal-editar-abono-input-error"
-                      : ""
-                  }`}
+                  className={`modal-editar-abono-input modal-editar-abono-input-sin-icono ${errores.nombreCliente
+                    ? "modal-editar-abono-input-error"
+                    : ""
+                    }`}
                   placeholder="Juan Pérez García"
                   disabled={guardando}
                   autoComplete="name"
@@ -521,9 +521,8 @@ const ModalEditarAbono = ({
                   name="emailCliente"
                   value={formData.emailCliente}
                   onChange={manejarCambio}
-                  className={`modal-editar-abono-input modal-editar-abono-input-sin-icono ${
-                    errores.emailCliente ? "modal-editar-abono-input-error" : ""
-                  }`}
+                  className={`modal-editar-abono-input modal-editar-abono-input-sin-icono ${errores.emailCliente ? "modal-editar-abono-input-error" : ""
+                    }`}
                   placeholder="correo@ejemplo.com"
                   disabled={guardando}
                   autoComplete="email"
@@ -550,11 +549,10 @@ const ModalEditarAbono = ({
                   name="telefonoCliente"
                   value={formData.telefonoCliente}
                   onChange={manejarCambio}
-                  className={`modal-editar-abono-input modal-editar-abono-input-sin-icono ${
-                    errores.telefonoCliente
-                      ? "modal-editar-abono-input-error"
-                      : ""
-                  }`}
+                  className={`modal-editar-abono-input modal-editar-abono-input-sin-icono ${errores.telefonoCliente
+                    ? "modal-editar-abono-input-error"
+                    : ""
+                    }`}
                   placeholder="951-123-4567"
                   disabled={guardando}
                   autoComplete="tel"
@@ -592,9 +590,8 @@ const ModalEditarAbono = ({
                   name="tipoServicio"
                   value={formData.tipoServicio}
                   onChange={manejarCambio}
-                  className={`modal-editar-abono-select modal-editar-abono-select-sin-icono ${
-                    errores.tipoServicio ? "modal-editar-abono-input-error" : ""
-                  }`}
+                  className={`modal-editar-abono-select modal-editar-abono-select-sin-icono ${errores.tipoServicio ? "modal-editar-abono-input-error" : ""
+                    }`}
                   disabled={guardando}
                 >
                   <option value="">Seleccionar tipo...</option>
@@ -628,9 +625,8 @@ const ModalEditarAbono = ({
                     name="fechaTour"
                     value={formData.fechaTour}
                     onChange={manejarCambio}
-                    className={`modal-editar-abono-input-fecha ${
-                      errores.fechaTour ? "modal-editar-abono-input-error" : ""
-                    }`}
+                    className={`modal-editar-abono-input-fecha ${errores.fechaTour ? "modal-editar-abono-input-error" : ""
+                      }`}
                     disabled={guardando}
                     min={new Date().toISOString().split("T")[0]}
                   />
@@ -655,11 +651,10 @@ const ModalEditarAbono = ({
                   name="descripcionServicio"
                   value={formData.descripcionServicio}
                   onChange={manejarCambio}
-                  className={`modal-editar-abono-textarea ${
-                    errores.descripcionServicio
-                      ? "modal-editar-abono-input-error"
-                      : ""
-                  }`}
+                  className={`modal-editar-abono-textarea ${errores.descripcionServicio
+                    ? "modal-editar-abono-input-error"
+                    : ""
+                    }`}
                   placeholder="Describe detalladamente el servicio contratado..."
                   rows={3}
                   disabled={guardando}
@@ -703,9 +698,8 @@ const ModalEditarAbono = ({
                     name="montoTotal"
                     value={formData.montoTotal}
                     onChange={manejarCambio}
-                    className={`modal-editar-abono-input-fecha ${
-                      errores.montoTotal ? "modal-editar-abono-input-error" : ""
-                    }`}
+                    className={`modal-editar-abono-input-fecha ${errores.montoTotal ? "modal-editar-abono-input-error" : ""
+                      }`}
                     placeholder="0.00"
                     step="0.01"
                     min="0"
@@ -735,11 +729,10 @@ const ModalEditarAbono = ({
                     name="numeroAbonos"
                     value={formData.numeroAbonos}
                     onChange={manejarCambio}
-                    className={`modal-editar-abono-input-fecha ${
-                      errores.numeroAbonos
-                        ? "modal-editar-abono-input-error"
-                        : ""
-                    }`}
+                    className={`modal-editar-abono-input-fecha ${errores.numeroAbonos
+                      ? "modal-editar-abono-input-error"
+                      : ""
+                      }`}
                     placeholder="0"
                     min="1"
                     max="24"
@@ -772,11 +765,10 @@ const ModalEditarAbono = ({
                     name="abonoMinimo"
                     value={formData.abonoMinimo}
                     onChange={manejarCambio}
-                    className={`modal-editar-abono-input-fecha ${
-                      errores.abonoMinimo
-                        ? "modal-editar-abono-input-error"
-                        : ""
-                    }`}
+                    className={`modal-editar-abono-input-fecha ${errores.abonoMinimo
+                      ? "modal-editar-abono-input-error"
+                      : ""
+                      }`}
                     placeholder="0.00"
                     step="0.01"
                     min="0"
@@ -832,11 +824,10 @@ const ModalEditarAbono = ({
                     name="fechaPrimerAbono"
                     value={formData.fechaPrimerAbono}
                     onChange={manejarCambio}
-                    className={`modal-editar-abono-input-fecha ${
-                      errores.fechaPrimerAbono
-                        ? "modal-editar-abono-input-error"
-                        : ""
-                    }`}
+                    className={`modal-editar-abono-input-fecha ${errores.fechaPrimerAbono
+                      ? "modal-editar-abono-input-error"
+                      : ""
+                      }`}
                     disabled={guardando}
                     min={new Date().toISOString().split("T")[0]}
                   />
@@ -862,11 +853,10 @@ const ModalEditarAbono = ({
                   name="numeroContrato"
                   value={formData.numeroContrato}
                   onChange={manejarCambio}
-                  className={`modal-editar-abono-input modal-editar-abono-input-sin-icono ${
-                    errores.numeroContrato
-                      ? "modal-editar-abono-input-error"
-                      : ""
-                  }`}
+                  className={`modal-editar-abono-input modal-editar-abono-input-sin-icono ${errores.numeroContrato
+                    ? "modal-editar-abono-input-error"
+                    : ""
+                    }`}
                   placeholder="CONT-001"
                   disabled={guardando}
                 />

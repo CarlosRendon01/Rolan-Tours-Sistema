@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import "../../Pagos/ModalesAbonos/ModalAgregarAbono.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
       const token = localStorage.getItem("token");
 
       const resOrden = await axios.get(
-        "http://127.0.0.1:8000/api/ordenes-servicio/siguiente-folio",
+        `${API_CONFIG.BASE_URL}/ordenes-servicio/siguiente-folio`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -65,7 +66,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
       );
 
       const resReserva = await axios.get(
-        "http://127.0.0.1:8000/api/reservas/siguiente-folio",
+        `${API_CONFIG.BASE_URL}/reservas/siguiente-folio`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -101,7 +102,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
         const [conductores, vehiculos, coordinadores, guias, ordenes] =
           await Promise.all([
             axios.get(
-              "http://127.0.0.1:8000/api/ordenes-servicio/conductores/disponibles",
+              `${API_CONFIG.BASE_URL}/ordenes-servicio/conductores/disponibles`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -110,7 +111,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
               }
             ),
             axios.get(
-              "http://127.0.0.1:8000/api/ordenes-servicio/vehiculos/disponibles",
+              `${API_CONFIG.BASE_URL}/ordenes-servicio/vehiculos/disponibles`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -118,19 +119,19 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                 },
               }
             ),
-            axios.get("http://127.0.0.1:8000/api/coordinadores", {
+            axios.get(`${API_CONFIG.BASE_URL}/coordinadores`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: "application/json",
               },
             }),
-            axios.get("http://127.0.0.1:8000/api/guias", {
+            axios.get(`${API_CONFIG.BASE_URL}/guias`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: "application/json",
               },
             }),
-            axios.get("http://127.0.0.1:8000/api/ordenes-servicio", {
+            axios.get(`${API_CONFIG.BASE_URL}/ordenes-servicio`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: "application/json",
@@ -263,7 +264,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/pagos/${pago.id}/crear-todos`,
+        `${API_CONFIG.BASE_URL}/pagos/${pago.id}/crear-todos`,
         formulario,
         {
           headers: {
@@ -279,22 +280,19 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
         title: "¡Todo Creado Exitosamente!",
         html: `
                     <div class="resumen-creacion">
-                        <p><strong>✅ Orden de Servicio:</strong> #${
-                          formulario.folio_orden
-                        }</p>
+                        <p><strong>✅ Orden de Servicio:</strong> #${formulario.folio_orden
+          }</p>
                         <p><strong>✅ Contrato:</strong> Creado</p>
-                        <p><strong>✅ Reserva:</strong> #${
-                          formulario.folio_reserva
-                        }</p>
+                        <p><strong>✅ Reserva:</strong> #${formulario.folio_reserva
+          }</p>
                         <hr>
-                        <p><strong>Cliente:</strong> ${
-                          pago.cotizacion?.cliente?.nombre || "N/A"
-                        }</p>
+                        <p><strong>Cliente:</strong> ${pago.cotizacion?.cliente?.nombre || "N/A"
+          }</p>
                         <p><strong>Total:</strong> $${parseFloat(
-                          pago.planPago?.montoTotal || 0
-                        ).toLocaleString("es-MX", {
-                          minimumFractionDigits: 2,
-                        })}</p>
+            pago.planPago?.montoTotal || 0
+          ).toLocaleString("es-MX", {
+            minimumFractionDigits: 2,
+          })}</p>
                     </div>
                 `,
         icon: "success",
@@ -364,9 +362,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
             <button
               key={seccion}
               onClick={() => setSeccionActiva(seccion)}
-              className={`tab-button ${
-                seccionActiva === seccion ? "tab-button-active" : ""
-              }`}
+              className={`tab-button ${seccionActiva === seccion ? "tab-button-active" : ""
+                }`}
             >
               {seccion === "orden" && (
                 <FileText size={16} className="tab-icon" />
@@ -393,9 +390,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                   <input
                     type="text"
                     value={formulario.folio_orden}
-                    className={`modal-abono-input input-disabled ${
-                      errores.folio_orden ? "error" : ""
-                    }`}
+                    className={`modal-abono-input input-disabled ${errores.folio_orden ? "error" : ""
+                      }`}
                     disabled={true}
                   />
                   {errores.folio_orden && (
@@ -413,9 +409,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                     onChange={(e) =>
                       manejarCambio("fecha_orden_servicio", e.target.value)
                     }
-                    className={`modal-abono-input ${
-                      errores.fecha_orden_servicio ? "error" : ""
-                    }`}
+                    className={`modal-abono-input ${errores.fecha_orden_servicio ? "error" : ""
+                      }`}
                     disabled={guardando}
                   />
                   {errores.fecha_orden_servicio && (
@@ -525,9 +520,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                   type="text"
                   value={formulario.domicilio}
                   onChange={(e) => manejarCambio("domicilio", e.target.value)}
-                  className={`modal-abono-input ${
-                    errores.domicilio ? "error" : ""
-                  }`}
+                  className={`modal-abono-input ${errores.domicilio ? "error" : ""
+                    }`}
                   disabled={guardando}
                   placeholder="Calle, número, colonia..."
                 />
@@ -583,9 +577,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                   onChange={(e) =>
                     manejarCambio("n_unidades_contratadas", e.target.value)
                   }
-                  className={`modal-abono-input ${
-                    errores.n_unidades_contratadas ? "error" : ""
-                  }`}
+                  className={`modal-abono-input ${errores.n_unidades_contratadas ? "error" : ""
+                    }`}
                   disabled={guardando}
                   min="1"
                 />
@@ -608,9 +601,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                   <input
                     type="text"
                     value={formulario.folio_reserva}
-                    className={`modal-abono-input input-disabled ${
-                      errores.folio_reserva ? "error" : ""
-                    }`}
+                    className={`modal-abono-input input-disabled ${errores.folio_reserva ? "error" : ""
+                      }`}
                     disabled={true}
                   />
                   {errores.folio_reserva && (
@@ -628,9 +620,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                     onChange={(e) =>
                       manejarCambio("fecha_reserva", e.target.value)
                     }
-                    className={`modal-abono-input ${
-                      errores.fecha_reserva ? "error" : ""
-                    }`}
+                    className={`modal-abono-input ${errores.fecha_reserva ? "error" : ""
+                      }`}
                     disabled={guardando}
                   />
                   {errores.fecha_reserva && (
@@ -650,9 +641,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                     onChange={(e) =>
                       manejarCambio("num_habitantes", e.target.value)
                     }
-                    className={`modal-abono-input ${
-                      errores.num_habitantes ? "error" : ""
-                    }`}
+                    className={`modal-abono-input ${errores.num_habitantes ? "error" : ""
+                      }`}
                     disabled={guardando}
                     min="1"
                   />
@@ -687,9 +677,8 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
                   value={formulario.servicio}
                   onChange={(e) => manejarCambio("servicio", e.target.value)}
                   rows={3}
-                  className={`modal-abono-textarea ${
-                    errores.servicio ? "error" : ""
-                  }`}
+                  className={`modal-abono-textarea ${errores.servicio ? "error" : ""
+                    }`}
                   disabled={guardando}
                   placeholder="Describe el servicio..."
                 />

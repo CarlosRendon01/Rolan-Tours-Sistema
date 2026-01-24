@@ -7,6 +7,7 @@ import ModalVerProveedor from './ModalesProveedores/ModalVerProveedor';
 import ModalEditarProveedor from './ModalesProveedores/ModalEditarProveedor';
 import { modalEliminarProveedor } from './ModalesProveedores/ModalEliminarProveedor';
 import './ProveedoresPrincipal.css';
+import { API_CONFIG } from '../../../config/api';
 
 const ProveedoresPrincipal = () => {
     const [proveedores, setProveedores] = useState([]);
@@ -33,7 +34,7 @@ const ProveedoresPrincipal = () => {
                 throw new Error("No hay token de autenticación");
             }
 
-            const response = await axios.get("http://127.0.0.1:8000/api/proveedores", {
+            const response = await axios.get(`${API_CONFIG.BASE_URL}/proveedores`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -109,7 +110,7 @@ const ProveedoresPrincipal = () => {
 
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/proveedores",
+                `${API_CONFIG.BASE_URL}/proveedores`,
                 proveedorData,
                 {
                     headers: {
@@ -149,7 +150,7 @@ const ProveedoresPrincipal = () => {
 
 
             const response = await axios.put(
-                `http://127.0.0.1:8000/api/proveedores/${proveedorActualizado.id}`,
+                `${API_CONFIG.BASE_URL}/proveedores/${proveedorActualizado.id}`,
                 proveedorData,
                 {
                     headers: {

@@ -7,6 +7,7 @@ import ModalAgregarGuia from './ModalesGuias/ModalAgregarGuia';
 import ModalVerGuia from './ModalesGuias/ModalVerGuia';
 import ModalEditarGuia from './ModalesGuias/ModalEditarGuia';
 import { modalEliminarGuia } from './ModalesGuias/ModalEliminarGuia';
+import { API_CONFIG } from "../../../config/api";
 
 const GuiasPrincipal = () => {
     const [guias, setGuias] = useState([]);
@@ -33,7 +34,7 @@ const GuiasPrincipal = () => {
                 throw new Error("No hay token de autenticación");
             }
 
-            const response = await axios.get("http://127.0.0.1:8000/api/guias", {
+            const response = await axios.get(`${API_CONFIG.BASE_URL}/guias`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -115,7 +116,7 @@ const GuiasPrincipal = () => {
             };
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/guias",
+                `${API_CONFIG.BASE_URL}/guias`,
                 guiaData,
                 {
                     headers: {
@@ -160,7 +161,7 @@ const GuiasPrincipal = () => {
             };
 
             const response = await axios.put(
-                `http://127.0.0.1:8000/api/guias/${guiaActualizado.id}`,
+                `${API_CONFIG.BASE_URL}/guias/${guiaActualizado.id}`,
                 guiaData,
                 {
                     headers: {

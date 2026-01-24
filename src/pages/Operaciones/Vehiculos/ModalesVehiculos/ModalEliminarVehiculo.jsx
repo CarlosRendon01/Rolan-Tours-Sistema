@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import './ModalEliminarVehiculo.css';
+import { API_CONFIG } from '../../../../config/api';
 
 export const modalEliminarVehiculo = async (vehiculo, onConfirmar) => {
   if (!vehiculo?.nombre) {
@@ -47,7 +48,7 @@ export const modalEliminarVehiculo = async (vehiculo, onConfirmar) => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/vehiculos/${vehiculo.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/vehiculos/${vehiculo.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

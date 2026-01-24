@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { X, RotateCcw, CheckCircle } from "lucide-react";
 import "./ModalReactivarPago.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalReactivarPago = ({ estaAbierto, alCerrar, pago, alReactivar }) => {
   const [cargando, setCargando] = useState(false);
@@ -42,7 +43,7 @@ const ModalReactivarPago = ({ estaAbierto, alCerrar, pago, alReactivar }) => {
 
       const token = localStorage.getItem("token");
       await axios.post(
-        `http://127.0.0.1:8000/api/pagos/${pago.id}/restore`,
+        `${API_CONFIG.BASE_URL}/pagos/${pago.id}/restore`,
         {},
         {
           headers: {

@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import './ModalEliminarProveedor.css';
+import { API_CONFIG } from "../../../../config/api";
 
 export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
   if (!proveedor?.nombre_razon_social) {
@@ -77,7 +78,7 @@ export const modalEliminarProveedor = async (proveedor, onConfirmar) => {
     modalCargando('Eliminando proveedor...');
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/proveedores/${proveedor.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/proveedores/${proveedor.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

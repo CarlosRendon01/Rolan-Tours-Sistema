@@ -20,6 +20,7 @@ import ModalRestaurarOrden from "./Modales/ModalRestaurarOrden";
 import ModalEliminarDefinitivo from "./Modales/ModalEliminarDefinitivo";
 import ModalVisualizarPDF from "./Modales/ModalVisualizarPDF";
 import "./TablaOrdenes.css";
+import { API_CONFIG } from "../../../config/api";
 
 const TablaOrdenes = () => {
   const [rolUsuario, setRolUsuario] = useState(
@@ -52,14 +53,14 @@ const TablaOrdenes = () => {
       setCargando(true);
       const token = localStorage.getItem("token");
       const [ordenesRes, vehiculosRes, conductoresRes] = await Promise.all([
-        axios.get("http://127.0.0.1:8000/api/ordenes-servicio", {
+        axios.get(`${API_CONFIG.BASE_URL}/ordenes-servicio`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
         }),
         axios.get(
-          "http://127.0.0.1:8000/api/ordenes-servicio/vehiculos/disponibles",
+          `${API_CONFIG.BASE_URL}/ordenes-servicio/vehiculos/disponibles`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -68,7 +69,7 @@ const TablaOrdenes = () => {
           }
         ),
         axios.get(
-          "http://127.0.0.1:8000/api/ordenes-servicio/conductores/disponibles",
+          `${API_CONFIG.BASE_URL}/ordenes-servicio/conductores/disponibles`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -244,7 +245,7 @@ const TablaOrdenes = () => {
       };
 
       await axios.put(
-        `http://127.0.0.1:8000/api/ordenes-servicio/${datosActualizados.id}`,
+        `${API_CONFIG.BASE_URL}/ordenes-servicio/${datosActualizados.id}`,
         datosOrden,
         {
           headers: {
@@ -273,7 +274,7 @@ const TablaOrdenes = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}`,
+        `${API_CONFIG.BASE_URL}/ordenes-servicio/${orden.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -298,7 +299,7 @@ const TablaOrdenes = () => {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}/restore`,
+        `${API_CONFIG.BASE_URL}/ordenes-servicio/${orden.id}/restore`,
         {},
         {
           headers: {
@@ -320,7 +321,7 @@ const TablaOrdenes = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://127.0.0.1:8000/api/ordenes-servicio/${orden.id}/force`,
+        `${API_CONFIG.BASE_URL}/ordenes-servicio/${orden.id}/force`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -776,9 +777,8 @@ const TablaOrdenes = () => {
               {ordenesPaginados.map((orden, index) => (
                 <tr
                   key={orden.id}
-                  className={`Ordenes-fila-orden ${
-                    !orden.activo ? "Ordenes-fila-inactiva" : ""
-                  }`}
+                  className={`Ordenes-fila-orden ${!orden.activo ? "Ordenes-fila-inactiva" : ""
+                    }`}
                 >
                   <td data-label="Folio" className="Ordenes-columna-fecha">
                     <span className="Ordenes-badge-lead">{orden.folio}</span>
@@ -908,9 +908,8 @@ const TablaOrdenes = () => {
                   (numero) => (
                     <button
                       key={numero}
-                      className={`Ordenes-numero-pagina ${
-                        paginaActual === numero ? "Ordenes-activo" : ""
-                      }`}
+                      className={`Ordenes-numero-pagina ${paginaActual === numero ? "Ordenes-activo" : ""
+                        }`}
                       onClick={() => cambiarPagina(numero)}
                     >
                       {numero}

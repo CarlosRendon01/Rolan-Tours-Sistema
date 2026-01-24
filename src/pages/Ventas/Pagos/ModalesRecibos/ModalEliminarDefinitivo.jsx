@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { X, Trash2, AlertTriangle } from "lucide-react";
 import "./ModalEliminarDefinitivo.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
   const [cargando, setCargando] = useState(false);
@@ -22,7 +23,7 @@ const ModalEliminarDefinitivo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://127.0.0.1:8000/api/abonos/${recibo.id}/force`,
+        `${API_CONFIG.BASE_URL}/abonos/${recibo.id}/force`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

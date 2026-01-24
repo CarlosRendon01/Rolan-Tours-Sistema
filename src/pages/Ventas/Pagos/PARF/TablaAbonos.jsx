@@ -22,6 +22,7 @@ import ModalVerAbono from "../ModalesAbonos/ModalVerAbono";
 import ModalEditarAbono from "../ModalesAbonos/ModalEditarAbono";
 import ModalReciboAbono from "../ModalesAbonos/ModalReciboAbono";
 import ModalFacturaAbono from "../ModalesAbonos/ModalFacturaAbono";
+import { API_CONFIG } from "../../../../config/api";
 
 const estadoInicial = {
   paginaActual: 1,
@@ -49,7 +50,7 @@ const reductor = (estado, accion) => {
 };
 
 const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
-  const API_URL = "http://127.0.0.1:8000/api/pagos";
+  const API_URL = `${API_CONFIG.BASE_URL}/pagos`;
   const [estado, despachar] = useReducer(reductor, estadoInicial);
   const {
     paginaActual,
@@ -107,10 +108,10 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
       rolUsuario === "vendedor"
         ? datosAbonos.filter((a) => a.activo)
         : datosAbonos.filter((a) => {
-            if (filtroVisibilidad === "activos") return a.activo;
-            if (filtroVisibilidad === "eliminados") return !a.activo;
-            return true;
-          });
+          if (filtroVisibilidad === "activos") return a.activo;
+          if (filtroVisibilidad === "eliminados") return !a.activo;
+          return true;
+        });
 
     const totalClientes = abonosVisibles.length;
     const proximosVencer = abonosVisibles.filter((abono) => {
@@ -484,9 +485,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                   return (
                     <tr
                       key={pago.id}
-                      className={`abonos-fila-pago ${
-                        !pago.activo ? "eliminado" : ""
-                      }`}
+                      className={`abonos-fila-pago ${!pago.activo ? "eliminado" : ""
+                        }`}
                       style={{ animationDelay: `${indice * 0.05}s` }}
                     >
                       <td data-label="ID" className="abonos-columna-id">
@@ -513,9 +513,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                           <div className="abonos-barra-progreso-wrapper">
                             <div className="abonos-barra-progreso">
                               <div
-                                className={`abonos-barra-progreso-fill ${
-                                  progreso === 100 ? "completo" : "proceso"
-                                }`}
+                                className={`abonos-barra-progreso-fill ${progreso === 100 ? "completo" : "proceso"
+                                  }`}
                                 style={{ width: `${progreso}%` }}
                               ></div>
                             </div>
@@ -573,9 +572,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                       {rolUsuario === "admin" && (
                         <td data-label="Visible">
                           <span
-                            className={`abonos-badge-visibilidad ${
-                              pago.activo ? "visible" : "oculto"
-                            }`}
+                            className={`abonos-badge-visibilidad ${pago.activo ? "visible" : "oculto"
+                              }`}
                           >
                             {pago.activo ? "✓ Sí" : "✗ No"}
                           </span>
@@ -692,9 +690,8 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                   ) : (
                     <button
                       key={numero}
-                      className={`abonos-numero-pagina ${
-                        paginaActual === numero ? "abonos-activo" : ""
-                      }`}
+                      className={`abonos-numero-pagina ${paginaActual === numero ? "abonos-activo" : ""
+                        }`}
                       onClick={() => cambiarPagina(numero)}
                       disabled={cargando}
                     >

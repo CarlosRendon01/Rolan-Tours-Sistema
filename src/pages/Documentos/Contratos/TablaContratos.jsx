@@ -21,6 +21,7 @@ import ModalRestaurarContrato from "./Modales/ModalRestaurarContrato";
 import ModalEliminarDefinitivo from "./Modales/ModalEliminarDefinitivo";
 import ModalVisualizarPDF from "../Contratos/Modales/ModalVisualizarPDF";
 import "./TablaContratos.css";
+import { API_CONFIG } from "../../../config/api";
 
 const TablaContratos = () => {
   const [rolUsuario, setRolUsuario] = useState(
@@ -52,7 +53,7 @@ const TablaContratos = () => {
     try {
       setCargando(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/contratos", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/contratos`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -675,7 +676,7 @@ const TablaContratos = () => {
       };
 
       await axios.put(
-        `http://127.0.0.1:8000/api/contratos/${datosActualizados.id}`,
+        `${API_CONFIG.BASE_URL}/contratos/${datosActualizados.id}`,
         datosContrato,
         {
           headers: {
@@ -704,7 +705,7 @@ const TablaContratos = () => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(`http://127.0.0.1:8000/api/contratos/${contrato.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/contratos/${contrato.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -727,7 +728,7 @@ const TablaContratos = () => {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        `http://127.0.0.1:8000/api/contratos/${contrato.id}/restore`,
+        `${API_CONFIG.BASE_URL}/contratos/${contrato.id}/restore`,
         {},
         {
           headers: {
@@ -750,7 +751,7 @@ const TablaContratos = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://127.0.0.1:8000/api/contratos/${contrato.id}/force`,
+        `${API_CONFIG.BASE_URL}/contratos/${contrato.id}/force`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -1092,9 +1093,8 @@ const TablaContratos = () => {
                   (numero) => (
                     <button
                       key={numero}
-                      className={`Contratos-numero-pagina ${
-                        paginaActual === numero ? "Contratos-activo" : ""
-                      }`}
+                      className={`Contratos-numero-pagina ${paginaActual === numero ? "Contratos-activo" : ""
+                        }`}
                       onClick={() => cambiarPagina(numero)}
                     >
                       {numero}

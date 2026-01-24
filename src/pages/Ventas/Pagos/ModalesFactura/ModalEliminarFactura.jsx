@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import axios from "axios";
 import "./ModalEliminarFactura.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const formatearMoneda = (cantidad) => {
   return new Intl.NumberFormat("es-MX", {
@@ -49,24 +50,21 @@ export const modalEliminarFactura = async (factura, onConfirmar) => {
       <div class="eliminar-factura-contenido">
         <p class="eliminar-factura-texto">¿Estás seguro de eliminar la factura:</p>
         <p class="eliminar-factura-numero">${factura.numeroFactura}</p>
-        ${
-          factura.serie && factura.folio
-            ? `
+        ${factura.serie && factura.folio
+        ? `
           <p class="eliminar-factura-serie">Serie ${factura.serie} - Folio ${factura.folio}</p>
         `
-            : ""
-        }
-        <span class="eliminar-factura-estado ${
-          esTimbrada ? "timbrada" : "cancelada"
-        }">
+        : ""
+      }
+        <span class="eliminar-factura-estado ${esTimbrada ? "timbrada" : "cancelada"
+      }">
           ${esTimbrada ? "✓ Timbrada" : "✕ Cancelada"}
         </span>
         <p class="eliminar-factura-cliente">${factura.cliente}</p>
-        ${
-          factura.rfc
-            ? `<p class="eliminar-factura-rfc">RFC: ${factura.rfc}</p>`
-            : ""
-        }
+        ${factura.rfc
+        ? `<p class="eliminar-factura-rfc">RFC: ${factura.rfc}</p>`
+        : ""
+      }
         <p class="eliminar-factura-monto">${formatearMoneda(factura.monto)}</p>
       </div>
     `,
@@ -94,7 +92,7 @@ export const modalEliminarFactura = async (factura, onConfirmar) => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/facturas/${factura.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/facturas/${factura.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

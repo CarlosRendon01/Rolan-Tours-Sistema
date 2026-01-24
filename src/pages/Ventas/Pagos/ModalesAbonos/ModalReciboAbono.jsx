@@ -4,6 +4,7 @@ import "./ModalReciboAbono.css";
 import writtenNumber from "written-number";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
+import { API_CONFIG } from "../../../../config/api";
 
 const formatearFecha = (fecha) => {
   const opciones = { year: "numeric", month: "long", day: "numeric" };
@@ -35,9 +36,8 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
   const fechaActual = new Date().toLocaleDateString("es-MX");
 
   const numeroRecibo = abonoSeleccionado
-    ? `REC-${pagoSeleccionado.id.toString().padStart(4, "0")}-${
-        abonoSeleccionado.numeroAbono
-      }`
+    ? `REC-${pagoSeleccionado.id.toString().padStart(4, "0")}-${abonoSeleccionado.numeroAbono
+    }`
     : `REC-${pagoSeleccionado.id.toString().padStart(4, "0")}`;
 
   const generarPDF = async (datosRecibo) => {
@@ -148,7 +148,7 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
 
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://127.0.0.1:8000/api/abonos/${reciboId}`,
+        `${API_CONFIG.BASE_URL}/abonos/${reciboId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -264,9 +264,8 @@ const ModalReciboAbono = ({ abierto, onCerrar, pagoSeleccionado }) => {
                     <div
                       key={abono.id}
                       onClick={() => setAbonoSeleccionado(abono)}
-                      className={`recibo-abono-card ${
-                        esSeleccionado ? "seleccionado" : ""
-                      }`}
+                      className={`recibo-abono-card ${esSeleccionado ? "seleccionado" : ""
+                        }`}
                     >
                       {esSeleccionado && (
                         <div className="recibo-abono-check">

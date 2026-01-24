@@ -26,11 +26,12 @@ import { modalEliminarRecibo } from "../ModalesRecibos/ModalEliminarRecibo";
 import ModalRegenerarRecibo from "../ModalesRecibos/ModalRegenerarRecibo";
 import ModalEliminarDefinitivo from "../ModalesRecibos/ModalEliminarDefinitivo";
 import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
+import { API_CONFIG } from "../../../../config/api";
 
 const TablaRecibos = ({
   datosIniciales = [],
   vistaActual = "recibos",
-  onCambiarVista = () => {},
+  onCambiarVista = () => { },
   onEliminar = null,
   onDescargar = null,
   onImprimir = null,
@@ -40,7 +41,7 @@ const TablaRecibos = ({
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-  const [cargando, setCargando] = useState(true); 
+  const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState("todos");
@@ -54,7 +55,7 @@ const TablaRecibos = ({
   const [reciboPDFActual, setReciboPDFActual] = useState(null);
   const [datosRecibos, setdatosRecibos] = useState([]);
 
-  const API_URL = "http://127.0.0.1:8000/api/abonos";
+  const API_URL = `${API_CONFIG.BASE_URL}/abonos`;
 
   useEffect(() => {
     cargarRecibos();
@@ -732,10 +733,10 @@ const TablaRecibos = ({
               {terminoBusqueda
                 ? "Intenta ajustar los filtros de búsqueda"
                 : filtroEstado === "eliminados"
-                ? "No hay recibos eliminados en el sistema"
-                : filtroEstado === "activos"
-                ? "No hay recibos activos registrados"
-                : "No hay recibos registrados en el sistema"}
+                  ? "No hay recibos eliminados en el sistema"
+                  : filtroEstado === "activos"
+                    ? "No hay recibos activos registrados"
+                    : "No hay recibos registrados en el sistema"}
             </p>
           </div>
         ) : (
@@ -762,9 +763,8 @@ const TablaRecibos = ({
               {datosPaginados.map((recibo, indice) => (
                 <tr
                   key={recibo.id}
-                  className={`recibos-fila-pago ${
-                    recibo.activo === false ? "recibos-fila-eliminada" : ""
-                  }`}
+                  className={`recibos-fila-pago ${recibo.activo === false ? "recibos-fila-eliminada" : ""
+                    }`}
                 >
                   <td data-label="Recibo" className="recibos-columna-factura">
                     {recibo.numeroRecibo}
@@ -908,9 +908,8 @@ const TablaRecibos = ({
                 ) : (
                   <button
                     key={numero}
-                    className={`recibos-numero-pagina ${
-                      paginaActual === numero ? "recibos-activo" : ""
-                    }`}
+                    className={`recibos-numero-pagina ${paginaActual === numero ? "recibos-activo" : ""
+                      }`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
                     aria-label={`Página ${numero}`}

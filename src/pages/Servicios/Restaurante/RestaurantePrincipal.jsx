@@ -7,6 +7,7 @@ import ModalEditarRestaurante from "./ModalesRestaurante/ModalEditarRestaurante"
 import ModalVerRestaurante from "./ModalesRestaurante/ModalVerRestaurante";
 import { modalEliminarRestaurante } from "./ModalesRestaurante/ModalEliminarRestaurante";
 import "./RestaurantePrincipal.css";
+import { API_CONFIG } from "../../../config/api";
 
 const RestaurantePrincipal = () => {
   const [restaurantes, setRestaurantes] = useState([]);
@@ -34,7 +35,7 @@ const RestaurantePrincipal = () => {
         throw new Error("No hay token de autenticación");
       }
 
-      const response = await axios.get("http://127.0.0.1:8000/api/restaurantes", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/restaurantes`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -64,7 +65,7 @@ const RestaurantePrincipal = () => {
   const recargarProveedores = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/proveedores", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/proveedores`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -102,7 +103,7 @@ const RestaurantePrincipal = () => {
       async (rest) => {
         try {
           const token = localStorage.getItem("token");
-          await axios.delete(`http://127.0.0.1:8000/api/restaurantes/${rest.id}`, {
+          await axios.delete(`${API_CONFIG.BASE_URL}/restaurantes/${rest.id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
@@ -136,7 +137,7 @@ const RestaurantePrincipal = () => {
       });
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/restaurantes",
+        `${API_CONFIG.BASE_URL}/restaurantes`,
         formData,
         {
           headers: {
@@ -180,7 +181,7 @@ const RestaurantePrincipal = () => {
       formData.append('_method', 'PUT');
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/restaurantes/${restauranteActualizado.id}`,
+        `${API_CONFIG.BASE_URL}/restaurantes/${restauranteActualizado.id}`,
         formData,
         {
           headers: {

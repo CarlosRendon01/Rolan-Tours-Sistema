@@ -3,6 +3,7 @@ import axios from "axios";
 import TablaReservas from "./Componentes/TablaReservas";
 import PrincipalComponente from "../../Generales/Componentes/PrincipalComponente";
 import "./ReservasPrincipal.css";
+import { API_CONFIG } from "../../../config/api";
 
 const ReservasPrincipal = () => {
   const [reservasDatos, setReservasDatos] = useState([]);
@@ -16,15 +17,15 @@ const ReservasPrincipal = () => {
   const cargarReservas = async () => {
     setCargando(true);
     setError(null);
-    
+
     try {
       const token = localStorage.getItem("token");
-      
+
       if (!token) {
         throw new Error("No hay token de autenticación");
       }
-      
-      const response = await axios.get("http://127.0.0.1:8000/api/reservas", {
+
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/reservas`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -33,10 +34,10 @@ const ReservasPrincipal = () => {
       });
 
       setReservasDatos(response.data);
-      
+
     } catch (error) {
       console.error('❌ Error al cargar reservas:', error);
-      
+
       if (error.code === 'ECONNABORTED') {
         setError('La conexión tardó demasiado. Verifica tu servidor.');
       } else if (error.response) {
@@ -77,7 +78,7 @@ const ReservasPrincipal = () => {
   return (
     <PrincipalComponente>
       <div className="reservas-principal">
-        <TablaReservas 
+        <TablaReservas
           reservasDatos={reservasDatos}
           setReservasDatos={setReservasDatos}
           cargando={cargando}

@@ -22,6 +22,7 @@ import {
 import { modalEliminarFactura } from "../ModalesFactura/ModalEliminarFactura";
 import ModalRegenerarFactura from "../ModalesFactura/ModalRegenerarFactura";
 import ModalEliminarDefinitivoFactura from "../ModalesFactura/ModalEliminarDefinitivoFactura";
+import { API_CONFIG } from "../../../../config/api";
 
 const ESTADOS_FACTURA = {
   TIMBRADA: "TIMBRADA",
@@ -48,7 +49,7 @@ const TablaFacturas = ({
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
   const [datosFacturas, setdatosFacturas] = useState([]);
 
-  const API_URL = "http://127.0.0.1:8000/api/facturas";
+  const API_URL = `${API_CONFIG.BASE_URL}/facturas`;
 
   useEffect(() => {
     cargarFacturas();
@@ -211,7 +212,7 @@ const TablaFacturas = ({
             try {
               const token = localStorage.getItem("token");
               const response = await axios.get(
-                `http://127.0.0.1:8000/api/facturas/${factura.id}/descargar-excel`,
+                `${API_CONFIG.BASE_URL}/facturas/${factura.id}/descargar-excel`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
                   responseType: "blob",
@@ -247,7 +248,7 @@ const TablaFacturas = ({
               } else {
                 alert(
                   "Error al descargar el archivo Excel: " +
-                    (error.response?.data?.message || error.message)
+                  (error.response?.data?.message || error.message)
                 );
               }
             }
@@ -531,8 +532,8 @@ const TablaFacturas = ({
               {terminoBusqueda || filtroEstado !== "todos"
                 ? "Intenta ajustar los filtros de búsqueda"
                 : mostrarEliminados
-                ? "No hay facturas eliminadas en el sistema"
-                : "No hay facturas registradas en el sistema"}
+                  ? "No hay facturas eliminadas en el sistema"
+                  : "No hay facturas registradas en el sistema"}
             </p>
           </div>
         ) : (
@@ -553,9 +554,8 @@ const TablaFacturas = ({
               {datosPaginados.map((factura, indice) => (
                 <tr
                   key={factura.id}
-                  className={`facturas-fila-pago ${
-                    !factura.activo ? "facturas-fila-eliminada" : ""
-                  }`}
+                  className={`facturas-fila-pago ${!factura.activo ? "facturas-fila-eliminada" : ""
+                    }`}
                   style={{ animationDelay: `${indice * 0.05}s` }}
                 >
                   <td data-label="Factura" className="facturas-columna-factura">
@@ -714,9 +714,8 @@ const TablaFacturas = ({
                 ) : (
                   <button
                     key={numero}
-                    className={`facturas-numero-pagina ${
-                      paginaActual === numero ? "facturas-activo" : ""
-                    }`}
+                    className={`facturas-numero-pagina ${paginaActual === numero ? "facturas-activo" : ""
+                      }`}
                     onClick={() => cambiarPagina(numero)}
                     disabled={cargando}
                   >

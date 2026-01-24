@@ -7,6 +7,7 @@ import ModalEditarTransporte from "./ModalesTransporte/ModalEditarTransporte";
 import ModalVerTransporte from "./ModalesTransporte/ModalVerTransporte";
 import { modalEliminarTransporte } from "./ModalesTransporte/ModalEliminarTransporte";
 import "./TransportePrincipal.css";
+import { API_CONFIG } from "../../../config/api";
 
 const TransportePrincipal = () => {
   const [transportes, setTransportes] = useState([]);
@@ -34,7 +35,7 @@ const TransportePrincipal = () => {
         throw new Error("No hay token de autenticación");
       }
 
-      const response = await axios.get("http://127.0.0.1:8000/api/transportes", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/transportes`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -62,7 +63,7 @@ const TransportePrincipal = () => {
   const recargarProveedores = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/proveedores", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/proveedores`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -108,7 +109,7 @@ const TransportePrincipal = () => {
       });
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/transportes",
+        `${API_CONFIG.BASE_URL}/transportes`,
         formData,
         {
           headers: {
@@ -152,7 +153,7 @@ const TransportePrincipal = () => {
       formData.append('_method', 'PUT');
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/transportes/${transporteActualizado.id}`,
+        `${API_CONFIG.BASE_URL}/transportes/${transporteActualizado.id}`,
         formData,
         {
           headers: {
@@ -177,7 +178,7 @@ const TransportePrincipal = () => {
       async (transporteAEliminar) => {
         try {
           const token = localStorage.getItem("token");
-          await axios.delete(`http://127.0.0.1:8000/api/transportes/${transporteAEliminar.id}`, {
+          await axios.delete(`${API_CONFIG.BASE_URL}/transportes/${transporteAEliminar.id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",

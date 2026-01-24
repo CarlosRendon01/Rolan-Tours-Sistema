@@ -7,6 +7,7 @@ import ModalVerUsuario from "./Modales/ModalVerUsuarios";
 import ModalEditarUsuario from "./Modales/ModalEditarUsuario";
 import ModalEliminarUsuario from "./Modales/ModalEliminarUsuario";
 import "./PrincipalUsuario.css";
+import { API_CONFIG } from "../../../config/api";
 
 const UsuariosPrincipal = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -36,7 +37,7 @@ const UsuariosPrincipal = () => {
         throw new Error("No hay token de autenticación");
       }
 
-      const response = await axios.get("http://127.0.0.1:8000/api/users", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -66,7 +67,7 @@ const UsuariosPrincipal = () => {
   const recargarRoles = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/roles", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/roles`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -119,7 +120,7 @@ const UsuariosPrincipal = () => {
       };
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/users",
+        `${API_CONFIG.BASE_URL}/users`,
         userData,
         {
           headers: {
@@ -134,7 +135,7 @@ const UsuariosPrincipal = () => {
         nuevoUsuario.rolesSeleccionados.length > 0
       ) {
         await axios.post(
-          `http://127.0.0.1:8000/api/users/${response.data.data.id}/roles`,
+          `${API_CONFIG.BASE_URL}/users/${response.data.data.id}/roles`,
           { role_ids: nuevoUsuario.rolesSeleccionados },
           {
             headers: {
@@ -178,7 +179,7 @@ const UsuariosPrincipal = () => {
       }
 
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/users/${usuarioActualizado.id}`,
+        `${API_CONFIG.BASE_URL}/users/${usuarioActualizado.id}`,
         userData,
         {
           headers: {
@@ -189,7 +190,7 @@ const UsuariosPrincipal = () => {
       );
 
       await axios.post(
-        `http://127.0.0.1:8000/api/users/${usuarioActualizado.id}/roles`,
+        `${API_CONFIG.BASE_URL}/users/${usuarioActualizado.id}/roles`,
         { role_ids: usuarioActualizado.rolesSeleccionados || [] },
         {
           headers: {
@@ -221,7 +222,7 @@ const UsuariosPrincipal = () => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(`http://127.0.0.1:8000/api/users/${usuario.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/users/${usuario.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./NuevaCotizacion.css";
 import axios from "axios";
+import { API_CONFIG } from "../../../../config/api";
 
 const NuevaCotizacion = ({
   onGuardarCotizacion,
@@ -78,25 +79,25 @@ const NuevaCotizacion = ({
         const token = localStorage.getItem("token");
 
         const [transporte, restaurante, tour, hospedaje] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/transportes", {
+          axios.get(`${API_CONFIG.BASE_URL}/transportes`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          axios.get("http://127.0.0.1:8000/api/restaurantes", {
+          axios.get(`${API_CONFIG.BASE_URL}/restaurantes`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          axios.get("http://127.0.0.1:8000/api/tours", {
+          axios.get(`${API_CONFIG.BASE_URL}/tours`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          axios.get("http://127.0.0.1:8000/api/hospedajes", {
+          axios.get(`${API_CONFIG.BASE_URL}/hospedajes`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",

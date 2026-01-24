@@ -4,6 +4,7 @@ import NuevaCotizacion from "./Componentes/NuevaCotizacion";
 import TablaCotizacion from "./Componentes/TablaCotizacion";
 import "./Componentes/NuevaCotizacion.css";
 import "./Cotizaciones.css";
+import { API_CONFIG } from "../../../config/api";
 
 const Cotizacion = () => {
   const [cotizaciones, setCotizaciones] = useState([]);
@@ -11,7 +12,7 @@ const Cotizacion = () => {
   const [cargando, setCargando] = useState(false);
   const rol = localStorage.getItem("rol");
 
-  const API_URL = "http://127.0.0.1:8000/api/cotizaciones";
+  const API_URL = `${API_CONFIG.BASE_URL}/cotizaciones`;
 
   useEffect(() => {
     cargarCotizaciones();
@@ -71,7 +72,7 @@ const Cotizacion = () => {
       } else {
         alert(
           "Error al cargar cotizaciones: " +
-            (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message)
         );
       }
     } finally {
@@ -116,7 +117,7 @@ const Cotizacion = () => {
         } else {
           alert(
             "Error al guardar la cotización: " +
-              (error.response?.data?.error || error.message)
+            (error.response?.data?.error || error.message)
           );
         }
         throw error;
@@ -159,7 +160,7 @@ const Cotizacion = () => {
         } else {
           alert(
             "Error al eliminar la cotización: " +
-              (error.response?.data?.error || error.message)
+            (error.response?.data?.error || error.message)
           );
         }
         throw error;

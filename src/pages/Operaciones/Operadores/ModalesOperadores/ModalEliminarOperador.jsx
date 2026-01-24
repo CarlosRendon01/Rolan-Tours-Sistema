@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import './ModalEliminarOperador.css';
+import { API_CONFIG } from '../../../../config/api';
 
 /**
  * @param {Object} operador 
@@ -52,7 +53,7 @@ export const modalEliminarOperador = async (operador, onConfirmar) => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/operadores/${operador.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/operadores/${operador.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

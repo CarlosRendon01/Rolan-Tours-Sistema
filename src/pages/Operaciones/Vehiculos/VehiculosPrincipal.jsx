@@ -7,6 +7,7 @@ import ModalEditarVehiculo from './ModalesVehiculos/ModalEditarVehiculo';
 import ModalVerVehiculo from './ModalesVehiculos/ModalVerVehiculo';
 import { modalEliminarVehiculo } from './ModalesVehiculos/ModalEliminarVehiculo';
 import './VehiculosPrincipal.css';
+import { API_CONFIG } from "../../../config/api";
 
 const VehiculosPrincipal = () => {
   const [vehiculos, setVehiculos] = useState([]);
@@ -28,7 +29,7 @@ const VehiculosPrincipal = () => {
         throw new Error("No hay token de autenticación");
       }
 
-      const response = await axios.get("http://127.0.0.1:8000/api/vehiculos", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/vehiculos`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -105,7 +106,7 @@ const VehiculosPrincipal = () => {
       };
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/vehiculos",
+        `${API_CONFIG.BASE_URL}/vehiculos`,
         vehiculoData,
         {
           headers: {
@@ -150,7 +151,7 @@ const VehiculosPrincipal = () => {
       };
 
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/vehiculos/${vehiculoActualizado.id}`,
+        `${API_CONFIG.BASE_URL}/vehiculos/${vehiculoActualizado.id}`,
         vehiculoData,
         {
           headers: {

@@ -23,6 +23,7 @@ import ModalReactivarPago from "../Modales/ModalReactivarPago";
 import ModalEliminarDefinitivo from "../Modales/ModalEliminarDefinitivo";
 import { modalEliminarPago } from "../Modales/modalEliminarPago";
 import ModalCrearTodosDesdePago from "../Modales/ModalCrearTodosDesdePago";
+import { API_CONFIG } from "../../../../config/api";
 
 const estadoInicial = {
   paginaActual: 1,
@@ -53,7 +54,7 @@ const reductor = (estado, accion) => {
 };
 
 const GestionPagos = ({ vistaActual, onCambiarVista }) => {
-  const API_URL = "http://127.0.0.1:8000/api/pagos";
+  const API_URL = `${API_CONFIG.BASE_URL}/pagos`;
   const [estado, despachar] = useReducer(reductor, estadoInicial);
   const {
     paginaActual,
@@ -109,10 +110,10 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       rolUsuario === "Vendedor"
         ? datosPagos.filter((p) => p.activo)
         : datosPagos.filter((p) => {
-            if (filtroVisibilidad === "activos") return p.activo;
-            if (filtroVisibilidad === "eliminados") return !p.activo;
-            return true;
-          });
+          if (filtroVisibilidad === "activos") return p.activo;
+          if (filtroVisibilidad === "eliminados") return !p.activo;
+          return true;
+        });
 
     const total = pagosVisibles.length;
     const pagados = pagosVisibles.filter(
@@ -489,9 +490,8 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                 {datosPaginados.map((pago, indice) => (
                   <tr
                     key={pago.id}
-                    className={`pagos-fila-pago ${
-                      !pago.activo ? "pagos-fila-eliminada" : ""
-                    }`}
+                    className={`pagos-fila-pago ${!pago.activo ? "pagos-fila-eliminada" : ""
+                      }`}
                     style={{ animationDelay: `${indice * 0.05}s` }}
                   >
                     <td className="pagos-columna-id">
@@ -534,9 +534,8 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                     {rolUsuario === "admin" && (
                       <td>
                         <span
-                          className={`pagos-badge-visibilidad ${
-                            pago.activo ? "pagos-visible" : "pagos-no-visible"
-                          }`}
+                          className={`pagos-badge-visibilidad ${pago.activo ? "pagos-visible" : "pagos-no-visible"
+                            }`}
                         >
                           {pago.activo ? "✓ Sí" : "✗ No"}
                         </span>
@@ -605,11 +604,10 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                         )}
                         {pago.activo && (
                           <button
-                            className={`pagos-boton-accion pagos-crear-todos ${
-                              !puedeCrearOrden(pago)
-                                ? "pagos-crear-todos-deshabilitado"
-                                : ""
-                            }`}
+                            className={`pagos-boton-accion pagos-crear-todos ${!puedeCrearOrden(pago)
+                              ? "pagos-crear-todos-deshabilitado"
+                              : ""
+                              }`}
                             onClick={() => manejarAccion("crearTodos", pago)}
                             title={
                               puedeCrearOrden(pago)
@@ -662,9 +660,8 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                   ) : (
                     <button
                       key={numero}
-                      className={`pagos-numero-pagina ${
-                        paginaActual === numero ? "pagos-activo" : ""
-                      }`}
+                      className={`pagos-numero-pagina ${paginaActual === numero ? "pagos-activo" : ""
+                        }`}
                       onClick={() => cambiarPagina(numero)}
                       disabled={cargando}
                     >

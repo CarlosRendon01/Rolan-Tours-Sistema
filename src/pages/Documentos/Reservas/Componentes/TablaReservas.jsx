@@ -21,6 +21,7 @@ import ModalEditarReserva from "../ModalesReservas/ModalEditarReserva";
 import ModalVerReserva from "../ModalesReservas/ModalVerReserva";
 import ModalVisualizarPDF from "../ModalesReservas/ModalVisualizarPDF";
 import "../ModalesReservas/ModalVisualizarPDF.css";
+import {API_CONFIG} from "../../../../config/api";
 
 const TablaReservas = ({
   reservasDatos,
@@ -148,7 +149,7 @@ const TablaReservas = ({
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/reservas/${reserva.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/reservas/${reserva.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -212,7 +213,7 @@ const TablaReservas = ({
       });
 
       await axios.post(
-        `http://127.0.0.1:8000/api/reservas/${datosActualizados.id}`,
+        `${API_CONFIG.BASE_URL}/reservas/${datosActualizados.id}`,
         formData,
         {
           headers: {
@@ -550,11 +551,10 @@ const TablaReservas = ({
                   >
                     <div className="reservas-badge-idiomas">
                       <span
-                        className={`reservas-idioma-tag ${
-                          reserva.pagado === "pagado"
-                            ? "reservas-pagado"
-                            : "reservas-no-pagado"
-                        }`}
+                        className={`reservas-idioma-tag ${reserva.pagado === "pagado"
+                          ? "reservas-pagado"
+                          : "reservas-no-pagado"
+                          }`}
                       >
                         {reserva.pagado === "pagado" ? (
                           <>
@@ -645,9 +645,8 @@ const TablaReservas = ({
                 (numero) => (
                   <button
                     key={numero}
-                    className={`reservas-numero-pagina ${
-                      paginaActual === numero ? "reservas-activo" : ""
-                    }`}
+                    className={`reservas-numero-pagina ${paginaActual === numero ? "reservas-activo" : ""
+                      }`}
                     onClick={() => cambiarPagina(numero)}
                   >
                     {numero}

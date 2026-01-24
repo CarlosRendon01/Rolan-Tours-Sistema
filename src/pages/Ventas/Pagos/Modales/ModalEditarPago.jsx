@@ -3,6 +3,7 @@ import { X, Save, AlertCircle } from "lucide-react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "./ModalEditarPago.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
   const formatearFechaParaInput = (fecha) => {
@@ -96,7 +97,7 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
       };
 
       const res = await axios.put(
-        `http://127.0.0.1:8000/api/pagos/${pago.id}`,
+        `${API_CONFIG.BASE_URL}/pagos/${pago.id}`,
         payload,
         {
           headers: {
@@ -207,9 +208,8 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
                 name="cliente"
                 value={formulario.cliente}
                 onChange={manejarCambio}
-                className={`modal-editar-input ${
-                  errores.cliente ? "modal-editar-input-error" : ""
-                }`}
+                className={`modal-editar-input ${errores.cliente ? "modal-editar-input-error" : ""
+                  }`}
                 placeholder="Nombre del cliente"
                 disabled={guardando}
               />
@@ -232,9 +232,8 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
                   name="monto"
                   value={formulario.monto}
                   onChange={manejarCambio}
-                  className={`modal-editar-input modal-editar-input-monto ${
-                    errores.monto ? "modal-editar-input-error" : ""
-                  }`}
+                  className={`modal-editar-input modal-editar-input-monto ${errores.monto ? "modal-editar-input-error" : ""
+                    }`}
                   placeholder="0.00"
                   disabled={guardando}
                 />
@@ -257,9 +256,8 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
                 name="fechaVencimiento"
                 value={formulario.fechaVencimiento}
                 onChange={manejarCambio}
-                className={`modal-editar-input ${
-                  errores.fechaVencimiento ? "modal-editar-input-error" : ""
-                }`}
+                className={`modal-editar-input ${errores.fechaVencimiento ? "modal-editar-input-error" : ""
+                  }`}
                 disabled={guardando}
               />
               {errores.fechaVencimiento && (
@@ -301,9 +299,8 @@ const ModalEditarPago = ({ estaAbierto, alCerrar, pago, alGuardar }) => {
                 name="concepto"
                 value={formulario.concepto}
                 onChange={manejarCambio}
-                className={`modal-editar-textarea ${
-                  errores.concepto ? "modal-editar-input-error" : ""
-                }`}
+                className={`modal-editar-textarea ${errores.concepto ? "modal-editar-input-error" : ""
+                  }`}
                 placeholder="Descripción del servicio o producto"
                 rows="3"
                 disabled={guardando}

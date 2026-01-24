@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import './ModalEliminarGuia.css';
+import { API_CONFIG } from "../../../../config/api";
 
 export const modalEliminarGuia = async (guia, onConfirmar) => {
   if (!guia || !guia.nombre || (!guia.apellido_paterno && !guia.apellidoPaterno)) {
@@ -50,7 +51,7 @@ export const modalEliminarGuia = async (guia, onConfirmar) => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/guias/${guia.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/guias/${guia.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

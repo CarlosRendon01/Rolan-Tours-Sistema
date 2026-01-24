@@ -14,6 +14,8 @@ import {
   Edit
 } from 'lucide-react';
 import './ModalMantenimiento.css';
+import axios from 'axios';
+import { API_CONFIG } from '../../../config/api';
 
 const ModalMantenimiento = ({
   vehiculo,
@@ -48,10 +50,22 @@ const ModalMantenimiento = ({
     return Math.min(100, (kmRecorridos / intervalo) * 100);
   };
 
-  const handleActualizarKm = () => {
+  const handleActualizarKm = async () => {
     if (nuevoKm && nuevoKm >= mantenimiento.kilometraje_actual) {
-      onActualizarKilometraje(vehiculo.id, parseInt(nuevoKm));
-      setEditandoKm(false);
+      try {
+        await onActualizarKilometraje(vehiculo.id, parseInt(nuevoKm));
+
+        const token = localStorage.getItem('token');
+        await axios.get(`${API_CONFIG.BASE_URL}/mantenimientos/verificar`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          }
+        });
+
+        setEditandoKm(false);
+      } catch (error) {
+      }
     }
   };
 

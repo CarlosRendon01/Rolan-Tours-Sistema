@@ -7,6 +7,7 @@ import ModalEditarTours from './ModalesTours/ModalEditarTours';
 import ModalVerTours from './ModalesTours/ModalVerTours';
 import { modalEliminarTour } from './ModalesTours/ModalEliminarTours';
 import './ToursPrincipal.css';
+import { API_CONFIG } from "../../../config/api";
 
 const ToursPrincipal = () => {
     const [proveedores, setProveedores] = useState([]);
@@ -36,7 +37,7 @@ const ToursPrincipal = () => {
                 throw new Error("No hay token de autenticación");
             }
 
-            const response = await axios.get("http://127.0.0.1:8000/api/tours", {
+            const response = await axios.get(`${API_CONFIG.BASE_URL}/tours`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -65,7 +66,7 @@ const ToursPrincipal = () => {
     const recargarProveedores = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get("http://127.0.0.1:8000/api/proveedores", {
+            const response = await axios.get(`${API_CONFIG.BASE_URL}/proveedores`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -90,7 +91,7 @@ const ToursPrincipal = () => {
         const confirmado = await modalEliminarTour(tour, async (tourAEliminar) => {
             try {
                 const token = localStorage.getItem("token");
-                await axios.delete(`http://127.0.0.1:8000/api/tours/${tourAEliminar.id}`, {
+                await axios.delete(`${API_CONFIG.BASE_URL}/tours/${tourAEliminar.id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         Accept: "application/json",
@@ -157,7 +158,7 @@ const ToursPrincipal = () => {
             });
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/tours",
+                `${API_CONFIG.BASE_URL}/tours`,
                 formData,
                 {
                     headers: {
@@ -210,7 +211,7 @@ const ToursPrincipal = () => {
             });
 
             const response = await axios.post(
-                `http://127.0.0.1:8000/api/tours/${tourActualizado.id}`,
+                `${API_CONFIG.BASE_URL}/tours/${tourActualizado.id}`,
                 formData,
                 {
                     headers: {

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "../../Cotizador/Componentes/NuevaCotizacion.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
   const navigate = useNavigate();
@@ -62,25 +63,25 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
         const token = localStorage.getItem("token");
 
         const [transporte, restaurante, tour, hospedaje] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/transportes", {
+          axios.get(`${API_CONFIG.BASE_URL}/transportes`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          axios.get("http://127.0.0.1:8000/api/restaurantes", {
+          axios.get(`${API_CONFIG.BASE_URL}/restaurantes`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          axios.get("http://127.0.0.1:8000/api/tours", {
+          axios.get(`${API_CONFIG.BASE_URL}/tours`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          axios.get("http://127.0.0.1:8000/api/hospedajes", {
+          axios.get(`${API_CONFIG.BASE_URL}/hospedajes`, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
@@ -261,7 +262,7 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
       }
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/cotizaciones",
+        `${API_CONFIG.BASE_URL}/cotizaciones`,
         {
           ...formData,
           servicios: formData.servicios.map((s) => s.id),

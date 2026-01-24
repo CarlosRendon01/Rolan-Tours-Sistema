@@ -16,6 +16,7 @@ import {
   generarPDFFactura,
   imprimirFactura,
 } from "../ModalesFactura/generarPDFFactura";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalFacturaAbono = ({
   abierto,
@@ -95,7 +96,7 @@ const ModalFacturaAbono = ({
       const impuestosTemp = calcularImpuestos(abonoSeleccionado.monto);
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/facturas",
+        `${API_CONFIG.BASE_URL}/facturas`,
         {
           abono_id: abonoSeleccionado.id,
           numero_factura: `FAC-${String(pagoSeleccionado.id).padStart(
@@ -184,9 +185,8 @@ const ModalFacturaAbono = ({
         servicio: {
           ...pagoSeleccionado.servicio,
           tipo: `Abono #${abono.numeroAbono} - ${pagoSeleccionado.servicio.tipo}`,
-          descripcion: `${
-            pagoSeleccionado.servicio.descripcion
-          } | Fecha de abono: ${formatearFecha(abono.fecha)}`,
+          descripcion: `${pagoSeleccionado.servicio.descripcion
+            } | Fecha de abono: ${formatearFecha(abono.fecha)}`,
         },
         usoCFDI: pagoSeleccionado.usoCFDI,
         metodoPago: abono.metodoPago,
@@ -372,14 +372,12 @@ const ModalFacturaAbono = ({
                           </div>
                         )}
                         <div
-                          className={`factura-historial-item-contenido ${
-                            esSeleccionado ? "seleccionado" : ""
-                          }`}
+                          className={`factura-historial-item-contenido ${esSeleccionado ? "seleccionado" : ""
+                            }`}
                         >
                           <div
-                            className={`factura-historial-numero ${
-                              esSeleccionado ? "seleccionado" : ""
-                            }`}
+                            className={`factura-historial-numero ${esSeleccionado ? "seleccionado" : ""
+                              }`}
                           >
                             <Coins size={16} />
                             <span>Abono #{abono.numeroAbono}</span>

@@ -12,6 +12,7 @@ import {
   Save,
 } from "lucide-react";
 import "./ModalNuevoPago.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
   const [formulario, setFormulario] = useState({
@@ -139,7 +140,7 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
       };
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/pagos",
+        `${API_CONFIG.BASE_URL}/pagos`,
         datosPago,
         {
           headers: {
@@ -212,8 +213,8 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
   const montoPorAbono =
     formulario.montoTotal && formulario.numeroAbonos
       ? (
-          parseFloat(formulario.montoTotal) / parseInt(formulario.numeroAbonos)
-        ).toFixed(2)
+        parseFloat(formulario.montoTotal) / parseInt(formulario.numeroAbonos)
+      ).toFixed(2)
       : 0;
 
   return (
@@ -247,9 +248,8 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                   onChange={(e) =>
                     manejarCambio("nombreCliente", e.target.value)
                   }
-                  className={`modal-input ${
-                    errores.nombreCliente ? "error" : ""
-                  }`}
+                  className={`modal-input ${errores.nombreCliente ? "error" : ""
+                    }`}
                   placeholder="Ej: Juan Pérez García"
                 />
                 {errores.nombreCliente && (
@@ -267,9 +267,8 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                   onChange={(e) =>
                     manejarCambio("emailCliente", e.target.value)
                   }
-                  className={`modal-input ${
-                    errores.emailCliente ? "error" : ""
-                  }`}
+                  className={`modal-input ${errores.emailCliente ? "error" : ""
+                    }`}
                   placeholder="cliente@ejemplo.com"
                 />
                 {errores.emailCliente && (
@@ -308,9 +307,8 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                   onChange={(e) =>
                     manejarCambio("tipoServicio", e.target.value)
                   }
-                  className={`modal-select ${
-                    errores.tipoServicio ? "error" : ""
-                  }`}
+                  className={`modal-select ${errores.tipoServicio ? "error" : ""
+                    }`}
                 >
                   <option value="">Seleccionar...</option>
                   {tiposServicio.map((tipo) => (
@@ -376,9 +374,8 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                     }
                     min="0"
                     step="0.01"
-                    className={`modal-input con-simbolo ${
-                      errores.montoTotal ? "error" : ""
-                    }`}
+                    className={`modal-input con-simbolo ${errores.montoTotal ? "error" : ""
+                      }`}
                     placeholder="0.00"
                   />
                 </div>
@@ -399,9 +396,8 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                   }
                   min="2"
                   max="12"
-                  className={`modal-input ${
-                    errores.numeroAbonos ? "error" : ""
-                  }`}
+                  className={`modal-input ${errores.numeroAbonos ? "error" : ""
+                    }`}
                 />
                 {errores.numeroAbonos && (
                   <p className="modal-error">
@@ -436,9 +432,8 @@ const ModalNuevoPago = ({ abierto, onCerrar, onGuardar }) => {
                     manejarCambio("fechaPrimerAbono", e.target.value)
                   }
                   min={new Date().toISOString().split("T")[0]}
-                  className={`modal-input ${
-                    errores.fechaPrimerAbono ? "error" : ""
-                  }`}
+                  className={`modal-input ${errores.fechaPrimerAbono ? "error" : ""
+                    }`}
                 />
                 {errores.fechaPrimerAbono && (
                   <p className="modal-error">

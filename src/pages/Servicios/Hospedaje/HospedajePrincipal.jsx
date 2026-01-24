@@ -7,6 +7,7 @@ import ModalAgregarHospedaje from './ModalesHospedaje/ModalAgregarHospedaje';
 import ModalVerHospedaje from './ModalesHospedaje/ModalVerHospedaje';
 import ModalEditarHospedaje from './ModalesHospedaje/ModalEditarHospedaje';
 import { modalEliminarHospedaje } from './ModalesHospedaje/ModalEliminarHospedaje';
+import { API_CONFIG } from "../../../config/api";
 
 const HospedajePrincipal = () => {
     const [proveedores, setProveedores] = useState([]);
@@ -35,7 +36,7 @@ const HospedajePrincipal = () => {
                 throw new Error("No hay token de autenticación");
             }
 
-            const response = await axios.get("http://127.0.0.1:8000/api/hospedajes", {
+            const response = await axios.get(`${API_CONFIG.BASE_URL}/hospedajes`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -66,7 +67,7 @@ const HospedajePrincipal = () => {
     const recargarProveedores = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get("http://127.0.0.1:8000/api/proveedores", {
+            const response = await axios.get(`${API_CONFIG.BASE_URL}/proveedores`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -93,7 +94,7 @@ const HospedajePrincipal = () => {
         const confirmado = await modalEliminarHospedaje(hospedaje, async () => {
             try {
                 const token = localStorage.getItem("token");
-                await axios.delete(`http://127.0.0.1:8000/api/hospedajes/${hospedaje.id}`, {
+                await axios.delete(`${API_CONFIG.BASE_URL}/hospedajes/${hospedaje.id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         Accept: "application/json",
@@ -138,7 +139,7 @@ const HospedajePrincipal = () => {
             });
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/hospedajes",
+                `${API_CONFIG.BASE_URL}/hospedajes`,
                 formData,
                 {
                     headers: {
@@ -183,7 +184,7 @@ const HospedajePrincipal = () => {
             formData.append('_method', 'PUT');
 
             const response = await axios.post(
-                `http://127.0.0.1:8000/api/hospedajes/${hospedajeActualizado.id}`,
+                `${API_CONFIG.BASE_URL}/hospedajes/${hospedajeActualizado.id}`,
                 formData,
                 {
                     headers: {

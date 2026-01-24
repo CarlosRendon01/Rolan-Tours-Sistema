@@ -7,6 +7,7 @@ import ModalAgregarOperador from './ModalesOperadores/ModalAgregarOperador';
 import ModalVerOperador from './ModalesOperadores/ModalVerOperador';
 import ModalEditarOperador from './ModalesOperadores/ModalEditarOperador';
 import { modalEliminarOperador } from './ModalesOperadores/ModalEliminarOperador';
+import { API_CONFIG } from '../../../config/api';
 
 const OperadoresPrincipal = () => {
     const [operadores, setOperadores] = useState([]);
@@ -20,32 +21,32 @@ const OperadoresPrincipal = () => {
 
     useEffect(() => {
         recargarOperadores();
-    }, []); 
+    }, []);
 
     const recargarOperadores = async () => {
         setCargando(true);
         setError(null);
-        
+
         try {
             const token = localStorage.getItem("token");
-            
+
             if (!token) {
                 throw new Error("No hay token de autenticación");
             }
-            
-            const response = await axios.get("http://127.0.0.1:8000/api/operadores", {
+
+            const response = await axios.get(`${API_CONFIG.BASE_URL}/operadores`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
                 },
-                timeout: 10000 
+                timeout: 10000
             });
 
             setOperadores(response.data);
-            
+
         } catch (error) {
             console.error('❌ Error al cargar operadores:', error);
-            
+
             if (error.code === 'ECONNABORTED') {
                 setError('La conexión tardó demasiado. Verifica tu servidor.');
             } else if (error.response) {
@@ -106,9 +107,9 @@ const OperadoresPrincipal = () => {
                 fecha_vencimiento_examen: nuevoOperador.fechaVencimientoExamen,
                 comentarios: nuevoOperador.comentarios || null,
             };
-            
+
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/operadores",
+                `${API_CONFIG.BASE_URL}/operadores`,
                 operadorData,
                 {
                     headers: {
@@ -118,14 +119,14 @@ const OperadoresPrincipal = () => {
                     }
                 }
             );
-            
-            await recargarOperadores(); 
-            return response.data; 
-            
+
+            await recargarOperadores();
+            return response.data;
+
         } catch (error) {
             console.error("❌ Error al crear operador:", error);
             console.error("❌ Respuesta del servidor:", error.response?.data);
-            throw error; 
+            throw error;
         }
     };
 
@@ -147,9 +148,9 @@ const OperadoresPrincipal = () => {
                 fecha_vencimiento_examen: operadorActualizado.fechaVencimientoExamen,
                 comentarios: operadorActualizado.comentarios || null,
             };
-            
+
             const response = await axios.put(
-                `http://127.0.0.1:8000/api/operadores/${operadorActualizado.id}`,
+                `${API_CONFIG.BASE_URL}/operadores/${operadorActualizado.id}`,
                 operadorData,
                 {
                     headers: {
@@ -159,13 +160,13 @@ const OperadoresPrincipal = () => {
                     }
                 }
             );
-            await recargarOperadores(); 
-            return response.data; 
-            
+            await recargarOperadores();
+            return response.data;
+
         } catch (error) {
             console.error("❌ Error al actualizar operador:", error);
             console.error("❌ Respuesta del servidor:", error.response?.data);
-            throw error; 
+            throw error;
         }
     };
 

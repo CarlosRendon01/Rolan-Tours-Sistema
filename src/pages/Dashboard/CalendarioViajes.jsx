@@ -5,6 +5,7 @@ import {
   Calendar, ChevronLeft, ChevronRight, MapPin, Users, Clock, Eye, Edit
 } from "lucide-react";
 import "./CalendarioViajes.css";
+import { API_CONFIG } from "../../config/api";
 
 const CalendarioViajes = ({ onActualizarEstadisticas }) => {
   const [fechaActual, setFechaActual] = useState(new Date());
@@ -36,7 +37,7 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
       const fechaFin = ultimoDia.toISOString().split('T')[0];
 
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/ordenes-servicio/filtrar/rango-fechas`,
+        `${API_CONFIG.BASE_URL}/ordenes-servicio/filtrar/rango-fechas`,
         {
           params: {
             fecha_inicio: fechaInicio,

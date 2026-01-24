@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import axios from "axios";
 import "./ModalEliminarAbono.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const formatearMoneda = (cantidad) => {
   return new Intl.NumberFormat("es-MX", {
@@ -28,12 +29,11 @@ export const modalEliminarPago = async (pago, onConfirmar) => {
         <p class="eliminar-texto">¿Estás seguro de eliminar el pago de:</p>
         <p class="eliminar-cliente">${pago.cliente.nombre}</p>
         <p class="eliminar-monto">${formatearMoneda(
-          pago.planPago.montoTotal
-        )}</p>
+      pago.planPago.montoTotal
+    )}</p>
         
-        ${
-          pago.planPago.abonosRealizados > 0
-            ? `
+        ${pago.planPago.abonosRealizados > 0
+        ? `
           <div class="eliminar-advertencia">
             <svg class="eliminar-advertencia-icono" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
@@ -41,8 +41,8 @@ export const modalEliminarPago = async (pago, onConfirmar) => {
             <p>Este pago tiene <strong>${pago.planPago.abonosRealizados} abono(s)</strong> que también se eliminarán.</p>
           </div>
         `
-            : ""
-        }
+        : ""
+      }
         
         <p class="eliminar-aviso">Esta acción no se puede deshacer</p>
       </div>
@@ -74,7 +74,7 @@ export const modalEliminarPago = async (pago, onConfirmar) => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/abonos/${pago.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/abonos/${pago.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

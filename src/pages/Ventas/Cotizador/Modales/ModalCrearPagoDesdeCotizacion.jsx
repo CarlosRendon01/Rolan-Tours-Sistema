@@ -12,6 +12,7 @@ import {
   FileText,
 } from "lucide-react";
 import "../../Pagos/ModalesAbonos/ModalAgregarAbono.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const calcularAbonoMinimo = (total, numeroAbonos) => {
   if (!total || !numeroAbonos) return "";
@@ -135,7 +136,7 @@ const ModalCrearPagoDesdeCotizacion = ({
       };
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/pagos",
+        `${API_CONFIG.BASE_URL}/pagos`,
         datosPago,
         {
           headers: {
@@ -152,14 +153,13 @@ const ModalCrearPagoDesdeCotizacion = ({
         html: `
           <div style="text-align: left; padding: 1rem;">
             <p><strong>Cotización:</strong> ${cotizacion.folio}</p>
-            <p><strong>Cliente:</strong> ${
-              cotizacion.cliente?.nombre || "Sin cliente"
-            }</p>
+            <p><strong>Cliente:</strong> ${cotizacion.cliente?.nombre || "Sin cliente"
+          }</p>
             <p><strong>Total:</strong> $${formatearMoneda(cotizacion.total)}</p>
             <p><strong>Número de abonos:</strong> ${formulario.numeroAbonos}</p>
             <p><strong>Monto por abono:</strong> $${formatearMoneda(
-              formulario.abonoMinimo
-            )}</p>
+            formulario.abonoMinimo
+          )}</p>
             <p style="color: #10b981; font-weight: 600; margin-top: 1rem;">✅ Plan de pago vinculado correctamente</p>
           </div>
         `,
@@ -294,9 +294,8 @@ const ModalCrearPagoDesdeCotizacion = ({
                   }
                   min="2"
                   max="12"
-                  className={`modal-abono-input ${
-                    errores.numeroAbonos ? "error" : ""
-                  }`}
+                  className={`modal-abono-input ${errores.numeroAbonos ? "error" : ""
+                    }`}
                   disabled={guardando}
                 />
                 {errores.numeroAbonos && (
@@ -354,9 +353,8 @@ const ModalCrearPagoDesdeCotizacion = ({
                     manejarCambio("fechaPrimerAbono", e.target.value)
                   }
                   min={new Date().toISOString().split("T")[0]}
-                  className={`modal-abono-input ${
-                    errores.fechaPrimerAbono ? "error" : ""
-                  }`}
+                  className={`modal-abono-input ${errores.fechaPrimerAbono ? "error" : ""
+                    }`}
                   disabled={guardando}
                 />
                 {errores.fechaPrimerAbono && (
@@ -419,9 +417,8 @@ const ModalCrearPagoDesdeCotizacion = ({
                 onChange={(e) =>
                   manejarCambio("numeroContrato", e.target.value)
                 }
-                className={`modal-abono-input ${
-                  errores.numeroContrato ? "error" : ""
-                }`}
+                className={`modal-abono-input ${errores.numeroContrato ? "error" : ""
+                  }`}
                 placeholder="CONT-001"
                 disabled={guardando}
               />

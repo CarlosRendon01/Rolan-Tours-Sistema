@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import axios from "axios";
 import "./modalEliminarPago.css";
+import { API_CONFIG } from "../../../../config/api";
 
 /**
  * Modal de confirmación para eliminar un pago
@@ -39,7 +40,7 @@ export const modalEliminarPago = async (pago, onConfirm) => {
 
   if (resultado.isConfirmed) {
     const token = localStorage.getItem("token");
-    await axios.delete(`http://127.0.0.1:8000/api/pagos/${pago.id}`, {
+    await axios.delete(`${API_CONFIG.BASE_URL}/pagos/${pago.id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -54,9 +55,8 @@ export const modalEliminarPago = async (pago, onConfirm) => {
       html: `
         <div class="alerta-contenido-exito">
           <p class="alerta-texto-exito">El pago ha sido eliminado exitosamente</p>
-          <p class="alerta-detalle-exito">Cliente: ${
-            pago.cliente?.nombre || "Sin nombre"
-          }</p>
+          <p class="alerta-detalle-exito">Cliente: ${pago.cliente?.nombre || "Sin nombre"
+        }</p>
         </div>
       `,
       icon: "success",

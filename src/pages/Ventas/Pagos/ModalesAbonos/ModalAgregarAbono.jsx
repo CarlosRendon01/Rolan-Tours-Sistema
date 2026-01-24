@@ -10,6 +10,7 @@ import {
   Info,
 } from "lucide-react";
 import "./ModalAgregarAbono.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalAgregarAbono = ({
   abierto,
@@ -105,7 +106,7 @@ const ModalAgregarAbono = ({
       };
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/abonos",
+        `${API_CONFIG.BASE_URL}/abonos`,
         datosAbono,
         {
           headers: {
@@ -120,18 +121,16 @@ const ModalAgregarAbono = ({
         html: `
           <div style="text-align: left; padding: 1rem;">
             <p><strong>Monto:</strong> $${parseFloat(
-              formulario.montoAbono
-            ).toLocaleString()}</p>
+          formulario.montoAbono
+        ).toLocaleString()}</p>
             <p><strong>Fecha:</strong> ${formulario.fechaAbono}</p>
-            <p><strong>Método:</strong> ${
-              metodosPago.find((m) => m.valor === formulario.metodoPago)
-                ?.etiqueta
-            }</p>
-            ${
-              seCompletara
-                ? '<p style="color: #10b981; font-weight: 600; margin-top: 1rem;">🎉 ¡Pago completado!</p>'
-                : ""
-            }
+            <p><strong>Método:</strong> ${metodosPago.find((m) => m.valor === formulario.metodoPago)
+            ?.etiqueta
+          }</p>
+            ${seCompletara
+            ? '<p style="color: #10b981; font-weight: 600; margin-top: 1rem;">🎉 ¡Pago completado!</p>'
+            : ""
+          }
           </div>
         `,
         icon: "success",
@@ -242,9 +241,8 @@ const ModalAgregarAbono = ({
                       min="0"
                       step="0.01"
                       max={saldoPendiente}
-                      className={`modal-abono-input con-simbolo ${
-                        errores.montoAbono ? "error" : ""
-                      }`}
+                      className={`modal-abono-input con-simbolo ${errores.montoAbono ? "error" : ""
+                        }`}
                       placeholder="0.00"
                       disabled={enviando}
                     />
@@ -277,9 +275,8 @@ const ModalAgregarAbono = ({
                   value={formulario.fechaAbono}
                   onChange={(e) => manejarCambio("fechaAbono", e.target.value)}
                   max={new Date().toISOString().split("T")[0]}
-                  className={`modal-abono-input ${
-                    errores.fechaAbono ? "error" : ""
-                  }`}
+                  className={`modal-abono-input ${errores.fechaAbono ? "error" : ""
+                    }`}
                   disabled={enviando}
                 />
                 {errores.fechaAbono && (
@@ -303,9 +300,8 @@ const ModalAgregarAbono = ({
                 <select
                   value={formulario.metodoPago}
                   onChange={(e) => manejarCambio("metodoPago", e.target.value)}
-                  className={`modal-abono-select ${
-                    errores.metodoPago ? "error" : ""
-                  }`}
+                  className={`modal-abono-select ${errores.metodoPago ? "error" : ""
+                    }`}
                   disabled={enviando}
                 >
                   {metodosPago.map((metodo) => (
@@ -351,9 +347,8 @@ const ModalAgregarAbono = ({
 
           {montoIngresado > 0 && (
             <div
-              className={`modal-abono-resumen ${
-                seCompletara ? "completo" : ""
-              }`}
+              className={`modal-abono-resumen ${seCompletara ? "completo" : ""
+                }`}
             >
               <div className="modal-abono-resumen-header">
                 <Info size={16} />

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { RotateCcw, X, AlertCircle, CheckCircle } from "lucide-react";
 import "./ModalReactivarAbono.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
   const [procesando, setProcesando] = useState(false);
@@ -21,7 +22,7 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
 
       const token = localStorage.getItem("token");
       await axios.post(
-        `http://127.0.0.1:8000/api/abonos/${abono.id}/restore`,
+        `${API_CONFIG.BASE_URL}/abonos/${abono.id}/restore`,
         {},
         {
           headers: {
@@ -171,9 +172,8 @@ const ModalReactivarAbono = ({ estaAbierto, alCerrar, abono, alReactivar }) => {
           <button
             onClick={manejarReactivar}
             disabled={procesando || !motivoReactivacion.trim()}
-            className={`button button-reactivar ${
-              procesando || !motivoReactivacion.trim() ? "disabled" : ""
-            }`}
+            className={`button button-reactivar ${procesando || !motivoReactivacion.trim() ? "disabled" : ""
+              }`}
           >
             {procesando ? (
               <>

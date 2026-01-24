@@ -8,6 +8,7 @@ import ModalRestaurarCliente from './Modales/ModalRestaurarCliente';
 import ModalEliminarDefinitivo from './Modales/ModalEliminarDefinitivo';
 import ModalCrearCotizacion from './Modales/ModalCrearCotizacion';
 import './TablaClientes.css';
+import { API_CONFIG } from '../../../config/api';
 
 const TablaClientes = () => {
   const [permisos, setPermisos] = useState([]);
@@ -80,7 +81,7 @@ const TablaClientes = () => {
   const cargarConfiguracionPipelines = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://127.0.0.1:8000/api/leads/pipelines-config', {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/leads/pipelines-config`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json'
@@ -102,11 +103,11 @@ const TablaClientes = () => {
         return;
       }
 
-      let url = 'http://127.0.0.1:8000/api/clientes';
+      let url = `${API_CONFIG.BASE_URL}/clientes`;
       const params = new URLSearchParams();
 
       if (!mostrarTodos && filtroActivo.pipeline_id) {
-        url = 'http://127.0.0.1:8000/api/clientes/clientes-por-filtro';
+        url = `${API_CONFIG.BASE_URL}/clientes/clientes-por-filtro`;
         params.append('pipeline_id', filtroActivo.pipeline_id);
         params.append('etapa_id', filtroActivo.etapa_id);
         if (filtroActivo.estado_lead) {
@@ -162,7 +163,7 @@ const TablaClientes = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.patch(
-        `http://127.0.0.1:8000/api/leads/${leadId}/estado`,
+        `${API_CONFIG.BASE_URL}/leads/${leadId}/estado`,
         { estado_lead: nuevoEstado },
         {
           headers: {
@@ -183,7 +184,7 @@ const TablaClientes = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://127.0.0.1:8000/api/clientes/${datosActualizados.id}`,
+        `${API_CONFIG.BASE_URL}/clientes/${datosActualizados.id}`,
         datosActualizados,
         {
           headers: {
@@ -208,7 +209,7 @@ const TablaClientes = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(
-        `http://127.0.0.1:8000/api/clientes/${cliente.id}`,
+        `${API_CONFIG.BASE_URL}/clientes/${cliente.id}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -228,7 +229,7 @@ const TablaClientes = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        `http://127.0.0.1:8000/api/clientes/${cliente.id}/restore`,
+        `${API_CONFIG.BASE_URL}/clientes/${cliente.id}/restore`,
         {},
         {
           headers: {
@@ -247,7 +248,7 @@ const TablaClientes = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(
-        `http://127.0.0.1:8000/api/clientes/${cliente.id}/force`,
+        `${API_CONFIG.BASE_URL}/clientes/${cliente.id}/force`,
         {
           headers: {
             'Authorization': `Bearer ${token}`

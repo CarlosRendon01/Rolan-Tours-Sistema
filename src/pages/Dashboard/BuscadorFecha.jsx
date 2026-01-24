@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import ModalResultadosFechas from "./ModalResultadosFechas";
 import "./BuscadorFecha.css";
+import { API_CONFIG } from "../../config/api";
 
 const BuscadorFecha = () => {
   const [fechaDesde, setFechaDesde] = useState("");
@@ -87,7 +88,7 @@ const BuscadorFecha = () => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       const response = await axios.get(
-        'http://127.0.0.1:8000/api/ordenes-servicio/filtrar/rango-fechas',
+        `${API_CONFIG.BASE_URL}/ordenes-servicio/filtrar/rango-fechas`,
         {
           params: {
             fecha_inicio: fechaDesde,

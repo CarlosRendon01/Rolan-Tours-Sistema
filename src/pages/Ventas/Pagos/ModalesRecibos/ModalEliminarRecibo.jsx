@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import axios from "axios";
 import "./ModalEliminarRecibo.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const formatearMoneda = (cantidad) => {
   return new Intl.NumberFormat("es-MX", {
@@ -56,7 +57,7 @@ export const modalEliminarRecibo = async (recibo, onConfirmar) => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/abonos/${recibo.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/abonos/${recibo.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

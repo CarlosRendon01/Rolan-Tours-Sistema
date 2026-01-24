@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import './ModalEliminarCoordinador.css';
+import { API_CONFIG } from "../../../../config/api";
 
 export const modalEliminarCoordinador = async (coordinador, onConfirmar) => {
   if (!coordinador?.nombre || !coordinador?.apellido_paterno) {
@@ -47,7 +48,7 @@ export const modalEliminarCoordinador = async (coordinador, onConfirmar) => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:8000/api/coordinadores/${coordinador.id}`, {
+      await axios.delete(`${API_CONFIG.BASE_URL}/coordinadores/${coordinador.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

@@ -13,6 +13,7 @@ import {
   Wrench,
 } from "lucide-react";
 import "./MantenimientoPrincipal.css";
+import { API_CONFIG } from "../../config/api";
 
 const MantenimientoPrincipal = () => {
   const [vehiculos, setVehiculos] = useState([]);
@@ -25,7 +26,7 @@ const MantenimientoPrincipal = () => {
   const recargarVehiculos = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://127.0.0.1:8000/api/vehiculos", {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/vehiculos`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -40,7 +41,7 @@ const MantenimientoPrincipal = () => {
   const recargarVehiculoEspecifico = async (vehiculoId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://127.0.0.1:8000/api/vehiculos/${vehiculoId}`, {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/vehiculos/${vehiculoId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -138,7 +139,7 @@ const MantenimientoPrincipal = () => {
       }
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/mantenimientos",
+        `${API_CONFIG.BASE_URL}/mantenimientos`,
         formData,
         {
           headers: {
@@ -175,13 +176,23 @@ const MantenimientoPrincipal = () => {
       formData.append('fecha', new Date().toISOString().split('T')[0]);
 
       await axios.post(
-        "http://127.0.0.1:8000/api/mantenimientos",
+        `${API_CONFIG.BASE_URL}/mantenimientos`,
         formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
             'Content-Type': 'multipart/form-data',
+          }
+        }
+      );
+
+      await axios.get(
+        `${API_CONFIG.BASE_URL}/mantenimientos/verificar`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           }
         }
       );

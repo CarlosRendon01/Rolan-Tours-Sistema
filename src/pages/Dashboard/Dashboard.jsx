@@ -4,6 +4,7 @@ import PrincipalComponente from "../Generales/Componentes/PrincipalComponente";
 import BuscadorFecha from "./BuscadorFecha";
 import CalendarioViajes from "./CalendarioViajes";
 import "./Dashboard.css";
+import { API_CONFIG } from "../../config/api";
 
 const Dashboard = () => {
   const [estadisticas, setEstadisticas] = useState({
@@ -30,7 +31,7 @@ const Dashboard = () => {
 
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      const responseOrdenes = await axios.get('http://127.0.0.1:8000/api/ordenes-servicio');
+      const responseOrdenes = await axios.get(`${API_CONFIG.BASE_URL}/ordenes-servicio`);
       const ordenes = responseOrdenes.data;
 
       const formatearFechaISO = (fechaISO) => {

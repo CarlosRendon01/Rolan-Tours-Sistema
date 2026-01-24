@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { X, RefreshCw, Info } from "lucide-react";
 import "./ModalRegenerarRecibo.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalRegenerarRecibo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
   const [cargando, setCargando] = useState(false);
@@ -22,7 +23,7 @@ const ModalRegenerarRecibo = ({ recibo, onConfirmar, onCerrar, isOpen }) => {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        `http://127.0.0.1:8000/api/abonos/${recibo.id}/restore`,
+        `${API_CONFIG.BASE_URL}/abonos/${recibo.id}/restore`,
         {
           motivo_regeneracion: motivoRegeneracion,
         },

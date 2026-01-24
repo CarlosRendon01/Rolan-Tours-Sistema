@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './FormularioLoginCard.css';
 import axios from 'axios';
+import { API_CONFIG } from '../../config/api';
 
 const FormularioLoginCard = ({ alIniciarSesion }) => {
   const [correo, setCorreo] = useState('');
@@ -15,7 +16,7 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
     setMensajeError('');
 
     try {
-      const respuesta = await axios.post('http://127.0.0.1:8000/api/login', {
+      const respuesta = await axios.post(`${API_CONFIG.BASE_URL}/login`, {
         correo: correo,
         contrasena: contraseña,
       });
