@@ -45,7 +45,6 @@ const GuiasPrincipal = () => {
             setGuias(response.data);
 
         } catch (error) {
-            console.error('❌ Error al recargar guias:', error);
 
             if (error.code === 'ECONNABORTED') {
                 setError('La conexión tardó demasiado. Verifica tu servidor.');
@@ -93,31 +92,48 @@ const GuiasPrincipal = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const guiaData = {
-                nombre: nuevoGuia.nombre,
-                apellido_paterno: nuevoGuia.apellido_paterno,
-                apellido_materno: nuevoGuia.apellido_materno,
-                fecha_nacimiento: nuevoGuia.fecha_nacimiento,
-                email: nuevoGuia.email,
-                telefono: nuevoGuia.telefono,
-                telefono_emergencia: nuevoGuia.telefono_emergencia,
-                contacto_emergencia: nuevoGuia.contacto_emergencia,
-                ciudad: nuevoGuia.ciudad,
-                estado: nuevoGuia.estado,
-                costo_dia: parseFloat(nuevoGuia.costo_dia) || 0,
-                estado_operativo: nuevoGuia.estado_operativo,
-                nss: nuevoGuia.nss || null,
-                institucion_seguro: nuevoGuia.institucion_seguro || null,
-                idiomas: nuevoGuia.idiomas || null,
-                experiencia_anos: parseInt(nuevoGuia.experiencia_anos) || 0,
-                especialidades: nuevoGuia.especialidades || null,
-                certificacion_oficial: nuevoGuia.certificacion_oficial || null,
-                zona_servicio: nuevoGuia.zona_servicio || null,
-            };
+            const formData = new FormData();
+
+            formData.append('nombre', nuevoGuia.nombre);
+            formData.append('apellido_paterno', nuevoGuia.apellido_paterno);
+            formData.append('apellido_materno', nuevoGuia.apellido_materno);
+            formData.append('fecha_nacimiento', nuevoGuia.fecha_nacimiento);
+            formData.append('email', nuevoGuia.email);
+            formData.append('telefono', nuevoGuia.telefono);
+            formData.append('telefono_emergencia', nuevoGuia.telefono_emergencia);
+            formData.append('contacto_emergencia', nuevoGuia.contacto_emergencia);
+            formData.append('ciudad', nuevoGuia.ciudad);
+            formData.append('estado', nuevoGuia.estado);
+            formData.append('costo_dia', parseFloat(nuevoGuia.costo_dia) || 0);
+            formData.append('estado_operativo', nuevoGuia.estado_operativo);
+
+            formData.append('nss', nuevoGuia.nss || '');
+            formData.append('institucion_seguro', nuevoGuia.institucion_seguro || '');
+            formData.append('idiomas', nuevoGuia.idiomas || '');
+            formData.append('experiencia_anos', parseInt(nuevoGuia.experiencia_anos) || 0);
+            formData.append('especialidades', nuevoGuia.especialidades || '');
+            formData.append('certificacion_oficial', nuevoGuia.certificacion_oficial || '');
+            formData.append('zona_servicio', nuevoGuia.zona_servicio || '');
+
+            if (nuevoGuia.documentos?.foto_guia instanceof File) {
+                formData.append('foto_guia', nuevoGuia.documentos.foto_guia);
+            }
+            if (nuevoGuia.documentos?.foto_ine instanceof File) {
+                formData.append('foto_ine', nuevoGuia.documentos.foto_ine);
+            }
+            if (nuevoGuia.documentos?.foto_certificaciones instanceof File) {
+                formData.append('foto_certificaciones', nuevoGuia.documentos.foto_certificaciones);
+            }
+            if (nuevoGuia.documentos?.foto_licencia instanceof File) {
+                formData.append('foto_licencia', nuevoGuia.documentos.foto_licencia);
+            }
+            if (nuevoGuia.documentos?.foto_comprobante_domicilio instanceof File) {
+                formData.append('foto_comprobante_domicilio', nuevoGuia.documentos.foto_comprobante_domicilio);
+            }
 
             const response = await axios.post(
                 `${API_CONFIG.BASE_URL}/guias`,
-                guiaData,
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -126,11 +142,10 @@ const GuiasPrincipal = () => {
                 }
             );
 
-            cerrarModales();
             await recargarGuias();
+            return response.data;
         } catch (error) {
-            console.error("❌ Error al crear guía:", error);
-            alert("Error al crear guía: " + (error.response?.data?.error || error.message));
+            throw error;
         }
     };
 
@@ -138,44 +153,110 @@ const GuiasPrincipal = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const guiaData = {
-                nombre: guiaActualizado.nombre,
-                apellido_paterno: guiaActualizado.apellido_paterno,
-                apellido_materno: guiaActualizado.apellido_materno,
-                fecha_nacimiento: guiaActualizado.fecha_nacimiento,
-                email: guiaActualizado.email,
-                telefono: guiaActualizado.telefono,
-                telefono_emergencia: guiaActualizado.telefono_emergencia,
-                contacto_emergencia: guiaActualizado.contacto_emergencia,
-                ciudad: guiaActualizado.ciudad,
-                estado: guiaActualizado.estado,
-                costo_dia: parseFloat(guiaActualizado.costo_dia) || 0,
-                estado_operativo: guiaActualizado.estado_operativo,
-                nss: guiaActualizado.nss || null,
-                institucion_seguro: guiaActualizado.institucion_seguro || null,
-                idiomas: guiaActualizado.idiomas || null,
-                experiencia_anos: parseInt(guiaActualizado.experiencia_anos) || 0,
-                especialidades: guiaActualizado.especialidades || null,
-                certificacion_oficial: guiaActualizado.certificacion_oficial || null,
-                zona_servicio: guiaActualizado.zona_servicio || null,
-            };
+            const tieneArchivosNuevos =
+                (guiaActualizado.documentos?.foto_guia instanceof File) ||
+                (guiaActualizado.documentos?.foto_ine instanceof File) ||
+                (guiaActualizado.documentos?.foto_certificaciones instanceof File) ||
+                (guiaActualizado.documentos?.foto_licencia instanceof File) ||
+                (guiaActualizado.documentos?.foto_comprobante_domicilio instanceof File);
 
-            const response = await axios.put(
-                `${API_CONFIG.BASE_URL}/guias/${guiaActualizado.id}`,
-                guiaData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json",
-                    }
+            if (tieneArchivosNuevos) {
+                const formData = new FormData();
+
+                formData.append('nombre', guiaActualizado.nombre);
+                formData.append('apellido_paterno', guiaActualizado.apellido_paterno);
+                formData.append('apellido_materno', guiaActualizado.apellido_materno);
+                formData.append('fecha_nacimiento', guiaActualizado.fecha_nacimiento);
+                formData.append('email', guiaActualizado.email);
+                formData.append('telefono', guiaActualizado.telefono);
+                formData.append('telefono_emergencia', guiaActualizado.telefono_emergencia);
+                formData.append('contacto_emergencia', guiaActualizado.contacto_emergencia);
+                formData.append('ciudad', guiaActualizado.ciudad);
+                formData.append('estado', guiaActualizado.estado);
+                formData.append('costo_dia', parseFloat(guiaActualizado.costo_dia) || 0);
+                formData.append('estado_operativo', guiaActualizado.estado_operativo);
+
+                formData.append('nss', guiaActualizado.nss || '');
+                formData.append('institucion_seguro', guiaActualizado.institucion_seguro || '');
+                formData.append('idiomas', guiaActualizado.idiomas || '');
+                formData.append('experiencia_anos', parseInt(guiaActualizado.experiencia_anos) || 0);
+                formData.append('especialidades', guiaActualizado.especialidades || '');
+                formData.append('certificacion_oficial', guiaActualizado.certificacion_oficial || '');
+                formData.append('zona_servicio', guiaActualizado.zona_servicio || '');
+
+                if (guiaActualizado.documentos?.foto_guia instanceof File) {
+                    formData.append('foto_guia', guiaActualizado.documentos.foto_guia);
                 }
-            );
+                if (guiaActualizado.documentos?.foto_ine instanceof File) {
+                    formData.append('foto_ine', guiaActualizado.documentos.foto_ine);
+                }
+                if (guiaActualizado.documentos?.foto_certificaciones instanceof File) {
+                    formData.append('foto_certificaciones', guiaActualizado.documentos.foto_certificaciones);
+                }
+                if (guiaActualizado.documentos?.foto_licencia instanceof File) {
+                    formData.append('foto_licencia', guiaActualizado.documentos.foto_licencia);
+                }
+                if (guiaActualizado.documentos?.foto_comprobante_domicilio instanceof File) {
+                    formData.append('foto_comprobante_domicilio', guiaActualizado.documentos.foto_comprobante_domicilio);
+                }
 
-            cerrarModales();
-            await recargarGuias();
+                formData.append('_method', 'PUT');
+
+                const response = await axios.post(
+                    `${API_CONFIG.BASE_URL}/guias/${guiaActualizado.id}`,
+                    formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            Accept: "application/json",
+                        }
+                    }
+                );
+
+                await recargarGuias();
+                return response.data;
+
+            } else {
+                const guiaData = {
+                    nombre: guiaActualizado.nombre,
+                    apellido_paterno: guiaActualizado.apellido_paterno,
+                    apellido_materno: guiaActualizado.apellido_materno,
+                    fecha_nacimiento: guiaActualizado.fecha_nacimiento,
+                    email: guiaActualizado.email,
+                    telefono: guiaActualizado.telefono,
+                    telefono_emergencia: guiaActualizado.telefono_emergencia,
+                    contacto_emergencia: guiaActualizado.contacto_emergencia,
+                    ciudad: guiaActualizado.ciudad,
+                    estado: guiaActualizado.estado,
+                    costo_dia: parseFloat(guiaActualizado.costo_dia) || 0,
+                    estado_operativo: guiaActualizado.estado_operativo,
+                    nss: guiaActualizado.nss || null,
+                    institucion_seguro: guiaActualizado.institucion_seguro || null,
+                    idiomas: guiaActualizado.idiomas || null,
+                    experiencia_anos: parseInt(guiaActualizado.experiencia_anos) || null,
+                    especialidades: guiaActualizado.especialidades || null,
+                    certificacion_oficial: guiaActualizado.certificacion_oficial || null,
+                    zona_servicio: guiaActualizado.zona_servicio || null,
+                };
+
+                const response = await axios.put(
+                    `${API_CONFIG.BASE_URL}/guias/${guiaActualizado.id}`,
+                    guiaData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        }
+                    }
+                );
+
+                await recargarGuias();
+                return response.data;
+            }
+
         } catch (error) {
-            console.error("❌ Error al actualizar guía:", error);
-            alert("Error al actualizar guía: " + (error.response?.data?.error || error.message));
+            throw error;
         }
     };
 

@@ -45,7 +45,6 @@ const OperadoresPrincipal = () => {
             setOperadores(response.data);
 
         } catch (error) {
-            console.error('❌ Error al cargar operadores:', error);
 
             if (error.code === 'ECONNABORTED') {
                 setError('La conexión tardó demasiado. Verifica tu servidor.');
@@ -92,30 +91,37 @@ const OperadoresPrincipal = () => {
     const agregarOperador = async (nuevoOperador) => {
         try {
             const token = localStorage.getItem("token");
-            const operadorData = {
-                nombre: nuevoOperador.nombre,
-                apellido_paterno: nuevoOperador.apellidoPaterno,
-                apellido_materno: nuevoOperador.apellidoMaterno,
-                edad: parseInt(nuevoOperador.edad),
-                correo_electronico: nuevoOperador.correoElectronico,
-                telefono_personal: nuevoOperador.telefonoPersonal,
-                telefono_emergencia: nuevoOperador.telefonoEmergencia,
-                telefono_familiar: nuevoOperador.telefonoFamiliar || null,
-                numero_licencia: nuevoOperador.numeroLicencia,
-                fecha_vigencia_licencia: nuevoOperador.fechaVigenciaLicencia,
-                fecha_vencimiento_licencia: nuevoOperador.fechaVencimientoLicencia,
-                fecha_vencimiento_examen: nuevoOperador.fechaVencimientoExamen,
-                comentarios: nuevoOperador.comentarios || null,
-            };
+
+            const formData = new FormData();
+
+            formData.append('nombre', nuevoOperador.nombre);
+            formData.append('apellido_paterno', nuevoOperador.apellidoPaterno);
+            formData.append('apellido_materno', nuevoOperador.apellidoMaterno);
+            formData.append('edad', parseInt(nuevoOperador.edad));
+            formData.append('correo_electronico', nuevoOperador.correoElectronico);
+            formData.append('telefono_personal', nuevoOperador.telefonoPersonal);
+            formData.append('telefono_emergencia', nuevoOperador.telefonoEmergencia);
+            formData.append('telefono_familiar', nuevoOperador.telefonoFamiliar || '');
+            formData.append('numero_licencia', nuevoOperador.numeroLicencia);
+            formData.append('fecha_vigencia_licencia', nuevoOperador.fechaVigenciaLicencia);
+            formData.append('fecha_vencimiento_licencia', nuevoOperador.fechaVencimientoLicencia);
+            formData.append('fecha_vencimiento_examen', nuevoOperador.fechaVencimientoExamen);
+            formData.append('comentarios', nuevoOperador.comentarios || '');
+
+            if (nuevoOperador.foto instanceof File) {
+                formData.append('foto', nuevoOperador.foto);
+            }
+            if (nuevoOperador.ine instanceof File) {
+                formData.append('ine', nuevoOperador.ine);
+            }
 
             const response = await axios.post(
                 `${API_CONFIG.BASE_URL}/operadores`,
-                operadorData,
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         Accept: "application/json",
-                        "Content-Type": "application/json",
                     }
                 }
             );
@@ -124,8 +130,6 @@ const OperadoresPrincipal = () => {
             return response.data;
 
         } catch (error) {
-            console.error("❌ Error al crear operador:", error);
-            console.error("❌ Respuesta del servidor:", error.response?.data);
             throw error;
         }
     };
@@ -133,39 +137,85 @@ const OperadoresPrincipal = () => {
     const actualizarOperador = async (operadorActualizado) => {
         try {
             const token = localStorage.getItem("token");
-            const operadorData = {
-                nombre: operadorActualizado.nombre,
-                apellido_paterno: operadorActualizado.apellidoPaterno,
-                apellido_materno: operadorActualizado.apellidoMaterno,
-                edad: parseInt(operadorActualizado.edad),
-                correo_electronico: operadorActualizado.correoElectronico,
-                telefono_personal: operadorActualizado.telefonoPersonal,
-                telefono_emergencia: operadorActualizado.telefonoEmergencia,
-                telefono_familiar: operadorActualizado.telefonoFamiliar || null,
-                numero_licencia: operadorActualizado.numeroLicencia,
-                fecha_vigencia_licencia: operadorActualizado.fechaVigenciaLicencia,
-                fecha_vencimiento_licencia: operadorActualizado.fechaVencimientoLicencia,
-                fecha_vencimiento_examen: operadorActualizado.fechaVencimientoExamen,
-                comentarios: operadorActualizado.comentarios || null,
-            };
 
-            const response = await axios.put(
-                `${API_CONFIG.BASE_URL}/operadores/${operadorActualizado.id}`,
-                operadorData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                    }
+            const tieneArchivosNuevos =
+                (operadorActualizado.foto instanceof File) ||
+                (operadorActualizado.ine instanceof File);
+
+            if (tieneArchivosNuevos) {
+                const formData = new FormData();
+
+                formData.append('nombre', operadorActualizado.nombre);
+                formData.append('apellido_paterno', operadorActualizado.apellidoPaterno);
+                formData.append('apellido_materno', operadorActualizado.apellidoMaterno);
+                formData.append('edad', parseInt(operadorActualizado.edad));
+                formData.append('correo_electronico', operadorActualizado.correoElectronico);
+                formData.append('telefono_personal', operadorActualizado.telefonoPersonal);
+                formData.append('telefono_emergencia', operadorActualizado.telefonoEmergencia);
+                formData.append('telefono_familiar', operadorActualizado.telefonoFamiliar || '');
+                formData.append('numero_licencia', operadorActualizado.numeroLicencia);
+                formData.append('fecha_vigencia_licencia', operadorActualizado.fechaVigenciaLicencia);
+                formData.append('fecha_vencimiento_licencia', operadorActualizado.fechaVencimientoLicencia);
+                formData.append('fecha_vencimiento_examen', operadorActualizado.fechaVencimientoExamen);
+                formData.append('comentarios', operadorActualizado.comentarios || '');
+
+                if (operadorActualizado.foto instanceof File) {
+                    formData.append('foto', operadorActualizado.foto);
                 }
-            );
-            await recargarOperadores();
-            return response.data;
+                if (operadorActualizado.ine instanceof File) {
+                    formData.append('ine', operadorActualizado.ine);
+                }
+
+                formData.append('_method', 'PUT');
+
+                const response = await axios.post(
+                    `${API_CONFIG.BASE_URL}/operadores/${operadorActualizado.id}`,
+                    formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            Accept: "application/json",
+                        }
+                    }
+                );
+
+                await recargarOperadores();
+                return response.data;
+
+            } else {
+                const operadorData = {
+                    nombre: operadorActualizado.nombre,
+                    apellido_paterno: operadorActualizado.apellidoPaterno,
+                    apellido_materno: operadorActualizado.apellidoMaterno,
+                    edad: parseInt(operadorActualizado.edad),
+                    correo_electronico: operadorActualizado.correoElectronico,
+                    telefono_personal: operadorActualizado.telefonoPersonal,
+                    telefono_emergencia: operadorActualizado.telefonoEmergencia,
+                    telefono_familiar: operadorActualizado.telefonoFamiliar || null,
+                    numero_licencia: operadorActualizado.numeroLicencia,
+                    fecha_vigencia_licencia: operadorActualizado.fechaVigenciaLicencia,
+                    fecha_vencimiento_licencia: operadorActualizado.fechaVencimientoLicencia,
+                    fecha_vencimiento_examen: operadorActualizado.fechaVencimientoExamen,
+                    comentarios: operadorActualizado.comentarios || null,
+                };
+
+                const response = await axios.put(
+                    `${API_CONFIG.BASE_URL}/operadores/${operadorActualizado.id}`,
+                    operadorData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        }
+                    }
+                );
+
+                await recargarOperadores();
+                return response.data;
+            }
 
         } catch (error) {
-            console.error("❌ Error al actualizar operador:", error);
-            console.error("❌ Respuesta del servidor:", error.response?.data);
             throw error;
         }
     };

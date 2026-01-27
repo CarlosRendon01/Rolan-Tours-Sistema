@@ -131,7 +131,7 @@ const RestaurantePrincipal = () => {
         else if (value instanceof File) {
           formData.append(key, value);
         }
-        else if (value !== null && val1ue !== undefined && value !== '') {
+        else if (value !== null && value !== undefined && value !== '') {
           formData.append(key, value);
         }
       });

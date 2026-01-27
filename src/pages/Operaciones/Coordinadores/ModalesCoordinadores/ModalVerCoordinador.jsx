@@ -5,6 +5,7 @@ import {
   Briefcase, Globe, Award, Home, Building2
 } from 'lucide-react';
 import './ModalVerCoordinador.css';
+import { API_CONFIG } from '../../../../../src/config/api';
 
 const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
   const obtenerUrlArchivo = (archivo) => {
@@ -75,34 +76,61 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
 
     alert('No hay documento disponible para visualizar');
   };
-  const handleDescargar = (archivo, nombreDocumento) => {
-    if (!archivo) {
-      alert('No hay documento disponible para descargar');
-      return;
-    }
-    if (archivo instanceof File) {
-      const url = URL.createObjectURL(archivo);
+
+  const handleDescargar = async (tipoDocumento) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const tiposMap = {
+        foto_coordinador: 'foto_coordinador',
+        foto_ine: 'foto_ine',
+        foto_certificaciones: 'foto_certificaciones',
+        foto_comprobante_domicilio: 'foto_comprobante_domicilio',
+        contrato_laboral: 'contrato_laboral'
+      };
+
+      const tipo = tiposMap[tipoDocumento];
+      const url = `${API_CONFIG.BASE_URL}/coordinadores/${coordinador.id}/documentos/${tipo}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al descargar el documento');
+      }
+
+      const blob = await response.blob();
+      const urlBlob = window.URL.createObjectURL(blob);
+
+      const contentDisposition = response.headers.get('content-disposition');
+      let filename = `${coordinador.nombre}_${coordinador.apellido_paterno}_${tipoDocumento}`;
+
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, '');
+        }
+      }
+
       const link = document.createElement('a');
-      link.href = url;
-      link.download = archivo.name || `${coordinador.nombre}_${coordinador.apellido_paterno}_${nombreDocumento}`;
+      link.href = urlBlob;
+      link.download = filename;
+      link.style.display = 'none';
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      return;
-    }
 
-    if (typeof archivo === 'string') {
-      const link = document.createElement('a');
-      link.href = archivo;
-      link.download = `${coordinador.nombre}_${coordinador.apellido_paterno}_${nombreDocumento}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      return;
-    }
+      window.URL.revokeObjectURL(urlBlob);
 
-    alert('No hay documento disponible para descargar');
+    } catch (error) {
+      console.error('Error al descargar:', error);
+      alert('Error al descargar el documento. Por favor, intenta nuevamente.');
+    }
   };
 
   const tieneDocumentos = fotoUrl || ineUrl || certificacionesUrl || comprobanteUrl || contratoUrl;
@@ -397,7 +425,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                             </button>
                             <button
                               className="mvc-btn-descargar mvc-btn-download"
-                              onClick={() => handleDescargar(coordinador.foto_coordinador, 'foto')}
+                              onClick={() => handleDescargar('foto_coordinador')}
                               title="Descargar fotografía"
                             >
                               <Download size={16} />
@@ -422,7 +450,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                             </button>
                             <button
                               className="mvc-btn-descargar mvc-btn-download"
-                              onClick={() => handleDescargar(coordinador.foto_ine, 'ine')}
+                              onClick={() => handleDescargar('foto_ine')}
                               title="Descargar INE"
                             >
                               <Download size={16} />
@@ -447,7 +475,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                             </button>
                             <button
                               className="mvc-btn-descargar mvc-btn-download"
-                              onClick={() => handleDescargar(coordinador.foto_certificaciones, 'certificaciones')}
+                              onClick={() => handleDescargar('foto_certificaciones')}
                               title="Descargar certificaciones"
                             >
                               <Download size={16} />
@@ -472,7 +500,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                             </button>
                             <button
                               className="mvc-btn-descargar mvc-btn-download"
-                              onClick={() => handleDescargar(coordinador.foto_comprobante_domicilio, 'comprobante_domicilio')}
+                              onClick={() => handleDescargar('foto_comprobante_domicilio')}
                               title="Descargar comprobante"
                             >
                               <Download size={16} />
@@ -497,7 +525,7 @@ const ModalVerCoordinador = ({ coordinador, onCerrar }) => {
                             </button>
                             <button
                               className="mvc-btn-descargar mvc-btn-download"
-                              onClick={() => handleDescargar(coordinador.contrato_laboral, 'contrato')}
+                              onClick={() => handleDescargar('contrato_laboral')}
                               title="Descargar contrato"
                             >
                               <Download size={16} />

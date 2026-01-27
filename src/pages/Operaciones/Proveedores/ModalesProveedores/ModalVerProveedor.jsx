@@ -4,26 +4,13 @@ import {
   User, Globe, CheckCircle
 } from 'lucide-react';
 import './ModalVerProveedor.css';
+import { API_CONFIG } from '../../../../config/api';
 
 const ModalVerProveedor = ({ proveedor, onCerrar }) => {
 
-  const obtenerUrlArchivo = (archivo) => {
-    if (!archivo) return null;
-
-    if (typeof archivo === 'string') {
-      return archivo;
-    }
-
-    if (archivo instanceof File) {
-      return URL.createObjectURL(archivo);
-    }
-
-    return null;
-  };
-
-  const fotoUrl = obtenerUrlArchivo(proveedor.foto_proveedor);
-  const rfcUrl = obtenerUrlArchivo(proveedor.documento_rfc);
-  const identificacionUrl = obtenerUrlArchivo(proveedor.identificacion);
+  const fotoUrl = proveedor.documentos?.foto_proveedor;
+  const rfcUrl = proveedor.documentos?.documento_rfc;
+  const identificacionUrl = proveedor.documentos?.identificacion;
 
   const formatearTelefono = (telefono) => {
     if (!telefono) return 'N/A';
@@ -60,55 +47,82 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
     }
   };
 
-  const handleVerDocumento = (archivo) => {
-    if (!archivo) {
-      alert('No hay documento disponible para visualizar');
-      return;
-    }
+  const handleVerDocumento = (tipoDocumento) => {
+    const urls = {
+      'foto_proveedor': fotoUrl,
+      'documento_rfc': rfcUrl,
+      'identificacion': identificacionUrl
+    };
 
-    if (archivo instanceof File) {
-      const url = URL.createObjectURL(archivo);
-      window.open(url, '_blank');
-      return;
-    }
+    const url = urls[tipoDocumento];
 
-    if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
-      window.open(archivo, '_blank');
-      return;
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
     }
-
-    alert('No hay documento disponible para visualizar');
   };
 
-  const handleDescargar = (archivo, nombreDocumento) => {
-    if (!archivo) {
-      alert('No hay documento disponible para descargar');
-      return;
-    }
+  const handleDescargar = async (tipoDocumento) => {
+    try {
+      const token = localStorage.getItem("token");
 
-    if (archivo instanceof File) {
-      const url = URL.createObjectURL(archivo);
+      if (!token) {
+        alert('No hay token de autenticación');
+        return;
+      }
+
+      const url = `${API_CONFIG.BASE_URL}/proveedores/${proveedor.id}/documentos/${tipoDocumento}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      const urlBlob = window.URL.createObjectURL(blob);
+
+      const contentType = response.headers.get('content-type');
+      let extension = '';
+
+      if (contentType) {
+        if (contentType.includes('pdf')) extension = '.pdf';
+        else if (contentType.includes('png')) extension = '.png';
+        else if (contentType.includes('jpeg') || contentType.includes('jpg')) extension = '.jpg';
+      }
+
+      const nombreLimpio = proveedor.nombre_razon_social
+        .replace(/[^a-zA-Z0-9]/g, '_')
+        .replace(/_+/g, '_')
+        .replace(/^_|_$/g, '');
+
+      const nombresDocumentos = {
+        'foto_proveedor': 'foto',
+        'documento_rfc': 'rfc',
+        'identificacion': 'identificacion'
+      };
+
+      const tipoDoc = nombresDocumentos[tipoDocumento] || tipoDocumento;
+      const filename = `${nombreLimpio}_${tipoDoc}${extension}`;
+
       const link = document.createElement('a');
-      link.href = url;
-      link.download = archivo.name || `${proveedor.nombre_razon_social}_${nombreDocumento}`;
+      link.href = urlBlob;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      return;
-    }
 
-    if (typeof archivo === 'string') {
-      const link = document.createElement('a');
-      link.href = archivo;
-      link.download = `${proveedor.nombre_razon_social}_${nombreDocumento}`;
-      document.body.appendChild(link);
-      link.click();
       document.body.removeChild(link);
-      return;
-    }
+      window.URL.revokeObjectURL(urlBlob);
 
-    alert('No hay documento disponible para descargar');
+    } catch (error) {
+      console.error('Error al descargar:', error);
+      alert(`Error al descargar el documento: ${error.message}`);
+    }
   };
 
   const tieneDocumentos = fotoUrl || rfcUrl || identificacionUrl;
@@ -291,7 +305,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                           <div className="mvp-botones-documento">
                             <button
                               className="mvp-btn-descargar mvp-btn-ver"
-                              onClick={() => handleVerDocumento(proveedor.foto_proveedor)}
+                              onClick={() => handleVerDocumento('foto_proveedor')}
                               title="Ver fotografía en nueva pestaña"
                             >
                               <Eye size={16} />
@@ -299,7 +313,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                             </button>
                             <button
                               className="mvp-btn-descargar mvp-btn-download"
-                              onClick={() => handleDescargar(proveedor.foto_proveedor, 'foto')}
+                              onClick={() => handleDescargar('foto_proveedor')}
                               title="Descargar fotografía"
                             >
                               <Download size={16} />
@@ -316,7 +330,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                           <div className="mvp-botones-documento">
                             <button
                               className="mvp-btn-descargar mvp-btn-ver"
-                              onClick={() => handleVerDocumento(proveedor.documento_rfc)}
+                              onClick={() => handleVerDocumento('documento_rfc')}
                               title="Ver RFC en nueva pestaña"
                             >
                               <Eye size={16} />
@@ -324,7 +338,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                             </button>
                             <button
                               className="mvp-btn-descargar mvp-btn-download"
-                              onClick={() => handleDescargar(proveedor.documento_rfc, 'rfc')}
+                              onClick={() => handleDescargar('documento_rfc')}
                               title="Descargar RFC"
                             >
                               <Download size={16} />
@@ -341,7 +355,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                           <div className="mvp-botones-documento">
                             <button
                               className="mvp-btn-descargar mvp-btn-ver"
-                              onClick={() => handleVerDocumento(proveedor.identificacion)}
+                              onClick={() => handleVerDocumento('identificacion')}
                               title="Ver identificación en nueva pestaña"
                             >
                               <Eye size={16} />
@@ -349,7 +363,7 @@ const ModalVerProveedor = ({ proveedor, onCerrar }) => {
                             </button>
                             <button
                               className="mvp-btn-descargar mvp-btn-download"
-                              onClick={() => handleDescargar(proveedor.identificacion, 'identificacion')}
+                              onClick={() => handleDescargar('identificacion')}
                               title="Descargar identificación"
                             >
                               <Download size={16} />

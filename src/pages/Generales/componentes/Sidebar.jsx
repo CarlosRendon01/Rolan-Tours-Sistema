@@ -28,6 +28,16 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const location = useLocation();
   const responsive = useResponsive();
 
+  // Obtener permisos del usuario
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const permisos = user.permisos || [];
+
+  // Función para verificar si el usuario tiene un permiso
+  const tienePermiso = (permiso) => {
+    if (!permiso) return true; // Si no requiere permiso, mostrar
+    return permisos.includes(permiso);
+  };
+
   useEffect(() => {
     const rutaActual = location.pathname;
     switch (rutaActual) {
@@ -52,23 +62,15 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setElementoActivo('Contratos');
         setDocumentosAbierto(true);
         break;
-      case '/facturas':
-        setElementoActivo('Facturas');
-        setDocumentosAbierto(true);
-        break;
-      case '/recibos':
-        setElementoActivo('Recibos');
-        setDocumentosAbierto(true);
-        break;
-
       case '/orden-servicio':
         setElementoActivo('OrdenServicio');
-        setOperacionesAbierto(true);
+        setDocumentosAbierto(true);
         break;
       case '/reservas':
         setElementoActivo('Reservas');
-        setOperacionesAbierto(true);
+        setDocumentosAbierto(true);
         break;
+
       case '/operadores':
         setElementoActivo('Operadores');
         setOperacionesAbierto(true);
@@ -219,17 +221,23 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     }
   };
 
+  // Definir elementos del menú con permisos
   const elementosMenu = [
-    { id: 'Principal', icono: Home, etiqueta: 'Dashboard' },
+    {
+      id: 'Principal',
+      icono: Home,
+      etiqueta: 'Dashboard',
+      permiso: 'dashboard.ver'
+    },
     {
       id: 'Ventas',
       icono: ShoppingCart,
       etiqueta: 'Ventas',
       tieneSubmenu: true,
       submenu: [
-        { id: 'Clientes', icono: User, etiqueta: 'Clientes' },
-        { id: 'Cotizaciones', icono: FileCheck, etiqueta: 'Cotizaciones' },
-        { id: 'Pagos', icono: CreditCard, etiqueta: 'Pagos' }
+        { id: 'Clientes', icono: User, etiqueta: 'Clientes', permiso: 'ventas.clientes.ver' },
+        { id: 'Cotizaciones', icono: FileCheck, etiqueta: 'Cotizaciones', permiso: 'ventas.cotizaciones.ver' },
+        { id: 'Pagos', icono: CreditCard, etiqueta: 'Pagos', permiso: 'ventas.pagos.ver' }
       ]
     },
     {
@@ -238,9 +246,9 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       etiqueta: 'Documentos',
       tieneSubmenu: true,
       submenu: [
-        { id: 'Contratos', icono: FileSignature, etiqueta: 'Contratos' },
-        { id: 'OrdenServicio', icono: ClipboardList, etiqueta: 'Órdenes de Servicio' },
-        { id: 'Reservas', icono: Calendar, etiqueta: 'Reservas' }
+        { id: 'Contratos', icono: FileSignature, etiqueta: 'Contratos', permiso: 'documentos.contratos.ver' },
+        { id: 'OrdenServicio', icono: ClipboardList, etiqueta: 'Órdenes de Servicio', permiso: 'documentos.ordenes.ver' },
+        { id: 'Reservas', icono: Calendar, etiqueta: 'Reservas', permiso: 'documentos.reservas.ver' }
       ]
     },
     {
@@ -249,9 +257,9 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       etiqueta: 'Operaciones',
       tieneSubmenu: true,
       submenu: [
-        { id: 'Operadores', icono: UserCheck, etiqueta: 'Operadores' },
-        { id: 'Vehiculos', icono: Car, etiqueta: 'Vehículos' },
-        { id: 'Guias', icono: Map, etiqueta: 'Guías' },
+        { id: 'Operadores', icono: UserCheck, etiqueta: 'Operadores', permiso: 'operaciones.operadores.ver' },
+        { id: 'Vehiculos', icono: Car, etiqueta: 'Vehículos', permiso: 'operaciones.vehiculos.ver' },
+        { id: 'Guias', icono: Map, etiqueta: 'Guías', permiso: 'operaciones.guias.ver' },
         { id: 'Proveedores', icono: Building, etiqueta: 'Proveedores' },
         { id: 'Coordinadores', icono: UserCog, etiqueta: 'Coordinadores' }
       ]
@@ -262,10 +270,10 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       etiqueta: 'Servicios',
       tieneSubmenu: true,
       submenu: [
-        { id: 'Transporte', icono: Plane, etiqueta: 'Transporte' },
-        { id: 'Restaurantes', icono: UtensilsCrossed, etiqueta: 'Restaurantes' },
-        { id: 'Tours', icono: MapPin, etiqueta: 'Tours' },
-        { id: 'Hospedaje', icono: Bed, etiqueta: 'Hospedaje' }
+        { id: 'Transporte', icono: Plane, etiqueta: 'Transporte', permiso: 'servicios.transporte.ver' },
+        { id: 'Restaurantes', icono: UtensilsCrossed, etiqueta: 'Restaurantes', permiso: 'servicios.restaurantes.ver' },
+        { id: 'Tours', icono: MapPin, etiqueta: 'Tours', permiso: 'servicios.tours.ver' },
+        { id: 'Hospedaje', icono: Bed, etiqueta: 'Hospedaje', permiso: 'servicios.hospedaje.ver' }
       ]
     },
     {
@@ -274,7 +282,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       etiqueta: 'Mantenimiento',
       tieneSubmenu: true,
       submenu: [
-        { id: 'MantenimientoVehiculos', icono: Car, etiqueta: 'Mantenimiento de Vehículos' }
+        { id: 'MantenimientoVehiculos', icono: Car, etiqueta: 'Mantenimiento de Vehículos', permiso: 'mantenimiento.ver' }
       ]
     },
     {
@@ -283,11 +291,30 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       etiqueta: "Administración",
       tieneSubmenu: true,
       submenu: [
-        { id: "Roles", icono: UserCog, etiqueta: "Roles" },
-        { id: "Usuarios", icono: User, etiqueta: "Usuarios" },
+        { id: "Roles", icono: UserCog, etiqueta: "Roles", permiso: 'administracion.roles.ver' },
+        { id: "Usuarios", icono: User, etiqueta: "Usuarios", permiso: 'administracion.usuarios.ver' },
       ],
     },
   ];
+
+  // Filtrar elementos del menú según permisos
+  const elementosMenuFiltrados = elementosMenu.map(elemento => {
+    if (elemento.tieneSubmenu) {
+      // Filtrar submenús
+      const submenuFiltrado = elemento.submenu.filter(subElemento =>
+        tienePermiso(subElemento.permiso)
+      );
+
+      // Solo mostrar el menú padre si tiene al menos un submenú visible
+      if (submenuFiltrado.length > 0) {
+        return { ...elemento, submenu: submenuFiltrado };
+      }
+      return null;
+    }
+
+    // Para elementos sin submenú, verificar permiso directamente
+    return tienePermiso(elemento.permiso) ? elemento : null;
+  }).filter(Boolean); // Eliminar elementos null
 
   const manejarNavegacion = (elementoId) => {
     switch (elementoId) {
@@ -446,7 +473,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       >
         <nav className="navegacion-sidebar">
           <ul className="lista-navegacion">
-            {elementosMenu.map((elemento) => {
+            {elementosMenuFiltrados.map((elemento) => {
               const ComponenteIcono = elemento.icono;
               const estaActivo = elementoActivo === elemento.id;
 

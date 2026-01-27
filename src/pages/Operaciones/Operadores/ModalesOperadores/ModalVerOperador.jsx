@@ -1,13 +1,14 @@
-import { 
-  X, User, Phone, Mail, Calendar, CreditCard, 
+import {
+  X, User, Phone, Mail, Calendar, CreditCard,
   FileText, Hash, Shield, Clock, Eye, Download,
   UserCircle, CheckCircle, AlertCircle, XCircle
 } from 'lucide-react';
 import './ModalVerOperador.css';
 import CredencialOperador from '../Credenciales/CredencialOperador';
+import { API_CONFIG } from '../../../../config/api';
 
 const ModalVerOperador = ({ operador, onCerrar }) => {
-  
+
   const obtenerUrlArchivo = (archivo) => {
     if (!archivo) return null;
     if (typeof archivo === 'string') {
@@ -33,16 +34,16 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
   const formatearFecha = (fecha) => {
     if (!fecha) return 'N/A';
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-MX', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
   const obtenerEstadoVigencia = (fechaVencimiento) => {
     if (!fechaVencimiento) return { clase: 'vencida', texto: 'Sin fecha', icono: XCircle };
-    
+
     const hoy = new Date();
     const vencimiento = new Date(fechaVencimiento);
     const diferenciaDias = Math.ceil((vencimiento - hoy) / (1000 * 60 * 60 * 24));
@@ -56,55 +57,65 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
     }
   };
 
-  const handleVerDocumento = (archivo) => {
-    if (!archivo) {
-      alert('No hay documento disponible para visualizar');
+  const handleVerDocumento = (url) => {
+    if (!url) {
       return;
     }
-    
-    if (archivo instanceof File) {
-      const url = URL.createObjectURL(archivo);
+
+    if (typeof url === 'string' && url.trim() !== '') {
       window.open(url, '_blank');
-      return;
+    } else {
     }
-    
-    if (typeof archivo === 'string' && archivo !== 'null' && archivo !== null) {
-      window.open(archivo, '_blank');
-      return;
-    }
-    
-    alert('No hay documento disponible para visualizar');
   };
 
-  const handleDescargar = (archivo, nombreDocumento) => {
-    if (!archivo) {
-      alert('No hay documento disponible para descargar');
-      return;
-    }
-    
-    if (archivo instanceof File) {
-      const url = URL.createObjectURL(archivo);
+  const handleDescargar = async (tipoDocumento) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      const url = `${API_CONFIG.BASE_URL}/operadores/${operador.id}/documentos/${tipoDocumento}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al descargar el archivo');
+      }
+
+      const blob = await response.blob();
+
+      const urlBlob = window.URL.createObjectURL(blob);
+
+      const contentDisposition = response.headers.get('content-disposition');
+      let filename = `${operador.nombre}_${operador.apellidoPaterno}_${tipoDocumento}`;
+
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, '');
+        }
+      }
+
       const link = document.createElement('a');
-      link.href = url;
-      link.download = archivo.name || `${operador.nombre}_${operador.apellidoPaterno}_${nombreDocumento}`;
+      link.href = urlBlob;
+      link.download = filename;
+      link.style.display = 'none';
+
       document.body.appendChild(link);
       link.click();
+
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      return;
+      window.URL.revokeObjectURL(urlBlob);
+
+    } catch (error) {
     }
-    
-    if (typeof archivo === 'string') {
-      const link = document.createElement('a');
-      link.href = archivo;
-      link.download = `${operador.nombre}_${operador.apellidoPaterno}_${nombreDocumento}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      return;
-    }
-    
-    alert('No hay documento disponible para descargar');
   };
 
   const tieneDocumentos = fotoUrl || ineUrl;
@@ -160,7 +171,7 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mvo-operador-imagen-container">
                   <CredencialOperador operador={operador} />
                 </div>
@@ -317,7 +328,7 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                           <UserCircle size={32} />
                           <span>Fotografía</span>
                           <div className="mvo-botones-documento">
-                            <button 
+                            <button
                               className="mvo-btn-descargar mvo-btn-ver"
                               onClick={() => handleVerDocumento(operador.foto)}
                               title="Ver fotografía en nueva pestaña"
@@ -325,9 +336,9 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvo-btn-descargar mvo-btn-download"
-                              onClick={() => handleDescargar(operador.foto, 'foto')}
+                              onClick={() => handleDescargar('foto')}
                               title="Descargar fotografía"
                             >
                               <Download size={16} />
@@ -336,13 +347,13 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                           </div>
                         </div>
                       )}
-                      
+
                       {ineUrl && (
                         <div className="mvo-documento-item">
                           <CreditCard size={32} />
                           <span>INE</span>
                           <div className="mvo-botones-documento">
-                            <button 
+                            <button
                               className="mvo-btn-descargar mvo-btn-ver"
                               onClick={() => handleVerDocumento(operador.ine)}
                               title="Ver INE en nueva pestaña"
@@ -350,9 +361,9 @@ const ModalVerOperador = ({ operador, onCerrar }) => {
                               <Eye size={16} />
                               Ver
                             </button>
-                            <button 
+                            <button
                               className="mvo-btn-descargar mvo-btn-download"
-                              onClick={() => handleDescargar(operador.ine, 'ine')}
+                              onClick={() => handleDescargar('ine')}
                               title="Descargar INE"
                             >
                               <Download size={16} />

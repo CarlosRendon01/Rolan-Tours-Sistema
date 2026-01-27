@@ -17,6 +17,7 @@ import {
   Upload,
 } from "lucide-react";
 import "./ModalVerReserva.css";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
   const [seccionActiva, setSeccionActiva] = useState("basicos");
@@ -63,56 +64,64 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
     }).format(cantidad);
   };
 
-  const handleVerDocumento = (archivo) => {
-    if (!archivo) {
-      alert("No hay documento disponible para visualizar");
+  const handleVerDocumento = (url) => {
+    if (!url) {
+      alert('No hay documento disponible para visualizar');
       return;
     }
 
-    if (archivo instanceof File) {
-      const url = URL.createObjectURL(archivo);
-      window.open(url, "_blank");
-      return;
+    if (typeof url === 'string' && url.trim() !== '') {
+      window.open(url, '_blank');
+    } else {
+      alert('No hay documento disponible para visualizar');
     }
-
-    if (typeof archivo === "string" && archivo !== "null" && archivo !== null) {
-      window.open(archivo, "_blank");
-      return;
-    }
-
-    alert("No hay documento disponible para visualizar");
   };
 
-  const handleDescargar = (archivo, nombreDocumento) => {
-    if (!archivo) {
-      alert("No hay documento disponible para descargar");
-      return;
-    }
+  const handleDescargar = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    if (archivo instanceof File) {
-      const url = URL.createObjectURL(archivo);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download =
-        archivo.name || `Reserva_${reserva.folio}_${nombreDocumento}`;
+      const url = `${API_CONFIG.BASE_URL}/reservas/${reserva.id}/comprobante`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al descargar el comprobante');
+      }
+
+      const blob = await response.blob();
+      const urlBlob = window.URL.createObjectURL(blob);
+
+      const contentDisposition = response.headers.get('content-disposition');
+      let filename = `Comprobante_Reserva_${reserva.folio}`;
+
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, '');
+        }
+      }
+
+      const link = document.createElement('a');
+      link.href = urlBlob;
+      link.download = filename;
+      link.style.display = 'none';
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      return;
-    }
 
-    if (typeof archivo === "string") {
-      const link = document.createElement("a");
-      link.href = archivo;
-      link.download = `Reserva_${reserva.folio}_${nombreDocumento}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      return;
-    }
+      window.URL.revokeObjectURL(urlBlob);
 
-    alert("No hay documento disponible para descargar");
+    } catch (error) {
+      console.error('Error al descargar:', error);
+      alert('Error al descargar el comprobante. Por favor, intenta nuevamente.');
+    }
   };
 
   const renderSeccionBasicos = () => (
@@ -295,8 +304,8 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
           </label>
           <div
             className={`mvg-campo-valor ${reserva.pagado === "pagado"
-                ? "mvg-estado-pagado"
-                : "mvg-estado-no-pagado"
+              ? "mvg-estado-pagado"
+              : "mvg-estado-no-pagado"
               }`}
           >
             {reserva.pagado === "pagado" ? "✓ Pagado" : "✗ No Pagado"}
@@ -338,12 +347,7 @@ const ModalVerReserva = ({ reserva, onCerrar, estaAbierto }) => {
                   </button>
                   <button
                     className="mvg-btn-accion mvg-btn-descargar"
-                    onClick={() =>
-                      handleDescargar(
-                        reserva.fotoTransferencia,
-                        "comprobante_transferencia"
-                      )
-                    }
+                    onClick={handleDescargar}
                   >
                     <Download size={16} />
                     Descargar

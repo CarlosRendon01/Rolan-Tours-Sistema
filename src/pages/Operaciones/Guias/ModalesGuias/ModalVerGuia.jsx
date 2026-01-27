@@ -5,6 +5,7 @@ import {
   Home, Users
 } from 'lucide-react';
 import './ModalVerGuia.css';
+import { API_CONFIG } from '../../../../config/api';
 
 const ModalVerGuia = ({ guia, onCerrar }) => {
 
@@ -80,35 +81,54 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
     alert('No hay documento disponible para visualizar');
   };
 
-  const handleDescargar = (archivo, nombreDocumento) => {
-    if (!archivo) {
-      alert('No hay documento disponible para descargar');
-      return;
-    }
+  const handleDescargar = async (tipoDocumento) => {
+    try {
+      const token = localStorage.getItem("token");
 
-    if (archivo instanceof File) {
-      const url = URL.createObjectURL(archivo);
+      if (!token) {
+        return;
+      }
+
+      const url = `${API_CONFIG.BASE_URL}/guias/${guia.id}/documentos/${tipoDocumento}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al descargar el archivo');
+      }
+
+      const blob = await response.blob();
+      const urlBlob = window.URL.createObjectURL(blob);
+
+      const contentDisposition = response.headers.get('content-disposition');
+      let filename = `${guia.nombre}_${guia.apellido_paterno}_${tipoDocumento}`;
+
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, '');
+        }
+      }
+
       const link = document.createElement('a');
-      link.href = url;
-      link.download = archivo.name || `${guia.nombre}_${guia.apellidoPaterno}_${nombreDocumento}`;
+      link.href = urlBlob;
+      link.download = filename;
+      link.style.display = 'none';
+
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      return;
-    }
 
-    if (typeof archivo === 'string') {
-      const link = document.createElement('a');
-      link.href = archivo;
-      link.download = `${guia.nombre}_${guia.apellidoPaterno}_${nombreDocumento}`;
-      document.body.appendChild(link);
-      link.click();
       document.body.removeChild(link);
-      return;
-    }
+      window.URL.revokeObjectURL(urlBlob);
 
-    alert('No hay documento disponible para descargar');
+    } catch (error) {
+      console.error('Error al descargar:', error);
+    }
   };
 
   const tieneDocumentos = fotoUrl || ineUrl || licenciaUrl || comprobanteUrl || certificacionesUrl;
@@ -379,7 +399,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                             </button>
                             <button
                               className="mvg-btn-descargar mvg-btn-download"
-                              onClick={() => handleDescargar(guia.foto || guia.documentos?.foto_guia, 'foto')}
+                              onClick={() => handleDescargar('foto_guia')}
                             >
                               <Download size={16} />
                               Descargar
@@ -402,7 +422,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                             </button>
                             <button
                               className="mvg-btn-descargar mvg-btn-download"
-                              onClick={() => handleDescargar(guia.ine || guia.documentos?.foto_ine, 'ine')}
+                              onClick={() => handleDescargar('foto_ine')}
                             >
                               <Download size={16} />
                               Descargar
@@ -425,7 +445,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                             </button>
                             <button
                               className="mvg-btn-descargar mvg-btn-download"
-                              onClick={() => handleDescargar(guia.documentos?.foto_licencia, 'licencia')}
+                              onClick={() => handleDescargar('foto_licencia')}
                             >
                               <Download size={16} />
                               Descargar
@@ -448,7 +468,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                             </button>
                             <button
                               className="mvg-btn-descargar mvg-btn-download"
-                              onClick={() => handleDescargar(guia.documentos?.foto_comprobante_domicilio, 'comprobante')}
+                              onClick={() => handleDescargar('foto_comprobante_domicilio')}
                             >
                               <Download size={16} />
                               Descargar
@@ -471,7 +491,7 @@ const ModalVerGuia = ({ guia, onCerrar }) => {
                             </button>
                             <button
                               className="mvg-btn-descargar mvg-btn-download"
-                              onClick={() => handleDescargar(guia.certificado || guia.documentos?.foto_certificaciones, 'certificaciones')}
+                              onClick={() => handleDescargar('foto_certificaciones')}
                             >
                               <Download size={16} />
                               Descargar

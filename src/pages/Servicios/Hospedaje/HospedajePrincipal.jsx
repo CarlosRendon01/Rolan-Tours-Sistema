@@ -45,10 +45,8 @@ const HospedajePrincipal = () => {
             });
 
             setHospedajes(response.data);
-            console.log('✅ Hospedajes recargados');
 
         } catch (error) {
-            console.error('❌ Error al recargar hospedajes:', error);
 
             if (error.code === 'ECONNABORTED') {
                 setError('La conexión tardó demasiado. Verifica tu servidor.');
@@ -74,9 +72,7 @@ const HospedajePrincipal = () => {
                 }
             });
             setProveedores(response.data);
-            console.log('✅ Proveedores recargados');
         } catch (error) {
-            console.error('❌ Error al recargar proveedores:', error);
         }
     };
 
@@ -100,10 +96,8 @@ const HospedajePrincipal = () => {
                         Accept: "application/json",
                     }
                 });
-                console.log('✅ Hospedaje eliminado');
                 await recargarHospedajes();
             } catch (error) {
-                console.error('❌ Error al eliminar hospedaje:', error);
             }
         });
     };
@@ -150,11 +144,9 @@ const HospedajePrincipal = () => {
                 }
             );
 
-            console.log("✅ Hospedaje creado:", response.data);
             cerrarModales();
             await recargarHospedajes();
         } catch (error) {
-            console.error("❌ Error al crear hospedaje:", error);
             throw error;
         }
     };
@@ -195,16 +187,13 @@ const HospedajePrincipal = () => {
                 }
             );
 
-            console.log("✅ Hospedaje actualizado:", response.data);
             cerrarModales();
             await recargarHospedajes();
         } catch (error) {
-            console.error("❌ Error al actualizar hospedaje:", error);
             throw error;
         }
     };
 
-    // Manejo de errores
     if (error) {
         return (
             <PrincipalComponente>

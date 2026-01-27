@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AccesoDenegado from "./pages/AccesoDenegado";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import PrincipalCliente from "./pages/Ventas/Clientes/PrincipalCliente.jsx";
 import PrincipalCotizacion from "./pages/Ventas/Cotizador/PrincipalCotizacion.jsx";
@@ -21,58 +23,210 @@ import PrincipalRol from "./pages/Usuario/Roles/PrincipalRol.jsx";
 import PrincipalUsuario from "./pages/Usuario/Usuarios/PrincipalUsuario.jsx";
 import VehiculosPrincipal from "./pages/Operaciones/Vehiculos/VehiculosPrincipal.jsx";
 
-const PaginaTemporal = ({ titulo }) => {
-  return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      fontSize: '24px',
-      color: '#666'
-    }}>
-      <h1>{titulo}</h1>
-    </div>
-  );
-};
-
 function App() {
   const [estaAutenticado, setEstaAutenticado] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setEstaAutenticado(true);
+    }
+  }, []);
 
   const manejarLogin = () => {
     setEstaAutenticado(true);
   };
 
+  const manejarLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('rol');
+    setEstaAutenticado(false);
+  };
+
   return (
     <Router>
       {!estaAutenticado ? (
-        <PrincipalLogin onLogin={manejarLogin} />
+        <Routes>
+          <Route path="*" element={<PrincipalLogin onLogin={manejarLogin} />} />
+        </Routes>
       ) : (
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/clientes" element={<PrincipalCliente />} />
-          <Route path="/cotizaciones" element={<PrincipalCotizacion />} />
-          <Route path="/pagos" element={<PrincipalPago />} />
-          <Route path="/contratos" element={<PrincipalContrato titulo="Contratos" />} />
-          <Route path="/orden-servicio" element={<PrincipalOrden titulo="Órdenes de Servicio" />} />
-          <Route path="/reservas" element={<ReservasPrincipal titulo="Reservas" />} />
-          <Route path="/operadores" element={<OperadoresPrincipal />} />
-          <Route path="/vehiculos" element={<VehiculosPrincipal />} />
-          <Route path="/guias" element={<GuiasPrincipal />} />
-          <Route path="/proveedores" element={<ProveedoresPrincipal titulo="Proveedores" />} />
-          <Route path="/coordinadores" element={<CoordinadoresPrincipal titulo="Coordinadores" />} />
-          <Route path="/transporte" element={<TransportePrincipal titulo="Transporte" />} />
-          <Route path="/restaurantes" element={<RestaurantePrincipal titulo="Restaurantes" />} />
-          <Route path="/tours" element={<ToursPrincipal titulo="Tours" />} />
-          <Route path="/hospedaje" element={<HospedajePrincipal titulo="Hospedaje" />} />
-          <Route path="/mantenimiento-vehiculos" element={<MantenimientoPrincipal titulo="Mantenimiento de Vehículos" />} />
-          <Route path="/administracion" element={<PaginaTemporal titulo="Administración" />} />
+          {/* Dashboard - Accesible para todos */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute requiredPermission="dashboard.ver">
+                <Dashboard onLogout={manejarLogout} />
+              </ProtectedRoute>
+            }
+          />
 
-          <Route path="/roles" element={<PrincipalRol titulo="Roles" />} />
-          <Route path="/usuarios" element={<PrincipalUsuario titulo="Usuarios" />} />
+          {/* VENTAS */}
+          <Route
+            path="/clientes"
+            element={
+              <ProtectedRoute requiredPermission="ventas.clientes.ver">
+                <PrincipalCliente />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cotizaciones"
+            element={
+              <ProtectedRoute requiredPermission="ventas.cotizaciones.ver">
+                <PrincipalCotizacion />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/pagos"
+            element={
+              <ProtectedRoute requiredPermission="ventas.pagos.ver">
+                <PrincipalPago />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* DOCUMENTOS */}
+          <Route
+            path="/contratos"
+            element={
+              <ProtectedRoute requiredPermission="documentos.contratos.ver">
+                <PrincipalContrato titulo="Contratos" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orden-servicio"
+            element={
+              <ProtectedRoute requiredPermission="documentos.ordenes.ver">
+                <PrincipalOrden titulo="Órdenes de Servicio" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/reservas"
+            element={
+              <ProtectedRoute requiredPermission="documentos.reservas.ver">
+                <ReservasPrincipal titulo="Reservas" />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* OPERACIONES */}
+          <Route
+            path="/operadores"
+            element={
+              <ProtectedRoute requiredPermission="operaciones.operadores.ver">
+                <OperadoresPrincipal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vehiculos"
+            element={
+              <ProtectedRoute requiredPermission="operaciones.vehiculos.ver">
+                <VehiculosPrincipal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/guias"
+            element={
+              <ProtectedRoute requiredPermission="operaciones.guias.ver">
+                <GuiasPrincipal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proveedores"
+            element={
+              <ProtectedRoute>
+                <ProveedoresPrincipal titulo="Proveedores" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/coordinadores"
+            element={
+              <ProtectedRoute>
+                <CoordinadoresPrincipal titulo="Coordinadores" />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* SERVICIOS */}
+          <Route
+            path="/transporte"
+            element={
+              <ProtectedRoute requiredPermission="servicios.transporte.ver">
+                <TransportePrincipal titulo="Transporte" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurantes"
+            element={
+              <ProtectedRoute requiredPermission="servicios.restaurantes.ver">
+                <RestaurantePrincipal titulo="Restaurantes" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tours"
+            element={
+              <ProtectedRoute requiredPermission="servicios.tours.ver">
+                <ToursPrincipal titulo="Tours" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hospedaje"
+            element={
+              <ProtectedRoute requiredPermission="servicios.hospedaje.ver">
+                <HospedajePrincipal titulo="Hospedaje" />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* MANTENIMIENTO */}
+          <Route
+            path="/mantenimiento-vehiculos"
+            element={
+              <ProtectedRoute requiredPermission="mantenimiento.ver">
+                <MantenimientoPrincipal titulo="Mantenimiento de Vehículos" />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ADMINISTRACIÓN */}
+          <Route
+            path="/roles"
+            element={
+              <ProtectedRoute requiredPermission="administracion.roles.ver">
+                <PrincipalRol titulo="Roles" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/usuarios"
+            element={
+              <ProtectedRoute requiredPermission="administracion.usuarios.ver">
+                <PrincipalUsuario titulo="Usuarios" />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Acceso Denegado */}
+          <Route path="/acceso-denegado" element={<AccesoDenegado />} />
+
+          {/* Ruta por defecto - redirige al dashboard */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       )}
     </Router>
   );
 }
+
 export default App;

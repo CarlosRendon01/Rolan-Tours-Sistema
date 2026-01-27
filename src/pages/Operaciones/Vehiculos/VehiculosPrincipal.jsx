@@ -84,30 +84,47 @@ const VehiculosPrincipal = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const vehiculoData = {
-        nombre: vehiculo.nombre,
-        rendimiento: parseFloat(vehiculo.rendimiento),
-        precio_combustible: parseFloat(vehiculo.precio_combustible),
-        desgaste: parseFloat(vehiculo.desgaste),
-        costo_renta: parseFloat(vehiculo.costo_renta),
-        costo_chofer_dia: parseFloat(vehiculo.costo_chofer_dia),
-        marca: vehiculo.marca,
-        modelo: vehiculo.modelo,
-        anio: parseInt(vehiculo.anio),
-        numero_placa: vehiculo.numero_placa,
-        numero_pasajeros: parseInt(vehiculo.numero_pasajeros),
-        vehiculos_disponibles: parseInt(vehiculo.vehiculos_disponibles),
-        numero_serie: vehiculo.numero_serie || null,
-        nip: vehiculo.nip || null,
-        numero_tag: vehiculo.numero_tag || null,
-        numero_combustible: vehiculo.numero_combustible || null,
-        color: vehiculo.color || null,
-        comentarios: vehiculo.comentarios || null,
-      };
+      const formData = new FormData();
+
+      formData.append('nombre', vehiculo.nombre);
+      formData.append('rendimiento', parseFloat(vehiculo.rendimiento));
+      formData.append('precio_combustible', parseFloat(vehiculo.precio_combustible));
+      formData.append('desgaste', parseFloat(vehiculo.desgaste));
+      formData.append('costo_renta', parseFloat(vehiculo.costo_renta));
+      formData.append('costo_chofer_dia', parseFloat(vehiculo.costo_chofer_dia));
+      formData.append('marca', vehiculo.marca);
+      formData.append('modelo', vehiculo.modelo);
+      formData.append('anio', parseInt(vehiculo.anio));
+      formData.append('numero_placa', vehiculo.numero_placa);
+      formData.append('numero_pasajeros', parseInt(vehiculo.numero_pasajeros));
+      formData.append('vehiculos_disponibles', parseInt(vehiculo.vehiculos_disponibles));
+
+      formData.append('numero_serie', vehiculo.numero_serie || '');
+      formData.append('nip', vehiculo.nip || '');
+      formData.append('numero_tag', vehiculo.numero_tag || '');
+      formData.append('numero_combustible', vehiculo.numero_combustible || '');
+      formData.append('color', vehiculo.color || '');
+      formData.append('comentarios', vehiculo.comentarios || '');
+
+      if (vehiculo.documentos?.foto_vehiculo instanceof File) {
+        formData.append('foto_vehiculo', vehiculo.documentos.foto_vehiculo);
+      }
+      if (vehiculo.documentos?.foto_poliza_seguro instanceof File) {
+        formData.append('foto_poliza_seguro', vehiculo.documentos.foto_poliza_seguro);
+      }
+      if (vehiculo.documentos?.foto_factura instanceof File) {
+        formData.append('foto_factura', vehiculo.documentos.foto_factura);
+      }
+      if (vehiculo.documentos?.foto_verificaciones instanceof File) {
+        formData.append('foto_verificaciones', vehiculo.documentos.foto_verificaciones);
+      }
+      if (vehiculo.documentos?.foto_folio_antt instanceof File) {
+        formData.append('foto_folio_antt', vehiculo.documentos.foto_folio_antt);
+      }
 
       const response = await axios.post(
         `${API_CONFIG.BASE_URL}/vehiculos`,
-        vehiculoData,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -118,6 +135,7 @@ const VehiculosPrincipal = () => {
 
       await recargarVehiculos();
       return response.data;
+
     } catch (error) {
       console.error("❌ Error al crear vehiculo:", error);
       console.error("❌ Respuesta del servidor:", error.response?.data);
@@ -129,39 +147,106 @@ const VehiculosPrincipal = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const vehiculoData = {
-        nombre: vehiculoActualizado.nombre,
-        rendimiento: parseFloat(vehiculoActualizado.rendimiento),
-        precio_combustible: parseFloat(vehiculoActualizado.precio_combustible),
-        desgaste: parseFloat(vehiculoActualizado.desgaste),
-        costo_renta: parseFloat(vehiculoActualizado.costo_renta),
-        costo_chofer_dia: parseFloat(vehiculoActualizado.costo_chofer_dia),
-        marca: vehiculoActualizado.marca,
-        modelo: vehiculoActualizado.modelo,
-        anio: parseInt(vehiculoActualizado.anio),
-        numero_placa: vehiculoActualizado.numero_placa,
-        numero_pasajeros: parseInt(vehiculoActualizado.numero_pasajeros),
-        vehiculos_disponibles: parseInt(vehiculoActualizado.vehiculos_disponibles),
-        numero_serie: vehiculoActualizado.numero_serie || null,
-        nip: vehiculoActualizado.nip || null,
-        numero_tag: vehiculoActualizado.numero_tag || null,
-        numero_combustible: vehiculoActualizado.numero_combustible || null,
-        color: vehiculoActualizado.color || null,
-        comentarios: vehiculoActualizado.comentarios || null,
-      };
+      const tieneArchivosNuevos =
+        (vehiculoActualizado.documentos?.foto_vehiculo instanceof File) ||
+        (vehiculoActualizado.documentos?.foto_poliza_seguro instanceof File) ||
+        (vehiculoActualizado.documentos?.foto_factura instanceof File) ||
+        (vehiculoActualizado.documentos?.foto_verificaciones instanceof File) ||
+        (vehiculoActualizado.documentos?.foto_folio_antt instanceof File);
 
-      const response = await axios.put(
-        `${API_CONFIG.BASE_URL}/vehiculos/${vehiculoActualizado.id}`,
-        vehiculoData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          }
+      if (tieneArchivosNuevos) {
+        const formData = new FormData();
+
+        formData.append('nombre', vehiculoActualizado.nombre);
+        formData.append('rendimiento', parseFloat(vehiculoActualizado.rendimiento));
+        formData.append('precio_combustible', parseFloat(vehiculoActualizado.precio_combustible));
+        formData.append('desgaste', parseFloat(vehiculoActualizado.desgaste));
+        formData.append('costo_renta', parseFloat(vehiculoActualizado.costo_renta));
+        formData.append('costo_chofer_dia', parseFloat(vehiculoActualizado.costo_chofer_dia));
+        formData.append('marca', vehiculoActualizado.marca);
+        formData.append('modelo', vehiculoActualizado.modelo);
+        formData.append('anio', parseInt(vehiculoActualizado.anio));
+        formData.append('numero_placa', vehiculoActualizado.numero_placa);
+        formData.append('numero_pasajeros', parseInt(vehiculoActualizado.numero_pasajeros));
+        formData.append('vehiculos_disponibles', parseInt(vehiculoActualizado.vehiculos_disponibles));
+
+        formData.append('numero_serie', vehiculoActualizado.numero_serie || '');
+        formData.append('nip', vehiculoActualizado.nip || '');
+        formData.append('numero_tag', vehiculoActualizado.numero_tag || '');
+        formData.append('numero_combustible', vehiculoActualizado.numero_combustible || '');
+        formData.append('color', vehiculoActualizado.color || '');
+        formData.append('comentarios', vehiculoActualizado.comentarios || '');
+
+        if (vehiculoActualizado.documentos?.foto_vehiculo instanceof File) {
+          formData.append('foto_vehiculo', vehiculoActualizado.documentos.foto_vehiculo);
         }
-      );
-      await recargarVehiculos();
-      return response.data;
+        if (vehiculoActualizado.documentos?.foto_poliza_seguro instanceof File) {
+          formData.append('foto_poliza_seguro', vehiculoActualizado.documentos.foto_poliza_seguro);
+        }
+        if (vehiculoActualizado.documentos?.foto_factura instanceof File) {
+          formData.append('foto_factura', vehiculoActualizado.documentos.foto_factura);
+        }
+        if (vehiculoActualizado.documentos?.foto_verificaciones instanceof File) {
+          formData.append('foto_verificaciones', vehiculoActualizado.documentos.foto_verificaciones);
+        }
+        if (vehiculoActualizado.documentos?.foto_folio_antt instanceof File) {
+          formData.append('foto_folio_antt', vehiculoActualizado.documentos.foto_folio_antt);
+        }
+
+        formData.append('_method', 'PUT');
+
+        const response = await axios.post(
+          `${API_CONFIG.BASE_URL}/vehiculos/${vehiculoActualizado.id}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            }
+          }
+        );
+
+        await recargarVehiculos();
+        return response.data;
+
+      } else {
+        const vehiculoData = {
+          nombre: vehiculoActualizado.nombre,
+          rendimiento: parseFloat(vehiculoActualizado.rendimiento),
+          precio_combustible: parseFloat(vehiculoActualizado.precio_combustible),
+          desgaste: parseFloat(vehiculoActualizado.desgaste),
+          costo_renta: parseFloat(vehiculoActualizado.costo_renta),
+          costo_chofer_dia: parseFloat(vehiculoActualizado.costo_chofer_dia),
+          marca: vehiculoActualizado.marca,
+          modelo: vehiculoActualizado.modelo,
+          anio: parseInt(vehiculoActualizado.anio),
+          numero_placa: vehiculoActualizado.numero_placa,
+          numero_pasajeros: parseInt(vehiculoActualizado.numero_pasajeros),
+          vehiculos_disponibles: parseInt(vehiculoActualizado.vehiculos_disponibles),
+          numero_serie: vehiculoActualizado.numero_serie || null,
+          nip: vehiculoActualizado.nip || null,
+          numero_tag: vehiculoActualizado.numero_tag || null,
+          numero_combustible: vehiculoActualizado.numero_combustible || null,
+          color: vehiculoActualizado.color || null,
+          comentarios: vehiculoActualizado.comentarios || null,
+        };
+
+        const response = await axios.put(
+          `${API_CONFIG.BASE_URL}/vehiculos/${vehiculoActualizado.id}`,
+          vehiculoData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            }
+          }
+        );
+
+        await recargarVehiculos();
+        return response.data;
+      }
+
     } catch (error) {
       console.error("❌ Error al actualizar vehiculo:", error);
       console.error("❌ Respuesta del servidor:", error.response?.data);

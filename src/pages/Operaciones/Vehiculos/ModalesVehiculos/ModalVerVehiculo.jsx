@@ -1,9 +1,10 @@
 import {
   X, Car, Gauge, Fuel, TrendingDown, CreditCard,
   UserCircle, FileText, Calendar, Hash, Tag,
-  Image as ImageIcon, Download, DollarSign, Activity, Eye 
+  Image as ImageIcon, Download, DollarSign, Activity, Eye
 } from 'lucide-react';
 import './ModalVerVehiculo.css';
+import { API_CONFIG } from '../../../../config/api';
 
 const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
   const formatearMoneda = (valor) => {
@@ -35,15 +36,53 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
     window.open(url, '_blank');
   };
 
-  const handleDescargar = (url, nombreDocumento) => {
-    if (!url) return;
+  const handleDescargar = async (tipoDocumento) => {
+    try {
+      const token = localStorage.getItem("token");
 
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${vehiculo.nombre}_${nombreDocumento}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      if (!token) {
+        return;
+      }
+
+      const url = `${API_CONFIG.BASE_URL}/vehiculos/${vehiculo.id}/documentos/${tipoDocumento}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al descargar el archivo');
+      }
+
+      const blob = await response.blob();
+      const urlBlob = window.URL.createObjectURL(blob);
+
+      const contentDisposition = response.headers.get('content-disposition');
+      let filename = `${vehiculo.nombre}_${tipoDocumento}`;
+
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, '');
+        }
+      }
+
+      const link = document.createElement('a');
+      link.href = urlBlob;
+      link.download = filename;
+      link.style.display = 'none';
+
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(urlBlob);
+
+    } catch (error) {
+    }
   };
 
   const documentos = [
@@ -333,7 +372,7 @@ const ModalVerVehiculo = ({ vehiculo, onCerrar }) => {
                               </button>
                               <button
                                 className="mvv-btn-descargar mvv-btn-download"
-                                onClick={() => handleDescargar(urlDocumento, doc.key)}
+                                onClick={() => handleDescargar(doc.key)}
                                 title="Descargar documento"
                               >
                                 <Download size={16} />
