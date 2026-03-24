@@ -372,7 +372,7 @@ const CalendarioViajes = ({ onActualizarEstadisticas }) => {
               </div>
               <div className="calendario-info-titulo">
                 <h2 className="calendario-titulo-principal">Calendario de Viajes</h2>
-                <p className="calendario-subtitulo">Roland Tours - Gestión de itinerarios</p>
+                <p className="calendario-subtitulo">Rolan Tours - Gestión de Itinerarios</p>
               </div>
             </div>
 
