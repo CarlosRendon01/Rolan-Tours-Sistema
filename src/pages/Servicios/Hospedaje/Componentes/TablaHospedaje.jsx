@@ -50,6 +50,8 @@ const TablaHospedaje = ({
 
   const totalHospedajes = hospedajes.length;
   const hospedajesActivos = hospedajes.filter(h => h.estado === 'Activo').length;
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   const obtenerClaseTipoHospedaje = (tipo) => {
     const tipos = {
@@ -178,14 +180,16 @@ const TablaHospedaje = ({
         </div>
 
         <div className="hospedaje-controles-derecha">
-          <button
-            className="hospedaje-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo servicio de hospedaje"
-          >
-            <Plus size={18} />
-            Agregar Hospedaje
-          </button>
+          {permisos.includes("servicios.hospedaje.editar") || rolUsuario === "admin" && (
+            <button
+              className="hospedaje-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo servicio de hospedaje"
+            >
+              <Plus size={18} />
+              Agregar Hospedaje
+            </button>
+          )}
 
           <div className="hospedaje-control-busqueda">
             <label htmlFor="buscar">Buscar:</label>
@@ -338,20 +342,24 @@ const TablaHospedaje = ({
                           >
                             <Eye size={16} />
                           </button>
-                          <button
-                            className="hospedaje-boton-accion hospedaje-editar"
-                            onClick={() => manejarAccion('editar', hospedaje)}
-                            title="Editar hospedaje"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="hospedaje-boton-accion hospedaje-eliminar"
-                            onClick={() => manejarAccion('eliminar', hospedaje)}
-                            title="Eliminar hospedaje"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {(permisos.includes("servicios.hospedaje.editar") || rolUsuario === "admin") && (
+                            <button
+                              className="hospedaje-boton-accion hospedaje-editar"
+                              onClick={() => manejarAccion('editar', hospedaje)}
+                              title="Editar hospedaje"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+                          {(permisos.includes("servicios.hospedaje.eliminar") || rolUsuario === "admin") && (
+                            <button
+                              className="hospedaje-boton-accion hospedaje-eliminar"
+                              onClick={() => manejarAccion('eliminar', hospedaje)}
+                              title="Eliminar hospedaje"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

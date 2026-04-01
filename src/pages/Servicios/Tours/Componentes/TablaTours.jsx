@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, MapPin, Map, Plus, Clock, Users, DollarSign } from 'lucide-react';
 import './TablaTours.css';
 
-const TablaTours = ({ 
+const TablaTours = ({
   tours,
   setTours,
-  onVer, 
-  onEditar, 
+  onVer,
+  onEditar,
   onEliminar,
   onAgregar,
   cargando,
@@ -46,9 +46,11 @@ const TablaTours = ({
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const toursPaginados = toursFiltrados.slice(indiceInicio, indiceFin);
-  
+
   const totalTours = tours.length;
   const toursActivos = tours.filter(tour => tour.estado === 'activo').length;
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   const formatearPrecio = (precio, moneda = 'MXN') => {
     const simbolos = {
@@ -127,7 +129,7 @@ const TablaTours = ({
           </div>
           <h1 className="tours-titulo">Gestión de Tours</h1>
         </div>
-        
+
         <div className="tours-contenedor-estadisticas">
           <div className="tours-estadistica">
             <div className="tours-icono-estadistica-circular">
@@ -137,7 +139,7 @@ const TablaTours = ({
               <span className="tours-label-estadistica">TOTAL: {totalTours}</span>
             </div>
           </div>
-          
+
           <div className="tours-estadistica">
             <div className="tours-icono-estadistica-cuadrado">
               <MapPin size={20} />
@@ -152,9 +154,9 @@ const TablaTours = ({
       <div className="tours-controles">
         <div className="tours-control-registros">
           <label htmlFor="registros">Mostrar</label>
-          <select 
+          <select
             id="registros"
-            value={registrosPorPagina} 
+            value={registrosPorPagina}
             onChange={manejarCambioRegistros}
             className="tours-selector-registros"
           >
@@ -167,14 +169,16 @@ const TablaTours = ({
         </div>
 
         <div className="tours-controles-derecha">
-          <button 
-            className="tours-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo tour"
-          >
-            <Plus size={18} />
-            Agregar Tour
-          </button>
+          {permisos.includes('servicios.tours.editar') || rolUsuario === "admin" && (
+            <button
+              className="tours-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo tour"
+            >
+              <Plus size={18} />
+              Agregar Tour
+            </button>
+          )}
 
           <div className="tours-control-busqueda">
             <label htmlFor="buscar">Buscar:</label>
@@ -224,8 +228,8 @@ const TablaTours = ({
           </div>
           <p className="tours-mensaje-vacio">No se encontraron tours</p>
           <p className="tours-submensaje-vacio">
-            {terminoBusqueda 
-              ? 'Intenta ajustar los filtros de búsqueda' 
+            {terminoBusqueda
+              ? 'Intenta ajustar los filtros de búsqueda'
               : 'Comienza agregando un tour a tu catálogo'}
           </p>
         </div>
@@ -248,8 +252,8 @@ const TablaTours = ({
               <tbody>
                 {toursPaginados.map((tour, index) => {
                   return (
-                    <tr 
-                      key={tour.codigo_tour} 
+                    <tr
+                      key={tour.codigo_tour}
                       className="tours-fila-tour"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
@@ -258,7 +262,7 @@ const TablaTours = ({
                           {tour.codigo_tour}
                         </span>
                       </td>
-                      
+
                       <td data-label="Nombre Tour" className="tours-columna-nombre">
                         <div className="tours-info-tour">
                           <div className="tours-icono-tour">
@@ -272,63 +276,69 @@ const TablaTours = ({
                           </div>
                         </div>
                       </td>
-                      
+
                       <td data-label="Tipo" className="tours-columna-tipo">
                         <span className="tours-badge-tipo">
                           {tour.tipo_tour}
                         </span>
                       </td>
-                      
+
                       <td data-label="Duración" className="tours-columna-duracion">
                         <span className="tours-valor-duracion">
                           <Clock size={14} />
                           {formatearDuracion(tour.duracion_tour)}
                         </span>
                       </td>
-                      
+
                       <td data-label="Capacidad" className="tours-columna-capacidad">
                         <span className="tours-valor-capacidad">
                           <Users size={14} />
                           {tour.capacidad_maxima} pax
                         </span>
                       </td>
-                      
+
                       <td data-label="Precio" className="tours-columna-precio">
                         <span className="tours-valor-precio">
                           <DollarSign size={14} />
                           {formatearPrecio(tour.precio_base, tour.moneda)}
                         </span>
                       </td>
-                      
+
                       <td data-label="Estado" className="tours-columna-estado">
                         <span className={`tours-badge-estado ${obtenerClaseEstado(tour.estado)}`}>
                           {tour.estado}
                         </span>
                       </td>
-                      
+
                       <td data-label="Acciones" className="tours-columna-acciones">
                         <div className="tours-botones-accion">
-                          <button 
+                          <button
                             className="tours-boton-accion tours-ver"
                             onClick={() => manejarAccion('ver', tour)}
                             title="Ver tour"
                           >
                             <Eye size={16} />
                           </button>
-                          <button 
-                            className="tours-boton-accion tours-editar"
-                            onClick={() => manejarAccion('editar', tour)}
-                            title="Editar tour"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button 
-                            className="tours-boton-accion tours-eliminar"
-                            onClick={() => manejarAccion('eliminar', tour)}
-                            title="Eliminar tour"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+
+                          {permisos.includes('servicios.tours.editar') || rolUsuario === "admin" && (
+                            <button
+                              className="tours-boton-accion tours-editar"
+                              onClick={() => manejarAccion('editar', tour)}
+                              title="Editar tour"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+
+                          {permisos.includes('servicios.tours.eliminar') || rolUsuario === "admin" && (
+                            <button
+                              className="tours-boton-accion tours-eliminar"
+                              onClick={() => manejarAccion('eliminar', tour)}
+                              title="Eliminar tour"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -342,14 +352,14 @@ const TablaTours = ({
             <div className="tours-informacion-registros">
               Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
               {terminoBusqueda && (
-                <span style={{color: '#6c757d', marginLeft: '0.5rem'}}>
+                <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
                   (filtrado de {tours.length} registros totales)
                 </span>
               )}
             </div>
-            
+
             <div className="tours-controles-paginacion">
-              <button 
+              <button
                 className="tours-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual - 1)}
                 disabled={paginaActual === 1}
@@ -357,7 +367,7 @@ const TablaTours = ({
                 <ChevronLeft size={18} />
                 Anterior
               </button>
-              
+
               <div className="tours-numeros-paginacion">
                 {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
                   <button
@@ -369,8 +379,8 @@ const TablaTours = ({
                   </button>
                 ))}
               </div>
-              
-              <button 
+
+              <button
                 className="tours-boton-paginacion"
                 onClick={() => cambiarPagina(paginaActual + 1)}
                 disabled={paginaActual === totalPaginas}

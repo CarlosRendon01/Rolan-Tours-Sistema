@@ -21,7 +21,7 @@ import ModalEditarReserva from "../ModalesReservas/ModalEditarReserva";
 import ModalVerReserva from "../ModalesReservas/ModalVerReserva";
 import ModalVisualizarPDF from "../ModalesReservas/ModalVisualizarPDF";
 import "../ModalesReservas/ModalVisualizarPDF.css";
-import {API_CONFIG} from "../../../../config/api";
+import { API_CONFIG } from "../../../../config/api";
 
 const TablaReservas = ({
   reservasDatos,
@@ -40,6 +40,8 @@ const TablaReservas = ({
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   const reservasFiltradas = reservasDatos.filter((reserva) => {
     if (!reserva.activo) return false;
@@ -594,20 +596,24 @@ const TablaReservas = ({
                       >
                         <FileText size={16} />
                       </button>
-                      <button
-                        className="reservas-boton-accion reservas-editar"
-                        onClick={() => manejarAccion("editar", reserva)}
-                        title="Editar reserva"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        className="reservas-boton-accion reservas-eliminar"
-                        onClick={() => manejarAccion("eliminar", reserva)}
-                        title="Eliminar reserva"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      {permisos.includes("documentos.reservas.editar") || rolUsuario === "admin" && (
+                        <button
+                          className="reservas-boton-accion reservas-editar"
+                          onClick={() => manejarAccion("editar", reserva)}
+                          title="Editar reserva"
+                        >
+                          <Edit size={16} />
+                        </button>
+                      )}
+                      {permisos.includes("documentos.reservas.eliminar") || rolUsuario === "admin" && (
+                        <button
+                          className="reservas-boton-accion reservas-eliminar"
+                          onClick={() => manejarAccion("eliminar", reserva)}
+                          title="Eliminar reserva"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

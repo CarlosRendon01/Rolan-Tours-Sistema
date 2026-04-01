@@ -16,6 +16,8 @@ const TablaTransporte = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [puntosCarga, setPuntosCarga] = useState('');
+  const [rolUsuario] = useState(localStorage.getItem('rol') || '');
+  const [permisos] = useState(localStorage.getItem('permisos') || '');
 
   useEffect(() => {
     if (cargando) {
@@ -145,14 +147,16 @@ const TablaTransporte = ({
         </div>
 
         <div className="transporte-controles-derecha">
-          <button
-            className="transporte-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo servicio de transporte"
-          >
-            <Plus size={18} />
-            Agregar Servicio
-          </button>
+          {permisos.includes('servicios.transporte.editar') || rolUsuario === "admin" && (
+            <button
+              className="transporte-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo servicio de transporte"
+            >
+              <Plus size={18} />
+              Agregar Servicio
+            </button>
+          )}
 
           <div className="transporte-control-busqueda">
             <label htmlFor="transporte-buscar">Buscar:</label>
@@ -304,20 +308,26 @@ const TablaTransporte = ({
                           >
                             <Eye size={16} />
                           </button>
-                          <button
-                            className="transporte-boton-accion transporte-editar"
-                            onClick={() => manejarAccion('editar', transporte)}
-                            title="Editar servicio"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="transporte-boton-accion transporte-eliminar"
-                            onClick={() => manejarAccion('eliminar', transporte)}
-                            title="Eliminar servicio"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+
+                          {permisos.includes('servicios.transporte.editar') || rolUsuario === "admin" && (
+                            <button
+                              className="transporte-boton-accion transporte-editar"
+                              onClick={() => manejarAccion('editar', transporte)}
+                              title="Editar servicio"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+
+                          {permisos.includes('servicios.transporte.eliminar') || rolUsuario === "admin" && (
+                            <button
+                              className="transporte-boton-accion transporte-eliminar"
+                              onClick={() => manejarAccion('eliminar', transporte)}
+                              title="Eliminar servicio"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

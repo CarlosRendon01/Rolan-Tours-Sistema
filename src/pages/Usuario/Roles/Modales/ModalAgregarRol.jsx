@@ -79,6 +79,8 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
             eliminar: false,
           },
           guias: { activo: false, ver: false, editar: false, eliminar: false },
+          proveedores: { activo: false, ver: false, editar: false, eliminar: false },
+          coordinadores: { activo: false, ver: false, editar: false, eliminar: false },
         },
       },
       servicios: {
@@ -158,9 +160,9 @@ const ModalAgregarRol = ({ onGuardar, onCerrar }) => {
       id: "operaciones",
       nombre: "Operaciones",
       icono: <Settings size={20} />,
-      descripcion: "Operadores, vehículos y guías",
+      descripcion: "Operadores, vehículos, guías, proveedores y coordinadores",
       color: "#8b5cf6",
-      submodulos: ["operadores", "vehiculos", "guias"],
+      submodulos: ["operadores", "vehiculos", "guias", "proveedores", "coordinadores"],
     },
     {
       id: "servicios",

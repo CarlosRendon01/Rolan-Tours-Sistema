@@ -46,6 +46,7 @@ const TablaRecibos = ({
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState("todos");
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
     useState(false);
@@ -848,19 +849,21 @@ const TablaRecibos = ({
                             <FileText size={16} />
                           </button>
 
-                          <button
-                            className="recibos-boton-accion recibos-eliminar"
-                            onClick={() => manejarAccion("eliminar", recibo)}
-                            title={
-                              rolUsuario === "admin"
-                                ? "Eliminar de vista"
-                                : "Eliminar recibo"
-                            }
-                            aria-label={`Eliminar recibo ${recibo.numeroRecibo}`}
-                            disabled={cargando}
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                          {permisos.includes("ventas.pagos.eliminar") && (
+                            <button
+                              className="recibos-boton-accion recibos-eliminar"
+                              onClick={() => manejarAccion("eliminar", recibo)}
+                              title={
+                                rolUsuario === "admin"
+                                  ? "Eliminar de vista"
+                                  : "Eliminar recibo"
+                              }
+                              aria-label={`Eliminar recibo ${recibo.numeroRecibo}`}
+                              disabled={cargando}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          )}
                         </>
                       )}
                     </div>

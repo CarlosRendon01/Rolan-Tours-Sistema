@@ -16,6 +16,8 @@ const TablaVehiculos = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [puntosCarga, setPuntosCarga] = useState('');
+  const [rolUsuario] = useState(localStorage.getItem('rol') || '');
+  const [permisos] = useState(localStorage.getItem('permisos') || '');
 
   useEffect(() => {
     if (cargando) {
@@ -157,15 +159,16 @@ const TablaVehiculos = ({
         </div>
 
         <div className="vehiculos-controles-derecha">
-          <button
-            className="vehiculos-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo vehículo"
-          >
-            <Plus size={18} />
-            Agregar Vehículo
-          </button>
-
+          {(permisos.includes('operaciones.vehiculos.editar') || rolUsuario === 'admin') && (
+            <button
+              className="vehiculos-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo vehículo"
+            >
+              <Plus size={18} />
+              Agregar Vehículo
+            </button>
+          )}
           <div className="vehiculos-control-busqueda">
             <label htmlFor="buscar">Buscar:</label>
             <div className="vehiculos-entrada-busqueda">
@@ -299,20 +302,24 @@ const TablaVehiculos = ({
                         >
                           <Eye size={16} />
                         </button>
-                        <button
-                          className="vehiculos-boton-accion vehiculos-editar"
-                          onClick={() => manejarAccion('editar', vehiculo)}
-                          title="Editar vehículo"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
-                          className="vehiculos-boton-accion vehiculos-eliminar"
-                          onClick={() => manejarAccion('eliminar', vehiculo)}
-                          title="Eliminar vehículo"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {(permisos.includes('operaciones.vehiculos.editar') || rolUsuario === 'admin') && (
+                          <button
+                            className="vehiculos-boton-accion vehiculos-editar"
+                            onClick={() => manejarAccion('editar', vehiculo)}
+                            title="Editar vehículo"
+                          >
+                            <Edit size={16} />
+                          </button>
+                        )}
+                        {(permisos.includes('operaciones.vehiculos.eliminar') || rolUsuario === 'admin') && (
+                          <button
+                            className="vehiculos-boton-accion vehiculos-eliminar"
+                            onClick={() => manejarAccion('eliminar', vehiculo)}
+                            title="Eliminar vehículo"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

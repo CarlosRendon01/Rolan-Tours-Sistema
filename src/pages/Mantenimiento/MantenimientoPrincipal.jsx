@@ -94,7 +94,7 @@ const MantenimientoPrincipal = () => {
       estado: vehiculo.estado_mantenimiento || 'verde',
       ultimo_mantenimiento: vehiculo.ultimo_mantenimiento || null,
       historial: vehiculo.mantenimientos || [],
-      intervalo_km: 5000, // Configurable
+      intervalo_km: 5000,
       proximo_mantenimiento: null,
     };
   };

@@ -16,6 +16,8 @@ const TablaProveedores = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [puntosCarga, setPuntosCarga] = useState('');
+  const [rolUsuario] = useState(localStorage.getItem('rol') || '');
+  const [permisos] = useState(localStorage.getItem('permisos') || '');
 
   useEffect(() => {
     if (cargando) {
@@ -173,15 +175,16 @@ const TablaProveedores = ({
         </div>
 
         <div className="proveedores-controles-derecha">
-          <button
-            className="proveedores-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo proveedor"
-          >
-            <Plus size={18} />
-            Agregar Proveedor
-          </button>
-
+          {permisos.includes('operaciones.proveedores.editar') || rolUsuario === 'admin' && (
+            <button
+              className="proveedores-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo proveedor"
+            >
+              <Plus size={18} />
+              Agregar Proveedor
+            </button>
+          )}
           <div className="proveedores-control-busqueda">
             <label htmlFor="proveedores-buscar">Buscar:</label>
             <div className="proveedores-entrada-busqueda">
@@ -338,20 +341,24 @@ const TablaProveedores = ({
                           >
                             <Eye size={16} />
                           </button>
-                          <button
-                            className="proveedores-boton-accion proveedores-editar"
-                            onClick={() => manejarAccion('editar', proveedor)}
-                            title="Editar proveedor"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="proveedores-boton-accion proveedores-eliminar"
-                            onClick={() => manejarAccion('eliminar', proveedor)}
-                            title="Eliminar proveedor"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {permisos.includes('operaciones.proveedores.editar') || rolUsuario === 'admin' && (
+                            <button
+                              className="proveedores-boton-accion proveedores-editar"
+                              onClick={() => manejarAccion('editar', proveedor)}
+                              title="Editar proveedor"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+                          {permisos.includes('operaciones.proveedores.eliminar') || rolUsuario === 'admin' && (
+                            <button
+                              className="proveedores-boton-accion proveedores-eliminar"
+                              onClick={() => manejarAccion('eliminar', proveedor)}
+                              title="Eliminar proveedor"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

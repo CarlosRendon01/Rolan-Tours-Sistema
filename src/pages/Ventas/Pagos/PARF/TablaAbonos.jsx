@@ -61,6 +61,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
   } = estado;
 
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
   const [modalNuevoPagoAbierto, setModalNuevoPagoAbierto] = useState(false);
   const [modalAgregarAbonoAbierto, setModalAgregarAbonoAbierto] =
     useState(false);
@@ -105,7 +106,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
   const estadisticas = useMemo(() => {
     const abonosVisibles =
-      rolUsuario === "vendedor"
+      permisos.includes("ventas.pagos.ver")
         ? datosAbonos.filter((a) => a.activo)
         : datosAbonos.filter((a) => {
           if (filtroVisibilidad === "activos") return a.activo;
@@ -114,28 +115,37 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
         });
 
     const totalClientes = abonosVisibles.length;
-    const proximosVencer = abonosVisibles.filter((abono) => {
-      if (abono.estado === "FINALIZADO") return false;
-      const fechaVencimiento = new Date(abono.proximoVencimiento);
-      const hoy = new Date();
-      const diferenciaEnDias = Math.ceil(
-        (fechaVencimiento - hoy) / (1000 * 60 * 60 * 24)
-      );
-      return diferenciaEnDias <= 7 && diferenciaEnDias >= 0;
-    }).length;
-    const enProceso = abonosVisibles.filter(
-      (abono) => abono.estado === "EN_PROCESO"
-    ).length;
     const finalizados = abonosVisibles.filter(
-      (abono) => abono.estado === "FINALIZADO"
+      (abono) => abono.estado === "PAGADO"
     ).length;
 
+    const diasAlVencimiento = (abono) => {
+      if (!abono.proximoVencimiento || abono.proximoVencimiento === "—") return null;
+      const fechaVencimiento = new Date(abono.proximoVencimiento);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      return Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
+    };
+
+    const proximosVencer = abonosVisibles.filter((abono) => {
+      if (abono.estado === "PAGADO") return false;
+      const dias = diasAlVencimiento(abono);
+      return dias !== null && dias >= 0 && dias <= 7;
+    }).length;
+
+    const enProceso = abonosVisibles.filter((abono) => {
+      if (abono.estado !== "EN_PROCESO") return false;
+      const dias = diasAlVencimiento(abono);
+      if (dias === null) return true; // sin fecha = en proceso normal
+      return dias > 7; // más de 7 días = en proceso normal
+    }).length;
+
     return { totalClientes, proximosVencer, enProceso, finalizados };
-  }, [datosAbonos, rolUsuario, filtroVisibilidad]);
+  }, [datosAbonos, permisos, filtroVisibilidad]);
 
   const datosFiltrados = useMemo(() => {
     return datosAbonos.filter((abono) => {
-      if (rolUsuario === "vendedor" && !abono.activo) return false;
+      if (permisos.includes("ventas.pagos.ver") && !abono.activo) return false;
       if (rolUsuario === "admin") {
         if (filtroVisibilidad === "activos" && !abono.activo) return false;
         if (filtroVisibilidad === "eliminados" && abono.activo) return false;
@@ -155,7 +165,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
       return cumpleBusqueda;
     });
-  }, [terminoBusqueda, datosAbonos, rolUsuario, filtroVisibilidad]);
+  }, [terminoBusqueda, datosAbonos, rolUsuario, filtroVisibilidad, permisos]);
 
   const totalRegistros = datosFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
@@ -223,7 +233,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
   };
 
   const obtenerEstadoContrato = (pago) => {
-    if (pago.estado === "FINALIZADO") {
+    if (pago.estado === "PAGADO") {
       return { texto: "Finalizado", clase: "abonos-estado-pagado" };
     }
     const fechaVencimiento = new Date(pago.proximoVencimiento);
@@ -373,15 +383,17 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
           </div>
 
           <div className="abonos-seccion-derecha">
-            <button
-              className="abonos-boton-agregar"
-              onClick={() => setModalNuevoPagoAbierto(true)}
-              title="Registrar nuevo pago por abonos"
-              disabled={cargando}
-            >
-              <Plus size={18} />
-              <span>Nuevo Pago</span>
-            </button>
+            {permisos.includes("ventas.pagos.editar") && (
+              <button
+                className="abonos-boton-agregar"
+                onClick={() => setModalNuevoPagoAbierto(true)}
+                title="Registrar nuevo pago por abonos"
+                disabled={cargando}
+              >
+                <Plus size={18} />
+                <span>Nuevo Pago</span>
+              </button>
+            )}
 
             <div className="abonos-control-busqueda">
               <input
@@ -592,7 +604,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
                           >
                             <Eye size={14} />
                           </button>
-                          {pago.estado !== "FINALIZADO" && pago.activo && (
+                          {pago.estado !== "PAGADO" && pago.activo && (
                             <button
                               className="abonos-boton-accion abonos-agregar"
                               onClick={() =>
@@ -607,21 +619,22 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
                           {pago.activo && (
                             <>
-                              <button
-                                className="abonos-boton-accion abonos-editar"
-                                onClick={() => manejarAccion("editar", pago)}
-                                title={
-                                  pago.estado === "FINALIZADO"
-                                    ? "No se puede editar (finalizado)"
-                                    : "Editar pago"
-                                }
-                                disabled={
-                                  cargando || pago.estado === "FINALIZADO"
-                                }
-                              >
-                                <Edit size={14} />
-                              </button>
-
+                              {permisos.includes("ventas.pagos.editar") && (
+                                <button
+                                  className="abonos-boton-accion abonos-editar"
+                                  onClick={() => manejarAccion("editar", pago)}
+                                  title={
+                                    pago.estado === "PAGADO"
+                                      ? "No se puede editar (finalizado)"
+                                      : "Editar pago"
+                                  }
+                                  disabled={
+                                    cargando || pago.estado === "PAGADO"
+                                  }
+                                >
+                                  <Edit size={14} />
+                                </button>
+                              )}
                               <button
                                 className="abonos-boton-accion abonos-recibo"
                                 onClick={() =>

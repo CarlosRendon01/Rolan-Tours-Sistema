@@ -79,6 +79,8 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
             eliminar: false,
           },
           guias: { activo: false, ver: false, editar: false, eliminar: false },
+          proveedores: { activo: false, ver: false, editar: false, eliminar: false },
+          coordinadores: { activo: false, ver: false, editar: false, eliminar: false },
         },
       },
       servicios: {
@@ -158,9 +160,9 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
       id: "operaciones",
       nombre: "Operaciones",
       icono: <Settings size={20} />,
-      descripcion: "Operadores, vehículos y guías",
+      descripcion: "Operadores, vehículos, guías, proveedores y coordinadores",
       color: "#8b5cf6",
-      submodulos: ["operadores", "vehiculos", "guias"],
+      submodulos: ["operadores", "vehiculos", "guias", "proveedores", "coordinadores"],
     },
     {
       id: "servicios",
@@ -212,6 +214,8 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
           operadores: { activo: false, ver: false, editar: false, eliminar: false },
           vehiculos: { activo: false, ver: false, editar: false, eliminar: false },
           guias: { activo: false, ver: false, editar: false, eliminar: false },
+          proveedores: { activo: false, ver: false, editar: false, eliminar: false },
+          coordinadores: { activo: false, ver: false, editar: false, eliminar: false },
         },
       },
       servicios: {
@@ -265,7 +269,7 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
   };
 
   useEffect(() => {
-    if (rol && permissions && permissions.length > 0) { 
+    if (rol && permissions && permissions.length > 0) {
       const permisosTransformados = transformarIdsAPermisos(rol.permissions || []);
 
       setFormData({

@@ -671,7 +671,7 @@ const NuevaCotizacion = ({
       title: "Cotización Agregada!",
       html: `
         <div style="font-size: 1.1rem; margin-top: 15px;">
-          <strong style="color: #2563eb; font-size: 1.3rem;">"${nombreCotizacionOrigen} a ${nombreCotizacionDestico}"</strong>
+          <strong style="color: #2563eb; font-size: 1.3rem;">"${formData.origen} a ${formData.destino}"</strong>
           <p style="margin-top: 10px; color: #64748b;">ha sido registrado correctamente</p>
         </div>
       `,

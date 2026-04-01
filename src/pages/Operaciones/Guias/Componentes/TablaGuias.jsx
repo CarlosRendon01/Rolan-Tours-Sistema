@@ -16,6 +16,8 @@ const TablaGuias = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [puntosCarga, setPuntosCarga] = useState('');
+  const [rolUsuario] = useState(localStorage.getItem('rol') || '');
+  const [permisos] = useState(localStorage.getItem('permisos') || '');
 
   useEffect(() => {
     if (cargando) {
@@ -161,14 +163,16 @@ const TablaGuias = ({
         </div>
 
         <div className="guias-controles-derecha">
-          <button
-            className="guias-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo guía"
-          >
-            <Plus size={18} />
-            Agregar Guía
-          </button>
+          {permisos.includes('operaciones.guias.editar') || rolUsuario === 'admin' && (
+            <button
+              className="guias-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo guía"
+            >
+              <Plus size={18} />
+              Agregar Guía
+            </button>
+          )}
 
           <div className="guias-control-busqueda">
             <label htmlFor="buscar">Buscar:</label>
@@ -315,20 +319,25 @@ const TablaGuias = ({
                           >
                             <Eye size={16} />
                           </button>
-                          <button
-                            className="guias-boton-accion guias-editar"
-                            onClick={() => manejarAccion('editar', guia)}
-                            title="Editar guía"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="guias-boton-accion guias-eliminar"
-                            onClick={() => manejarAccion('eliminar', guia)}
-                            title="Eliminar guía"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+
+                          {permisos.includes('operaciones.guias.editar') || rolUsuario === 'admin' && (
+                            <button
+                              className="guias-boton-accion guias-editar"
+                              onClick={() => manejarAccion('editar', guia)}
+                              title="Editar guía"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+                          {permisos.includes('operaciones.guias.eliminar') || rolUsuario === 'admin' && (
+                            <button
+                              className="guias-boton-accion guias-eliminar"
+                              onClick={() => manejarAccion('eliminar', guia)}
+                              title="Eliminar guía"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

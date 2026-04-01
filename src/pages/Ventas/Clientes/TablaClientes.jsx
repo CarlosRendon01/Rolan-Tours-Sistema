@@ -125,7 +125,8 @@ const TablaClientes = () => {
       });
 
       const clientes = response.data.clientes || response.data;
-      setDatosClientes(clientes);
+      const clientesOrdenados = [...clientes].sort((a, b) => b.id - a.id); // ← agregar
+      setDatosClientes(clientesOrdenados);
     } catch (error) {
       if (error.response?.status === 401) {
         localStorage.removeItem('token');
@@ -650,13 +651,16 @@ const TablaClientes = () => {
                             >
                               <Eye size={16} />
                             </button>
-                            <button
-                              className="clientes-boton-accion clientes-editar"
-                              onClick={() => manejarAccion('editar', cliente)}
-                              title="Editar cliente"
-                            >
-                              <Edit size={16} />
-                            </button>
+
+                            {permisos.includes('ventas.clientes.editar') && cliente.activo && (
+                              <button
+                                className="clientes-boton-accion clientes-editar"
+                                onClick={() => manejarAccion('editar', cliente)}
+                                title="Editar cliente"
+                              >
+                                <Edit size={16} />
+                              </button>
+                            )}
 
                             {esAdministrador && !cliente.activo && (
                               <button
@@ -672,13 +676,15 @@ const TablaClientes = () => {
                               </button>
                             )}
 
-                            <button
-                              className="clientes-boton-accion clientes-eliminar"
-                              onClick={() => manejarAccion('eliminar', cliente)}
-                              title={esAdministrador && !cliente.activo ? 'Eliminar definitivamente' : 'Desactivar cliente'}
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            {permisos.includes('ventas.clientes.eliminar') && (
+                              <button
+                                className="clientes-boton-accion clientes-eliminar"
+                                onClick={() => manejarAccion('eliminar', cliente)}
+                                title={esAdministrador && !cliente.activo ? 'Eliminar definitivamente' : 'Desactivar cliente'}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
 
                             <button
                               className="clientes-boton-accion clientes-cotizar"

@@ -1,23 +1,28 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Truck, Calendar, Gauge, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import './CardVehiculo.css';
 
 const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
   const diasDesdeMantenimiento = () => {
     if (!mantenimiento.ultimo_mantenimiento) return null;
-    const fechaUltimo = new Date(mantenimiento.ultimo_mantenimiento.fecha);
+    const [year, month, day] = mantenimiento.ultimo_mantenimiento.fecha.split('-');
+    const fechaUltimo = new Date(year, month - 1, day); // local time, no UTC
     const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
     const diferencia = Math.floor((hoy - fechaUltimo) / (1000 * 60 * 60 * 24));
     return diferencia;
   };
 
   const kmHastaProximo = () => {
-    const kmActual = mantenimiento.kilometraje_actual;
+    const kmActual = mantenimiento.kilometraje_actual || 0;
     const kmUltimoMant = mantenimiento.ultimo_mantenimiento?.kilometraje || 0;
-    const intervalo = mantenimiento.intervalo_km;
+    const intervalo = mantenimiento.intervalo_km || 5000;
     const kmRestantes = intervalo - (kmActual - kmUltimoMant);
     return Math.max(0, kmRestantes);
   };
+
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   const getEstadoIcono = () => {
     switch (mantenimiento.estado) {
@@ -110,7 +115,9 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
       </div>
 
       <div className="card-footer">
-        <button className="card-btn-ver">Ver detalles</button>
+        {permisos.includes("mantenimiento.editar") || rolUsuario === "admin" && (
+          <button className="card-btn-ver">Ver detalles</button>
+        )}
       </div>
     </div>
   );

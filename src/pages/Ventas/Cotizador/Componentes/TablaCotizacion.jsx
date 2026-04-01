@@ -44,6 +44,7 @@ const TablaCotizacion = ({
   const [cotizacionPDFActual, setCotizacionPDFActual] = useState(null);
   const [modalPagoAbierto, setModalPagoAbierto] = useState(false);
   const [cotizacionParaPago, setCotizacionParaPago] = useState(null);
+  const permisos = localStorage.getItem("permisos") || "";
 
   const pdfCacheRef = useRef({
     plantillaBytes: null,
@@ -388,7 +389,7 @@ const TablaCotizacion = ({
     setCotizacionParaPago(null);
   }, []);
 
-  const alGuardarPago = useCallback(() => {}, []);
+  const alGuardarPago = useCallback(() => { }, []);
 
   return (
     <main className="cotizaciones-contenedor-principal" role="main">
@@ -651,9 +652,8 @@ const TablaCotizacion = ({
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-ver"
                             onClick={() => manejarAccionVer(cotizacion)}
-                            aria-label={`Ver cotización ${
-                              cotizacion.folio || cotizacion.id
-                            }`}
+                            aria-label={`Ver cotización ${cotizacion.folio || cotizacion.id
+                              }`}
                             title="Ver cotización"
                           >
                             <Eye size={16} aria-hidden="true" />
@@ -663,39 +663,39 @@ const TablaCotizacion = ({
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-descargar"
                             onClick={() => manejarAccionPDF(cotizacion)}
-                            aria-label={`Previsualizar y descargar cotización ${
-                              cotizacion.folio || cotizacion.id
-                            }`}
+                            aria-label={`Previsualizar y descargar cotización ${cotizacion.folio || cotizacion.id
+                              }`}
                             title="Previsualizar y descargar cotización"
                           >
                             <FileText size={16} aria-hidden="true" />
                             <span className="sr-only">PDF</span>
                           </button>
-                          <button
-                            type="button"
-                            className="cotizaciones-boton-accion cotizaciones-editar"
-                            onClick={() => manejarAccionEditar(cotizacion)}
-                            aria-label={`Editar cotización ${
-                              cotizacion.folio || cotizacion.id
-                            }`}
-                            title="Editar cotización"
-                          >
-                            <Edit size={16} aria-hidden="true" />
-                            <span className="sr-only">Editar</span>
-                          </button>
-                          <button
-                            type="button"
-                            className="cotizaciones-boton-accion cotizaciones-eliminar"
-                            onClick={() => manejarAccionEliminar(cotizacion)}
-                            aria-label={`Eliminar cotización ${
-                              cotizacion.folio || cotizacion.id
-                            }`}
-                            title="Eliminar cotización"
-                          >
-                            <Trash2 size={16} aria-hidden="true" />
-                            <span className="sr-only">Eliminar</span>
-                          </button>
-
+                          {permisos.includes('ventas.cotizaciones.editar') && (
+                            <button
+                              type="button"
+                              className="cotizaciones-boton-accion cotizaciones-editar"
+                              onClick={() => manejarAccionEditar(cotizacion)}
+                              aria-label={`Editar cotización ${cotizacion.folio || cotizacion.id
+                                }`}
+                              title="Editar cotización"
+                            >
+                              <Edit size={16} aria-hidden="true" />
+                              <span className="sr-only">Editar</span>
+                            </button>
+                          )}
+                          {permisos.includes('ventas.cotizaciones.eliminar') && (
+                            <button
+                              type="button"
+                              className="cotizaciones-boton-accion cotizaciones-eliminar"
+                              onClick={() => manejarAccionEliminar(cotizacion)}
+                              aria-label={`Eliminar cotización ${cotizacion.folio || cotizacion.id
+                                }`}
+                              title="Eliminar cotización"
+                            >
+                              <Trash2 size={16} aria-hidden="true" />
+                              <span className="sr-only">Eliminar</span>
+                            </button>
+                          )}
                           <button
                             className="cotizaciones-boton-accion cotizaciones-pago"
                             onClick={() => manejarAccionCrearPago(cotizacion)}
@@ -760,9 +760,8 @@ const TablaCotizacion = ({
                   <button
                     key={`pagina-${numero}`}
                     type="button"
-                    className={`cotizaciones-numero-pagina ${
-                      paginaActual === numero ? "cotizaciones-activo" : ""
-                    }`}
+                    className={`cotizaciones-numero-pagina ${paginaActual === numero ? "cotizaciones-activo" : ""
+                      }`}
                     onClick={() => cambiarPagina(numero)}
                     aria-label={`Ir a página ${numero}`}
                     aria-current={paginaActual === numero ? "page" : undefined}

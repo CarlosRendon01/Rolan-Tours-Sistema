@@ -20,10 +20,6 @@ axios.interceptors.response.use(
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('rol');
-
-            if (window.location.pathname !== '/') {
-                window.location.href = '/';
-            }
         }
         return Promise.reject(error);
     }

@@ -14,6 +14,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -24,6 +25,7 @@
   0% {
     transform: translate(-50%, -50%) rotate(0deg);
   }
+
   100% {
     transform: translate(-50%, -50%) rotate(360deg);
   }
@@ -34,6 +36,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -122,11 +125,9 @@
 }
 
 .recibos-tarjeta-estadistica.total {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.2),
-    rgba(29, 78, 216, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.2),
+      rgba(29, 78, 216, 0.3));
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
@@ -137,11 +138,9 @@
 }
 
 .recibos-tarjeta-estadistica.pagados {
-  background: linear-gradient(
-    135deg,
-    rgba(16, 185, 129, 0.2),
-    rgba(5, 150, 105, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(16, 185, 129, 0.2),
+      rgba(5, 150, 105, 0.3));
   border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
@@ -152,11 +151,9 @@
 }
 
 .recibos-tarjeta-estadistica.cancelados {
-  background: linear-gradient(
-    135deg,
-    rgba(245, 158, 11, 0.2),
-    rgba(217, 119, 6, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(245, 158, 11, 0.2),
+      rgba(217, 119, 6, 0.3));
   border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
@@ -167,11 +164,9 @@
 }
 
 .recibos-tarjeta-estadistica.monto-emitido {
-  background: linear-gradient(
-    135deg,
-    rgba(16, 185, 129, 0.2),
-    rgba(5, 150, 105, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(16, 185, 129, 0.2),
+      rgba(5, 150, 105, 0.3));
   border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
@@ -182,16 +177,16 @@
 }
 
 .recibos-tarjeta-estadistica.eliminados {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-  border-left: 4px solid #ef4444;
+  background: linear-gradient(135deg,
+      rgba(245, 158, 11, 0.2),
+      rgba(217, 119, 6, 0.3));
+  border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
-.recibos-tarjeta-estadistica.eliminados .recibos-icono-estadistica {
-  color: #ef4444;
-}
-
-.recibos-tarjeta-estadistica.eliminados .recibos-valor-estadistica {
-  color: #dc2626;
+.recibos-tarjeta-estadistica.eliminados:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
 }
 
 .recibos-icono-estadistica {
@@ -249,6 +244,7 @@
   color: #991b1b;
   animation: rec-slideDown 0.3s ease-out;
 }
+
 .recibos-controles {
   display: flex;
   justify-content: space-between;
@@ -337,6 +333,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -382,15 +379,15 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.recibos-switch input:checked + .recibos-slider {
+.recibos-switch input:checked+.recibos-slider {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
-.recibos-switch input:checked + .recibos-slider::before {
+.recibos-switch input:checked+.recibos-slider::before {
   transform: translateX(20px);
 }
 
-.recibos-switch input:focus + .recibos-slider {
+.recibos-switch input:focus+.recibos-slider {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
   outline: none;
 }
@@ -638,10 +635,12 @@
 }
 
 @keyframes recibosPulseRed {
+
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
   }
+
   50% {
     box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.2);
   }
@@ -831,6 +830,7 @@
     opacity: 0;
     transform: translateX(-50%) translateY(-5px);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -891,6 +891,7 @@
   display: inline-block;
   vertical-align: middle;
 }
+
 .recibos-pie-tabla {
   display: flex;
   justify-content: space-between;
@@ -1219,10 +1220,12 @@
 }
 
 @keyframes facturas-badge-pulse {
+
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
   }
+
   50% {
     box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
   }
@@ -1244,12 +1247,14 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
 
 @media print {
+
   .recibos-encabezado,
   .recibos-controles,
   .recibos-pie-tabla,

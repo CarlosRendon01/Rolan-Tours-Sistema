@@ -43,6 +43,7 @@ const TablaFacturas = ({
   const [cargando, setCargando] = useState(true); // Cambiado a true
   const [mostrarEliminados, setMostrarEliminados] = useState(false);
   const [rolUsuario] = useState(localStorage.getItem("rol") || "vendedor");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
   const [modalRegenerarAbierto, setModalRegenerarAbierto] = useState(false);
   const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
     useState(false);
@@ -639,14 +640,16 @@ const TablaFacturas = ({
                             <FileText size={16} />
                           </button>
 
-                          <button
-                            className="facturas-boton-accion facturas-eliminar"
-                            onClick={() => manejarAccion("eliminar", factura)}
-                            title="Eliminar factura"
-                            disabled={cargando}
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                          {permisos.includes("ventas.pagos.eliminar") && (
+                            <button
+                              className="facturas-boton-accion facturas-eliminar"
+                              onClick={() => manejarAccion("eliminar", factura)}
+                              title="Eliminar factura"
+                              disabled={cargando}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          )}
                         </>
                       ) : factura.activo === false && rolUsuario === "admin" ? (
                         <>

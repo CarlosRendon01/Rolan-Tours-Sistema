@@ -16,6 +16,8 @@ const TablaRestaurante = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [puntosCarga, setPuntosCarga] = useState('');
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   useEffect(() => {
     if (cargando) {
@@ -148,14 +150,16 @@ const TablaRestaurante = ({
         </div>
 
         <div className="resto-controles-derecha">
-          <button
-            className="resto-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo servicio de restaurante"
-          >
-            <Plus size={18} />
-            Agregar Servicio
-          </button>
+          {permisos.includes("servicios.restaurantes.editar") || rolUsuario === "admin" && (
+            <button
+              className="resto-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo servicio de restaurante"
+            >
+              <Plus size={18} />
+              Agregar Servicio
+            </button>
+          )}
 
           <div className="resto-control-busqueda">
             <label htmlFor="resto-buscar">Buscar:</label>
@@ -307,20 +311,25 @@ const TablaRestaurante = ({
                           >
                             <Eye size={16} />
                           </button>
-                          <button
-                            className="resto-boton-accion resto-editar"
-                            onClick={() => manejarAccion('editar', restaurante)}
-                            title="Editar servicio"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="resto-boton-accion resto-eliminar"
-                            onClick={() => manejarAccion('eliminar', restaurante)}
-                            title="Eliminar servicio"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {(permisos.includes("servicios.restaurantes.editar") || rolUsuario === "admin") && (
+                            <button
+                              className="resto-boton-accion resto-editar"
+                              onClick={() => manejarAccion('editar', restaurante)}
+                              title="Editar servicio"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+
+                          {(permisos.includes("servicios.restaurantes.eliminar") || rolUsuario === "admin") && (
+                            <button
+                              className="resto-boton-accion resto-eliminar"
+                              onClick={() => manejarAccion('eliminar', restaurante)}
+                              title="Eliminar servicio"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -57,9 +57,11 @@ const TablaUsuarios = ({
   const indiceInicio = (paginaActual - 1) * registrosPorPagina;
   const indiceFin = indiceInicio + registrosPorPagina;
   const usuariosPaginados = usuariosFiltrados.slice(indiceInicio, indiceFin);
-  
+
   const totalUsuarios = usuarios.length;
   const usuariosActivos = usuarios.filter((u) => u.estado === "activo").length;
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   const obtenerIniciales = (nombre) => {
     if (!nombre) return "?";
@@ -153,10 +155,12 @@ const TablaUsuarios = ({
         </div>
 
         <div className="usuarios-controles-derecha">
-          <button className="usuarios-boton-agregar" onClick={onAgregar}>
-            <Plus size={18} />
-            Agregar Usuario
-          </button>
+          {permisos.includes("administracion.usuarios.editar") || rolUsuario === "admin" && (
+            <button className="usuarios-boton-agregar" onClick={onAgregar}>
+              <Plus size={18} />
+              Agregar Usuario
+            </button>
+          )}
 
           <div className="usuarios-control-busqueda">
             <label htmlFor="usuarios-buscar">Buscar:</label>
@@ -286,11 +290,10 @@ const TablaUsuarios = ({
 
                       <td data-label="Estado" className="usuarios-columna-estado">
                         <span
-                          className={`usuarios-badge-estado ${
-                            usuario.estado === "activo"
-                              ? "activo"
-                              : "inactivo"
-                          }`}
+                          className={`usuarios-badge-estado ${usuario.estado === "activo"
+                            ? "activo"
+                            : "inactivo"
+                            }`}
                         >
                           {usuario.estado === "activo" ? "Activo" : "Inactivo"}
                         </span>
@@ -308,20 +311,24 @@ const TablaUsuarios = ({
                           >
                             <Eye size={16} />
                           </button>
-                          <button
-                            className="usuarios-boton-accion usuarios-editar"
-                            onClick={() => manejarAccion("editar", usuario)}
-                            title="Editar usuario"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="usuarios-boton-accion usuarios-eliminar"
-                            onClick={() => manejarAccion("eliminar", usuario)}
-                            title="Eliminar usuario"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {permisos.includes("administracion.usuarios.editar") || rolUsuario === "admin" && (
+                            <button
+                              className="usuarios-boton-accion usuarios-editar"
+                              onClick={() => manejarAccion("editar", usuario)}
+                              title="Editar usuario"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+                          {permisos.includes("administracion.usuarios.eliminar") || rolUsuario === "admin" && (
+                            <button
+                              className="usuarios-boton-accion usuarios-eliminar"
+                              onClick={() => manejarAccion("eliminar", usuario)}
+                              title="Eliminar usuario"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -358,9 +365,8 @@ const TablaUsuarios = ({
                   (numero) => (
                     <button
                       key={numero}
-                      className={`usuarios-numero-pagina ${
-                        paginaActual === numero ? "usuarios-activo" : ""
-                      }`}
+                      className={`usuarios-numero-pagina ${paginaActual === numero ? "usuarios-activo" : ""
+                        }`}
                       onClick={() => cambiarPagina(numero)}
                     >
                       {numero}

@@ -44,6 +44,7 @@ const TablaContratos = () => {
 
   const [datosContratos, setDatosContratos] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   useEffect(() => {
     cargarContratos();
@@ -1021,13 +1022,15 @@ const TablaContratos = () => {
                       >
                         <FileText size={16} />
                       </button>
-                      <button
-                        className="Contratos-boton-accion Contratos-editar"
-                        onClick={() => manejarAccion("editar", contrato)}
-                        title="Editar contrato"
-                      >
-                        <Edit size={16} />
-                      </button>
+                      {permisos.includes('documentos.contratos.editar') && (
+                        <button
+                          className="Contratos-boton-accion Contratos-editar"
+                          onClick={() => manejarAccion("editar", contrato)}
+                          title="Editar contrato"
+                        >
+                          <Edit size={16} />
+                        </button>
+                      )}
 
                       {rolUsuario === "admin" && !contrato.activo && (
                         <button
@@ -1044,17 +1047,19 @@ const TablaContratos = () => {
                         </button>
                       )}
 
-                      <button
-                        className="Contratos-boton-accion Contratos-eliminar"
-                        onClick={() => manejarAccion("eliminar", contrato)}
-                        title={
-                          rolUsuario === "admin" && !contrato.activo
-                            ? "Eliminar definitivamente"
-                            : "Desactivar contrato"
-                        }
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      {permisos.includes('documentos.contratos.eliminar') && (
+                        <button
+                          className="Contratos-boton-accion Contratos-eliminar"
+                          onClick={() => manejarAccion("eliminar", contrato)}
+                          title={
+                            rolUsuario === "admin" && !contrato.activo
+                              ? "Eliminar definitivamente"
+                              : "Desactivar contrato"
+                          }
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

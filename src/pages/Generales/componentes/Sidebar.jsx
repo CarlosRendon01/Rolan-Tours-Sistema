@@ -260,8 +260,8 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         { id: 'Operadores', icono: UserCheck, etiqueta: 'Operadores', permiso: 'operaciones.operadores.ver' },
         { id: 'Vehiculos', icono: Car, etiqueta: 'Vehículos', permiso: 'operaciones.vehiculos.ver' },
         { id: 'Guias', icono: Map, etiqueta: 'Guías', permiso: 'operaciones.guias.ver' },
-        { id: 'Proveedores', icono: Building, etiqueta: 'Proveedores' },
-        { id: 'Coordinadores', icono: UserCog, etiqueta: 'Coordinadores' }
+        { id: 'Proveedores', icono: Building, etiqueta: 'Proveedores', permiso: 'operaciones.proveedores.ver' },
+        { id: 'Coordinadores', icono: UserCog, etiqueta: 'Coordinadores', permiso: 'operaciones.coordinadores.ver' }
       ]
     },
     {

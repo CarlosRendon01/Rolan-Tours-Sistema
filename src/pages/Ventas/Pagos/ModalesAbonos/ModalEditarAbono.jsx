@@ -61,7 +61,12 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
     frecuenciaPago: "mensual",
     observaciones: "",
   });
-
+  
+  const esFechaValida = (valor) => {
+    if (!valor || valor === '—' || valor === 'Finalizado') return false;
+    return !isNaN(Date.parse(valor));
+  };
+  
   useEffect(() => {
     if (abierto && pagoSeleccionado) {
       const datosIniciales = {
@@ -74,10 +79,9 @@ const useEditarAbonoForm = (pagoSeleccionado, abierto) => {
         montoTotal: pagoSeleccionado.planPago.montoTotal || "",
         numeroAbonos: pagoSeleccionado.planPago.abonosPlaneados || "",
         abonoMinimo: pagoSeleccionado.planPago.abonoMinimo || "",
-        fechaPrimerAbono:
-          pagoSeleccionado.proximoVencimiento !== "Finalizado"
-            ? pagoSeleccionado.proximoVencimiento
-            : "",
+        fechaPrimerAbono: esFechaValida(pagoSeleccionado.proximoVencimiento)
+          ? pagoSeleccionado.proximoVencimiento.split('T')[0]
+          : "",
         numeroContrato: pagoSeleccionado.numeroContrato || "",
         frecuenciaPago: pagoSeleccionado.frecuenciaPago || "mensual",
         observaciones: pagoSeleccionado.observaciones || "",

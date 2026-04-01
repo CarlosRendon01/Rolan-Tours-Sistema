@@ -3,8 +3,8 @@ import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, UserCheck, Users,
 import './TablaOperadores.css';
 
 const TablaOperadores = ({
-  operadores,       
-  setOperadores,   
+  operadores,
+  setOperadores,
   onVer,
   onEditar,
   onEliminar,
@@ -16,6 +16,8 @@ const TablaOperadores = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [puntosCarga, setPuntosCarga] = useState('');
+  const [rolUsuario] = useState(localStorage.getItem("rol") || "");
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   useEffect(() => {
     if (cargando) {
@@ -174,14 +176,16 @@ const TablaOperadores = ({
         </div>
 
         <div className="operadores-controles-derecha">
-          <button
-            className="operadores-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo operador"
-          >
-            <Plus size={18} />
-            Agregar Operador
-          </button>
+          {permisos.includes('operaciones.operadores.editar') || rolUsuario === 'admin' && (
+            <button
+              className="operadores-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo operador"
+            >
+              <Plus size={18} />
+              Agregar Operador
+            </button>
+          )}
 
           <div className="operadores-control-busqueda">
             <label htmlFor="buscar">Buscar:</label>
@@ -317,20 +321,24 @@ const TablaOperadores = ({
                           >
                             <Eye size={16} />
                           </button>
-                          <button
-                            className="operadores-boton-accion operadores-editar"
-                            onClick={() => manejarAccion('editar', operador)}
-                            title="Editar operador"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="operadores-boton-accion operadores-eliminar"
-                            onClick={() => manejarAccion('eliminar', operador)}
-                            title="Eliminar operador"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {permisos.includes('operaciones.operadores.editar') || rolUsuario === 'admin' && (
+                            <button
+                              className="operadores-boton-accion operadores-editar"
+                              onClick={() => manejarAccion('editar', operador)}
+                              title="Editar operador"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+                          {permisos.includes('operaciones.operadores.eliminar') || rolUsuario === 'admin' && (
+                            <button
+                              className="operadores-boton-accion operadores-eliminar"
+                              onClick={() => manejarAccion('eliminar', operador)}
+                              title="Eliminar operador"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

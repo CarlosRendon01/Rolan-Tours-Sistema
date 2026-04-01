@@ -45,9 +45,10 @@ const ModalMantenimiento = ({
   const calcularPorcentajeUso = () => {
     const kmActual = mantenimiento.kilometraje_actual;
     const kmUltimoMant = mantenimiento.ultimo_mantenimiento?.kilometraje || 0;
-    const intervalo = mantenimiento.intervalo_km;
+    const intervalo = mantenimiento.intervalo_km || 5000;
+    if (intervalo === 0) return 0;
     const kmRecorridos = kmActual - kmUltimoMant;
-    return Math.min(100, (kmRecorridos / intervalo) * 100);
+    return Math.min(100, Math.max(0, (kmRecorridos / intervalo) * 100));
   };
 
   const handleActualizarKm = async () => {
@@ -233,7 +234,12 @@ const ModalMantenimiento = ({
                 ) : (
                   <div className="modal-mant-proximo">
                     <p>
-                      En {Math.max(0, mantenimiento.intervalo_km - (mantenimiento.kilometraje_actual - (mantenimiento.ultimo_mantenimiento?.kilometraje || 0))).toLocaleString('es-MX')} km
+                      En {(() => {
+                        const intervalo = mantenimiento.intervalo_km || 5000;
+                        const kmActual = mantenimiento.kilometraje_actual || 0;
+                        const kmUltimo = mantenimiento.ultimo_mantenimiento?.kilometraje || 0;
+                        return Math.max(0, intervalo - (kmActual - kmUltimo)).toLocaleString('es-MX');
+                      })()} km
                     </p>
                   </div>
                 )}

@@ -16,6 +16,8 @@ const TablaCoordinadores = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [puntosCarga, setPuntosCarga] = useState('');
+  const [rolUsuario] = useState(localStorage.getItem('rol') || '');
+  const [permisos] = useState(localStorage.getItem('permisos') || '');
 
   useEffect(() => {
     if (cargando) {
@@ -169,14 +171,16 @@ const TablaCoordinadores = ({
         </div>
 
         <div className="coord-controles-derecha">
-          <button
-            className="coord-boton-agregar"
-            onClick={onAgregar}
-            title="Agregar nuevo coordinador"
-          >
-            <Plus size={18} />
-            Agregar Coordinador
-          </button>
+          {permisos.includes('operaciones.coordinadores.editar') || rolUsuario === 'admin' && (
+            <button
+              className="coord-boton-agregar"
+              onClick={onAgregar}
+              title="Agregar nuevo coordinador"
+            >
+              <Plus size={18} />
+              Agregar Coordinador
+            </button>
+          )}
 
           <div className="coord-control-busqueda">
             <label htmlFor="coord-buscar">Buscar:</label>
@@ -314,20 +318,25 @@ const TablaCoordinadores = ({
                           >
                             <Eye size={16} />
                           </button>
-                          <button
-                            className="coord-boton-accion coord-editar"
-                            onClick={() => manejarAccion('editar', coordinador)}
-                            title="Editar coordinador"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="coord-boton-accion coord-eliminar"
-                            onClick={() => manejarAccion('eliminar', coordinador)}
-                            title="Eliminar coordinador"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+
+                          {permisos.includes('operaciones.coordinadores.editar') || rolUsuario === 'admin' && (
+                            <button
+                              className="coord-boton-accion coord-editar"
+                              onClick={() => manejarAccion('editar', coordinador)}
+                              title="Editar coordinador"
+                            >
+                              <Edit size={16} />
+                            </button>
+                          )}
+                          {permisos.includes('operaciones.coordinadores.eliminar') || rolUsuario === 'admin' && (
+                            <button
+                              className="coord-boton-accion coord-eliminar"
+                              onClick={() => manejarAccion('eliminar', coordinador)}
+                              title="Eliminar coordinador"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

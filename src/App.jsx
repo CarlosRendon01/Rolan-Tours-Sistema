@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import useInactividad from "./hooks/useInactividad.js";
+import axios from 'axios';
+import { API_CONFIG } from './config/api'
 import ProtectedRoute from "./components/ProtectedRoute";
 import AccesoDenegado from "./pages/AccesoDenegado";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
@@ -37,12 +40,19 @@ function App() {
     setEstaAutenticado(true);
   };
 
-  const manejarLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    setEstaAutenticado(false);
-  };
+  const manejarLogout = useCallback(async () => {
+    try {
+      await axios.post(`${API_CONFIG.BASE_URL}/logout`);
+    } catch (_) {
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('rol');
+      setEstaAutenticado(false);
+    }
+  }, []);
+
+  useInactividad(estaAutenticado ? manejarLogout : null);
 
   return (
     <Router>

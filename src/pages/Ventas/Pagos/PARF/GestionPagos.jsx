@@ -69,6 +69,10 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
     localStorage.getItem("rol") || "Vendedor"
   );
 
+  const [permisos, setPermisos] = useState([
+    localStorage.getItem("permisos") || "",
+  ]);
+
   const [modalAbierto, establecerModalAbierto] = useState(false);
   const [modalEditarAbierto, establecerModalEditarAbierto] = useState(false);
   const [modalReactivarAbierto, establecerModalReactivarAbierto] =
@@ -107,7 +111,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
 
   const estadisticas = useMemo(() => {
     const pagosVisibles =
-      rolUsuario === "Vendedor"
+      permisos.includes("ventas.pagos.ver")
         ? datosPagos.filter((p) => p.activo)
         : datosPagos.filter((p) => {
           if (filtroVisibilidad === "activos") return p.activo;
@@ -123,11 +127,11 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       (pago) => pago.estado === "VENCIDO"
     ).length;
     return { total, pagados, vencidos };
-  }, [datosPagos, rolUsuario, filtroVisibilidad]);
+  }, [datosPagos, permisos, filtroVisibilidad]);
 
   const datosFiltrados = useMemo(() => {
     return datosPagos.filter((pago) => {
-      if (rolUsuario === "Vendedor" && !pago.activo) return false;
+      if (permisos.includes("ventas.pagos.ver") && !pago.activo) return false;
       if (rolUsuario === "admin") {
         if (filtroVisibilidad === "activos" && !pago.activo) return false;
         if (filtroVisibilidad === "eliminados" && pago.activo) return false;
@@ -160,6 +164,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
     filtroVisibilidad,
     datosPagos,
     rolUsuario,
+    permisos,
   ]);
 
   const totalRegistros = datosFiltrados.length;
@@ -552,7 +557,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           <Eye size={14} />
                         </button>
 
-                        {pago.estado === "VENCIDO" && pago.activo && (
+                        {permisos.includes("ventas.pagos.editar") && pago.estado === "VENCIDO" && pago.activo && (
                           <button
                             className="pagos-boton-accion pagos-editar"
                             onClick={() => manejarAccion("editar", pago)}
@@ -563,7 +568,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           </button>
                         )}
 
-                        {rolUsuario === "Vendedor" && pago.activo && (
+                        {permisos.includes("ventas.pagos.eliminar") && pago.activo && (
                           <button
                             className="pagos-boton-accion pagos-eliminar"
                             onClick={() => manejarAccion("eliminar", pago)}

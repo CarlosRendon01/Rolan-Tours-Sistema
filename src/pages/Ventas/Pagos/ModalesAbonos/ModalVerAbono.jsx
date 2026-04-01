@@ -54,7 +54,7 @@ const ModalVerAbono = ({
 
   const obtenerEstadoClase = (estado) => {
     switch (estado) {
-      case "FINALIZADO":
+      case "PAGADO":
         return "estado-finalizado";
       case "EN_PROCESO":
         return "estado-en-proceso";
@@ -208,13 +208,13 @@ const ModalVerAbono = ({
                       datosActualizados.estado
                     )}`}
                   >
-                    {datosActualizados.estado === "FINALIZADO" ? (
+                    {datosActualizados.estado === "PAGADO" ? (
                       <CheckCircle size={16} />
                     ) : (
                       <Clock size={16} />
                     )}
                     <span>
-                      {datosActualizados.estado === "FINALIZADO"
+                      {datosActualizados.estado === "PAGADO"
                         ? "Pago Completado"
                         : "En Proceso"}
                     </span>
@@ -386,7 +386,7 @@ const ModalVerAbono = ({
                         {datosActualizados.planPago.abonoMinimo.toLocaleString()}
                       </span>
                     </div>
-                    {datosActualizados.estado !== "FINALIZADO" && (
+                    {datosActualizados.estado !== "PAGADO" && (
                       <div className="modal-ver-abono-info-item">
                         <span className="modal-ver-abono-info-label">
                           Próximo Vencimiento:

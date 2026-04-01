@@ -43,6 +43,7 @@ const TablaOrdenes = () => {
   const [ordenPDFActual, setOrdenPDFActual] = useState(null);
   const [datosOrdenes, setDatosOrdenes] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [permisos] = useState(localStorage.getItem("permisos") || "");
 
   useEffect(() => {
     cargarDatos();
@@ -841,14 +842,15 @@ const TablaOrdenes = () => {
                       >
                         <FileText size={16} />
                       </button>
-                      <button
-                        className="Ordenes-boton-accion Ordenes-editar"
-                        onClick={() => manejarAccion("editar", orden)}
-                        title="Editar orden"
-                      >
-                        <Edit size={16} />
-                      </button>
-
+                      {permisos.includes("documentos.ordenes.editar") || rolUsuario === "admin" && (
+                        <button
+                          className="Ordenes-boton-accion Ordenes-editar"
+                          onClick={() => manejarAccion("editar", orden)}
+                          title="Editar orden"
+                        >
+                          <Edit size={16} />
+                        </button>
+                      )}
                       {rolUsuario === "admin" && !orden.activo && (
                         <button
                           className="Ordenes-boton-accion Ordenes-restaurar"
@@ -859,17 +861,19 @@ const TablaOrdenes = () => {
                         </button>
                       )}
 
-                      <button
-                        className="Ordenes-boton-accion Ordenes-eliminar"
-                        onClick={() => manejarAccion("eliminar", orden)}
-                        title={
-                          rolUsuario === "admin" && !orden.activo
-                            ? "Eliminar definitivamente"
-                            : "Desactivar orden"
-                        }
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      {permisos.includes("documentos.ordenes.eliminar") || rolUsuario === "admin" && (
+                        <button
+                          className="Ordenes-boton-accion Ordenes-eliminar"
+                          onClick={() => manejarAccion("eliminar", orden)}
+                          title={
+                            rolUsuario === "admin" && !orden.activo
+                              ? "Eliminar definitivamente"
+                              : "Desactivar orden"
+                          }
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
