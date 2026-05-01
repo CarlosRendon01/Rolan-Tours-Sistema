@@ -175,7 +175,7 @@ const TablaProveedores = ({
         </div>
 
         <div className="proveedores-controles-derecha">
-          {permisos.includes('operaciones.proveedores.editar') || rolUsuario === 'admin' && (
+          {(permisos.includes('operaciones.proveedores.editar') || rolUsuario === 'admin') && (
             <button
               className="proveedores-boton-agregar"
               onClick={onAgregar}
@@ -341,7 +341,7 @@ const TablaProveedores = ({
                           >
                             <Eye size={16} />
                           </button>
-                          {permisos.includes('operaciones.proveedores.editar') || rolUsuario === 'admin' && (
+                          {(permisos.includes('operaciones.proveedores.editar') || rolUsuario === 'admin') && (
                             <button
                               className="proveedores-boton-accion proveedores-editar"
                               onClick={() => manejarAccion('editar', proveedor)}
@@ -350,7 +350,7 @@ const TablaProveedores = ({
                               <Edit size={16} />
                             </button>
                           )}
-                          {permisos.includes('operaciones.proveedores.eliminar') || rolUsuario === 'admin' && (
+                          {(permisos.includes('operaciones.proveedores.eliminar') || rolUsuario === 'admin') && (
                             <button
                               className="proveedores-boton-accion proveedores-eliminar"
                               onClick={() => manejarAccion('eliminar', proveedor)}

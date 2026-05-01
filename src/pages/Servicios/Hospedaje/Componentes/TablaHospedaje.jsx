@@ -180,7 +180,7 @@ const TablaHospedaje = ({
         </div>
 
         <div className="hospedaje-controles-derecha">
-          {permisos.includes("servicios.hospedaje.editar") || rolUsuario === "admin" && (
+          {(permisos.includes("servicios.hospedaje.editar") || rolUsuario === "admin") && (
             <button
               className="hospedaje-boton-agregar"
               onClick={onAgregar}

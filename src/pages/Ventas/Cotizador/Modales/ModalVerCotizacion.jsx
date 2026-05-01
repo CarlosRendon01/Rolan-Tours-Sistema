@@ -35,7 +35,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
   const formatearFecha = (fecha) => {
     if (!fecha) return "No disponible";
     try {
-      return new Date(fecha).toLocaleDateString("es-MX", {
+      const [anio, mes, dia] = fecha.split("T")[0].split("-").map(Number);
+      return new Date(anio, mes - 1, dia).toLocaleDateString("es-MX", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -119,6 +120,37 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
 
   const servicios = obtenerServicios();
 
+  // Después de la función obtenerServicios, agrega:
+  const esItinerario = cotizacion.modo === "itinerario";
+
+  const obtenerStops = () => {
+    if (!cotizacion.stops) return [];
+    if (Array.isArray(cotizacion.stops)) return cotizacion.stops;
+    try { return JSON.parse(cotizacion.stops); } catch { return []; }
+  };
+
+  const stops = obtenerStops();
+
+  const obtenerDestinoTexto = () => {
+    if (!esItinerario) return cotizacion.destinoServicio || cotizacion.destino;
+    if (stops.length === 0) return cotizacion.destino || "No disponible";
+    return stops.map((s, i) => `Parada ${i + 1}: ${s.destino}`).join(" → ");
+  };
+
+  const obtenerFechaRegreso = () => {
+    if (!esItinerario) return formatearFecha(cotizacion.fecha_regreso);
+    if (stops.length === 0) return "No disponible";
+    const ultimo = stops[stops.length - 1];
+    return formatearFecha(ultimo.fecha_salida);
+  };
+
+  const obtenerHoraRegreso = () => {
+    if (!esItinerario) return cotizacion.hora_regreso;
+    if (stops.length === 0) return "No disponible";
+    const ultimo = stops[stops.length - 1];
+    return ultimo.hora_salida || "No disponible";
+  };
+
   return (
     <div className="superposicion-modal-ver" onClick={manejarCierre}>
       <div
@@ -142,9 +174,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
 
         <div className="modal-tabs">
           <button
-            className={`tab-button ${
-              pestanaActiva === "informacion" ? "active" : ""
-            }`}
+            className={`tab-button ${pestanaActiva === "informacion" ? "active" : ""
+              }`}
             onClick={() => setPestanaActiva("informacion")}
             type="button"
           >
@@ -152,9 +183,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
             Información General
           </button>
           <button
-            className={`tab-button ${
-              pestanaActiva === "cotizaciones" ? "active" : ""
-            }`}
+            className={`tab-button ${pestanaActiva === "cotizaciones" ? "active" : ""
+              }`}
             onClick={() => setPestanaActiva("cotizaciones")}
             type="button"
           >
@@ -210,8 +240,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
 
               <CampoVisualizacion
                 icono={Calendar}
-                etiqueta="Fecha de Regreso"
-                valor={formatearFecha(cotizacion.fecha_regreso)}
+                etiqueta={esItinerario ? "Fecha último destino" : "Fecha de Regreso"}
+                valor={obtenerFechaRegreso()}
               />
 
               <CampoVisualizacion
@@ -222,8 +252,8 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
 
               <CampoVisualizacion
                 icono={CalendarClock}
-                etiqueta="Hora Regreso"
-                valor={cotizacion.hora_regreso}
+                etiqueta={esItinerario ? "Hora último destino" : "Hora Regreso"}
+                valor={obtenerHoraRegreso()}
               />
 
               <CampoVisualizacion
@@ -241,8 +271,29 @@ const ModalVerCotizacion = ({ estaAbierto, cotizacion, alCerrar }) => {
               <CampoVisualizacion
                 icono={MapPin}
                 etiqueta="Destino"
-                valor={cotizacion.destinoServicio || cotizacion.destino}
+                valor={obtenerDestinoTexto()}
               />
+
+              {esItinerario && stops.length > 0 && (
+                <div className="elemento-informacion-ver form-group-full">
+                  <div className="etiqueta-informacion-ver">
+                    <Route size={18} />
+                    Itinerario de Paradas
+                  </div>
+                  <div className="valor-informacion-ver">
+                    <ul className="lista-extras-ver">
+                      {stops.map((stop, i) => (
+                        <li key={i}>
+                          <strong>Parada {i + 1}:</strong> {stop.destino}
+                          {stop.fecha_salida && ` — Salida: ${formatearFecha(stop.fecha_salida)}`}
+                          {stop.hora_salida && ` ${stop.hora_salida}`}
+                          {stop.tipo_camino && ` (${stop.tipo_camino})`}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
 
               <CampoVisualizacion
                 icono={FileText}

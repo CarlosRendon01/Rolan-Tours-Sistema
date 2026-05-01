@@ -1022,7 +1022,7 @@ const TablaContratos = () => {
                       >
                         <FileText size={16} />
                       </button>
-                      {permisos.includes('documentos.contratos.editar') && (
+                      {(permisos.includes('documentos.contratos.editar') || rolUsuario === "admin") && (
                         <button
                           className="Contratos-boton-accion Contratos-editar"
                           onClick={() => manejarAccion("editar", contrato)}
@@ -1047,7 +1047,7 @@ const TablaContratos = () => {
                         </button>
                       )}
 
-                      {permisos.includes('documentos.contratos.eliminar') && (
+                      {(permisos.includes('documentos.contratos.eliminar') || rolUsuario === "admin") && (
                         <button
                           className="Contratos-boton-accion Contratos-eliminar"
                           onClick={() => manejarAccion("eliminar", contrato)}

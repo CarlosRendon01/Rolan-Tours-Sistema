@@ -7,6 +7,7 @@
   overflow: hidden;
   margin: 1rem;
 }
+
 .cotizaciones-encabezado {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   padding: 2.5rem 3rem;
@@ -95,11 +96,9 @@
 }
 
 .cotizaciones-estadistica:first-child {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.2),
-    rgba(29, 78, 216, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.2),
+      rgba(29, 78, 216, 0.3));
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
@@ -116,12 +115,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(59, 130, 246, 0.1) 50%,
-    transparent 70%
-  );
+  background: linear-gradient(45deg,
+      transparent 30%,
+      rgba(59, 130, 246, 0.1) 50%,
+      transparent 70%);
   transform: translateX(-100%);
   transition: transform 0.6s ease;
 }
@@ -172,6 +169,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -179,10 +177,12 @@
 }
 
 @keyframes cotizaciones-pulse {
+
   0%,
   100% {
     transform: scaleY(1);
   }
+
   50% {
     transform: scaleY(1.2);
   }
@@ -316,22 +316,27 @@
   width: 110px;
   min-width: 110px;
 }
+
 .cotizaciones-fila-encabezado th:nth-child(2) {
   width: 140px;
   min-width: 140px;
 }
+
 .cotizaciones-fila-encabezado th:nth-child(3) {
   width: 140px;
   min-width: 140px;
 }
+
 .cotizaciones-fila-encabezado th:nth-child(4) {
   width: auto;
   min-width: 200px;
 }
+
 .cotizaciones-fila-encabezado th:nth-child(5) {
   width: auto;
   min-width: 200px;
 }
+
 .cotizaciones-fila-encabezado th:nth-child(6) {
   width: 200px;
   min-width: 200px;
@@ -727,18 +732,23 @@
   .cotizaciones-fila-cotizacion td:nth-child(1):before {
     content: "FOLIO:";
   }
+
   .cotizaciones-fila-cotizacion td:nth-child(2):before {
     content: "FECHA SALIDA:";
   }
+
   .cotizaciones-fila-cotizacion td:nth-child(3):before {
     content: "FECHA REGRESO:";
   }
+
   .cotizaciones-fila-cotizacion td:nth-child(4):before {
     content: "ORIGEN:";
   }
+
   .cotizaciones-fila-cotizacion td:nth-child(5):before {
     content: "DESTINO:";
   }
+
   .cotizaciones-fila-cotizacion td:nth-child(6):before {
     content: "ACCIONES:";
   }
@@ -755,7 +765,7 @@
     padding-right: 0.5rem;
   }
 
-  .cotizaciones-fila-cotizacion td > * {
+  .cotizaciones-fila-cotizacion td>* {
     flex: 1;
     word-break: break-word;
   }
@@ -814,8 +824,7 @@
     font-size: 0.7rem;
   }
 
-  .cotizaciones-numeros-paginacion
-    .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
+  .cotizaciones-numeros-paginacion .cotizaciones-numero-pagina:not(.cotizaciones-activo) {
     display: none;
   }
 
@@ -850,6 +859,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .cotizaciones-fila-cotizacion,
   .cotizaciones-lineas-decorativas:hover .cotizaciones-linea {
     animation: none;
@@ -864,4 +874,244 @@
   .cotizaciones-boton-accion:hover {
     transform: none;
   }
+}
+
+/* ── Modal overlay ── */
+/* ── Modal overlay ── */
+.modal-descarga-word-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  /* ← cambia a flex-start en móvil */
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+  overflow-y: auto;
+  /* ← permite scroll en el overlay */
+}
+
+.modal-descarga-word-contenedor {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  overflow: hidden;
+  max-height: 90vh;
+  /* ← limita la altura */
+}
+
+.modal-descarga-word-cuerpo {
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  /* ← scroll interno en el cuerpo */
+  max-height: calc(90vh - 90px);
+  /* ← descuenta el encabezado */
+}
+
+/* ── Encabezado ── */
+.modal-descarga-word-encabezado {
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-descarga-word-titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.modal-descarga-word-subtitulo {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0.2rem 0 0 0;
+}
+
+.modal-descarga-word-boton-cerrar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.modal-descarga-word-boton-cerrar-header:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.modal-descarga-word-descripcion {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0 0 0.5rem 0;
+}
+
+/* ── Botón todos los vehículos ── */
+.btn-descarga-todos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-descarga-todos:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* ── Separador ── */
+.modal-descarga-word-separador {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+.modal-descarga-word-separador::before,
+.modal-descarga-word-separador::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+/* ── Botones de vehículo individual ── */
+.btn-descarga-vehiculo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  color: #1f2937;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.btn-descarga-vehiculo:hover {
+  border-color: #dc2626;
+  background: #fef2f2;
+  transform: translateY(-1px);
+}
+
+.btn-descarga-vehiculo-nombre {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.btn-descarga-vehiculo-detalle {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.2rem;
+}
+
+.btn-descarga-vehiculo-precio {
+  font-weight: 700;
+  color: #dc2626;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* ── Botón cancelar ── */
+.btn-descarga-cancelar {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background: transparent;
+  color: #6b7280;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.25rem;
+}
+
+.btn-descarga-cancelar:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* ── Animaciones (reutiliza las del PDF si están en el mismo archivo) ── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-descarga-word-overlay {
+    align-items: flex-start;
+    /* ← empieza desde arriba en móvil */
+    padding: 1rem 0.5rem;
+  }
+
+  .modal-descarga-word-contenedor {
+    max-width: 100%;
+    max-height: none;
+    /* ← sin límite en móvil */
+  }
+
+  .modal-descarga-word-cuerpo {
+    max-height: none;
+    overflow-y: visible;
+  }
+
 }

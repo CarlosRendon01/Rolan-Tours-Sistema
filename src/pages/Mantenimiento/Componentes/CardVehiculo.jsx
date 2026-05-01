@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Truck, Calendar, Gauge, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import './CardVehiculo.css';
 
@@ -59,7 +59,6 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
   return (
     <div
       className={`card-vehiculo ${mantenimiento.estado}`}
-      onClick={onClick}
     >
       <div className={`card-borde ${mantenimiento.estado}`}></div>
 
@@ -115,8 +114,16 @@ const CardVehiculo = ({ vehiculo, mantenimiento, onClick }) => {
       </div>
 
       <div className="card-footer">
-        {permisos.includes("mantenimiento.editar") || rolUsuario === "admin" && (
-          <button className="card-btn-ver">Ver detalles</button>
+        {(permisos.includes("mantenimiento.editar") || rolUsuario === "admin") && (
+          <button
+            className="card-btn-ver"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
+          >
+            Ver detalles
+          </button>
         )}
       </div>
     </div>

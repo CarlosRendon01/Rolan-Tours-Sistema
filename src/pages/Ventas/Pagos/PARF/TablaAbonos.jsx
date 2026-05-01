@@ -383,7 +383,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
           </div>
 
           <div className="abonos-seccion-derecha">
-            {permisos.includes("ventas.pagos.editar") && (
+            {(permisos.includes("ventas.pagos.editar") || rolUsuario === "admin") && (
               <button
                 className="abonos-boton-agregar"
                 onClick={() => setModalNuevoPagoAbierto(true)}
@@ -619,7 +619,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
                           {pago.activo && (
                             <>
-                              {permisos.includes("ventas.pagos.editar") && (
+                              {(permisos.includes("ventas.pagos.editar") || rolUsuario === "admin") && (
                                 <button
                                   className="abonos-boton-accion abonos-editar"
                                   onClick={() => manejarAccion("editar", pago)}

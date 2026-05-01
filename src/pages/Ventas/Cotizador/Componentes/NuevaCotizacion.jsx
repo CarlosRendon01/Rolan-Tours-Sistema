@@ -2,6 +2,14 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./NuevaCotizacion.css";
 import axios from "axios";
 import { API_CONFIG } from "../../../../config/api";
+import AutocompleteInput from "./AutocompleteImput";
+
+const STOP_VACIO = {
+  destino: "",
+  fecha_salida: "",
+  hora_salida: "",
+  tipo_camino: "pavimento",
+};
 
 const NuevaCotizacion = ({
   onGuardarCotizacion,
@@ -13,6 +21,10 @@ const NuevaCotizacion = ({
   const [pasoActual, setPasoActual] = useState(1);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [erroresCampos, setErroresCampos] = useState({});
+  const [isMapsLoaded, setIsMapsLoaded] = useState(false);
+  const [modoViaje, setModoViaje] = useState("simple"); // "simple" | "itinerario"
+  const [desglose, setDesglose] = useState(null); // respuesta del backend
+
   const [formData, setFormData] = useState({
     folio: "",
     fecha_salida: "",
@@ -32,7 +44,7 @@ const NuevaCotizacion = ({
     punto_intermedio: "",
     destino: "",
     fecha: new Date().toISOString().split("T")[0],
-    tipo_cliente: "solo_una_vez",
+    tipo_cliente: "tipo_1",
     descripcion: "",
     transporte: "",
     restaurante: "",
@@ -42,6 +54,7 @@ const NuevaCotizacion = ({
     total: "",
     totalLetra: "",
     lista: [],
+    stops: [{ ...STOP_VACIO }], // para modo itinerario
   });
 
   const [datosCliente, setDatosCliente] = useState({
@@ -50,11 +63,6 @@ const NuevaCotizacion = ({
     telefono: "",
   });
 
-  const puntoIntermedioRef = useRef(null);
-  const destinoServicioRef = useRef(null);
-  const autocompleteIntermedio = useRef(null);
-  const autocompleteDestino = useRef(null);
-
   const [opcionesExtras, setOpcionesExtras] = useState({
     transporte: [],
     restaurante: [],
@@ -62,76 +70,59 @@ const NuevaCotizacion = ({
     hospedaje: [],
   });
 
+  // ── Cargar Google Maps API ──────────────────────────────────────
   useEffect(() => {
-    if (mostrarModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
+    if (window.google?.maps) {
+      setIsMapsLoaded(true);
+      return;
     }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+
+    const apiKey = API_CONFIG.GOOGLE_MAPS_API_KEY;
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => setIsMapsLoaded(true);
+    document.head.appendChild(script);
+  }, []);
+
+  // ── Scroll lock ─────────────────────────────────────────────────
+  useEffect(() => {
+    document.body.style.overflow = mostrarModal ? "hidden" : "auto";
+    return () => { document.body.style.overflow = "auto"; };
   }, [mostrarModal]);
 
+  // ── Cargar servicios extras ─────────────────────────────────────
   useEffect(() => {
     const fetchServicios = async () => {
       try {
         const token = localStorage.getItem("token");
-
         const [transporte, restaurante, tour, hospedaje] = await Promise.all([
-          axios.get(`${API_CONFIG.BASE_URL}/transportes`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }),
-          axios.get(`${API_CONFIG.BASE_URL}/restaurantes`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }),
-          axios.get(`${API_CONFIG.BASE_URL}/tours`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }),
-          axios.get(`${API_CONFIG.BASE_URL}/hospedajes`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }),
+          axios.get(`${API_CONFIG.BASE_URL}/transportes`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_CONFIG.BASE_URL}/restaurantes`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_CONFIG.BASE_URL}/tours`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_CONFIG.BASE_URL}/hospedajes`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
         setOpcionesExtras({
           transporte: transporte.data.map((s) => ({
-            id: s.id,
-            tipo: "transporte",
-            nombre: s.nombre_servicio,
-            precio: s.precio_base,
+            id: s.id, tipo: "transporte",
+            nombre: s.nombre_servicio, precio: s.precio_base,
             proveedor: s.proveedor?.nombre_razon_social || "Sin proveedor",
           })),
           restaurante: restaurante.data.map((s) => ({
-            id: s.id,
-            tipo: "restaurante",
-            nombre: s.nombre_servicio,
-            precio: s.precio_base,
+            id: s.id, tipo: "restaurante",
+            nombre: s.nombre_servicio, precio: s.precio_base,
             proveedor: s.proveedor?.nombre_razon_social || "Sin proveedor",
           })),
           tour: tour.data.map((s) => ({
-            id: s.id,
-            tipo: "tour",
-            nombre: s.nombre_tour,
-            precio: s.precio_base,
+            id: s.id, tipo: "tour",
+            nombre: s.nombre_tour, precio: s.precio_base,
             proveedor: s.proveedor?.nombre_razon_social || "Sin proveedor",
           })),
           hospedaje: hospedaje.data.map((s) => ({
-            id: s.id,
-            tipo: "hospedaje",
-            nombre: s.nombre_servicio,
-            precio: s.precio_base,
+            id: s.id, tipo: "hospedaje",
+            nombre: s.nombre_servicio, precio: s.precio_base,
             proveedor: s.proveedor?.nombre_razon_social || "Sin proveedor",
           })),
         });
@@ -139,8 +130,17 @@ const NuevaCotizacion = ({
         console.error("Error al cargar servicios:", error);
       }
     };
-
     fetchServicios();
+  }, []);
+
+  // ── Helpers ─────────────────────────────────────────────────────
+  const generarFolioAutomatico = useCallback(() => {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+    const dia = fecha.getDate().toString().padStart(2, "0");
+    const timestamp = Date.now().toString().slice(-6);
+    return `${año}${mes}${dia}${timestamp}`;
   }, []);
 
   const generarIdCliente = useCallback(() => {
@@ -153,25 +153,95 @@ const NuevaCotizacion = ({
   }, []);
 
   const formatearTelefono = useCallback((valor) => {
-    const numeros = valor.replace(/\D/g, "");
-    const numeroLimitado = numeros.slice(0, 10);
-
-    let formatado = "";
-    if (numeroLimitado.length > 0) {
-      formatado = numeroLimitado.slice(0, 3);
-    }
-    if (numeroLimitado.length >= 4) {
-      formatado += "-" + numeroLimitado.slice(3, 6);
-    }
-    if (numeroLimitado.length >= 7) {
-      formatado += "-" + numeroLimitado.slice(6, 8);
-    }
-    if (numeroLimitado.length >= 9) {
-      formatado += "-" + numeroLimitado.slice(8, 10);
-    }
-
-    return formatado;
+    const numeros = valor.replace(/\D/g, "").slice(0, 10);
+    let f = numeros.slice(0, 3);
+    if (numeros.length >= 4) f += "-" + numeros.slice(3, 6);
+    if (numeros.length >= 7) f += "-" + numeros.slice(6, 8);
+    if (numeros.length >= 9) f += "-" + numeros.slice(8, 10);
+    return f;
   }, []);
+
+  const validarTelefono = (telefono) => telefono.replace(/\D/g, "").length === 10;
+
+  const limpiarErrorCampo = useCallback((nombreCampo) => {
+    setErroresCampos((prev) => {
+      const nuevos = { ...prev };
+      delete nuevos[nombreCampo];
+      return nuevos;
+    });
+  }, []);
+
+  const limpiarTodosErrores = useCallback(() => setErroresCampos({}), []);
+
+  // ── Validación por paso ─────────────────────────────────────────
+  const validarPaso = useCallback(
+    (paso) => {
+      const errores = {};
+
+      if (paso === 1) {
+        if (!formData.nombre_responsable?.trim())
+          errores.nombre_responsable = "Nombre Responsable es obligatorio";
+      }
+
+      if (paso === 2) {
+        if (!datosCliente.nombre?.trim())
+          errores.nombre = "Nombre es obligatorio";
+        if (!datosCliente.email?.trim()) {
+          errores.email = "Email es obligatorio";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datosCliente.email)) {
+          errores.email = "Email inválido";
+        }
+        if (!datosCliente.telefono?.trim()) {
+          errores.telefono = "Teléfono es obligatorio";
+        } else if (!validarTelefono(datosCliente.telefono)) {
+          errores.telefono = "El teléfono debe tener 10 dígitos";
+        }
+      }
+
+      if (paso === 3) {
+        if (!formData.num_pasajeros) errores.num_pasajeros = "N° pasajeros es obligatorio";
+
+        if (modoViaje === "simple") {
+          if (!formData.destino?.trim()) errores.destino = "Destino Servicio es obligatorio";
+        } else {
+          // itinerario: validar cada stop
+          formData.stops.forEach((stop, i) => {
+            if (!stop.destino?.trim())
+              errores[`stop_destino_${i}`] = `Destino ${i + 1} es obligatorio`;
+            if (!stop.fecha_salida)
+              errores[`stop_fecha_${i}`] = `Fecha de salida ${i + 1} es obligatoria`;
+          });
+        }
+      }
+
+      if (paso === 4) {
+        if (!formData.fecha_salida) {
+          errores.fecha_salida = "Fecha Salida es obligatoria";
+        } else {
+          const hoy = new Date();
+          hoy.setHours(0, 0, 0, 0);
+          const fechaSel = new Date(formData.fecha_salida + "T00:00:00");
+          if (fechaSel < hoy) errores.fecha_salida = "La fecha de salida debe ser mayor o igual a hoy";
+        }
+        if (!formData.hora_salida) errores.hora_salida = "Hora Salida es obligatoria";
+
+        if (modoViaje === "simple") {
+          if (!formData.fecha_regreso) {
+            errores.fecha_regreso = "Fecha Regreso es obligatoria";
+          } else {
+            const fs = new Date(formData.fecha_salida + "T00:00:00");
+            const fr = new Date(formData.fecha_regreso + "T00:00:00");
+            if (fr < fs)
+              errores.fecha_regreso = "La fecha de regreso no puede ser anterior a la salida";
+          }
+          if (!formData.hora_regreso) errores.hora_regreso = "Hora Regreso es obligatoria";
+        }
+      }
+
+      return errores;
+    },
+    [formData, datosCliente, modoViaje]
+  );
 
   const validarTodosLosPasos = () => {
     for (let paso = 1; paso <= 5; paso++) {
@@ -180,517 +250,343 @@ const NuevaCotizacion = ({
         setErroresCampos(errores);
         setPasoActual(paso);
         setTimeout(() => {
-          const primerCampoConError = Object.keys(errores)[0];
-          const elemento = document.querySelector(
-            `[name="${primerCampoConError}"]`
-          );
-          if (elemento) {
-            elemento.focus();
-            elemento.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
+          const primer = Object.keys(errores)[0];
+          const el = document.querySelector(`[name="${primer}"]`);
+          if (el) { el.focus(); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
         }, 100);
-
         return { valido: false, paso, errores };
       }
     }
     return { valido: true };
   };
 
-  const validarTelefono = (telefono) => {
-    const numeros = telefono.replace(/\D/g, "");
-    return numeros.length === 10;
-  };
-
-  const generarFolioAutomatico = useCallback(() => {
-    const fecha = new Date();
-    const año = fecha.getFullYear();
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-    const dia = fecha.getDate().toString().padStart(2, "0");
-    const timestamp = Date.now().toString().slice(-6);
-    return `${año}${mes}${dia}${timestamp}`;
-  }, []);
-
-  useEffect(() => {
-    if (!mostrarModal || pasoActual !== 3) return;
-
-    const loadGoogleMapsScript = () => {
-      if (window.google && window.google.maps) {
-        initAutocomplete();
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = ``;
-      script.async = true;
-      script.defer = true;
-      script.onload = initAutocomplete;
-      document.head.appendChild(script);
-    };
-
-    const initAutocomplete = () => {
-      if (!puntoIntermedioRef.current || !destinoServicioRef.current) return;
-
-      if (!autocompleteIntermedio.current) {
-        autocompleteIntermedio.current =
-          new window.google.maps.places.Autocomplete(
-            puntoIntermedioRef.current,
-            {
-              componentRestrictions: { country: "mx" },
-              fields: ["formatted_address", "geometry", "name"],
-            }
-          );
-
-        autocompleteIntermedio.current.addListener("place_changed", () => {
-          const place = autocompleteIntermedio.current.getPlace();
-          if (place.formatted_address || place.name) {
-            setFormData((prev) => ({
-              ...prev,
-              punto_intermedio: place.formatted_address || place.name,
-            }));
-            limpiarErrorCampo("punto_intermedio");
-          }
-        });
-      }
-
-      if (!autocompleteDestino.current) {
-        autocompleteDestino.current =
-          new window.google.maps.places.Autocomplete(
-            destinoServicioRef.current,
-            {
-              componentRestrictions: { country: "mx" },
-              fields: ["formatted_address", "geometry", "name"],
-            }
-          );
-
-        autocompleteDestino.current.addListener("place_changed", () => {
-          const place = autocompleteDestino.current.getPlace();
-          if (place.formatted_address || place.name) {
-            setFormData((prev) => ({
-              ...prev,
-              destino: place.formatted_address || place.name,
-            }));
-            limpiarErrorCampo("destino");
-          }
-        });
-      }
-    };
-
-    loadGoogleMapsScript();
-  }, [mostrarModal, pasoActual]);
-
-  const validarPaso = useCallback(
-    (paso) => {
-      const camposObligatorios = {
-        1: [{ campo: "nombre_responsable", nombre: "Nombre Responsable" }],
-        2: [
-          { campo: "nombre", nombre: "Nombre", esCliente: true },
-          { campo: "email", nombre: "Email", esCliente: true },
-          { campo: "telefono", nombre: "Teléfono", esCliente: true },
-        ],
-        3: [
-          { campo: "num_pasajeros", nombre: "N° pasajeros" },
-          { campo: "destino", nombre: "Destino Servicio" },
-        ],
-        4: [
-          { campo: "fecha_salida", nombre: "Fecha Salida" },
-          { campo: "fecha_regreso", nombre: "Fecha Regreso" },
-          { campo: "hora_salida", nombre: "Hora Salida" },
-          { campo: "hora_regreso", nombre: "Hora Regreso" },
-        ],
-        5: [],
-      };
-
-      const camposDelPaso = camposObligatorios[paso] || [];
-      const errores = {};
-
-      camposDelPaso?.forEach(({ campo, nombre, esCliente }) => {
-        const datos = esCliente ? datosCliente : formData;
-        const valor = datos[campo];
-
-        if (!valor || valor.toString().trim() === "") {
-          errores[campo] = `${nombre} es obligatorio`;
-        }
-
-        if (campo === "email" && valor && valor.trim() !== "") {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(valor)) {
-            errores[campo] = "Email inválido";
-          }
-        }
-
-        if (campo === "telefono" && valor && valor.trim() !== "") {
-          if (!validarTelefono(valor)) {
-            errores[campo] = "El teléfono debe tener 10 dígitos";
-          }
-        }
-
-        if (campo === "fecha_salida" && valor && valor.trim() !== "") {
-          const fechaActual = new Date();
-          fechaActual.setHours(0, 0, 0, 0);
-
-          const fechaSeleccionada = new Date(valor + "T00:00:00");
-
-          if (fechaSeleccionada < fechaActual) {
-            errores[campo] = "La fecha de salida debe ser mayor o igual a hoy";
-          }
-        }
-
-        if (campo === "fecha_regreso" && valor && formData.fecha_salida) {
-          const fecha_salida = new Date(formData.fecha_salida + "T00:00:00");
-          const fecha_regreso = new Date(valor + "T00:00:00");
-
-          const MILISEGUNDOS_EN_UN_DIA = 3 * 24 * 60 * 60 * 1000;
-
-          if (fecha_regreso - fecha_salida < MILISEGUNDOS_EN_UN_DIA) {
-            errores[campo] =
-              "La fecha de regreso debe ser al menos 3 días después de la fecha de salida";
-          }
-        }
-      });
-
-      return errores;
-    },
-    [formData, datosCliente]
-  );
-
-  const limpiarErrorCampo = useCallback((nombreCampo) => {
-    setErroresCampos((prev) => {
-      const nuevosErrores = { ...prev };
-      delete nuevosErrores[nombreCampo];
-      return nuevosErrores;
-    });
-  }, []);
-
-  const limpiarTodosErrores = useCallback(() => {
-    setErroresCampos({});
-  }, []);
-
-  const cerrarModal = useCallback(() => {
-    setMostrarModal(false);
-
-    setPasoActual(1);
-    setModoEdicion(false);
-    limpiarTodosErrores();
-    if (onCancelarEdicion) {
-      document.body.style.overflow = "";
-      onCancelarEdicion();
-    }
-    setFormData({
-      folio: generarFolioAutomatico(),
-      fecha_salida: "",
-      fecha_regreso: "",
-      hora_salida: "",
-      hora_regreso: "",
-      numero_dias: "",
-      total_kilometros: "",
-      costo_casetas: "",
-      tipo_camino: "terraceria",
-      id: "",
-      lead_id: "",
-      nombre_responsable: "",
-      tipo_servicio: "",
-      num_pasajeros: "",
-      origen: "Oaxaca de Juarez, Oaxaca",
-      punto_intermedio: "",
-      destino: "",
-      fecha: new Date().toISOString().split("T")[0],
-      tipo_cliente: "solo_una_vez",
-      descripcion: "",
-      transporte: "",
-      restaurante: "",
-      tour: "",
-      hospedaje: "",
-      servicios: [],
-      total: "",
-      totalLetra: "",
-      lista: [],
-    });
-    setDatosCliente({
-      nombre: "",
-      email: "",
-      telefono: "",
-    });
-  }, [onCancelarEdicion, generarFolioAutomatico, limpiarTodosErrores]);
-
-  useEffect(() => {
-    if (cotizacionEditar) {
-      document.body.style.overflow = "hidden";
-      setModoEdicion(true);
-
-      let serviciosParaFormulario = [];
-      if (
-        cotizacionEditar.servicios &&
-        Array.isArray(cotizacionEditar.servicios)
-      ) {
-        serviciosParaFormulario = cotizacionEditar.servicios;
-      }
-
-      setFormData({
-        folio: cotizacionEditar.folio || "",
-        fecha_salida: cotizacionEditar.fecha_salida || "",
-        fecha_regreso: cotizacionEditar.fecha_regreso || "",
-        hora_salida: cotizacionEditar.hora_salida || "",
-        hora_regreso: cotizacionEditar.hora_regreso || "",
-        numero_dias: cotizacionEditar.numero_dias || "",
-        total_kilometros: cotizacionEditar.total_kilometros || "",
-        costo_casetas: cotizacionEditar.costo_casetas || "",
-        tipo_camino: cotizacionEditar.tipo_camino || "terraceria",
-        id: cotizacionEditar.id || "",
-        lead_id: cotizacionEditar.lead_id || "",
-        nombre_responsable: cotizacionEditar.nombre_responsable || "",
-        tipo_servicio: cotizacionEditar.tipo_servicio || "",
-        num_pasajeros: cotizacionEditar.num_pasajeros || "",
-        origen: cotizacionEditar.origen || "Oaxaca de Juarez, Oaxaca",
-        punto_intermedio: cotizacionEditar.punto_intermedio || "",
-        destino: cotizacionEditar.destino || "",
-        fecha: cotizacionEditar.fecha || new Date().toISOString().split("T")[0],
-        tipo_cliente: cotizacionEditar.tipo_cliente || "solo_una_vez",
-        descripcion: cotizacionEditar.descripcion || "",
-        transporte: "",
-        restaurante: "",
-        tour: "",
-        hospedaje: "",
-        servicios: serviciosParaFormulario, // ✅ IDs directos
-        total: cotizacionEditar.total || "",
-        totalLetra: cotizacionEditar.totalLetra || "",
-        lista: cotizacionEditar.lista || [],
-      });
-
-      if (cotizacionEditar.cliente) {
-        setDatosCliente({
-          nombre: cotizacionEditar.cliente.nombre || "",
-          email: cotizacionEditar.cliente.email || "",
-          telefono: cotizacionEditar.cliente.telefono || "",
-        });
-      }
-
-      setMostrarModal(true);
-      setPasoActual(1);
-      limpiarTodosErrores();
-    }
-  }, [cotizacionEditar, limpiarTodosErrores]);
-
-  useEffect(() => {
-    if (
-      modoEdicion &&
-      formData.servicios.length > 0 &&
-      typeof formData.servicios[0] === "number"
-    ) {
-      const tieneOpciones = Object.values(opcionesExtras).some(
-        (arr) => arr.length > 0
-      );
-
-      if (!tieneOpciones) {
-        return;
-      }
-
-      const serviciosCompletos = formData.servicios
-        .map((servicioId) => {
-          for (const categoria in opcionesExtras) {
-            const servicio = opcionesExtras[categoria].find(
-              (s) => s.id === servicioId
-            );
-            if (servicio) {
-              return servicio;
-            }
-          }
-          return null;
-        })
-        .filter((s) => s !== null);
-
-      if (serviciosCompletos.length > 0) {
-        setFormData((prev) => ({
-          ...prev,
-          servicios: serviciosCompletos,
-        }));
-      }
-    }
-  }, [opcionesExtras, modoEdicion, formData.servicios]);
-
-  const abrirModal = useCallback(() => {
-    setMostrarModal(true);
-    setPasoActual(1);
-    setModoEdicion(false);
-    limpiarTodosErrores();
-
-    setFormData({
-      folio: generarFolioAutomatico(),
-      fecha_salida: "",
-      fecha_regreso: "",
-      hora_salida: "",
-      hora_regreso: "",
-      numero_dias: "",
-      total_kilometros: "",
-      costo_casetas: "",
-      tipo_camino: "terraceria",
-      id: "",
-      lead_id: "",
-      nombre_responsable: "",
-      tipo_servicio: "",
-      num_pasajeros: "",
-      origen: "Oaxaca de Juarez, Oaxaca",
-      punto_intermedio: "",
-      destino: "",
-      fecha: new Date().toISOString().split("T")[0],
-      tipo_cliente: "solo_una_vez",
-      descripcion: "",
-      transporte: "",
-      restaurante: "",
-      tour: "",
-      hospedaje: "",
-      servicios: [],
-      total: "",
-      totalLetra: "",
-      lista: [],
-    });
-    setDatosCliente({
-      nombre: "",
-      email: "",
-      telefono: "",
-    });
-  }, [generarFolioAutomatico, limpiarTodosErrores]);
-
+  // ── Navegación ──────────────────────────────────────────────────
   const siguientePaso = useCallback(() => {
     const errores = validarPaso(pasoActual);
-
     if (Object.keys(errores).length > 0) {
       setErroresCampos(errores);
-      const primerCampoConError = Object.keys(errores)[0];
-      const elemento = document.querySelector(
-        `[name="${primerCampoConError}"]`
-      );
-      if (elemento) {
-        elemento.focus();
-        elemento.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
       return;
     }
-    if (pasoActual < 5) {
-      setPasoActual(pasoActual + 1);
-    }
+    if (pasoActual < 5) setPasoActual(pasoActual + 1);
   }, [pasoActual, validarPaso]);
 
   const pasoAnterior = useCallback(() => {
     limpiarTodosErrores();
-
-    if (pasoActual > 1) {
-      setPasoActual(pasoActual - 1);
-    }
+    if (pasoActual > 1) setPasoActual(pasoActual - 1);
   }, [pasoActual, limpiarTodosErrores]);
 
+  // ── Handlers de input ───────────────────────────────────────────
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    let newValue = value;
-
-    if (erroresCampos[name] && newValue.trim() !== "") {
-      limpiarErrorCampo(name);
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }));
+    if (erroresCampos[name] && value.trim() !== "") limpiarErrorCampo(name);
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleClienteInputChange = (e) => {
     const { name, value } = e.target;
+    const valorFinal = name === "telefono" ? formatearTelefono(value) : value;
+    if (erroresCampos[name] && valorFinal.trim() !== "") limpiarErrorCampo(name);
+    setDatosCliente((prev) => ({ ...prev, [name]: valorFinal }));
+  };
 
-    let valorFinal = value;
-    if (name === "telefono") {
-      valorFinal = formatearTelefono(value);
-    }
+  // Handler para AutocompleteInput — recibe (fieldName, value)
+  const handlePlaceChange = useCallback(
+    (fieldName, value) => {
+      setFormData((prev) => ({ ...prev, [fieldName]: value }));
+      limpiarErrorCampo(fieldName);
+    },
+    [limpiarErrorCampo]
+  );
 
-    if (erroresCampos[name] && valorFinal.trim() !== "") {
-      limpiarErrorCampo(name);
-    }
-
-    setDatosCliente((prev) => ({
+  // ── Stops (itinerario) ──────────────────────────────────────────
+  const agregarStop = () => {
+    setFormData((prev) => ({
       ...prev,
-      [name]: valorFinal,
+      stops: [...prev.stops, { ...STOP_VACIO }],
     }));
   };
 
+  const eliminarStop = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      stops: prev.stops.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleStopChange = (index, field, value) => {
+    setFormData((prev) => {
+      const nuevosStops = [...prev.stops];
+      nuevosStops[index] = { ...nuevosStops[index], [field]: value };
+      return { ...prev, stops: nuevosStops };
+    });
+    limpiarErrorCampo(`stop_${field}_${index}`);
+  };
+
+  // Handler especial para AutocompleteInput dentro de stops
+  const handleStopPlaceChange = useCallback((name, value) => {
+    // name viene como "stop_destino_0"
+    const partes = name.split("_");
+    const index = parseInt(partes[partes.length - 1]);
+    handleStopChange(index, "destino", value);
+  }, []);
+
+  // ── Servicios extras ────────────────────────────────────────────
   const handleServicioChange = (e) => {
     const { name, value } = e.target;
     if (!value) return;
-
     const selected = opcionesExtras[name].find((s) => s.id === parseInt(value));
     if (!selected) return;
 
     setFormData((prev) => {
       const yaExiste = prev.servicios.find((s) => s.id === selected.id);
       if (yaExiste) return prev;
-
-      const nuevosServicios = [...prev.servicios, selected];
-
-      const totalServicios = nuevosServicios.reduce(
-        (acc, curr) => acc + parseFloat(curr.precio),
-        0
-      );
-
-      return {
-        ...prev,
-        servicios: nuevosServicios,
-        total: totalServicios.toFixed(2),
-        transporte: "",
-        restaurante: "",
-        tour: "",
-        hospedaje: "",
-      };
+      const nuevos = [...prev.servicios, selected];
+      const total = nuevos.reduce((acc, s) => acc + parseFloat(s.precio), 0);
+      return { ...prev, servicios: nuevos, total: total.toFixed(2), [name]: "" };
     });
     e.target.value = "";
   };
 
   const handleEliminarServicio = (servicioId) => {
     setFormData((prev) => {
-      const nuevosServicios = prev.servicios.filter((s) => s.id !== servicioId);
-      const totalServicios = nuevosServicios.reduce(
-        (acc, curr) => acc + parseFloat(curr.precio),
-        0
-      );
-
-      return {
-        ...prev,
-        servicios: nuevosServicios,
-        total: totalServicios.toFixed(2),
-      };
+      const nuevos = prev.servicios.filter((s) => s.id !== servicioId);
+      const total = nuevos.reduce((acc, s) => acc + parseFloat(s.precio), 0);
+      return { ...prev, servicios: nuevos, total: total.toFixed(2) };
     });
   };
 
-  const handleTotalChange = (e) => {
-    const { value } = e.target;
+  // ── Ajustes del desglose (paso 5) ───────────────────────────────
+  const handleAjusteDesglose = (field, value) => {
+    if (!desglose) return;
+    const numVal = value === "" ? 0 : parseFloat(value);
+
+    const costoChofer = desglose.costoChofer;
+    const costoRenta = desglose.costoRenta;
+    const costoCombustible = desglose.costoCombustible;
+    const costoDesgaste = desglose.costoDesgaste;
+    const costoCasetas = field === "costo_casetas" ? numVal : (desglose.ajustes?.costo_casetas ?? 0);
+    const costoExtra = field === "costo_extra" ? numVal : (desglose.ajustes?.costo_extra ?? 0);
+
+    const subtotal = costoRenta + costoCombustible + costoDesgaste + costoChofer + costoCasetas + costoExtra;
+    const iva = subtotal * 0.16;
+    const totalConIva = subtotal + iva;
+    const total = totalConIva / 0.95;
+
+    setDesglose((prev) => ({
+      ...prev,
+      ajustes: {
+        ...prev.ajustes,
+        [field]: numVal,
+        subtotal: parseFloat(subtotal.toFixed(2)),
+        iva: parseFloat(iva.toFixed(2)),
+        total: parseFloat(total.toFixed(2)),
+      },
+    }));
+
     setFormData((prev) => ({
       ...prev,
-      total: value,
+      total: total.toFixed(2),
     }));
   };
 
+  // ── Abrir / Cerrar modal ────────────────────────────────────────
+  const formDataInicial = useCallback(() => ({
+    folio: generarFolioAutomatico(),
+    fecha_salida: "", fecha_regreso: "",
+    hora_salida: "", hora_regreso: "",
+    numero_dias: "", total_kilometros: "", costo_casetas: "",
+    tipo_camino: "terraceria", id: "", lead_id: "",
+    nombre_responsable: "", tipo_servicio: "", num_pasajeros: "",
+    origen: "Oaxaca de Juarez, Oaxaca", punto_intermedio: "", destino: "",
+    fecha: new Date().toISOString().split("T")[0],
+    tipo_cliente: "tipo_1", descripcion: "",
+    transporte: "", restaurante: "", tour: "", hospedaje: "",
+    servicios: [], total: "", totalLetra: "", lista: [],
+    stops: [{ ...STOP_VACIO }],
+  }), [generarFolioAutomatico]);
+
+  const abrirModal = useCallback(() => {
+    setMostrarModal(true);
+    setPasoActual(1);
+    setModoEdicion(false);
+    setModoViaje("simple");
+    setDesglose(null);
+    limpiarTodosErrores();
+    setFormData(formDataInicial());
+    setDatosCliente({ nombre: "", email: "", telefono: "" });
+  }, [formDataInicial, limpiarTodosErrores]);
+
+  const cerrarModal = useCallback(() => {
+    setMostrarModal(false);
+    setPasoActual(1);
+    setModoEdicion(false);
+    setModoViaje("simple");
+    setDesglose(null);
+    limpiarTodosErrores();
+    document.body.style.overflow = "";
+    if (onCancelarEdicion) onCancelarEdicion();
+    setFormData(formDataInicial());
+    setDatosCliente({ nombre: "", email: "", telefono: "" });
+  }, [onCancelarEdicion, formDataInicial, limpiarTodosErrores]);
+
+  // ── Cargar cotización a editar ──────────────────────────────────
+  useEffect(() => {
+    if (!cotizacionEditar) return;
+    document.body.style.overflow = "hidden";
+    setModoEdicion(true);
+    setModoViaje(cotizacionEditar.modo ?? "simple");
+
+    setFormData({
+      folio: cotizacionEditar.folio || "",
+      fecha_salida: cotizacionEditar.fecha_salida || "",
+      fecha_regreso: cotizacionEditar.fecha_regreso || "",
+      hora_salida: cotizacionEditar.hora_salida || "",
+      hora_regreso: cotizacionEditar.hora_regreso || "",
+      numero_dias: cotizacionEditar.numero_dias || "",
+      total_kilometros: cotizacionEditar.total_kilometros || "",
+      costo_casetas: cotizacionEditar.costo_casetas || "",
+      tipo_camino: cotizacionEditar.tipo_camino || "terraceria",
+      id: cotizacionEditar.id || "",
+      lead_id: cotizacionEditar.lead_id || "",
+      nombre_responsable: cotizacionEditar.nombre_responsable || "",
+      tipo_servicio: cotizacionEditar.tipo_servicio || "",
+      num_pasajeros: cotizacionEditar.num_pasajeros || "",
+      origen: cotizacionEditar.origen || "Oaxaca de Juarez, Oaxaca",
+      punto_intermedio: cotizacionEditar.punto_intermedio || "",
+      destino: cotizacionEditar.destino || "",
+      fecha: cotizacionEditar.fecha || new Date().toISOString().split("T")[0],
+      tipo_cliente: cotizacionEditar.tipo_cliente || "tipo_1",
+      descripcion: cotizacionEditar.descripcion || "",
+      transporte: "", restaurante: "", tour: "", hospedaje: "",
+      servicios: cotizacionEditar.servicios || [],
+      total: cotizacionEditar.total || "",
+      totalLetra: cotizacionEditar.totalLetra || "",
+      lista: cotizacionEditar.lista || [],
+      stops: (() => {
+        const s = cotizacionEditar.stops;
+        if (!s) return [{ ...STOP_VACIO }];
+        if (Array.isArray(s)) return s;
+        try { return JSON.parse(s); } catch { return [{ ...STOP_VACIO }]; }
+      })(),
+    });
+
+    if (cotizacionEditar.cliente) {
+      setDatosCliente({
+        nombre: cotizacionEditar.cliente.nombre || "",
+        email: cotizacionEditar.cliente.email || "",
+        telefono: cotizacionEditar.cliente.telefono || "",
+      });
+    }
+
+    setMostrarModal(true);
+    setPasoActual(1);
+    limpiarTodosErrores();
+  }, [cotizacionEditar, limpiarTodosErrores]);
+
+  // ── Resolver servicios IDs al editar ───────────────────────────
+  useEffect(() => {
+    if (
+      modoEdicion &&
+      formData.servicios.length > 0 &&
+      typeof formData.servicios[0] === "number"
+    ) {
+      const tieneOpciones = Object.values(opcionesExtras).some((arr) => arr.length > 0);
+      if (!tieneOpciones) return;
+
+      const serviciosCompletos = formData.servicios
+        .map((id) => {
+          for (const cat in opcionesExtras) {
+            const s = opcionesExtras[cat].find((s) => s.id === id);
+            if (s) return s;
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      if (serviciosCompletos.length > 0) {
+        setFormData((prev) => ({ ...prev, servicios: serviciosCompletos }));
+      }
+    }
+  }, [opcionesExtras, modoEdicion, formData.servicios]);
+
+  // ── Submit ──────────────────────────────────────────────────────
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validacion = validarTodosLosPasos();
+    if (!validacion.valido) return;
+
+    try {
+      const cotizacionCompleta = {
+        ...formData,
+        ...datosCliente,
+        modo: modoViaje,
+        servicios: formData.servicios.map((s) => s.id),
+        stops: modoViaje === "itinerario" ? formData.stops : null,
+        id: modoEdicion ? formData.id : generarIdCliente(),
+      };
+
+      const respuesta = await onGuardarCotizacion(cotizacionCompleta, modoEdicion);
+
+      // Si el backend devuelve desglose, lo mostramos en paso 5
+      if (respuesta?.desglose) {
+        const d = respuesta.desglose;
+        const veh = d.vehiculo_recomendado?.costos ?? {};
+
+        setDesglose({
+          vehiculoNombre: d.vehiculo_recomendado?.nombre ?? "",
+          kilometros: d.kilometros?.total ?? 0,
+          kilometrosReales: d.kilometros?.base ?? 0,
+          dias: d.dias ?? 1,
+          costoRenta: veh.renta_ajustada ?? 0,
+          costoCombustible: veh.combustible ?? 0,
+          costoDesgaste: veh.desgaste ?? 0,
+          costoChofer: veh.chofer ?? 0,
+          subtotal: veh.subtotal ?? 0,
+          iva: veh.iva ?? 0,
+          total: veh.total_con_iva ?? 0,
+          ajustes: {
+            costo_casetas: veh.casetas ?? 0,
+            costo_extra: 0,
+            subtotal: veh.subtotal ?? 0,
+            iva: veh.iva ?? 0,
+            total: veh.total_con_iva ?? 0,
+          },
+        });
+
+        setFormData((prev) => ({
+          ...prev,
+          total: veh.total_con_iva?.toFixed(2) ?? prev.total,
+          total_kilometros: d.kilometros?.total ?? prev.total_kilometros,
+          costo_casetas: veh.casetas ?? prev.costo_casetas,
+        }));
+
+        setPasoActual(5);
+        return;
+      }
+      modoEdicion ? mostrarNotificacionExito() : mostrarNotificacionAgregar();
+      cerrarModal();
+    } catch (error) {
+      console.error("Error al guardar:", error);
+    }
+  };
+
+  const handleConfirmarCotizacion = () => {
+    modoEdicion ? mostrarNotificacionExito() : mostrarNotificacionAgregar();
+    cerrarModal();
+  };
+
+  // ── Notificaciones ──────────────────────────────────────────────
   const mostrarNotificacionAgregar = () => {
     Swal.fire({
       icon: "success",
       title: "Cotización Agregada!",
-      html: `
-        <div style="font-size: 1.1rem; margin-top: 15px;">
-          <strong style="color: #2563eb; font-size: 1.3rem;">"${formData.origen} a ${formData.destino}"</strong>
-          <p style="margin-top: 10px; color: #64748b;">ha sido registrado correctamente</p>
-        </div>
-      `,
+      html: `<div style="font-size:1.1rem;margin-top:15px;">
+        <strong style="color:#2563eb;font-size:1.3rem;">"${formData.origen} a ${formData.destino || formData.stops?.[0]?.destino || ""}"</strong>
+        <p style="margin-top:10px;color:#64748b;">ha sido registrado correctamente</p>
+      </div>`,
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#2563eb",
-      timer: 3000,
-      timerProgressBar: true,
-      showConfirmButton: true,
-      allowOutsideClick: true,
-      allowEscapeKey: true,
-      width: "500px",
-      padding: "2rem",
-      backdrop: `rgba(0,0,0,0.6)`,
-      customClass: {
-        popup: "swal-popup-custom",
-        title: "swal-title-custom",
-        htmlContainer: "swal-html-custom",
-        confirmButton: "swal-confirm-custom",
-      },
+      timer: 3000, timerProgressBar: true,
     });
   };
 
@@ -702,87 +598,15 @@ const NuevaCotizacion = ({
         icon: "success",
         confirmButtonText: "Perfecto",
         confirmButtonColor: "#2563eb",
-        timer: 3000,
-        timerProgressBar: true,
-        customClass: {
-          popup: "swal-popup-custom-orden",
-          title: "swal-title-custom-orden",
-          confirmButton: "swal-confirm-custom-orden",
-        },
+        timer: 3000, timerProgressBar: true,
       });
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const validacion = validarTodosLosPasos();
-
-    if (!validacion.valido) {
-      return;
-    }
-
-    try {
-      const cotizacionCompleta = {
-        ...formData,
-        ...datosCliente,
-        servicios: formData.servicios.map((s) => s.id),
-        id: modoEdicion ? formData.id : generarIdCliente(),
-      };
-
-      await onGuardarCotizacion(cotizacionCompleta, modoEdicion);
-      modoEdicion ? mostrarNotificacionExito() : mostrarNotificacionAgregar();
-
-      setFormData({
-        folio: "",
-        fecha_salida: "",
-        fecha_regreso: "",
-        hora_salida: "",
-        hora_regreso: "",
-        numero_dias: "",
-        total_kilometros: "",
-        costo_casetas: "",
-        tipo_camino: "terraceria",
-        id: "",
-        lead_id: "",
-        nombre_responsable: "",
-        tipo_servicio: "",
-        num_pasajeros: "",
-        origen: "Oaxaca de Juarez, Oaxaca",
-        punto_intermedio: "",
-        destino: "",
-        fecha: new Date().toISOString().split("T")[0],
-        tipo_cliente: "solo_una_vez",
-        descripcion: "",
-        transporte: "",
-        restaurante: "",
-        tour: "",
-        hospedaje: "",
-        servicios: [],
-        total: "",
-        totalLetra: "",
-        lista: [],
-      });
-
-      setDatosCliente({
-        nombre: "",
-        email: "",
-        telefono: "",
-      });
-
-      setMostrarModal(false);
-      setPasoActual(1);
-      setErroresCampos({});
-      setModoEdicion(false);
-    } catch (error) {
-      console.error("Error al guardar:", error);
-    }
-  };
-
+  // ── Componente de error ─────────────────────────────────────────
   const MensajeError = React.memo(({ nombreCampo }) => {
     const error = erroresCampos[nombreCampo];
     if (!error) return null;
-
     return (
       <div className="mensaje-error">
         <span className="icono-error">!</span>
@@ -791,17 +615,15 @@ const NuevaCotizacion = ({
     );
   });
 
+  // ── Render ──────────────────────────────────────────────────────
   return (
     <>
       {mostrarBoton && (
-        <button
-          className="cotizacion-boton-agregar"
-          onClick={abrirModal}
-          title="Nueva Cotización"
-        >
+        <button className="cotizacion-boton-agregar" onClick={abrirModal} title="Nueva Cotización">
           <span>Nueva Cotización</span>
         </button>
       )}
+
       {mostrarModal && (
         <div className="modal-overlay" onClick={cerrarModal}>
           <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>
@@ -809,623 +631,418 @@ const NuevaCotizacion = ({
               <h2>{modoEdicion ? "Editar Cotización" : "Nueva Cotización"}</h2>
             </div>
 
+            {/* Tabs */}
             <div className="cotizacion-tabs">
-              <button
-                type="button"
-                className={`cotizacion-tab-button ${pasoActual === 1 ? "active" : ""
-                  }`}
-                onClick={() => setPasoActual(1)}
-              >
-                Información General
-              </button>
-              <button
-                type="button"
-                className={`cotizacion-tab-button ${pasoActual === 2 ? "active" : ""
-                  }`}
-                onClick={() => setPasoActual(2)}
-              >
-                Datos del Cliente
-              </button>
-              <button
-                type="button"
-                className={`cotizacion-tab-button ${pasoActual === 3 ? "active" : ""
-                  }`}
-                onClick={() => setPasoActual(3)}
-              >
-                Datos del Servicio
-              </button>
-              <button
-                type="button"
-                className={`cotizacion-tab-button ${pasoActual === 4 ? "active" : ""
-                  }`}
-                onClick={() => setPasoActual(4)}
-              >
-                Detalles del Viaje
-              </button>
-              <button
-                type="button"
-                className={`cotizacion-tab-button ${pasoActual === 5 ? "active" : ""
-                  }`}
-                onClick={() => setPasoActual(5)}
-              >
-                Extras y Total
-              </button>
+              {["Información General", "Datos del Cliente", "Datos del Servicio", "Detalles del Viaje", "Extras y Total"].map(
+                (label, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`cotizacion-tab-button ${pasoActual === i + 1 ? "active" : ""}`}
+                    onClick={() => setPasoActual(i + 1)}
+                  >
+                    {label}
+                  </button>
+                )
+              )}
             </div>
 
             <form className="formulario-cotizacion" onSubmit={handleSubmit}>
+
+              {/* ── PASO 1 ── */}
               {pasoActual === 1 && (
                 <div className="paso-contenido">
                   <div className="fila">
-                    <label>
-                      ID:
-                      <input
-                        type="number"
-                        name="id"
-                        value={formData.id}
-                        onChange={handleInputChange}
-                        readOnly
-                      />
-                    </label>
-                    <label>
-                      Folio: <span className="required">*</span>
-                      <input
-                        type="text"
-                        name="folio"
-                        value={formData.folio}
-                        onChange={handleInputChange}
-                        readOnly
-                        placeholder="Auto-generado"
-                      />
+                    <label>ID: <input type="number" name="id" value={formData.id} onChange={handleInputChange} readOnly /></label>
+                    <label>Folio: <span className="required">*</span>
+                      <input type="text" name="folio" value={formData.folio} onChange={handleInputChange} readOnly placeholder="Auto-generado" />
                     </label>
                   </div>
-
                   <div className="fila">
-                    <label>
-                      N° de Lead:
-                      <input
-                        type="text"
-                        name="lead_id"
-                        value={formData.lead_id}
-                        onChange={handleInputChange}
-                        readOnly
-                      />
-                    </label>
-                    <label>
-                      Nombre Responsable: <span className="required">*</span>
-                      <input
-                        type="text"
-                        name="nombre_responsable"
-                        value={formData.nombre_responsable}
-                        onChange={handleInputChange}
-                        className={
-                          erroresCampos.nombre_responsable ? "campo-error" : ""
-                        }
-                      />
+                    <label>N° de Lead: <input type="text" name="lead_id" value={formData.lead_id} onChange={handleInputChange} readOnly /></label>
+                    <label>Nombre Responsable: <span className="required">*</span>
+                      <input type="text" name="nombre_responsable" value={formData.nombre_responsable} onChange={handleInputChange} className={erroresCampos.nombre_responsable ? "campo-error" : ""} />
                       <MensajeError nombreCampo="nombre_responsable" />
                     </label>
                   </div>
-
                   <div className="fila">
-                    <label>
-                      Fecha Creación:
-                      <input
-                        type="date"
-                        name="fecha"
-                        value={formData.fecha}
-                        onChange={handleInputChange}
-                        readOnly
-                      />
-                    </label>
+                    <label>Fecha Creación: <input type="date" name="fecha" value={formData.fecha} onChange={handleInputChange} readOnly /></label>
                   </div>
-
                   <div className="botones-navegacion">
-                    <button
-                      type="button"
-                      onClick={cerrarModal}
-                      className="btn-cancelar"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={siguientePaso}
-                      className="btn-siguiente"
-                    >
-                      Siguiente
-                    </button>
+                    <button type="button" onClick={cerrarModal} className="btn-cancelar">Cancelar</button>
+                    <button type="button" onClick={siguientePaso} className="btn-siguiente">Siguiente</button>
                   </div>
                 </div>
               )}
 
+              {/* ── PASO 2 ── */}
               {pasoActual === 2 && (
                 <div className="paso-contenido">
-                  <label>
-                    Nombre: <span className="required">*</span>
-                    <input
-                      type="text"
-                      name="nombre"
-                      autoComplete="name"
-                      value={datosCliente.nombre}
-                      onChange={handleClienteInputChange}
-                      className={erroresCampos.nombre ? "campo-error" : ""}
-                    />
+                  <label>Nombre: <span className="required">*</span>
+                    <input type="text" name="nombre" autoComplete="name" value={datosCliente.nombre} onChange={handleClienteInputChange} className={erroresCampos.nombre ? "campo-error" : ""} />
                     <MensajeError nombreCampo="nombre" />
                   </label>
-
-                  <label>
-                    Email: <span className="required">*</span>
-                    <input
-                      type="email"
-                      name="email"
-                      autoComplete="email"
-                      value={datosCliente.email}
-                      onChange={handleClienteInputChange}
-                      className={erroresCampos.email ? "campo-error" : ""}
-                    />
+                  <label>Email: <span className="required">*</span>
+                    <input type="email" name="email" autoComplete="email" value={datosCliente.email} onChange={handleClienteInputChange} className={erroresCampos.email ? "campo-error" : ""} />
                     <MensajeError nombreCampo="email" />
                   </label>
-
                   <div className="fila">
-                    <label>
-                      Teléfono: <span className="required">*</span>
-                      <input
-                        type="text"
-                        name="telefono"
-                        autoComplete="tel"
-                        value={datosCliente.telefono}
-                        onChange={handleClienteInputChange}
-                        className={erroresCampos.telefono ? "campo-error" : ""}
-                        placeholder="951-574-11-11"
-                        maxLength="13"
-                      />
+                    <label>Teléfono: <span className="required">*</span>
+                      <input type="text" name="telefono" autoComplete="tel" value={datosCliente.telefono} onChange={handleClienteInputChange} className={erroresCampos.telefono ? "campo-error" : ""} placeholder="951-574-11-11" maxLength="13" />
                       <MensajeError nombreCampo="telefono" />
                     </label>
                   </div>
-
                   <div className="botones-navegacion">
-                    <button
-                      type="button"
-                      onClick={pasoAnterior}
-                      className="btn-anterior"
-                    >
-                      Anterior
-                    </button>
+                    <button type="button" onClick={pasoAnterior} className="btn-anterior">Anterior</button>
                     <div className="botones-derecha">
-                      <button
-                        type="button"
-                        onClick={cerrarModal}
-                        className="btn-cancelar"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={siguientePaso}
-                        className="btn-siguiente"
-                      >
-                        Siguiente
-                      </button>
+                      <button type="button" onClick={cerrarModal} className="btn-cancelar">Cancelar</button>
+                      <button type="button" onClick={siguientePaso} className="btn-siguiente">Siguiente</button>
                     </div>
                   </div>
                 </div>
               )}
 
+              {/* ── PASO 3 ── */}
               {pasoActual === 3 && (
                 <div className="paso-contenido">
                   <div className="fila">
-                    <label>
-                      N° pasajeros: <span className="required">*</span>
-                      <input
-                        type="number"
-                        name="num_pasajeros"
-                        value={formData.num_pasajeros}
-                        onChange={handleInputChange}
-                        className={
-                          erroresCampos.num_pasajeros ? "campo-error" : ""
-                        }
-                        min="1"
-                      />
+                    <label>N° pasajeros: <span className="required">*</span>
+                      <input type="number" name="num_pasajeros" value={formData.num_pasajeros} onChange={handleInputChange} className={erroresCampos.num_pasajeros ? "campo-error" : ""} min="1" />
                       <MensajeError nombreCampo="num_pasajeros" />
                     </label>
-                  </div>
-
-                  <div className="fila">
-                    <label>
-                      Tipo Servicio: (Opcional)
-                      <input
-                        type="text"
-                        name="tipo_servicio"
-                        value={formData.tipo_servicio}
-                        onChange={handleInputChange}
-                      />
+                    <label>Tipo Servicio: (Opcional)
+                      <input type="text" name="tipo_servicio" value={formData.tipo_servicio} onChange={handleInputChange} />
                     </label>
                   </div>
 
-                  <label>
-                    Origen Servicio:
-                    <input
-                      type="text"
-                      name="origen"
-                      value={formData.origen}
-                      onChange={handleInputChange}
-                    />
-                  </label>
-
-                  <label>
-                    Punto Intermedio: <span className="required">*</span>
-                    <input
-                      ref={puntoIntermedioRef}
-                      type="text"
-                      name="punto_intermedio"
-                      value={formData.punto_intermedio}
-                      onChange={handleInputChange}
-                      className={
-                        erroresCampos.punto_intermedio ? "campo-error" : ""
-                      }
-                      placeholder="Busca un lugar..."
-                      autoComplete="off"
-                    />
-                    <MensajeError nombreCampo="punto_intermedio" />
-                  </label>
-
-                  <label>
-                    Destino Servicio: <span className="required">*</span>
-                    <input
-                      ref={destinoServicioRef}
-                      type="text"
-                      name="destino"
-                      value={formData.destino}
-                      onChange={handleInputChange}
-                      className={erroresCampos.destino ? "campo-error" : ""}
-                      placeholder="Busca un lugar..."
-                      autoComplete="off"
-                    />
-                    <MensajeError nombreCampo="destino" />
-                  </label>
-
-                  <div className="botones-navegacion">
+                  {/* Toggle modo viaje */}
+                  <div className="modo-viaje-toggle">
                     <button
                       type="button"
-                      onClick={pasoAnterior}
-                      className="btn-anterior"
+                      className={`btn-modo ${modoViaje === "simple" ? "active" : ""}`}
+                      onClick={() => { setModoViaje("simple"); limpiarTodosErrores(); }}
                     >
-                      Anterior
+                      Viaje Simple
                     </button>
+                    <button
+                      type="button"
+                      className={`btn-modo ${modoViaje === "itinerario" ? "active" : ""}`}
+                      onClick={() => { setModoViaje("itinerario"); limpiarTodosErrores(); }}
+                    >
+                      Itinerario Múltiple
+                    </button>
+                  </div>
+
+                  {modoViaje === "simple" ? (
+                    <>
+                      <label>Origen Servicio:
+                        <AutocompleteInput
+                          name="origen"
+                          value={formData.origen}
+                          onChange={handlePlaceChange}
+                          placeholder="Busca un lugar..."
+                          isLoaded={isMapsLoaded}
+                          className={erroresCampos.origen ? "campo-error" : ""}
+                        />
+                      </label>
+                      <label>Punto Intermedio: (Opcional)
+                        <AutocompleteInput
+                          name="punto_intermedio"
+                          value={formData.punto_intermedio}
+                          onChange={handlePlaceChange}
+                          placeholder="Busca un lugar..."
+                          isLoaded={isMapsLoaded}
+                          className={erroresCampos.punto_intermedio ? "campo-error" : ""}
+                        />
+                      </label>
+                      <label>Destino Servicio: <span className="required">*</span>
+                        <AutocompleteInput
+                          name="destino"
+                          value={formData.destino}
+                          onChange={handlePlaceChange}
+                          placeholder="Busca un lugar..."
+                          isLoaded={isMapsLoaded}
+                          className={erroresCampos.destino ? "campo-error" : ""}
+                        />
+                        <MensajeError nombreCampo="destino" />
+                      </label>
+                    </>
+                  ) : (
+                    <>
+                      <label>Origen:
+                        <AutocompleteInput
+                          name="origen"
+                          value={formData.origen}
+                          onChange={handlePlaceChange}
+                          placeholder="Busca un lugar..."
+                          isLoaded={isMapsLoaded}
+                        />
+                      </label>
+
+                      <div className="stops-container">
+                        {formData.stops.map((stop, index) => (
+                          <div key={index} className="stop-item">
+                            <div className="stop-header">
+                              <span className="stop-numero">Parada {index + 1}</span>
+                              {formData.stops.length > 1 && (
+                                <button type="button" className="btn-eliminar-stop" onClick={() => eliminarStop(index)}>❌</button>
+                              )}
+                            </div>
+
+                            <label>Destino {index + 1}: <span className="required">*</span>
+                              <AutocompleteInput
+                                name={`stop_destino_${index}`}
+                                value={stop.destino}
+                                onChange={handleStopPlaceChange}
+                                placeholder="Busca un lugar..."
+                                isLoaded={isMapsLoaded}
+                                className={erroresCampos[`stop_destino_${index}`] ? "campo-error" : ""}
+                              />
+                              <MensajeError nombreCampo={`stop_destino_${index}`} />
+                            </label>
+
+                            <div className="fila">
+                              <label>Fecha salida: <span className="required">*</span>
+                                <input
+                                  type="date"
+                                  value={stop.fecha_salida}
+                                  onChange={(e) => handleStopChange(index, "fecha_salida", e.target.value)}
+                                  className={erroresCampos[`stop_fecha_${index}`] ? "campo-error" : ""}
+                                />
+                                <MensajeError nombreCampo={`stop_fecha_${index}`} />
+                              </label>
+                              <label>Hora salida:
+                                <input
+                                  type="time"
+                                  value={stop.hora_salida}
+                                  onChange={(e) => handleStopChange(index, "hora_salida", e.target.value)}
+                                />
+                              </label>
+                            </div>
+
+                            <label>Tipo de Camino:
+                              <select
+                                value={stop.tipo_camino}
+                                onChange={(e) => handleStopChange(index, "tipo_camino", e.target.value)}
+                              >
+                                <option value="pavimento">Pavimento (Pista)</option>
+                                <option value="revestido">Revestido</option>
+                                <option value="ciudad">Ciudad</option>
+                                <option value="terraceria">Terracería</option>
+                              </select>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button type="button" className="btn-agregar-stop" onClick={agregarStop}>
+                        + Agregar Parada
+                      </button>
+                    </>
+                  )}
+
+                  <div className="botones-navegacion">
+                    <button type="button" onClick={pasoAnterior} className="btn-anterior">Anterior</button>
                     <div className="botones-derecha">
-                      <button
-                        type="button"
-                        onClick={cerrarModal}
-                        className="btn-cancelar"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={siguientePaso}
-                        className="btn-siguiente"
-                      >
-                        Siguiente
-                      </button>
+                      <button type="button" onClick={cerrarModal} className="btn-cancelar">Cancelar</button>
+                      <button type="button" onClick={siguientePaso} className="btn-siguiente">Siguiente</button>
                     </div>
                   </div>
                 </div>
               )}
 
+              {/* ── PASO 4 ── */}
               {pasoActual === 4 && (
                 <div className="paso-contenido">
                   <div className="fila">
-                    <label>
-                      Fecha Salida: <span className="required">*</span>
-                      <input
-                        type="date"
-                        name="fecha_salida"
-                        value={formData.fecha_salida}
-                        onChange={handleInputChange}
-                        className={
-                          erroresCampos.fecha_salida ? "campo-error" : ""
-                        }
-                      />
+                    <label>Fecha Salida: <span className="required">*</span>
+                      <input type="date" name="fecha_salida" value={formData.fecha_salida} onChange={handleInputChange} className={erroresCampos.fecha_salida ? "campo-error" : ""} />
                       <MensajeError nombreCampo="fecha_salida" />
                     </label>
-                    <label>
-                      Fecha Regreso: <span className="required">*</span>
-                      <input
-                        type="date"
-                        name="fecha_regreso"
-                        value={formData.fecha_regreso}
-                        onChange={handleInputChange}
-                        className={
-                          erroresCampos.fecha_regreso ? "campo-error" : ""
-                        }
-                      />
-                      <MensajeError nombreCampo="fecha_regreso" />
-                    </label>
-                  </div>
-                  <div className="fila">
-                    <label>
-                      Hora salida: <span className="required">*</span>
-                      <input
-                        type="time"
-                        name="hora_salida"
-                        value={formData.hora_salida}
-                        onChange={handleInputChange}
-                        className={
-                          erroresCampos.hora_salida ? "campo-error" : ""
-                        }
-                      />
-                      <MensajeError nombreCampo="hora_salida" />
-                    </label>
-                    <label>
-                      Hora regreso: <span className="required">*</span>
-                      <input
-                        type="time"
-                        name="hora_regreso"
-                        value={formData.hora_regreso}
-                        onChange={handleInputChange}
-                        className={
-                          erroresCampos.hora_regreso ? "campo-error" : ""
-                        }
-                      />
-                      <MensajeError nombreCampo="hora_regreso" />
-                    </label>
+
+                    {modoViaje === "simple" && (
+                      <label>Fecha Regreso: <span className="required">*</span>
+                        <input type="date" name="fecha_regreso" value={formData.fecha_regreso} onChange={handleInputChange} className={erroresCampos.fecha_regreso ? "campo-error" : ""} />
+                        <MensajeError nombreCampo="fecha_regreso" />
+                      </label>
+                    )}
                   </div>
 
                   <div className="fila">
-                    <label>
-                      Días:
+                    <label>Hora salida: <span className="required">*</span>
+                      <input type="time" name="hora_salida" value={formData.hora_salida} onChange={handleInputChange} className={erroresCampos.hora_salida ? "campo-error" : ""} />
+                      <MensajeError nombreCampo="hora_salida" />
+                    </label>
+
+                    {modoViaje === "simple" && (
+                      <label>Hora regreso: <span className="required">*</span>
+                        <input type="time" name="hora_regreso" value={formData.hora_regreso} onChange={handleInputChange} className={erroresCampos.hora_regreso ? "campo-error" : ""} />
+                        <MensajeError nombreCampo="hora_regreso" />
+                      </label>
+                    )}
+                  </div>
+
+                  <div className="fila">
+                    <label>Días:
                       <input
                         type="number"
                         name="numero_dias"
                         value={formData.numero_dias}
                         onChange={handleInputChange}
+                        min="1"
+                        placeholder="Auto"
                       />
                     </label>
                   </div>
 
                   <div className="fila">
-                    <label>
-                      Total Kilómetros:
-                      <input
-                        type="number"
-                        name="total_kilometros"
-                        value={formData.total_kilometros}
-                        onChange={handleInputChange}
-                        step="0.1"
-                        min="0"
-                        readOnly
-                      />
-                    </label>
-                    <label>
-                      Costo Casetas:
-                      <input
-                        type="number"
-                        name="costo_casetas"
-                        value={formData.costo_casetas}
-                        onChange={handleInputChange}
-                        step="0.01"
-                        min="0"
-                        readOnly
-                      />
-                    </label>
+                    <label>Total Kilómetros: <input type="number" name="total_kilometros" value={formData.total_kilometros} onChange={handleInputChange} step="0.1" min="0" readOnly /></label>
+                    <label>Costo Casetas: <input type="number" name="costo_casetas" value={formData.costo_casetas} onChange={handleInputChange} step="0.01" min="0" readOnly /></label>
                   </div>
 
                   <div className="fila">
-                    <label>
-                      Tipo de Camino:
-                      <select
-                        name="tipo_camino"
-                        value={formData.tipo_camino}
-                        onChange={handleInputChange}
-                      >
+                    <label>Tipo de Camino:
+                      <select name="tipo_camino" value={formData.tipo_camino} onChange={handleInputChange}>
+                        <option value="pavimento">Pavimento (Pista)</option>
+                        <option value="revestido">Revestido</option>
+                        <option value="ciudad">Ciudad</option>
                         <option value="terraceria">Terracería</option>
-                        <option value="pavimento">Pavimento</option>
                       </select>
                     </label>
-                    <label>
-                      Tipo Cliente:
-                      <select
-                        name="tipo_cliente"
-                        value={formData.tipo_cliente}
-                        onChange={handleInputChange}
-                      >
-                        <option value="solo_una_vez">Solo una vez</option>
-                        <option value="frecuente">Frecuente</option>
+                    <label>Tipo Cliente:
+                      <select name="tipo_cliente" value={formData.tipo_cliente} onChange={handleInputChange}>
+                        <option value="tipo_1">Tipo 1 — Sin descuento</option>
+                        <option value="tipo_2">Tipo 2 — 10% descuento</option>
+                        <option value="tipo_3">Tipo 3 — 20% descuento</option>
+                        <option value="tipo_4">Tipo 4 — 30% descuento</option>
                       </select>
                     </label>
                   </div>
 
-                  <label>
-                    Descripción: (Opcional)
-                    <textarea
-                      name="descripcion"
-                      value={formData.descripcion}
-                      onChange={handleInputChange}
-                      rows="3"
-                      placeholder="Descripción del servicio..."
-                    />
+                  <label>Descripción: (Opcional)
+                    <textarea name="descripcion" value={formData.descripcion} onChange={handleInputChange} rows="3" placeholder="Descripción del servicio..." />
                   </label>
 
                   <div className="botones-navegacion">
-                    <button
-                      type="button"
-                      onClick={pasoAnterior}
-                      className="btn-anterior"
-                    >
-                      Anterior
-                    </button>
+                    <button type="button" onClick={pasoAnterior} className="btn-anterior">Anterior</button>
                     <div className="botones-derecha">
-                      <button
-                        type="button"
-                        onClick={cerrarModal}
-                        className="btn-cancelar"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={siguientePaso}
-                        className="btn-siguiente"
-                      >
-                        Siguiente
-                      </button>
+                      <button type="button" onClick={cerrarModal} className="btn-cancelar">Cancelar</button>
+                      <button type="button" onClick={siguientePaso} className="btn-siguiente">Siguiente</button>
                     </div>
                   </div>
                 </div>
               )}
 
+              {/* ── PASO 5 ── */}
               {pasoActual === 5 && (
                 <div className="paso-contenido">
+
+                  {/* Desglose calculado — aparece después del submit */}
+                  {desglose && (
+                    <div className="desglose-container">
+                      <h4>Desglose de Costos</h4>
+                      <p className="desglose-vehiculo">Vehículo recomendado: <strong>{desglose.vehiculoNombre}</strong></p>
+                      <p className="desglose-info">Kilómetros: {desglose.kilometros} km · Días: {desglose.dias}</p>
+
+                      <div className="desglose-items">
+                        <div className="desglose-item"><span>Renta de unidad</span><span>${desglose.costoRenta?.toFixed(2)}</span></div>
+                        <div className="desglose-item"><span>Combustible</span><span>${desglose.costoCombustible?.toFixed(2)}</span></div>
+                        <div className="desglose-item"><span>Desgaste de unidad</span><span>${desglose.costoDesgaste?.toFixed(2)}</span></div>
+                        <div className="desglose-item"><span>Viáticos operador</span><span>${desglose.costoChofer?.toFixed(2)}</span></div>
+                        <div className="desglose-item"><span>Casetas</span><span>${(desglose.ajustes?.costo_casetas ?? 0).toFixed(2)}</span></div>
+                      </div>
+
+                      <div className="desglose-ajustes">
+                        <label>Costo Casetas (ajuste manual):
+                          <input
+                            type="number" min="0" step="0.01"
+                            value={desglose.ajustes?.costo_casetas ?? ""}
+                            onChange={(e) => handleAjusteDesglose("costo_casetas", e.target.value)}
+                          />
+                        </label>
+                        <label>Costo Extra:
+                          <input
+                            type="number" min="0" step="0.01"
+                            value={desglose.ajustes?.costo_extra ?? ""}
+                            onChange={(e) => handleAjusteDesglose("costo_extra", e.target.value)}
+                          />
+                        </label>
+                      </div>
+
+                      <div className="desglose-totales">
+                        <div className="desglose-item"><span>Subtotal</span><span>${desglose.ajustes?.subtotal?.toFixed(2)}</span></div>
+                        <div className="desglose-item"><span>IVA (16%)</span><span>${desglose.ajustes?.iva?.toFixed(2)}</span></div>
+                        <div className="desglose-item total"><span>Total</span><span>${desglose.ajustes?.total?.toFixed(2)}</span></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Servicios extras */}
                   <div className="extras-grid">
-                    <label>
-                      Transporte:
-                      <select
-                        name="transporte"
-                        value={formData.transporte}
-                        onChange={handleServicioChange}
-                      >
-                        <option value="">Seleccionar...</option>
-                        {opcionesExtras.transporte.map((servicio) => (
-                          <option key={servicio.id} value={servicio.id}>
-                            {servicio.nombre} - ${servicio.precio} - (
-                            {servicio.proveedor})
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <label>
-                      Restaurante:
-                      <select
-                        name="restaurante"
-                        value={formData.restaurante}
-                        onChange={handleServicioChange}
-                      >
-                        <option value="">Seleccionar...</option>
-                        {opcionesExtras.restaurante.map((servicio) => (
-                          <option key={servicio.id} value={servicio.id}>
-                            {servicio.nombre} - ${servicio.precio} - (
-                            {servicio.proveedor})
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <label>
-                      Tour:
-                      <select
-                        name="tour"
-                        value={formData.tour}
-                        onChange={handleServicioChange}
-                      >
-                        <option value="">Seleccionar...</option>
-                        {opcionesExtras.tour.map((servicio) => (
-                          <option key={servicio.id} value={servicio.id}>
-                            {servicio.nombre} - ${servicio.precio} - (
-                            {servicio.proveedor})
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <label>
-                      Hospedaje:
-                      <select
-                        name="hospedaje"
-                        value={formData.hospedaje}
-                        onChange={handleServicioChange}
-                      >
-                        <option value="">Seleccionar...</option>
-                        {opcionesExtras.hospedaje.map((servicio) => (
-                          <option key={servicio.id} value={servicio.id}>
-                            {servicio.nombre} - ${servicio.precio} - (
-                            {servicio.proveedor})
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                    {["transporte", "restaurante", "tour", "hospedaje"].map((tipo) => (
+                      <label key={tipo}>
+                        {tipo.charAt(0).toUpperCase() + tipo.slice(1)}:
+                        <select name={tipo} value={formData[tipo]} onChange={handleServicioChange}>
+                          <option value="">Seleccionar...</option>
+                          {opcionesExtras[tipo].map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.nombre} - ${s.precio} - ({s.proveedor})
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
                   </div>
 
                   <div className="extras-seleccionados">
                     <h4>Extras:</h4>
                     <div className="extras-lista">
                       {formData.servicios.length > 0 ? (
-                        formData.servicios.map((servicio) => (
-                          <div key={servicio.id} className="extra-item">
-                            <span className="extra-tipo">{servicio.tipo}:</span>
-                            <span className="extra-valor">
-                              {servicio.nombre}
-                            </span>
-                            <span className="extra-proveedor">
-                              ({servicio.proveedor})
-                            </span>
-                            <span className="extra-costo">
-                              ${servicio.precio}
-                            </span>
-                            <button
-                              type="button"
-                              className="btn-eliminar-extra"
-                              onClick={() =>
-                                handleEliminarServicio(servicio.id)
-                              }
-                            >
-                              ❌
-                            </button>
+                        formData.servicios.map((s) => (
+                          <div key={s.id} className="extra-item">
+                            <span className="extra-tipo">{s.tipo}:</span>
+                            <span className="extra-valor">{s.nombre}</span>
+                            <span className="extra-proveedor">({s.proveedor})</span>
+                            <span className="extra-costo">${s.precio}</span>
+                            <button type="button" className="btn-eliminar-extra" onClick={() => handleEliminarServicio(s.id)}>❌</button>
                           </div>
                         ))
                       ) : (
-                        <p className="extras-vacio">
-                          No hay extras seleccionados
-                        </p>
+                        <p className="extras-vacio">No hay extras seleccionados</p>
                       )}
                     </div>
                   </div>
 
                   <div className="total-container">
-                    <label>
-                      Total: <span className="required">*</span>
-                      <input
-                        type="number"
-                        name="total"
-                        value={formData.total}
-                        onChange={handleTotalChange}
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
-                      />
+                    <label>Total: <span className="required">*</span>
+                      <input type="number" name="total" value={formData.total} onChange={(e) => setFormData((p) => ({ ...p, total: e.target.value }))} step="0.01" min="0" placeholder="0.00" />
                     </label>
-                    <label>
-                      Total en letra: (Opcional)
-                      <textarea
-                        name="totalLetra"
-                        value={formData.totalLetra}
-                        onChange={handleInputChange}
-                        placeholder=""
-                      />
+                    <label>Total en letra: (Opcional)
+                      <textarea name="totalLetra" value={formData.totalLetra} onChange={handleInputChange} placeholder="" />
                     </label>
                   </div>
+
                   <div className="botones-navegacion">
-                    <button
-                      type="button"
-                      onClick={pasoAnterior}
-                      className="btn-anterior"
-                    >
-                      Anterior
-                    </button>
+                    <button type="button" onClick={pasoAnterior} className="btn-anterior">Anterior</button>
                     <div className="botones-derecha">
-                      <button
-                        type="button"
-                        onClick={cerrarModal}
-                        className="btn-cancelar"
-                      >
-                        Cancelar
-                      </button>
-                      <button type="submit" className="btn-guardar">
-                        {modoEdicion ? "Actualizar" : "Guardar"}
-                      </button>
+                      <button type="button" onClick={cerrarModal} className="btn-cancelar">Cancelar</button>
+
+                      {desglose ? (
+                        // Ya calculado — solo confirmar
+                        <button type="button" className="btn-guardar" onClick={handleConfirmarCotizacion}>
+                          Confirmar
+                        </button>
+                      ) : (
+                        // Aún no calculado — submit al backend
+                        <button type="submit" className="btn-guardar">
+                          {modoEdicion ? "Actualizar" : "Calcular y Guardar"}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
               )}
+
             </form>
           </div>
         </div>

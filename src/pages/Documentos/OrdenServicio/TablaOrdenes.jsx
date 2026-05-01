@@ -842,7 +842,7 @@ const TablaOrdenes = () => {
                       >
                         <FileText size={16} />
                       </button>
-                      {permisos.includes("documentos.ordenes.editar") || rolUsuario === "admin" && (
+                      {(permisos.includes("documentos.ordenes.editar") || rolUsuario === "admin") && (
                         <button
                           className="Ordenes-boton-accion Ordenes-editar"
                           onClick={() => manejarAccion("editar", orden)}
@@ -861,7 +861,7 @@ const TablaOrdenes = () => {
                         </button>
                       )}
 
-                      {permisos.includes("documentos.ordenes.eliminar") || rolUsuario === "admin" && (
+                      {(permisos.includes("documentos.ordenes.eliminar") || rolUsuario === "admin") && (
                         <button
                           className="Ordenes-boton-accion Ordenes-eliminar"
                           onClick={() => manejarAccion("eliminar", orden)}

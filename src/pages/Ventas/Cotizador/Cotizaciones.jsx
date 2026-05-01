@@ -84,30 +84,31 @@ const Cotizacion = () => {
     async (nuevaCotizacion, esEdicion = false) => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) { alert("No hay sesión activa"); return; }
 
-        if (!token) {
-          alert("No hay sesión activa");
-          return;
-        }
+        let respuesta;
 
         if (esEdicion) {
-          await axios.put(`${API_URL}/${nuevaCotizacion.id}`, nuevaCotizacion, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          });
+          const response = await axios.put(
+            `${API_URL}/${nuevaCotizacion.id}`,
+            nuevaCotizacion,
+            { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } }
+          );
+          respuesta = response.data;
         } else {
-          await axios.post(API_URL, nuevaCotizacion, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          });
+          const response = await axios.post(
+            API_URL,
+            nuevaCotizacion,
+            { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } }
+          );
+          respuesta = response.data;
         }
 
         await cargarCotizaciones();
         setCotizacionEditar(null);
+
+        return respuesta; // ← esto es lo que faltaba
+
       } catch (error) {
         console.error("Error al guardar cotización:", error);
         if (error.response?.status === 401) {
@@ -115,10 +116,7 @@ const Cotizacion = () => {
           localStorage.removeItem("user");
           window.location.href = "/login";
         } else {
-          alert(
-            "Error al guardar la cotización: " +
-            (error.response?.data?.error || error.message)
-          );
+          alert("Error al guardar la cotización: " + (error.response?.data?.error || error.message));
         }
         throw error;
       }

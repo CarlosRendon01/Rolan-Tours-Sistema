@@ -150,7 +150,7 @@ const TablaRestaurante = ({
         </div>
 
         <div className="resto-controles-derecha">
-          {permisos.includes("servicios.restaurantes.editar") || rolUsuario === "admin" && (
+          {(permisos.includes("servicios.restaurantes.editar") || rolUsuario === "admin") && (
             <button
               className="resto-boton-agregar"
               onClick={onAgregar}

@@ -147,7 +147,7 @@ const TablaTransporte = ({
         </div>
 
         <div className="transporte-controles-derecha">
-          {permisos.includes('servicios.transporte.editar') || rolUsuario === "admin" && (
+          {(permisos.includes('servicios.transporte.editar') || rolUsuario === "admin") && (
             <button
               className="transporte-boton-agregar"
               onClick={onAgregar}
@@ -309,7 +309,7 @@ const TablaTransporte = ({
                             <Eye size={16} />
                           </button>
 
-                          {permisos.includes('servicios.transporte.editar') || rolUsuario === "admin" && (
+                          {(permisos.includes('servicios.transporte.editar') || rolUsuario === "admin") && (
                             <button
                               className="transporte-boton-accion transporte-editar"
                               onClick={() => manejarAccion('editar', transporte)}
@@ -319,7 +319,7 @@ const TablaTransporte = ({
                             </button>
                           )}
 
-                          {permisos.includes('servicios.transporte.eliminar') || rolUsuario === "admin" && (
+                          {(permisos.includes('servicios.transporte.eliminar') || rolUsuario === "admin") && (
                             <button
                               className="transporte-boton-accion transporte-eliminar"
                               onClick={() => manejarAccion('eliminar', transporte)}

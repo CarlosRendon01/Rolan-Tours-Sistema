@@ -171,7 +171,7 @@ const TablaCoordinadores = ({
         </div>
 
         <div className="coord-controles-derecha">
-          {permisos.includes('operaciones.coordinadores.editar') || rolUsuario === 'admin' && (
+          {(permisos.includes('operaciones.coordinadores.editar') || rolUsuario === 'admin') && (
             <button
               className="coord-boton-agregar"
               onClick={onAgregar}
@@ -319,7 +319,7 @@ const TablaCoordinadores = ({
                             <Eye size={16} />
                           </button>
 
-                          {permisos.includes('operaciones.coordinadores.editar') || rolUsuario === 'admin' && (
+                          {(permisos.includes('operaciones.coordinadores.editar') || rolUsuario === 'admin') && (
                             <button
                               className="coord-boton-accion coord-editar"
                               onClick={() => manejarAccion('editar', coordinador)}
@@ -328,7 +328,7 @@ const TablaCoordinadores = ({
                               <Edit size={16} />
                             </button>
                           )}
-                          {permisos.includes('operaciones.coordinadores.eliminar') || rolUsuario === 'admin' && (
+                          {(permisos.includes('operaciones.coordinadores.eliminar') || rolUsuario === 'admin') && (
                             <button
                               className="coord-boton-accion coord-eliminar"
                               onClick={() => manejarAccion('eliminar', coordinador)}

@@ -74,6 +74,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -583,4 +584,141 @@
   .botones-navegacion {
     padding: 1rem 1.25rem;
   }
+}
+
+/* Toggle modo viaje */
+.modo-viaje-toggle {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.btn-modo {
+  flex: 1;
+  padding: 8px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-modo.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Stops itinerario */
+.stops-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.stop-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  background: #f8fafc;
+}
+
+.stop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.stop-numero {
+  font-weight: 600;
+  color: #2563eb;
+  font-size: 0.9rem;
+}
+
+.btn-eliminar-stop {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-agregar-stop {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed #2563eb;
+  border-radius: 8px;
+  background: transparent;
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+.btn-agregar-stop:hover {
+  background: #eff6ff;
+}
+
+/* Desglose */
+.desglose-container {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #f8fafc;
+}
+
+.desglose-container h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1e293b;
+}
+
+.desglose-vehiculo {
+  font-size: 0.9rem;
+  color: #2563eb;
+  margin-bottom: 4px;
+}
+
+.desglose-info {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.desglose-items,
+.desglose-totales {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.desglose-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding: 4px 0;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.desglose-item.total {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1e293b;
+  border-bottom: none;
+}
+
+.desglose-ajustes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
 }

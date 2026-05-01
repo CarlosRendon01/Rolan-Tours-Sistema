@@ -155,7 +155,7 @@ const TablaUsuarios = ({
         </div>
 
         <div className="usuarios-controles-derecha">
-          {permisos.includes("administracion.usuarios.editar") || rolUsuario === "admin" && (
+          {(permisos.includes("administracion.usuarios.editar") || rolUsuario === "admin") && (
             <button className="usuarios-boton-agregar" onClick={onAgregar}>
               <Plus size={18} />
               Agregar Usuario
@@ -311,7 +311,7 @@ const TablaUsuarios = ({
                           >
                             <Eye size={16} />
                           </button>
-                          {permisos.includes("administracion.usuarios.editar") || rolUsuario === "admin" && (
+                          {(permisos.includes("administracion.usuarios.editar") || rolUsuario === "admin") && (
                             <button
                               className="usuarios-boton-accion usuarios-editar"
                               onClick={() => manejarAccion("editar", usuario)}
@@ -320,7 +320,7 @@ const TablaUsuarios = ({
                               <Edit size={16} />
                             </button>
                           )}
-                          {permisos.includes("administracion.usuarios.eliminar") || rolUsuario === "admin" && (
+                          {(permisos.includes("administracion.usuarios.eliminar") || rolUsuario === "admin") && (
                             <button
                               className="usuarios-boton-accion usuarios-eliminar"
                               onClick={() => manejarAccion("eliminar", usuario)}

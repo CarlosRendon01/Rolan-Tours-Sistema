@@ -69,9 +69,9 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
     localStorage.getItem("rol") || "Vendedor"
   );
 
-  const [permisos, setPermisos] = useState([
-    localStorage.getItem("permisos") || "",
-  ]);
+  const [permisos, setPermisos] = useState(
+    (localStorage.getItem("permisos") || "").split(",").filter(Boolean)
+  );
 
   const [modalAbierto, establecerModalAbierto] = useState(false);
   const [modalEditarAbierto, establecerModalEditarAbierto] = useState(false);
@@ -557,16 +557,19 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                           <Eye size={14} />
                         </button>
 
-                        {permisos.includes("ventas.pagos.editar") && pago.estado === "VENCIDO" && pago.activo && (
-                          <button
-                            className="pagos-boton-accion pagos-editar"
-                            onClick={() => manejarAccion("editar", pago)}
-                            title="Editar"
-                            disabled={cargando}
-                          >
-                            <Edit size={14} />
-                          </button>
-                        )}
+                        {(
+                          (permisos.includes("ventas.pagos.editar") && pago.estado === "VENCIDO" && pago.activo)
+                          || rolUsuario === "admin"
+                        ) && (
+                            <button
+                              className="pagos-boton-accion pagos-editar"
+                              onClick={() => manejarAccion("editar", pago)}
+                              title="Editar"
+                              disabled={cargando}
+                            >
+                              <Edit size={14} />
+                            </button>
+                          )}
 
                         {permisos.includes("ventas.pagos.eliminar") && pago.activo && (
                           <button

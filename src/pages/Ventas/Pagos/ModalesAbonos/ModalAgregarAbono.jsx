@@ -188,14 +188,15 @@ const ModalAgregarAbono = ({
 
   if (!abierto || !pagoSeleccionado) return null;
 
+  const montoPagado = parseFloat(pagoSeleccionado?.planPago?.montoPagado) || 0;
+  const montoTotal = parseFloat(pagoSeleccionado?.planPago?.montoTotal) || 0;
   const montoIngresado = parseFloat(formulario.montoAbono) || 0;
+  const nuevoTotalPagado = montoPagado + montoIngresado;
   const nuevoSaldo = saldoPendiente - montoIngresado;
   const seCompletara = nuevoSaldo === 0;
-  const nuevoPorcentaje = (
-    ((pagoSeleccionado.planPago.montoPagado + montoIngresado) /
-      pagoSeleccionado.planPago.montoTotal) *
-    100
-  ).toFixed(1);
+  const nuevoPorcentaje = montoTotal > 0
+    ? ((nuevoTotalPagado / montoTotal) * 100).toFixed(1)
+    : "0.0";
 
   return (
     <div className="modal-abono-overlay">
@@ -364,10 +365,7 @@ const ModalAgregarAbono = ({
                 <p>
                   • Nuevo total pagado:{" "}
                   <strong>
-                    $
-                    {(
-                      pagoSeleccionado.planPago.montoPagado + montoIngresado
-                    ).toLocaleString()}
+                    ${nuevoTotalPagado.toLocaleString()}
                   </strong>
                 </p>
                 <p>

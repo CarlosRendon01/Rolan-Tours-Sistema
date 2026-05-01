@@ -163,7 +163,7 @@ const TablaGuias = ({
         </div>
 
         <div className="guias-controles-derecha">
-          {permisos.includes('operaciones.guias.editar') || rolUsuario === 'admin' && (
+          {(permisos.includes('operaciones.guias.editar') || rolUsuario === 'admin') && (
             <button
               className="guias-boton-agregar"
               onClick={onAgregar}
@@ -320,7 +320,7 @@ const TablaGuias = ({
                             <Eye size={16} />
                           </button>
 
-                          {permisos.includes('operaciones.guias.editar') || rolUsuario === 'admin' && (
+                          {(permisos.includes('operaciones.guias.editar') || rolUsuario === 'admin') && (
                             <button
                               className="guias-boton-accion guias-editar"
                               onClick={() => manejarAccion('editar', guia)}
@@ -329,7 +329,7 @@ const TablaGuias = ({
                               <Edit size={16} />
                             </button>
                           )}
-                          {permisos.includes('operaciones.guias.eliminar') || rolUsuario === 'admin' && (
+                          {(permisos.includes('operaciones.guias.eliminar') || rolUsuario === 'admin') && (
                             <button
                               className="guias-boton-accion guias-eliminar"
                               onClick={() => manejarAccion('eliminar', guia)}

@@ -26,8 +26,8 @@ const TablaRoles = ({
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
   const [puntosCarga, setPuntosCarga] = useState('');
-  const [rolUsuario] = useState(localStorage.getItem("rol") || "");
-  const [permisos] = useState(localStorage.getItem("permisos") || "");
+  const [rolUsuario] = useState((localStorage.getItem("rol") || "").split(",").filter(Boolean)[0] || "");
+  const [permisos] = useState((localStorage.getItem("permisos") || "").split(",").filter(Boolean));
 
   useEffect(() => {
     if (cargando) {
@@ -212,7 +212,7 @@ const TablaRoles = ({
         </div>
 
         <div className="roles-controles-derecha">
-          {permisos.includes("administracion.roles.editar") || rolUsuario === "admin" && (
+          {(permisos.includes("administracion.roles.editar") || rolUsuario === "admin") && (
             <button className="roles-boton-agregar" onClick={onAgregar}>
               <Plus size={18} />
               Agregar Rol
@@ -357,22 +357,15 @@ const TablaRoles = ({
                             <Eye size={16} />
                           </button>
 
-                          {permisos.includes("administracion.roles.editar") || rolUsuario === "admin" && (
-                            <button
-                              className="roles-boton-accion roles-editar"
-                              onClick={() => manejarAccion("editar", rol)}
-                              title="Editar rol"
-                            >
+                          {(permisos.includes("administracion.roles.editar") || rolUsuario === "admin") && (
+                            <button className="roles-boton-accion roles-editar" onClick={() => manejarAccion("editar", rol)} title="Editar rol">
                               <Edit size={16} />
                             </button>
                           )}
 
-                          {permisos.includes("administracion.roles.eliminar") || rolUsuario === "admin" && (
-                            <button
-                              className="roles-boton-accion roles-eliminar"
-                              onClick={() => manejarAccion("eliminar", rol)}
-                              title="Eliminar rol"
-                            >
+
+                          {(permisos.includes("administracion.roles.eliminar") || rolUsuario === "admin") && (
+                            <button className="roles-boton-accion roles-eliminar" onClick={() => manejarAccion("eliminar", rol)} title="Eliminar rol">
                               <Trash2 size={16} />
                             </button>
                           )}

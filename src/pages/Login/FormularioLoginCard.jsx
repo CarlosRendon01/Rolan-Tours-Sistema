@@ -27,11 +27,13 @@ const FormularioLoginCard = ({ alIniciarSesion }) => {
           respuesta.data.user;
 
         if (usuario) {
-          const rol = usuario.roles;
+          const rol = usuario.roles?.[0] || usuario.roles || "Vendedor";
+          const permisos = usuario.permissions || usuario.permisos || [];
 
-          localStorage.setItem('token', token);
-          localStorage.setItem('user', JSON.stringify(usuario));
-          localStorage.setItem('rol', rol);
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(usuario));
+          localStorage.setItem("rol", Array.isArray(rol) ? rol[0] : rol);
+          localStorage.setItem("permisos", Array.isArray(permisos) ? permisos.join(",") : permisos);
           alIniciarSesion(usuario);
         } else {
           setMensajeError('No se recibió información del usuario.');

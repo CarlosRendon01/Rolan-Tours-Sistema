@@ -176,7 +176,7 @@ const TablaOperadores = ({
         </div>
 
         <div className="operadores-controles-derecha">
-          {permisos.includes('operaciones.operadores.editar') || rolUsuario === 'admin' && (
+          {(permisos.includes('operaciones.operadores.editar') || rolUsuario === 'admin') && (
             <button
               className="operadores-boton-agregar"
               onClick={onAgregar}
@@ -321,7 +321,7 @@ const TablaOperadores = ({
                           >
                             <Eye size={16} />
                           </button>
-                          {permisos.includes('operaciones.operadores.editar') || rolUsuario === 'admin' && (
+                          {(permisos.includes('operaciones.operadores.editar') || rolUsuario === 'admin') && (
                             <button
                               className="operadores-boton-accion operadores-editar"
                               onClick={() => manejarAccion('editar', operador)}
@@ -330,7 +330,7 @@ const TablaOperadores = ({
                               <Edit size={16} />
                             </button>
                           )}
-                          {permisos.includes('operaciones.operadores.eliminar') || rolUsuario === 'admin' && (
+                          {(permisos.includes('operaciones.operadores.eliminar') || rolUsuario === 'admin') && (
                             <button
                               className="operadores-boton-accion operadores-eliminar"
                               onClick={() => manejarAccion('eliminar', operador)}

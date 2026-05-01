@@ -169,7 +169,7 @@ const TablaTours = ({
         </div>
 
         <div className="tours-controles-derecha">
-          {permisos.includes('servicios.tours.editar') || rolUsuario === "admin" && (
+          {(permisos.includes('servicios.tours.editar') || rolUsuario === "admin") && (
             <button
               className="tours-boton-agregar"
               onClick={onAgregar}
@@ -320,7 +320,7 @@ const TablaTours = ({
                             <Eye size={16} />
                           </button>
 
-                          {permisos.includes('servicios.tours.editar') || rolUsuario === "admin" && (
+                          {(permisos.includes('servicios.tours.editar') || rolUsuario === "admin") && (
                             <button
                               className="tours-boton-accion tours-editar"
                               onClick={() => manejarAccion('editar', tour)}
@@ -330,7 +330,7 @@ const TablaTours = ({
                             </button>
                           )}
 
-                          {permisos.includes('servicios.tours.eliminar') || rolUsuario === "admin" && (
+                          {(permisos.includes('servicios.tours.eliminar') || rolUsuario === "admin") && (
                             <button
                               className="tours-boton-accion tours-eliminar"
                               onClick={() => manejarAccion('eliminar', tour)}

@@ -816,7 +816,7 @@ const TablaRecibos = ({
                     className="recibos-columna-acciones"
                   >
                     <div className="recibos-botones-accion">
-                      {recibo.activo === false && rolUsuario === "admin" ? (
+                      {(recibo.activo === false && rolUsuario === "admin") ? (
                         <>
                           <button
                             className="recibos-boton-accion recibos-regenerar"
@@ -849,7 +849,7 @@ const TablaRecibos = ({
                             <FileText size={16} />
                           </button>
 
-                          {permisos.includes("ventas.pagos.eliminar") && (
+                          {(permisos.includes("ventas.pagos.eliminar") || rolUsuario === "admin") && (
                             <button
                               className="recibos-boton-accion recibos-eliminar"
                               onClick={() => manejarAccion("eliminar", recibo)}

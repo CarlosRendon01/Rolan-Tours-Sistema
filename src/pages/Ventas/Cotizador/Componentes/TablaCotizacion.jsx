@@ -19,8 +19,8 @@ import {
 import PropTypes from "prop-types";
 import ModalVerCotizacion from "../Modales/ModalVerCotizacion";
 import ModalEliminarCotizacion from "../Modales/ModalEliminarCotizacion";
-import ModalVisualizarPDF from "../Modales/ModalVisualizarPDF";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { API_CONFIG } from "../../../../config/api";
 import ModalCrearPagoDesdeCotizacion from "../Modales/ModalCrearPagoDesdeCotizacion";
 
 import "./TablaCotizacion.css";
@@ -38,70 +38,30 @@ const TablaCotizacion = ({
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState(null);
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-
-  const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState(null);
-  const [cotizacionPDFActual, setCotizacionPDFActual] = useState(null);
+  const [modalDescargaAbierto, setModalDescargaAbierto] = useState(false);
+  const [cotizacionDescarga, setCotizacionDescarga] = useState(null);
   const [modalPagoAbierto, setModalPagoAbierto] = useState(false);
   const [cotizacionParaPago, setCotizacionParaPago] = useState(null);
   const permisos = localStorage.getItem("permisos") || "";
-
-  const pdfCacheRef = useRef({
-    plantillaBytes: null,
-    fontHelvetica: null,
-    fontHelveticaBold: null,
-    cargando: false,
-  });
+  const rolUsuario = localStorage.getItem("rol") || "";
 
   useEffect(() => {
     setPaginaActual(1);
   }, [cotizaciones]);
 
-  const cargarPlantillaPDF = useCallback(async () => {
-    if (pdfCacheRef.current.plantillaBytes) {
-      return pdfCacheRef.current;
-    }
-
-    if (pdfCacheRef.current.cargando) {
-      while (pdfCacheRef.current.cargando) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      return pdfCacheRef.current;
-    }
-
-    try {
-      pdfCacheRef.current.cargando = true;
-
-      const plantillaUrl = "/cotizacionblaco.pdf";
-      const plantillaBytes = await fetch(plantillaUrl).then((res) =>
-        res.arrayBuffer()
-      );
-
-      pdfCacheRef.current = {
-        plantillaBytes,
-        cargando: false,
-      };
-
-      return pdfCacheRef.current;
-    } catch (error) {
-      pdfCacheRef.current.cargando = false;
-      console.error("Error al cargar plantilla PDF:", error);
-      throw error;
-    }
-  }, []);
 
   const formatearFecha = useCallback((fecha) => {
     if (!fecha) return "-";
     try {
-      const fechaObj = new Date(fecha);
+      const [anio, mes, dia] = fecha.split("T")[0].split("-").map(Number);
+      const fechaObj = new Date(anio, mes - 1, dia);
       if (isNaN(fechaObj.getTime())) return "-";
       return fechaObj.toLocaleDateString("es-MX", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       });
-    } catch (error) {
-      console.warn("Error al formatear fecha:", error);
+    } catch {
       return "-";
     }
   }, []);
@@ -209,174 +169,49 @@ const TablaCotizacion = ({
     setCotizacionAEliminar(cotizacion);
   }, []);
 
-  const cerrarModalPDF = useCallback(() => {
-    setModalPDFAbierto(false);
-    if (pdfUrl) {
-      window.URL.revokeObjectURL(pdfUrl);
-    }
-    setPdfUrl(null);
-    setCotizacionPDFActual(null);
-  }, [pdfUrl]);
+  const manejarDescargarWord = useCallback((cotizacion) => {
+    setCotizacionDescarga(cotizacion);
+    setModalDescargaAbierto(true);
+  }, []);
 
-  const generarPDF = useCallback(
-    async (cotizacion) => {
-      try {
-        const cache = await cargarPlantillaPDF();
-
-        const pdfDoc = await PDFDocument.load(cache.plantillaBytes);
-        const pages = pdfDoc.getPages();
-        const firstPage = pages[0];
-        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-        const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-        firstPage.drawText(cotizacion.folio?.toString() || "", {
-          x: 490,
-          y: 671,
-          size: 10,
-          font: fontBold,
-          color: rgb(0, 0, 0),
-        });
-
-        firstPage.drawText(cotizacion.destino?.toString() || "", {
-          x: 125,
-          y: 494,
-          size: 10,
-          font: fontBold,
-          color: rgb(0, 0, 0),
-        });
-
-        firstPage.drawText(cotizacion.destino?.toString() || "", {
-          x: 275,
-          y: 453,
-          size: 10,
-          font: fontBold,
-          color: rgb(0, 0, 0),
-        });
-
-        firstPage.drawText("$ " + cotizacion.total?.toString() || "", {
-          x: 395,
-          y: 355,
-          size: 10,
-          font: fontBold,
-          color: rgb(0, 0, 0),
-        });
-
-        firstPage.drawText(cotizacion.hora_salida?.toString() || "", {
-          x: 59,
-          y: 480,
-          size: 10,
-          font: fontBold,
-          color: rgb(0, 0, 0),
-        });
-
-        firstPage.drawText(cotizacion.hora_regreso?.toString() || "", {
-          x: 59,
-          y: 438,
-          size: 10,
-          font: fontBold,
-          color: rgb(0, 0, 0),
-        });
-
-        const fechaActual = new Date()
-          .toLocaleDateString("es-MX", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })
-          .replace("de de", "del");
-
-        firstPage.drawText(fechaActual, {
-          x: 430,
-          y: 657,
-          size: 10,
-          font: fontBold,
-          color: rgb(0, 0, 0),
-        });
-
-        firstPage.drawText(
-          new Date(cotizacion.fecha_salida).toLocaleDateString("es-MX", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          }),
-          {
-            x: 90,
-            y: 508,
-            size: 10,
-            font: font,
-            color: rgb(0, 0, 0),
-          }
-        );
-
-        firstPage.drawText(
-          new Date(cotizacion.fecha_regreso).toLocaleDateString("es-MX", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          }),
-          {
-            x: 90,
-            y: 466,
-            size: 10,
-            font: font,
-            color: rgb(0, 0, 0),
-          }
-        );
-
-        const pdfBytes = await pdfDoc.save();
-        return pdfBytes;
-      } catch (error) {
-        console.error("Error al generar PDF:", error);
-        throw error;
-      }
-    },
-    [cargarPlantillaPDF]
-  );
-
-  const visualizarPDF = useCallback(
-    async (cotizacion) => {
-      try {
-        setCotizacionPDFActual(cotizacion);
-        setModalPDFAbierto(true);
-        setPdfUrl(null);
-
-        const pdfBytes = await generarPDF(cotizacion);
-        const blob = new Blob([pdfBytes], { type: "application/pdf" });
-        const url = window.URL.createObjectURL(blob);
-        setPdfUrl(url);
-      } catch (error) {
-        console.error("Error al visualizar PDF:", error);
-        alert("Error al generar la previsualización del PDF.");
-        cerrarModalPDF();
-      }
-    },
-    [generarPDF, cerrarModalPDF]
-  );
-
-  const descargarPDF = useCallback(async () => {
+  const descargarWord = useCallback(async (cotizacion, vehiculoId = null) => {
     try {
-      if (!cotizacionPDFActual) return;
+      const token = localStorage.getItem("token");
+      const params = vehiculoId ? `?vehiculo_id=${vehiculoId}` : "";
+      const url = `${API_CONFIG.BASE_URL}/cotizaciones/${cotizacion.id}/word${params}`;
 
-      const pdfBytes = await generarPDF(cotizacionPDFActual);
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType?.includes("application/json")) {
+          const err = await response.json();
+          console.error("Error del servidor:", err);
+          alert(`Error: ${err.message || err.error || JSON.stringify(err)}`);
+        } else {
+          const text = await response.text();
+          console.error("Respuesta del servidor:", text);
+          alert(`Error ${response.status}: revisa la consola`);
+        }
+        return;
+      }
+      
+      const blob = await response.blob();
       const link = document.createElement("a");
-      link.href = url;
-      link.download = `Cotizacion_${cotizacionPDFActual.folio}_${cotizacionPDFActual.fecha_salida}.pdf`;
+      link.href = URL.createObjectURL(blob);
+      link.download = `Cotizacion_${cotizacion.folio}.docx`;
       link.click();
-      window.URL.revokeObjectURL(url);
+      URL.revokeObjectURL(link.href);
+      setModalDescargaAbierto(false);
     } catch (error) {
-      console.error("Error al descargar PDF:", error);
-      alert("Error al descargar el PDF. Por favor, intente nuevamente.");
+      console.error("Error al descargar Word:", error);
+      alert("Error al descargar el documento. Por favor intente nuevamente.");
     }
-  }, [cotizacionPDFActual, generarPDF]);
+  }, []);
 
-  const manejarAccionPDF = useCallback(
-    (cotizacion) => {
-      visualizarPDF(cotizacion);
-    },
-    [visualizarPDF]
-  );
+
 
   const numerosPaginas = useMemo(
     () =>
@@ -625,11 +460,17 @@ const TablaCotizacion = ({
                         </time>
                       </td>
                       <td data-label="Fecha Regreso">
-                        <time
-                          className="cotizaciones-fecha"
-                          dateTime={cotizacion.fecha_regreso}
-                        >
-                          {formatearFecha(cotizacion.fecha_regreso)}
+                        <time className="cotizaciones-fecha">
+                          {cotizacion.modo === "itinerario"
+                            ? (() => {
+                              const stops = Array.isArray(cotizacion.stops)
+                                ? cotizacion.stops
+                                : (() => { try { return JSON.parse(cotizacion.stops || "[]"); } catch { return []; } })();
+                              const ultimo = stops[stops.length - 1];
+                              return ultimo?.fecha_salida ? formatearFecha(ultimo.fecha_salida) : "-";
+                            })()
+                            : formatearFecha(cotizacion.fecha_regreso)
+                          }
                         </time>
                       </td>
                       <td data-label="Origen">
@@ -639,7 +480,17 @@ const TablaCotizacion = ({
                       </td>
                       <td data-label="Destino">
                         <span className="cotizaciones-destino">
-                          {cotizacion.destino || "Sin destino"}
+                          {cotizacion.modo === "itinerario"
+                            ? (() => {
+                              const stops = Array.isArray(cotizacion.stops)
+                                ? cotizacion.stops
+                                : (() => { try { return JSON.parse(cotizacion.stops || "[]"); } catch { return []; } })();
+                              return stops.length > 0
+                                ? stops.map(s => s.destino).join(" → ")
+                                : cotizacion.destino || "Sin destino";
+                            })()
+                            : cotizacion.destino || "Sin destino"
+                          }
                         </span>
                       </td>
                       <td data-label="Acciones">
@@ -662,15 +513,13 @@ const TablaCotizacion = ({
                           <button
                             type="button"
                             className="cotizaciones-boton-accion cotizaciones-descargar"
-                            onClick={() => manejarAccionPDF(cotizacion)}
-                            aria-label={`Previsualizar y descargar cotización ${cotizacion.folio || cotizacion.id
-                              }`}
-                            title="Previsualizar y descargar cotización"
+                            onClick={() => manejarDescargarWord(cotizacion)}
+                            title="Descargar cotización Word"
                           >
                             <FileText size={16} aria-hidden="true" />
-                            <span className="sr-only">PDF</span>
+                            <span className="sr-only">Word</span>
                           </button>
-                          {permisos.includes('ventas.cotizaciones.editar') && (
+                          {(permisos.includes('ventas.cotizaciones.editar') || rolUsuario === "admin") && (
                             <button
                               type="button"
                               className="cotizaciones-boton-accion cotizaciones-editar"
@@ -683,7 +532,7 @@ const TablaCotizacion = ({
                               <span className="sr-only">Editar</span>
                             </button>
                           )}
-                          {permisos.includes('ventas.cotizaciones.eliminar') && (
+                          {(permisos.includes('ventas.cotizaciones.eliminar') || rolUsuario === "admin") && (
                             <button
                               type="button"
                               className="cotizaciones-boton-accion cotizaciones-eliminar"
@@ -849,13 +698,93 @@ const TablaCotizacion = ({
         alCerrar={cerrarModal}
       />
 
-      <ModalVisualizarPDF
-        estaAbierto={modalPDFAbierto}
-        pdfUrl={pdfUrl}
-        orden={cotizacionPDFActual}
-        alCerrar={cerrarModalPDF}
-        alDescargar={descargarPDF}
-      />
+      {modalDescargaAbierto && cotizacionDescarga && (
+        <div
+          className="modal-descarga-word-overlay"
+          onClick={() => setModalDescargaAbierto(false)}
+        >
+          <div
+            className="modal-descarga-word-contenedor"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Encabezado */}
+            <div className="modal-descarga-word-encabezado">
+              <div>
+                <h3 className="modal-descarga-word-titulo">Descargar Cotización</h3>
+                <p className="modal-descarga-word-subtitulo">
+                  Folio: {cotizacionDescarga.folio}
+                </p>
+              </div>
+              <button
+                className="modal-descarga-word-boton-cerrar-header"
+                onClick={() => setModalDescargaAbierto(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Cuerpo */}
+            <div className="modal-descarga-word-cuerpo">
+              <p className="modal-descarga-word-descripcion">
+                Selecciona qué versión deseas descargar:
+              </p>
+
+              <button
+                className="btn-descarga-todos"
+                onClick={() => descargarWord(cotizacionDescarga)}
+              >
+                📄 Todos los vehículos
+              </button>
+
+              {(() => {
+                const lista = (() => {
+                  try {
+                    const parsed =
+                      typeof cotizacionDescarga.lista === "string"
+                        ? JSON.parse(cotizacionDescarga.lista)
+                        : cotizacionDescarga.lista;
+                    return parsed?.cotizaciones_todos_vehiculos ?? [];
+                  } catch { return []; }
+                })();
+
+                if (lista.length === 0) return null;
+
+                return (
+                  <>
+                    <div className="modal-descarga-word-separador">o elige un vehículo</div>
+                    {lista.map((veh) => (
+                      <button
+                        key={veh.vehiculo_id}
+                        className="btn-descarga-vehiculo"
+                        onClick={() => descargarWord(cotizacionDescarga, veh.vehiculo_id)}
+                      >
+                        <span className="btn-descarga-vehiculo-nombre">
+                          {veh.vehiculo_nombre}
+                        </span>
+                        <span className="btn-descarga-vehiculo-detalle">
+                          Capacidad: {veh.capacidad_pasajeros} pasajeros
+                        </span>
+                        <span className="btn-descarga-vehiculo-precio">
+                          ${veh.costos.total_con_iva?.toLocaleString("es-MX", {
+                            minimumFractionDigits: 2,
+                          })} MXN (IVA incluido)
+                        </span>
+                      </button>
+                    ))}
+                  </>
+                );
+              })()}
+
+              <button
+                className="btn-descarga-cancelar"
+                onClick={() => setModalDescargaAbierto(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {cotizacionAEliminar && (
         <ModalEliminarCotizacion

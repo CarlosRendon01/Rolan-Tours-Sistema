@@ -596,7 +596,7 @@ const TablaReservas = ({
                       >
                         <FileText size={16} />
                       </button>
-                      {permisos.includes("documentos.reservas.editar") || rolUsuario === "admin" && (
+                      {(permisos.includes("documentos.reservas.editar") || rolUsuario === "admin") && (
                         <button
                           className="reservas-boton-accion reservas-editar"
                           onClick={() => manejarAccion("editar", reserva)}
@@ -605,7 +605,7 @@ const TablaReservas = ({
                           <Edit size={16} />
                         </button>
                       )}
-                      {permisos.includes("documentos.reservas.eliminar") || rolUsuario === "admin" && (
+                      {(permisos.includes("documentos.reservas.eliminar") || rolUsuario === "admin") && (
                         <button
                           className="reservas-boton-accion reservas-eliminar"
                           onClick={() => manejarAccion("eliminar", reserva)}

@@ -652,7 +652,7 @@ const TablaClientes = () => {
                               <Eye size={16} />
                             </button>
 
-                            {permisos.includes('ventas.clientes.editar') && cliente.activo && (
+                            {(permisos.includes('ventas.clientes.editar') && cliente.activo) && (
                               <button
                                 className="clientes-boton-accion clientes-editar"
                                 onClick={() => manejarAccion('editar', cliente)}
@@ -676,7 +676,7 @@ const TablaClientes = () => {
                               </button>
                             )}
 
-                            {permisos.includes('ventas.clientes.eliminar') && (
+                            {(permisos.includes('ventas.clientes.eliminar')) && (
                               <button
                                 className="clientes-boton-accion clientes-eliminar"
                                 onClick={() => manejarAccion('eliminar', cliente)}
