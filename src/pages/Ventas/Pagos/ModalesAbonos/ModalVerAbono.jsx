@@ -24,6 +24,7 @@ import "./ModalVerAbono.css";
 import { modalEliminarPago } from "../ModalesAbonos/ModalEliminarAbono";
 import ModalReactivarAbono from "../ModalesAbonos/ModalReactivarAbono";
 import ModalEliminarDefinitivoAbono from "../ModalesAbonos/ModalEliminarDefinitivoAbono";
+import { API_CONFIG } from "../../../../config/api";
 
 const ModalVerAbono = ({
   abierto,
@@ -33,8 +34,7 @@ const ModalVerAbono = ({
 }) => {
   const [tabActiva, setTabActiva] = useState(1);
   const [modalReactivarAbierto, setModalReactivarAbierto] = useState(false);
-  const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] =
-    useState(false);
+  const [modalEliminarDefinitivoAbierto, setModalEliminarDefinitivoAbierto] = useState(false);
   const [abonoSeleccionado, setAbonoSeleccionado] = useState(null);
   const [datosActualizados, setDatosActualizados] = useState(pagoSeleccionado);
 
@@ -151,6 +151,35 @@ const ModalVerAbono = ({
     setModalEliminarDefinitivoAbierto(false);
   };
 
+  const descargarArchivo = async (abonoId, nombre) => {
+    try {
+      const token = localStorage.getItem("token");
+      const url = `${API_CONFIG.BASE_URL}/abonos/${abonoId}/comprobante`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error('Error al descargar');
+
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = nombre;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Error al descargar:", error);
+    }
+  };
+
   return (
     <>
       <div className="modal-ver-abono-overlay" onClick={onCerrar}>
@@ -158,6 +187,7 @@ const ModalVerAbono = ({
           className="modal-ver-abono-contenedor"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* HEADER */}
           <div className="modal-ver-abono-header">
             <div className="modal-ver-abono-header-contenido">
               <FileText size={28} />
@@ -173,11 +203,10 @@ const ModalVerAbono = ({
             </button>
           </div>
 
+          {/* TABS */}
           <div className="modal-ver-abono-tabs">
             <button
-              className={`modal-ver-abono-tab ${
-                tabActiva === 1 ? "activa" : ""
-              }`}
+              className={`modal-ver-abono-tab ${tabActiva === 1 ? "activa" : ""}`}
               onClick={() => setTabActiva(1)}
               type="button"
             >
@@ -185,28 +214,25 @@ const ModalVerAbono = ({
               Información General
             </button>
             <button
-              className={`modal-ver-abono-tab ${
-                tabActiva === 2 ? "activa" : ""
-              }`}
+              className={`modal-ver-abono-tab ${tabActiva === 2 ? "activa" : ""}`}
               onClick={() => setTabActiva(2)}
               type="button"
             >
               <Receipt size={18} />
               Historial
-              <span className="modal-ver-abono-tab-badge">
-                {cantidadAbonos}
-              </span>
+              <span className="modal-ver-abono-tab-badge">{cantidadAbonos}</span>
             </button>
           </div>
 
+          {/* CONTENIDO */}
           <div className="modal-ver-abono-contenido">
+
+            {/* TAB 1 - Información General */}
             {tabActiva === 1 && (
               <div className="modal-ver-abono-tab-contenido">
                 <div className="modal-ver-abono-seccion-estado">
                   <div
-                    className={`modal-ver-abono-badge-estado ${obtenerEstadoClase(
-                      datosActualizados.estado
-                    )}`}
+                    className={`modal-ver-abono-badge-estado ${obtenerEstadoClase(datosActualizados.estado)}`}
                   >
                     {datosActualizados.estado === "PAGADO" ? (
                       <CheckCircle size={16} />
@@ -214,9 +240,7 @@ const ModalVerAbono = ({
                       <Clock size={16} />
                     )}
                     <span>
-                      {datosActualizados.estado === "PAGADO"
-                        ? "Pago Completado"
-                        : "En Proceso"}
+                      {datosActualizados.estado === "PAGADO" ? "Pago Completado" : "En Proceso"}
                     </span>
                   </div>
                   <div className="modal-ver-abono-fecha-creacion">
@@ -225,6 +249,7 @@ const ModalVerAbono = ({
                   </div>
                 </div>
 
+                {/* Cliente */}
                 <div className="modal-ver-abono-seccion">
                   <h3 className="modal-ver-abono-titulo-seccion">
                     <User size={18} />
@@ -232,34 +257,23 @@ const ModalVerAbono = ({
                   </h3>
                   <div className="modal-ver-abono-grid">
                     <div className="modal-ver-abono-campo">
-                      <label>
-                        <User size={14} /> Nombre
-                      </label>
-                      <div className="modal-ver-abono-valor">
-                        {datosActualizados.cliente.nombre}
-                      </div>
+                      <label><User size={14} /> Nombre</label>
+                      <div className="modal-ver-abono-valor">{datosActualizados.cliente.nombre}</div>
                     </div>
                     <div className="modal-ver-abono-campo">
-                      <label>
-                        <Mail size={14} /> Email
-                      </label>
-                      <div className="modal-ver-abono-valor">
-                        {datosActualizados.cliente.email}
-                      </div>
+                      <label><Mail size={14} /> Email</label>
+                      <div className="modal-ver-abono-valor">{datosActualizados.cliente.email}</div>
                     </div>
                     {datosActualizados.cliente.telefono && (
                       <div className="modal-ver-abono-campo">
-                        <label>
-                          <Phone size={14} /> Teléfono
-                        </label>
-                        <div className="modal-ver-abono-valor">
-                          {datosActualizados.cliente.telefono}
-                        </div>
+                        <label><Phone size={14} /> Teléfono</label>
+                        <div className="modal-ver-abono-valor">{datosActualizados.cliente.telefono}</div>
                       </div>
                     )}
                   </div>
                 </div>
 
+                {/* Servicio */}
                 <div className="modal-ver-abono-seccion">
                   <h3 className="modal-ver-abono-titulo-seccion">
                     <MapPin size={18} />
@@ -267,32 +281,21 @@ const ModalVerAbono = ({
                   </h3>
                   <div className="modal-ver-abono-grid">
                     <div className="modal-ver-abono-campo">
-                      <label>
-                        <FileText size={14} /> Tipo de Tour
-                      </label>
-                      <div className="modal-ver-abono-valor-destacado">
-                        {datosActualizados.servicio.tipo}
-                      </div>
+                      <label><FileText size={14} /> Tipo de Tour</label>
+                      <div className="modal-ver-abono-valor-destacado">{datosActualizados.servicio.tipo}</div>
                     </div>
                     <div className="modal-ver-abono-campo">
-                      <label>
-                        <FileText size={14} /> Descripción
-                      </label>
-                      <div className="modal-ver-abono-valor">
-                        {datosActualizados.servicio.descripcion}
-                      </div>
+                      <label><FileText size={14} /> Descripción</label>
+                      <div className="modal-ver-abono-valor">{datosActualizados.servicio.descripcion}</div>
                     </div>
                     <div className="modal-ver-abono-campo">
-                      <label>
-                        <Calendar size={14} /> Fecha del Tour
-                      </label>
-                      <div className="modal-ver-abono-valor">
-                        {datosActualizados.servicio.fechaTour}
-                      </div>
+                      <label><Calendar size={14} /> Fecha del Tour</label>
+                      <div className="modal-ver-abono-valor">{datosActualizados.servicio.fechaTour}</div>
                     </div>
                   </div>
                 </div>
 
+                {/* Plan de Pago */}
                 <div className="modal-ver-abono-seccion">
                   <h3 className="modal-ver-abono-titulo-seccion">
                     <DollarSign size={18} />
@@ -301,12 +304,8 @@ const ModalVerAbono = ({
 
                   <div className="modal-ver-abono-progreso-contenedor">
                     <div className="modal-ver-abono-progreso-info">
-                      <span className="modal-ver-abono-progreso-texto">
-                        Progreso del Pago
-                      </span>
-                      <span className="modal-ver-abono-progreso-porcentaje">
-                        {progreso}%
-                      </span>
+                      <span className="modal-ver-abono-progreso-texto">Progreso del Pago</span>
+                      <span className="modal-ver-abono-progreso-porcentaje">{progreso}%</span>
                     </div>
                     <div className="modal-ver-abono-barra-progreso">
                       <div
@@ -318,7 +317,7 @@ const ModalVerAbono = ({
                               ? "linear-gradient(90deg, #10b981 0%, #059669 100%)"
                               : "linear-gradient(90deg, #2563eb 0%, #3b82f6 100%)",
                         }}
-                      ></div>
+                      />
                     </div>
                   </div>
 
@@ -326,51 +325,40 @@ const ModalVerAbono = ({
                     <div className="modal-ver-abono-tarjeta-stat destacado">
                       <div className="modal-ver-abono-stat-contenido">
                         <span className="modal-ver-abono-stat-label">
-                          <DollarSign size={16} />
-                          Total
+                          <DollarSign size={16} /> Total
                         </span>
                         <span className="modal-ver-abono-stat-valor">
-                          $
-                          {datosActualizados.planPago.montoTotal.toLocaleString()}
+                          ${datosActualizados.planPago.montoTotal.toLocaleString()}
                         </span>
                       </div>
                     </div>
-
                     <div className="modal-ver-abono-tarjeta-stat">
                       <div className="modal-ver-abono-stat-contenido">
                         <span className="modal-ver-abono-stat-label">
-                          <CheckCircle size={16} />
-                          Pagado
+                          <CheckCircle size={16} /> Pagado
                         </span>
                         <span className="modal-ver-abono-stat-valor">
-                          $
-                          {datosActualizados.planPago.montoPagado.toLocaleString()}
+                          ${datosActualizados.planPago.montoPagado.toLocaleString()}
                         </span>
                       </div>
                     </div>
-
                     <div className="modal-ver-abono-tarjeta-stat">
                       <div className="modal-ver-abono-stat-contenido">
                         <span className="modal-ver-abono-stat-label">
-                          <AlertCircle size={16} />
-                          Pendiente
+                          <AlertCircle size={16} /> Pendiente
                         </span>
                         <span className="modal-ver-abono-stat-valor">
-                          $
-                          {datosActualizados.planPago.saldoPendiente.toLocaleString()}
+                          ${datosActualizados.planPago.saldoPendiente.toLocaleString()}
                         </span>
                       </div>
                     </div>
-
                     <div className="modal-ver-abono-tarjeta-stat">
                       <div className="modal-ver-abono-stat-contenido">
                         <span className="modal-ver-abono-stat-label">
-                          <TrendingUp size={16} />
-                          Abonos
+                          <TrendingUp size={16} /> Abonos
                         </span>
                         <span className="modal-ver-abono-stat-valor">
-                          {datosActualizados.planPago.abonosRealizados} /{" "}
-                          {datosActualizados.planPago.abonosPlaneados}
+                          {datosActualizados.planPago.abonosRealizados} / {datosActualizados.planPago.abonosPlaneados}
                         </span>
                       </div>
                     </div>
@@ -378,19 +366,14 @@ const ModalVerAbono = ({
 
                   <div className="modal-ver-abono-info-adicional">
                     <div className="modal-ver-abono-info-item">
-                      <span className="modal-ver-abono-info-label">
-                        Abono Mínimo:
-                      </span>
+                      <span className="modal-ver-abono-info-label">Abono Mínimo:</span>
                       <span className="modal-ver-abono-info-valor">
-                        $
-                        {datosActualizados.planPago.abonoMinimo.toLocaleString()}
+                        ${datosActualizados.planPago.abonoMinimo.toLocaleString()}
                       </span>
                     </div>
                     {datosActualizados.estado !== "PAGADO" && (
                       <div className="modal-ver-abono-info-item">
-                        <span className="modal-ver-abono-info-label">
-                          Próximo Vencimiento:
-                        </span>
+                        <span className="modal-ver-abono-info-label">Próximo Vencimiento:</span>
                         <span className="modal-ver-abono-info-valor destacado">
                           <Clock size={14} />
                           {datosActualizados.proximoVencimiento}
@@ -400,6 +383,7 @@ const ModalVerAbono = ({
                   </div>
                 </div>
 
+                {/* Observaciones */}
                 {datosActualizados.observaciones && (
                   <div className="modal-ver-abono-seccion">
                     <h3 className="modal-ver-abono-titulo-seccion">
@@ -414,6 +398,7 @@ const ModalVerAbono = ({
               </div>
             )}
 
+            {/* TAB 2 - Historial */}
             {tabActiva === 2 && (
               <div className="modal-ver-abono-tab-contenido">
                 <div className="modal-ver-abono-seccion">
@@ -426,8 +411,7 @@ const ModalVerAbono = ({
                     <div className="modal-ver-abono-sin-abonos">
                       <AlertCircle size={48} />
                       <p>
-                        No hay abonos{" "}
-                        {rolUsuario === "admin" ? "registrados" : "visibles"}
+                        No hay abonos {rolUsuario === "admin" ? "registrados" : "visibles"}
                       </p>
                     </div>
                   ) : (
@@ -438,10 +422,9 @@ const ModalVerAbono = ({
                         return (
                           <div
                             key={indice}
-                            className={`modal-ver-abono-item-historial ${
-                              estaEliminado ? "eliminado" : ""
-                            }`}
+                            className={`modal-ver-abono-item-historial ${estaEliminado ? "eliminado" : ""}`}
                           >
+                            {/* Header del abono */}
                             <div className="modal-ver-abono-historial-header">
                               <div className="modal-ver-abono-historial-numero">
                                 #{abono.numeroAbono}
@@ -470,6 +453,7 @@ const ModalVerAbono = ({
                               </span>
                             </div>
 
+                            {/* Contenido del abono */}
                             <div className="modal-ver-abono-historial-contenido">
                               <div className="modal-ver-abono-historial-info">
                                 <span className="modal-ver-abono-historial-metodo">
@@ -503,6 +487,84 @@ const ModalVerAbono = ({
                                 </div>
                               )}
 
+                              {/* Comprobante */}
+                              {abono.comprobante && (
+                                <div
+                                  style={{
+                                    marginTop: "0.75rem",
+                                    padding: "0.75rem",
+                                    background: "#f0f9ff",
+                                    borderRadius: "8px",
+                                    border: "1px solid #bae6fd",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.75rem",
+                                  }}
+                                >
+                                  <span style={{ fontSize: "1.25rem" }}>
+                                    {abono.comprobante.tipo && abono.comprobante.tipo.includes("pdf") ? "PDF" : "IMG"}
+                                  </span>
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <p
+                                      style={{
+                                        margin: 0,
+                                        fontSize: "0.82rem",
+                                        fontWeight: 600,
+                                        color: "#0369a1",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                      }}
+                                    >
+                                      {abono.comprobante.nombre}
+                                    </p>
+                                    <p style={{ margin: 0, fontSize: "0.75rem", color: "#6b7280" }}>
+                                      Comprobante adjunto
+                                    </p>
+                                  </div>
+                                  <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0 }}>
+                                    <a
+                                      href={abono.comprobante.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      style={{
+                                        padding: "0.35rem 0.75rem",
+                                        background: "#0ea5e9",
+                                        color: "white",
+                                        borderRadius: "6px",
+                                        fontSize: "0.8rem",
+                                        fontWeight: 600,
+                                        textDecoration: "none",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.35rem",
+                                      }}
+                                    >
+                                      Ver
+                                    </a>
+                                    <button
+                                      onClick={() => descargarArchivo(abono.id, abono.comprobante.nombre)}
+                                      style={{
+                                        padding: "0.35rem 0.75rem",
+                                        background: "#10b981",
+                                        color: "white",
+                                        borderRadius: "6px",
+                                        fontSize: "0.8rem",
+                                        fontWeight: 600,
+                                        border: "none",
+                                        cursor: "pointer",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.35rem",
+                                      }}
+                                    >
+                                      Descargar
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Botones de acción */}
                               <div className="modal-ver-abono-botones-accion">
                                 {!estaEliminado ? (
                                   <>
@@ -513,12 +575,9 @@ const ModalVerAbono = ({
                                       <Trash2 size={16} />
                                       Eliminar
                                     </button>
-
                                     {rolUsuario === "admin" && (
                                       <button
-                                        onClick={() =>
-                                          abrirModalEliminarDefinitivo(abono)
-                                        }
+                                        onClick={() => abrirModalEliminarDefinitivo(abono)}
                                         className="modal-ver-abono-boton-accion modal-ver-abono-boton-eliminar-definitivo"
                                       >
                                         <XCircle size={16} />
@@ -531,19 +590,14 @@ const ModalVerAbono = ({
                                     {rolUsuario === "admin" && (
                                       <>
                                         <button
-                                          onClick={() =>
-                                            abrirModalReactivar(abono)
-                                          }
+                                          onClick={() => abrirModalReactivar(abono)}
                                           className="modal-ver-abono-boton-accion modal-ver-abono-boton-restaurar"
                                         >
                                           <RotateCcw size={16} />
                                           Restaurar
                                         </button>
-
                                         <button
-                                          onClick={() =>
-                                            abrirModalEliminarDefinitivo(abono)
-                                          }
+                                          onClick={() => abrirModalEliminarDefinitivo(abono)}
                                           className="modal-ver-abono-boton-accion modal-ver-abono-boton-eliminar-definitivo"
                                         >
                                           <XCircle size={16} />
@@ -564,16 +618,16 @@ const ModalVerAbono = ({
               </div>
             )}
           </div>
+
+          {/* FOOTER */}
           <div className="modal-ver-abono-footer">
-            <button
-              className="modal-ver-abono-boton-secundario"
-              onClick={onCerrar}
-            >
+            <button className="modal-ver-abono-boton-secundario" onClick={onCerrar}>
               Cerrar
             </button>
           </div>
         </div>
       </div>
+
       <ModalReactivarAbono
         estaAbierto={modalReactivarAbierto}
         alCerrar={() => setModalReactivarAbierto(false)}

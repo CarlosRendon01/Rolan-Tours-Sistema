@@ -50,9 +50,17 @@ const ModalCrearPagoDesdeCotizacion = ({
     { valor: "mensual", etiqueta: "Mensual" },
   ];
 
+  const [vehiculos, setVehiculos] = useState([]);
+  const [montoEditado, setMontoEditado] = useState(null);
+  const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
+
+  const totalActual = montoEditado !== null
+    ? montoEditado
+    : (vehiculoSeleccionado?.costos?.total_con_iva ?? cotizacion?.total ?? 0);
+
   const abonoCalculado = useMemo(
-    () => calcularAbonoMinimo(cotizacion?.total, formulario.numeroAbonos),
-    [cotizacion?.total, formulario.numeroAbonos]
+    () => calcularAbonoMinimo(totalActual, formulario.numeroAbonos),
+    [totalActual, formulario.numeroAbonos]
   );
 
   useEffect(() => {
@@ -66,7 +74,26 @@ const ModalCrearPagoDesdeCotizacion = ({
 
   useEffect(() => {
     if (estaAbierto && cotizacion) {
-      const abonoInicial = calcularAbonoMinimo(cotizacion.total, "3");
+      setMontoEditado(null);
+      let listaVehiculos = [];
+      try {
+        const listaRaw = cotizacion.lista;
+        const parsed = typeof listaRaw === "string" ? JSON.parse(listaRaw) : listaRaw;
+        listaVehiculos = parsed?.cotizaciones_todos_vehiculos ?? [];
+      } catch {
+        listaVehiculos = [];
+      }
+      setVehiculos(listaVehiculos);
+
+      const recomendado =
+        listaVehiculos.find((v) => v.vehiculo_id === cotizacion.vehiculo_id) ??
+        listaVehiculos[0] ??
+        null;
+      setVehiculoSeleccionado(recomendado);
+
+      const totalInicial = recomendado?.costos?.total_con_iva ?? cotizacion.total;
+      const abonoInicial = calcularAbonoMinimo(totalInicial, "3");
+
       setFormulario({
         numeroAbonos: "3",
         abonoMinimo: abonoInicial,
@@ -88,6 +115,15 @@ const ModalCrearPagoDesdeCotizacion = ({
     if (errores[campo]) {
       setErrores((prev) => ({ ...prev, [campo]: null }));
     }
+  };
+
+  const handleVehiculoChange = (e) => {
+    const id = parseInt(e.target.value);
+    const veh = vehiculos.find((v) => v.vehiculo_id === id) ?? null;
+    setVehiculoSeleccionado(veh);
+    const nuevoTotal = veh?.costos?.total_con_iva ?? cotizacion.total;
+    const nuevoAbono = calcularAbonoMinimo(nuevoTotal, formulario.numeroAbonos);
+    setFormulario((prev) => ({ ...prev, abonoMinimo: nuevoAbono }));
   };
 
   const validarFormulario = () => {
@@ -127,7 +163,8 @@ const ModalCrearPagoDesdeCotizacion = ({
         cliente_id: cotizacion.cliente_id,
         cotizacion_id: cotizacion.id,
         numero_contrato: formulario.numeroContrato,
-        monto_total: parseFloat(cotizacion.total),
+        monto_total: parseFloat(totalActual),
+        vehiculo_id: vehiculoSeleccionado?.vehiculo_id ?? null,
         numero_abonos: parseInt(formulario.numeroAbonos),
         abono_minimo: parseFloat(formulario.abonoMinimo),
         frecuencia_pago: formulario.frecuenciaPago,
@@ -155,7 +192,7 @@ const ModalCrearPagoDesdeCotizacion = ({
             <p><strong>Cotización:</strong> ${cotizacion.folio}</p>
             <p><strong>Cliente:</strong> ${cotizacion.cliente?.nombre || "Sin cliente"
           }</p>
-            <p><strong>Total:</strong> $${formatearMoneda(cotizacion.total)}</p>
+            <p><strong>Total:</strong> $${formatearMoneda(totalActual)}</p>
             <p><strong>Número de abonos:</strong> ${formulario.numeroAbonos}</p>
             <p><strong>Monto por abono:</strong> $${formatearMoneda(
             formulario.abonoMinimo
@@ -267,10 +304,59 @@ const ModalCrearPagoDesdeCotizacion = ({
                 <p>
                   <strong>Fecha Salida:</strong> {cotizacion.fecha_salida}
                 </p>
-                <p className="modal-abono-total">
-                  <strong>Total a Pagar:</strong> $
-                  {formatearMoneda(cotizacion.total)}
-                </p>
+                {vehiculos.length > 1 && (
+                  <div style={{ marginTop: "0.75rem" }}>
+                    <label className="modal-abono-label">Vehículo para el plan de pago</label>
+                    <select
+                      className="modal-abono-select"
+                      value={vehiculoSeleccionado?.vehiculo_id ?? ""}
+                      onChange={handleVehiculoChange}
+                      disabled={guardando}
+                    >
+                      {vehiculos.map((v) => (
+                        <option key={v.vehiculo_id} value={v.vehiculo_id}>
+                          {v.vehiculo_nombre} — {v.capacidad_pasajeros} pax — $
+                          {formatearMoneda(v.costos?.total_con_iva ?? 0)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                <div style={{ marginTop: "0.75rem" }}>
+                  <label className="modal-abono-label">Total a Pagar (editable)</label>
+                  <div className="modal-abono-input-monto">
+                    <span className="modal-abono-simbolo-moneda">$</span>
+                    <input
+                      type="number"
+                      className="modal-abono-input con-simbolo"
+                      value={montoEditado !== null ? montoEditado : (vehiculoSeleccionado?.costos?.total_con_iva ?? cotizacion?.total ?? 0)}
+                      min="0"
+                      step="0.01"
+                      disabled={guardando}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value) || 0;
+                        setMontoEditado(val);
+                        // Recalcular abono automáticamente
+                        const nuevoAbono = calcularAbonoMinimo(val, formulario.numeroAbonos);
+                        setFormulario((prev) => ({ ...prev, abonoMinimo: nuevoAbono }));
+                      }}
+                    />
+                  </div>
+                  {montoEditado !== null && (
+                    <button
+                      type="button"
+                      style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "4px", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      onClick={() => {
+                        setMontoEditado(null);
+                        const original = vehiculoSeleccionado?.costos?.total_con_iva ?? cotizacion?.total ?? 0;
+                        const nuevoAbono = calcularAbonoMinimo(original, formulario.numeroAbonos);
+                        setFormulario((prev) => ({ ...prev, abonoMinimo: nuevoAbono }));
+                      }}
+                    >
+                      ↩ Restaurar precio original
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -378,7 +464,7 @@ const ModalCrearPagoDesdeCotizacion = ({
                   </p>
                   <p>
                     • Total:{" "}
-                    <strong>${parseFloat(cotizacion.total).toFixed(2)}</strong>
+                    <strong>${parseFloat(totalActual).toFixed(2)}</strong>
                   </p>
                   <p>
                     • Frecuencia:{" "}

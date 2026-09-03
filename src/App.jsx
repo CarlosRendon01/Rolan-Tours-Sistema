@@ -25,6 +25,8 @@ import MantenimientoPrincipal from "./pages/Mantenimiento/MantenimientoPrincipal
 import PrincipalRol from "./pages/Usuario/Roles/PrincipalRol.jsx";
 import PrincipalUsuario from "./pages/Usuario/Usuarios/PrincipalUsuario.jsx";
 import VehiculosPrincipal from "./pages/Operaciones/Vehiculos/VehiculosPrincipal.jsx";
+// FIX 1: nombre de archivo corregido (era PrincipalViajes.jsx)
+import DashboardViajes from "./pages/AppMovil/PrincipalViajes.jsx";
 
 function App() {
   const [estaAutenticado, setEstaAutenticado] = useState(false);
@@ -62,7 +64,7 @@ function App() {
         </Routes>
       ) : (
         <Routes>
-          {/* Dashboard - Accesible para todos */}
+          {/* Dashboard */}
           <Route
             path="/"
             element={
@@ -228,10 +230,20 @@ function App() {
             }
           />
 
+          {/* APP MÓVIL — FIX 3: agregado ProtectedRoute como todas las demás rutas */}
+          <Route
+            path="/viajes"
+            element={
+
+              <DashboardViajes />
+
+            }
+          />
+
           {/* Acceso Denegado */}
           <Route path="/acceso-denegado" element={<AccesoDenegado />} />
 
-          {/* Ruta por defecto - redirige al dashboard */}
+          {/* Ruta por defecto */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       )}

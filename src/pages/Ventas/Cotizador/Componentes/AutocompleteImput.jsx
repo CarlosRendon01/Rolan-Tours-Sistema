@@ -16,9 +16,9 @@ const AutocompleteInput = ({
       const autocomplete = new window.google.maps.places.Autocomplete(
         inputRef.current,
         {
-          componentRestrictions: { country: "mx" },
+      componentRestrictions: { country: "mx" },
           fields: ["formatted_address", "name"],
-          types: ["geocode"],
+      types: ["geocode"],
         }
       );
 
@@ -39,19 +39,19 @@ const AutocompleteInput = ({
     }
   }, [value]);
 
-  return (
-    <input
+    return (
+      <input
       ref={inputRef}
-      type="text"
-      name={name}
-      placeholder={placeholder}
-      className={className}
+        type="text"
+        name={name}
+        placeholder={placeholder}
+        className={className}
       defaultValue={value}
-      onChange={(e) => onChange(name, e.target.value)}
+        onChange={(e) => onChange(name, e.target.value)}
       disabled={!isLoaded}
-      autoComplete="off"
-    />
-  );
+        autoComplete="off"
+      />
+    );
 };
 
 export default AutocompleteInput;

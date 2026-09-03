@@ -110,47 +110,40 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
   };
 
   const estadisticas = useMemo(() => {
-    const pagosVisibles =
-      permisos.includes("ventas.pagos.ver")
-        ? datosPagos.filter((p) => p.activo)
-        : datosPagos.filter((p) => {
-          if (filtroVisibilidad === "activos") return p.activo;
-          if (filtroVisibilidad === "eliminados") return !p.activo;
-          return true;
-        });
+    const pagosVisibles = rolUsuario === "admin"
+      ? datosPagos.filter((p) => {
+        if (filtroVisibilidad === "activos") return p.activo;
+        if (filtroVisibilidad === "eliminados") return !p.activo;
+        return true;
+      })
+      : datosPagos.filter((p) => p.activo); // vendedor: solo activos
 
-    const total = pagosVisibles.length;
-    const pagados = pagosVisibles.filter(
-      (pago) => pago.estado === "PAGADO"
-    ).length;
-    const vencidos = pagosVisibles.filter(
-      (pago) => pago.estado === "VENCIDO"
-    ).length;
-    return { total, pagados, vencidos };
-  }, [datosPagos, permisos, filtroVisibilidad]);
+    return {
+      total: pagosVisibles.length,
+      pagados: pagosVisibles.filter((p) => p.estado === "PAGADO").length,
+      vencidos: pagosVisibles.filter((p) => p.estado === "VENCIDO").length,
+    };
+  }, [datosPagos, rolUsuario, filtroVisibilidad]);
 
   const datosFiltrados = useMemo(() => {
     return datosPagos.filter((pago) => {
-      if (permisos.includes("ventas.pagos.ver") && !pago.activo) return false;
+      // ── Filtro de visibilidad ────────────────────────────────
       if (rolUsuario === "admin") {
+        // Admin: respeta el selector de vista
         if (filtroVisibilidad === "activos" && !pago.activo) return false;
         if (filtroVisibilidad === "eliminados" && pago.activo) return false;
+        // "todos" → no filtra
+      } else {
+        // Vendedor/otros: solo ven activos, sin importar el selector
+        if (!pago.activo) return false;
       }
 
       const cumpleBusqueda =
-        (pago.cliente?.nombre || "")
-          .toLowerCase()
-          .includes(terminoBusqueda.toLowerCase()) ||
+        (pago.cliente?.nombre || "").toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
         pago.id.toString().includes(terminoBusqueda) ||
-        (pago.numeroContrato || "")
-          .toLowerCase()
-          .includes(terminoBusqueda.toLowerCase()) ||
-        (pago.servicio?.tipo || "")
-          .toLowerCase()
-          .includes(terminoBusqueda.toLowerCase()) ||
-        (pago.servicio?.descripcion || "")
-          .toLowerCase()
-          .includes(terminoBusqueda.toLowerCase());
+        (pago.numeroContrato || "").toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+        (pago.servicio?.tipo || "").toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+        (pago.servicio?.descripcion || "").toLowerCase().includes(terminoBusqueda.toLowerCase());
 
       const cumpleFiltroEstado =
         filtroEstado === "todos" ||
@@ -159,13 +152,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
       return cumpleBusqueda && cumpleFiltroEstado;
     });
   }, [
-    terminoBusqueda,
-    filtroEstado,
-    filtroVisibilidad,
-    datosPagos,
-    rolUsuario,
-    permisos,
-  ]);
+    terminoBusqueda, filtroEstado, filtroVisibilidad, datosPagos, rolUsuario]);
 
   const totalRegistros = datosFiltrados.length;
   const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
@@ -571,7 +558,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                             </button>
                           )}
 
-                        {permisos.includes("ventas.pagos.eliminar") && pago.activo && (
+                        {(permisos.includes("ventas.pagos.eliminar") && pago.activo) && (
                           <button
                             className="pagos-boton-accion pagos-eliminar"
                             onClick={() => manejarAccion("eliminar", pago)}

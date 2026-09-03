@@ -27,8 +27,18 @@ const ModalEditarOrden = ({
   const [datosFormulario, setDatosFormulario] = useState({
     folio: "",
     fecha_orden_servicio: "",
-    nombre_prestador: "Antonio Alonso Meza",
+    nombre_prestador: "" || "Antonio Alonso Meza",
     operador_id: "",
+    vehiculo_id: "",
+    coordinador_id: "",
+    guia_id: "",
+    direccion_retorno: "",
+    km_inicial: "",
+    km_final: "",
+    litros_consumidos: "",
+    rendimiento: "",
+    horario_final_real: "",
+    // Solo lectura desde cotizacion
     nombre_conductor: "",
     apellido_paterno_conductor: "",
     apellido_materno_conductor: "",
@@ -44,22 +54,10 @@ const ModalEditarOrden = ({
     horario_inicio_servicio: "",
     fecha_final_servicio: "",
     horario_final_servicio: "",
-    horario_final_real: "",
     itinerario_detallado: "",
-    direccion_retorno: "",
-    vehiculo_id: "",
     marca: "",
     modelo: "",
     placa: "",
-    km_inicial: "",
-    km_final: "",
-    litros_consumidos: "",
-    rendimiento: "",
-    vehiculo_dis: "",
-    coordinador_id: "",
-    nombre_coordinador: "",
-    guia_id: "",
-    nombre_guia: "",
   });
 
   const [seccionActiva, setSeccionActiva] = useState("orden");
@@ -77,6 +75,16 @@ const ModalEditarOrden = ({
         fecha_orden_servicio: orden.fecha_orden_servicio || "",
         nombre_prestador: orden.nombre_prestador || "Antonio Alonso Meza",
         operador_id: orden.operador_id || "",
+        vehiculo_id: orden.vehiculo_id || "",
+        coordinador_id: orden.coordinador_id || "",
+        guia_id: orden.guia_id || "",
+        direccion_retorno: orden.direccion_retorno || "",
+        km_inicial: orden.km_inicial || "",
+        km_final: orden.km_final || "",
+        litros_consumidos: orden.litros_consumidos || "",
+        rendimiento: orden.rendimiento || "",
+        horario_final_real: orden.horario_final_real || "",
+        // Solo lectura desde cotizacion
         nombre_conductor: orden.nombre_conductor || "",
         apellido_paterno_conductor: orden.apellido_paterno_conductor || "",
         apellido_materno_conductor: orden.apellido_materno_conductor || "",
@@ -92,22 +100,10 @@ const ModalEditarOrden = ({
         horario_inicio_servicio: orden.horario_inicio_servicio || "",
         fecha_final_servicio: orden.fecha_final_servicio || "",
         horario_final_servicio: orden.horario_final_servicio || "",
-        horario_final_real: orden.horario_final_real || "",
         itinerario_detallado: orden.itinerario_detallado || "",
-        direccion_retorno: orden.direccion_retorno || "",
-        vehiculo_id: orden.vehiculo_id || "",
         marca: orden.marca || "",
         modelo: orden.modelo || "",
         placa: orden.placa || "",
-        km_inicial: orden.km_inicial || "",
-        km_final: orden.km_final || "",
-        litros_consumidos: orden.litros_consumidos || "",
-        rendimiento: orden.rendimiento || "",
-        vehiculo_dis: orden.vehiculos_disponible || "",
-        coordinador_id: orden.coordinador_id || "",
-        nombre_coordinador: orden.nombre_coordinador || "",
-        guia_id: orden.guia_id || "",
-        nombre_guia: orden.nombre_guia || "",
       });
       setErrores({});
     }
@@ -211,54 +207,10 @@ const ModalEditarOrden = ({
 
   const validarFormulario = () => {
     const nuevosErrores = {};
-
-    if (!datosFormulario.folio) {
+    if (!datosFormulario.folio)
       nuevosErrores.folio = "El folio es obligatorio";
-    }
-
-    if (!datosFormulario.fecha_orden_servicio.trim()) {
-      nuevosErrores.fecha_orden_servicio =
-        "La fecha de orden de servicio es obligatoria";
-    }
-
-    if (!datosFormulario.nombre_cliente.trim()) {
-      nuevosErrores.nombre_cliente = "El nombre del cliente es obligatorio";
-    }
-
-    if (!datosFormulario.ciudad_origen.trim()) {
-      nuevosErrores.ciudad_origen = "La ciudad de origen es obligatoria";
-    }
-
-    if (!datosFormulario.destino.trim()) {
-      nuevosErrores.destino = "El destino es obligatorio";
-    }
-
-    if (!datosFormulario.numero_pasajeros) {
-      nuevosErrores.numero_pasajeros = "El número de pasajeros es obligatorio";
-    } else if (parseInt(datosFormulario.numero_pasajeros) < 1) {
-      nuevosErrores.numero_pasajeros = "Debe haber al menos 1 pasajero";
-    }
-
-    if (!datosFormulario.fecha_inicio_servicio.trim()) {
-      nuevosErrores.fecha_inicio_servicio = "La fecha de inicio es obligatoria";
-    }
-
-    if (!datosFormulario.fecha_final_servicio.trim()) {
-      nuevosErrores.fecha_final_servicio = "La fecha final es obligatoria";
-    }
-
-    if (
-      datosFormulario.fecha_inicio_servicio &&
-      datosFormulario.fecha_final_servicio
-    ) {
-      const inicio = new Date(datosFormulario.fecha_inicio_servicio);
-      const final = new Date(datosFormulario.fecha_final_servicio);
-      if (final < inicio) {
-        nuevosErrores.fecha_final_servicio =
-          "La fecha final debe ser posterior a la de inicio";
-      }
-    }
-
+    if (!datosFormulario.fecha_orden_servicio)
+      nuevosErrores.fecha_orden_servicio = "La fecha es obligatoria";
     return nuevosErrores;
   };
 
@@ -379,12 +331,19 @@ const ModalEditarOrden = ({
 
       const datosActualizados = {
         id: orden.id,
-        ...datosLimpios,
-        operador_id: datosLimpios.operador_id ? parseInt(datosLimpios.operador_id) : null, 
-        vehiculo_id: datosLimpios.vehiculo_id ? parseInt(datosLimpios.vehiculo_id) : null, 
+        folio: datosLimpios.folio,
+        fecha_orden_servicio: datosLimpios.fecha_orden_servicio,
+        nombre_prestador: datosLimpios.nombre_prestador,
+        operador_id: datosLimpios.operador_id ? parseInt(datosLimpios.operador_id) : null,
+        vehiculo_id: datosLimpios.vehiculo_id ? parseInt(datosLimpios.vehiculo_id) : null,
         coordinador_id: datosLimpios.coordinador_id ? parseInt(datosLimpios.coordinador_id) : null,
         guia_id: datosLimpios.guia_id ? parseInt(datosLimpios.guia_id) : null,
-        fecha_actualizacion: new Date().toISOString(),
+        direccion_retorno: datosLimpios.direccion_retorno,
+        km_inicial: datosLimpios.km_inicial,
+        km_final: datosLimpios.km_final,
+        litros_consumidos: datosLimpios.litros_consumidos,
+        rendimiento: datosLimpios.rendimiento,
+        horario_final_real: limpiaHora(datosLimpios.horario_final_real),
       };
 
       await alGuardar(datosActualizados);

@@ -24,10 +24,37 @@ const ModalAgregarAbono = ({
     metodoPago: "efectivo",
     referencia: "",
     observaciones: "",
+    comprobante: null,
   });
 
+  const [previewComprobante, setPreviewComprobante] = useState(null);
   const [errores, setErrores] = useState({});
   const [enviando, setEnviando] = useState(false);
+
+  const manejarComprobante = (e) => {
+    const archivo = e.target.files[0];
+    if (!archivo) return;
+
+    const maxSize = 5 * 1024 * 1024;
+    if (archivo.size > maxSize) {
+      setErrores(prev => ({ ...prev, comprobante: "El archivo no debe superar 5MB" }));
+      return;
+    }
+
+    setFormulario(prev => ({ ...prev, comprobante: archivo }));
+
+    if (archivo.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => setPreviewComprobante(e.target.result);
+      reader.readAsDataURL(archivo);
+    } else {
+      setPreviewComprobante("pdf");
+    }
+
+    if (errores.comprobante) {
+      setErrores(prev => { const e = { ...prev }; delete e.comprobante; return e; });
+    }
+  };
 
   const metodosPago = [
     { valor: "efectivo", etiqueta: "Efectivo" },
@@ -95,26 +122,22 @@ const ModalAgregarAbono = ({
     try {
       const token = localStorage.getItem("token");
 
-      const datosAbono = {
-        pago_id: pagoSeleccionado.id,
-        numero_abono: pagoSeleccionado.planPago.abonosRealizados + 1,
-        monto: parseFloat(formulario.montoAbono),
-        fecha_abono: formulario.fechaAbono,
-        metodo_pago: formulario.metodoPago,
-        referencia: formulario.referencia || null,
-        observaciones: formulario.observaciones || null,
-      };
+      const formDataEnvio = new FormData();
+      formDataEnvio.append("pago_id", pagoSeleccionado.id);
+      formDataEnvio.append("numero_abono", pagoSeleccionado.planPago.abonosRealizados + 1);
+      formDataEnvio.append("monto", parseFloat(formulario.montoAbono));
+      formDataEnvio.append("fecha_abono", formulario.fechaAbono);
+      formDataEnvio.append("metodo_pago", formulario.metodoPago);
+      if (formulario.referencia) formDataEnvio.append("referencia", formulario.referencia);
+      if (formulario.observaciones) formDataEnvio.append("observaciones", formulario.observaciones);
+      if (formulario.comprobante) formDataEnvio.append("comprobante", formulario.comprobante);
 
-      const response = await axios.post(
-        `${API_CONFIG.BASE_URL}/abonos`,
-        datosAbono,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      await axios.post(`${API_CONFIG.BASE_URL}/abonos`, formDataEnvio, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       await Swal.fire({
         title: "¡Abono Registrado!",
@@ -343,6 +366,103 @@ const ModalAgregarAbono = ({
                 placeholder="Notas adicionales sobre este abono..."
                 disabled={enviando}
               />
+            </div>
+            <div className="modal-abono-campo">
+              <label className="modal-abono-label">
+                Comprobante de Pago{" "}
+                <span style={{ color: "#6b7280", fontWeight: 400 }}>(Opcional)</span>
+              </label>
+
+              <label style={{
+                display: "flex", flexDirection: "column", alignItems: "center",
+                gap: "0.5rem", padding: "1rem",
+                border: `2px dashed ${formulario.comprobante ? "#10b981" : "#d1d5db"}`,
+                borderRadius: "10px", cursor: enviando ? "not-allowed" : "pointer",
+                background: formulario.comprobante ? "#f0fdf4" : "#f9fafb",
+                transition: "all 0.2s",
+              }}>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,application/pdf"
+                  onChange={manejarComprobante}
+                  style={{ display: "none" }}
+                  disabled={enviando}
+                />
+
+                {/* Sin archivo seleccionado */}
+                {!previewComprobante && (
+                  <>
+                    <span style={{ fontSize: "2rem" }}>📎</span>
+                    <span style={{ fontSize: "0.85rem", color: "#6b7280" }}>
+                      Haz clic para subir imagen (JPG, PNG) o PDF
+                    </span>
+                    <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>
+                      Máximo 5MB
+                    </span>
+                  </>
+                )}
+
+                {/* PDF seleccionado */}
+                {previewComprobante === "pdf" && (
+                  <>
+                    <span style={{ fontSize: "2rem" }}>📄</span>
+                    <span style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: 600 }}>
+                      {formulario.comprobante?.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setFormulario(p => ({ ...p, comprobante: null }));
+                        setPreviewComprobante(null);
+                      }}
+                      style={{
+                        fontSize: "0.75rem", color: "#ef4444",
+                        background: "none", border: "none", cursor: "pointer",
+                      }}
+                    >
+                      ✕ Quitar
+                    </button>
+                  </>
+                )}
+
+                {/* Imagen seleccionada — preview */}
+                {previewComprobante && previewComprobante !== "pdf" && (
+                  <div style={{ position: "relative" }}>
+                    <img
+                      src={previewComprobante}
+                      alt="Vista previa del comprobante"
+                      style={{
+                        maxHeight: "120px", maxWidth: "100%",
+                        borderRadius: "8px", objectFit: "contain",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setFormulario(p => ({ ...p, comprobante: null }));
+                        setPreviewComprobante(null);
+                      }}
+                      style={{
+                        position: "absolute", top: "-8px", right: "-8px",
+                        background: "#ef4444", color: "white", border: "none",
+                        borderRadius: "50%", width: "20px", height: "20px",
+                        cursor: "pointer", fontSize: "12px",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </label>
+
+              {errores.comprobante && (
+                <p className="modal-abono-error">
+                  <AlertCircle size={12} /> {errores.comprobante}
+                </p>
+              )}
             </div>
           </div>
 

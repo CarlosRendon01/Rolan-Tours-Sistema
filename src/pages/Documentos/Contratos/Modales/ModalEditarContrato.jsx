@@ -83,21 +83,25 @@ const ModalEditarContrato = ({
   useEffect(() => {
     if (estaAbierto && contrato) {
       setDatosFormulario({
-        representante_empresa:
-          contrato.representante_empresa || "PEDRO HERNÁNDEZ RUÍZ",
+        representante_empresa: contrato.representante_empresa || "PEDRO HERNÁNDEZ RUÍZ",
         domicilio: contrato.domicilio || "",
-
-        nombre_cliente: contrato.nombre_cliente || "",
         nacionalidad: contrato.nacionalidad || "",
+        tipo_pasaje: contrato.tipo_pasaje || "Turismo Estatal",
+        otro_tipo_pasaje_especificacion: contrato.otro_tipo_pasaje_especificacion || "",
+        n_unidades_contratadas: contrato.n_unidades_contratadas || "",
+        anticipo: contrato.anticipo || "",
+        fecha_liquidacion: contrato.fecha_liquidacion || "",
+        costos_cubiertos: contrato.costos_cubiertos || [],
+        otro_costo_especificacion: contrato.otro_costo_especificacion || "",
+        aire_acondicionado: contrato.aire_acondicionado || false,
+        asientos_reclinables: contrato.asientos_reclinables || false,
+        // Solo lectura, vienen de cotizacion vía accessor
+        nombre_cliente: contrato.nombre_cliente || "",
         rfc: contrato.rfc || "",
         telefono_cliente: contrato.telefono_cliente || "",
         ciudad_origen: contrato.ciudad_origen || "",
         punto_intermedio: contrato.punto_intermedio || "",
         destino: contrato.destino || "",
-        tipo_pasaje: contrato.tipo_pasaje || "Turismo Estatal",
-        otro_tipo_pasaje_especificacion:
-          contrato.otro_tipo_pasaje_especificacion || "",
-        n_unidades_contratadas: contrato.n_unidades_contratadas || "",
         numero_pasajeros: contrato.numero_pasajeros || "",
         fecha_inicio_servicio: contrato.fecha_inicio_servicio || "",
         horario_inicio_servicio: contrato.horario_inicio_servicio || "",
@@ -105,16 +109,10 @@ const ModalEditarContrato = ({
         horario_final_servicio: contrato.horario_final_servicio || "",
         itinerario_detallado: contrato.itinerario_detallado || "",
         importe_servicio: contrato.importe_servicio || "",
-        anticipo: contrato.anticipo || "",
-        fecha_liquidacion: contrato.fecha_liquidacion || "",
-        costos_cubiertos: contrato.costos_cubiertos || [],
-        otro_costo_especificacion: contrato.otro_costo_especificacion || "",
         marca_vehiculo: contrato.marca_vehiculo || "",
         modelo_vehiculo: contrato.modelo_vehiculo || "",
         placa_vehiculo: contrato.placa_vehiculo || "",
         capacidad_vehiculo: contrato.capacidad_vehiculo || "",
-        aire_acondicionado: contrato.aire_acondicionado || false,
-        asientos_reclinables: contrato.asientos_reclinables || false,
       });
       setErrores({});
     }
@@ -159,77 +157,10 @@ const ModalEditarContrato = ({
 
   const validarFormulario = () => {
     const nuevosErrores = {};
-
-    if (!datosFormulario.domicilio.trim()) {
-      nuevosErrores.domicilio = "El domicilio es obligatorio";
-    }
-
-    if (!datosFormulario.nombre_cliente.trim()) {
-      nuevosErrores.nombre_cliente = "El nombre del cliente es obligatorio";
-    }
-
-    if (!datosFormulario.telefono_cliente) {
-      nuevosErrores.telefono_cliente = "El teléfono es obligatorio";
-    }
-
-    if (!datosFormulario.ciudad_origen.trim()) {
-      nuevosErrores.ciudad_origen = "La ciudad de origen es obligatoria";
-    }
-    if (
-      datosFormulario.tipo_pasaje === "Otro" &&
-      !datosFormulario.otro_tipo_pasaje_especificacion.trim()
-    ) {
-      nuevosErrores.otro_tipo_pasaje_especificacion =
-        "Debe especificar el tipo de pasaje";
-    }
-    if (!datosFormulario.destino.trim()) {
-      nuevosErrores.destino = "El destino es obligatorio";
-    }
-
-    if (!datosFormulario.n_unidades_contratadas) {
-      nuevosErrores.n_unidades_contratadas =
-        "El número de unidades es obligatorio";
-    }
-
-    if (!datosFormulario.rfc.trim()) {
-      nuevosErrores.rfc = "El rfc es obligatorio";
-    }
-    if (!datosFormulario.numero_pasajeros) {
-      nuevosErrores.numero_pasajeros = "El número de pasajeros es obligatorio";
-    }
-
-    if (!datosFormulario.fecha_inicio_servicio) {
-      nuevosErrores.fecha_inicio_servicio = "La fecha de inicio es obligatoria";
-    }
-
-    if (!datosFormulario.horario_inicio_servicio) {
-      nuevosErrores.horario_inicio_servicio =
-        "El horario de inicio es obligatorio";
-    }
-
-    if (!datosFormulario.fecha_final_servicio) {
-      nuevosErrores.fecha_final_servicio = "La fecha final es obligatoria";
-    }
-
-    if (!datosFormulario.horario_final_servicio) {
-      nuevosErrores.horario_final_servicio = "El horario final es obligatorio";
-    }
-
-    if (
-      datosFormulario.fecha_inicio_servicio &&
-      datosFormulario.fecha_final_servicio
-    ) {
-      const inicio = new Date(datosFormulario.fecha_inicio_servicio);
-      const final = new Date(datosFormulario.fecha_final_servicio);
-      if (final < inicio) {
-        nuevosErrores.fecha_final_servicio =
-          "La fecha final debe ser posterior a la fecha de inicio";
-      }
-    }
-    if (!datosFormulario.importe_servicio) {
-      nuevosErrores.importe_servicio = "El importe del servicio es obligatorio";
-    }
-
+    if (!datosFormulario.n_unidades_contratadas)
+      nuevosErrores.n_unidades_contratadas = "Las unidades son obligatorias";
+    if (datosFormulario.tipo_pasaje === "Otro" && !datosFormulario.otro_tipo_pasaje_especificacion.trim())
+      nuevosErrores.otro_tipo_pasaje_especificacion = "Debe especificar el tipo";
     return nuevosErrores;
   };
 
@@ -262,7 +193,7 @@ const ModalEditarContrato = ({
       const camposServicio = [
         "nombre_cliente",
         "nacionalidad",
-        "RFC",
+        "rfc",
         "telefono_cliente",
         "ciudad_origen",
         "destino",
@@ -318,12 +249,17 @@ const ModalEditarContrato = ({
       };
 
       const datosLimpios = {
-        ...datosFormulario,
-        horario_inicio_servicio: limpiarHora(datosFormulario.horario_inicio_servicio),
-        horario_final_servicio: limpiarHora(datosFormulario.horario_final_servicio),
+        id: contrato.id,
+        tipo_pasaje: datosFormulario.tipo_pasaje,
+        otro_tipo_pasaje_especificacion: datosFormulario.otro_tipo_pasaje_especificacion,
+        n_unidades_contratadas: datosFormulario.n_unidades_contratadas,
+        anticipo: datosFormulario.anticipo,
+        fecha_liquidacion: datosFormulario.fecha_liquidacion,
         costos_cubiertos: Array.isArray(datosFormulario.costos_cubiertos)
-          ? datosFormulario.costos_cubiertos
-          : [],
+          ? datosFormulario.costos_cubiertos : [],
+        otro_costo_especificacion: datosFormulario.otro_costo_especificacion,
+        aire_acondicionado: datosFormulario.aire_acondicionado,
+        asientos_reclinables: datosFormulario.asientos_reclinables,
       };
 
       await alGuardar({

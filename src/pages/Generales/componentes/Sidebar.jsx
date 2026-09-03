@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -20,21 +20,21 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const [serviciosAbierto, setServiciosAbierto] = useState(false);
   const [mantenimientoAbierto, setMantenimientoAbierto] = useState(false);
   const [administracionAbierto, setAdministracionAbierto] = useState(false);
+  // FIX 4: eliminado viajesAbierto — "Viajes" es un item directo sin submenú
   const [tooltipAbierto, setTooltipAbierto] = useState(null);
-  const modoOscuro = false;
+  // FIX 5: modoOscuro era una constante que sobreescribía el estado; ahora es solo estado
+  const [modoOscuro, setModoOscuro] = useState(false);
   const [hoverExpandido, setHoverExpandido] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const responsive = useResponsive();
 
-  // Obtener permisos del usuario
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const permisos = user.permisos || [];
 
-  // Función para verificar si el usuario tiene un permiso
   const tienePermiso = (permiso) => {
-    if (!permiso) return true; // Si no requiere permiso, mostrar
+    if (!permiso) return true;
     return permisos.includes(permiso);
   };
 
@@ -126,6 +126,11 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setAdministracionAbierto(true);
         break;
 
+      // FIX 4: Viajes no abre submenú, solo marca el activo
+      case '/viajes':
+        setElementoActivo('Viajes');
+        break;
+
       default:
         break;
     }
@@ -149,7 +154,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         setTooltipAbierto(null);
       }
     };
-
     const cerrarTooltipScroll = () => setTooltipAbierto(null);
 
     window.addEventListener('scroll', cerrarTooltipScroll);
@@ -163,13 +167,13 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     };
   }, []);
 
-  const alternarVentas = () => setVentasAbierto(!ventasAbierto);
-  const alternarDocumentos = () => setDocumentosAbierto(!documentosAbierto);
-  const alternarOperaciones = () => setOperacionesAbierto(!operacionesAbierto);
-  const alternarServicios = () => setServiciosAbierto(!serviciosAbierto);
-  const alternarMantenimiento = () => setMantenimientoAbierto(!mantenimientoAbierto);
-  const alternarAdministracion = () => setAdministracionAbierto(!administracionAbierto);
-  const alternarModoOscuro = () => setModoOscuro(!modoOscuro);
+  const alternarVentas = () => setVentasAbierto(v => !v);
+  const alternarDocumentos = () => setDocumentosAbierto(v => !v);
+  const alternarOperaciones = () => setOperacionesAbierto(v => !v);
+  const alternarServicios = () => setServiciosAbierto(v => !v);
+  const alternarMantenimiento = () => setMantenimientoAbierto(v => !v);
+  const alternarAdministracion = () => setAdministracionAbierto(v => !v);
+  const alternarModoOscuro = () => setModoOscuro(v => !v);
 
   const manejarCerrarSesion = async () => {
     try {
@@ -178,13 +182,12 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         await axios.post(`${API_CONFIG.BASE_URL}/logout`);
       }
-    } catch (error) {
+    } catch (_) {
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('rol');
       delete axios.defaults.headers.common['Authorization'];
-
       window.location.href = '/';
     }
   };
@@ -221,7 +224,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     }
   };
 
-  // Definir elementos del menú con permisos
   const elementosMenu = [
     {
       id: 'Principal',
@@ -237,7 +239,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       submenu: [
         { id: 'Clientes', icono: User, etiqueta: 'Clientes', permiso: 'ventas.clientes.ver' },
         { id: 'Cotizaciones', icono: FileCheck, etiqueta: 'Cotizaciones', permiso: 'ventas.cotizaciones.ver' },
-        { id: 'Pagos', icono: CreditCard, etiqueta: 'Pagos', permiso: 'ventas.pagos.ver' }
+        { id: 'Pagos', icono: CreditCard, etiqueta: 'Pagos', permiso: 'ventas.pagos.ver' },
       ]
     },
     {
@@ -248,7 +250,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       submenu: [
         { id: 'Contratos', icono: FileSignature, etiqueta: 'Contratos', permiso: 'documentos.contratos.ver' },
         { id: 'OrdenServicio', icono: ClipboardList, etiqueta: 'Órdenes de Servicio', permiso: 'documentos.ordenes.ver' },
-        { id: 'Reservas', icono: Calendar, etiqueta: 'Reservas', permiso: 'documentos.reservas.ver' }
+        { id: 'Reservas', icono: Calendar, etiqueta: 'Reservas', permiso: 'documentos.reservas.ver' },
       ]
     },
     {
@@ -261,7 +263,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         { id: 'Vehiculos', icono: Car, etiqueta: 'Vehículos', permiso: 'operaciones.vehiculos.ver' },
         { id: 'Guias', icono: Map, etiqueta: 'Guías', permiso: 'operaciones.guias.ver' },
         { id: 'Proveedores', icono: Building, etiqueta: 'Proveedores', permiso: 'operaciones.proveedores.ver' },
-        { id: 'Coordinadores', icono: UserCog, etiqueta: 'Coordinadores', permiso: 'operaciones.coordinadores.ver' }
+        { id: 'Coordinadores', icono: UserCog, etiqueta: 'Coordinadores', permiso: 'operaciones.coordinadores.ver' },
       ]
     },
     {
@@ -273,7 +275,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         { id: 'Transporte', icono: Plane, etiqueta: 'Transporte', permiso: 'servicios.transporte.ver' },
         { id: 'Restaurantes', icono: UtensilsCrossed, etiqueta: 'Restaurantes', permiso: 'servicios.restaurantes.ver' },
         { id: 'Tours', icono: MapPin, etiqueta: 'Tours', permiso: 'servicios.tours.ver' },
-        { id: 'Hospedaje', icono: Bed, etiqueta: 'Hospedaje', permiso: 'servicios.hospedaje.ver' }
+        { id: 'Hospedaje', icono: Bed, etiqueta: 'Hospedaje', permiso: 'servicios.hospedaje.ver' },
       ]
     },
     {
@@ -282,7 +284,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       etiqueta: 'Mantenimiento',
       tieneSubmenu: true,
       submenu: [
-        { id: 'MantenimientoVehiculos', icono: Car, etiqueta: 'Mantenimiento de Vehículos', permiso: 'mantenimiento.ver' }
+        { id: 'MantenimientoVehiculos', icono: Car, etiqueta: 'Mantenimiento de Vehículos', permiso: 'mantenimiento.ver' },
       ]
     },
     {
@@ -295,120 +297,90 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         { id: "Usuarios", icono: User, etiqueta: "Usuarios", permiso: 'administracion.usuarios.ver' },
       ],
     },
+    // FIX 4: Viajes sin tieneSubmenu ni submenu — es navegación directa
+    {
+      id: "Viajes",
+      icono: MapPin,
+      etiqueta: "Viajes",
+      // permiso: "appmovil.viajes.ver",
+    },
   ];
 
-  // Filtrar elementos del menú según permisos
   const elementosMenuFiltrados = elementosMenu.map(elemento => {
     if (elemento.tieneSubmenu) {
-      // Filtrar submenús
-      const submenuFiltrado = elemento.submenu.filter(subElemento =>
-        tienePermiso(subElemento.permiso)
-      );
-
-      // Solo mostrar el menú padre si tiene al menos un submenú visible
+      const submenuFiltrado = elemento.submenu.filter(sub => tienePermiso(sub.permiso));
       if (submenuFiltrado.length > 0) {
         return { ...elemento, submenu: submenuFiltrado };
       }
       return null;
     }
-
-    // Para elementos sin submenú, verificar permiso directamente
     return tienePermiso(elemento.permiso) ? elemento : null;
-  }).filter(Boolean); // Eliminar elementos null
+  }).filter(Boolean);
 
   const manejarNavegacion = (elementoId) => {
+    const rutas = {
+      Principal: '/',
+      Clientes: '/clientes',
+      Cotizaciones: '/cotizaciones',
+      Pagos: '/pagos',
+      Contratos: '/contratos',
+      OrdenServicio: '/orden-servicio',
+      Reservas: '/reservas',
+      Operadores: '/operadores',
+      Vehiculos: '/vehiculos',
+      Guias: '/guias',
+      Proveedores: '/proveedores',
+      Coordinadores: '/coordinadores',
+      Transporte: '/transporte',
+      Restaurantes: '/restaurantes',
+      Tours: '/tours',
+      Hospedaje: '/hospedaje',
+      MantenimientoVehiculos: '/mantenimiento-vehiculos',
+      Administracion: '/administracion',
+      Roles: '/roles',
+      Usuarios: '/usuarios',
+      Viajes: '/viajes',
+    };
+    if (rutas[elementoId]) navigate(rutas[elementoId]);
+  };
+
+  const alternarSubmenu = (elementoId) => {
     switch (elementoId) {
-      case 'Principal':
-        navigate('/');
-        break;
-
-      case 'Clientes':
-        navigate('/clientes');
-        break;
-      case 'Cotizaciones':
-        navigate('/cotizaciones');
-        break;
-      case 'Pagos':
-        navigate('/pagos');
-        break;
-
-      case 'Contratos':
-        navigate('/contratos');
-        break;
-      case 'Facturas':
-        navigate('/facturas');
-        break;
-      case 'Recibos':
-        navigate('/recibos');
-        break;
-
-      case 'OrdenServicio':
-        navigate('/orden-servicio');
-        break;
-      case 'Reservas':
-        navigate('/reservas');
-        break;
-      case 'Operadores':
-        navigate('/operadores');
-        break;
-      case 'Vehiculos':
-        navigate('/vehiculos');
-        break;
-      case 'Guias':
-        navigate('/guias');
-        break;
-      case 'Proveedores':
-        navigate('/proveedores');
-        break;
-      case 'Coordinadores':
-        navigate('/coordinadores');
-        break;
-
-      case 'Transporte':
-        navigate('/transporte');
-        break;
-      case 'Restaurantes':
-        navigate('/restaurantes');
-        break;
-      case 'Tours':
-        navigate('/tours');
-        break;
-      case 'Hospedaje':
-        navigate('/hospedaje');
-        break;
-
-      case 'MantenimientoVehiculos':
-        navigate('/mantenimiento-vehiculos');
-        break;
-
-      case "Administracion":
-        navigate("/administracion");
-        break;
-      case "Roles":
-        navigate("/roles");
-        break;
-      case "Usuarios":
-        navigate("/usuarios");
-        break;
-
-      default:
-        break;
+      case 'Ventas': alternarVentas(); break;
+      case 'Documentos': alternarDocumentos(); break;
+      case 'Operaciones': alternarOperaciones(); break;
+      case 'Servicios': alternarServicios(); break;
+      case 'Mantenimiento': alternarMantenimiento(); break;
+      case 'Administracion': alternarAdministracion(); break;
+      default: break;
     }
   };
+
+  const estaSubmenuAbierto = (elementoId) => {
+    switch (elementoId) {
+      case 'Ventas': return ventasAbierto;
+      case 'Documentos': return documentosAbierto;
+      case 'Operaciones': return operacionesAbierto;
+      case 'Servicios': return serviciosAbierto;
+      case 'Mantenimiento': return mantenimientoAbierto;
+      case 'Administracion': return administracionAbierto;
+      default: return false;
+    }
+  };
+
+  const expandido =
+    (responsive.esMovil || responsive.esTablet) ? estaAbierto : hoverExpandido;
 
   const renderElementoSubmenu = (subElemento, esTooltip = false) => {
     const ComponenteSubIcono = subElemento.icono;
     const estaSubActivo = elementoActivo === subElemento.id;
-
     return (
       <li key={subElemento.id}>
         <button
           onClick={() => {
             setElementoActivo(subElemento.id);
             manejarNavegacion(subElemento.id);
-            if (esTooltip) {
-              setTooltipAbierto(null);
-            }
+            if (esTooltip) setTooltipAbierto(null);
           }}
           className={`elemento-submenu ${estaSubActivo ? 'activo' : ''}`}
           data-submenu={subElemento.id}
@@ -425,7 +397,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const renderTooltipSubmenu = (elemento) => {
     if (!elemento.tieneSubmenu) return null;
     const estaTooltipAbierto = tooltipAbierto === elemento.id;
-
     return (
       <div
         className={`tooltip-submenu ${estaTooltipAbierto ? 'abierto' : ''}`}
@@ -434,11 +405,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         <div className="cabecera-tooltip">
           <h3 className="titulo-tooltip">{elemento.etiqueta}</h3>
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setTooltipAbierto(null);
-            }}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setTooltipAbierto(null); }}
             className="btn-cerrar-tooltip"
             aria-label="Cerrar"
           >
@@ -446,7 +413,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
           </button>
         </div>
         <ul>
-          {elemento.submenu.map(subElemento => renderElementoSubmenu(subElemento, true))}
+          {elemento.submenu.map(sub => renderElementoSubmenu(sub, true))}
         </ul>
       </div>
     );
@@ -476,27 +443,19 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
             {elementosMenuFiltrados.map((elemento) => {
               const ComponenteIcono = elemento.icono;
               const estaActivo = elementoActivo === elemento.id;
+              const submenuAbierto = estaSubmenuAbierto(elemento.id);
 
               return (
-                <li key={elemento.id} className={!estaAbierto && elemento.tieneSubmenu ? "elemento-navegacion-colapsado" : ""}>
+                <li
+                  key={elemento.id}
+                  className={!estaAbierto && elemento.tieneSubmenu ? "elemento-navegacion-colapsado" : ""}
+                >
                   <button
                     onClick={(e) => {
                       if (elemento.tieneSubmenu) {
-                        if ((responsive.esMovil || responsive.esTablet) && estaAbierto) {
-                          if (elemento.id === 'Ventas') alternarVentas();
-                          else if (elemento.id === 'Documentos') alternarDocumentos();
-                          else if (elemento.id === 'Operaciones') alternarOperaciones();
-                          else if (elemento.id === 'Servicios') alternarServicios();
-                          else if (elemento.id === 'Mantenimiento') alternarMantenimiento();
-                          else if (elemento.id === "Administracion") alternarAdministracion();
-                        } else if (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) {
-                          if (elemento.id === 'Ventas') alternarVentas();
-                          else if (elemento.id === 'Documentos') alternarDocumentos();
-                          else if (elemento.id === 'Operaciones') alternarOperaciones();
-                          else if (elemento.id === 'Servicios') alternarServicios();
-                          else if (elemento.id === 'Mantenimiento') alternarMantenimiento();
-                          else if (elemento.id === "Administracion") alternarAdministracion();
-                        } else if ((responsive.esMovil || responsive.esTablet) && !estaAbierto) {
+                        if (expandido) {
+                          alternarSubmenu(elemento.id);
+                        } else if (responsive.esMovil || responsive.esTablet) {
                           manejarTooltip(elemento.id, e);
                         }
                       } else {
@@ -512,42 +471,28 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
                       <ComponenteIcono className="icono-navegacion" />
                     </div>
 
-                    <span className={`texto-navegacion ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
+                    <span className={`texto-navegacion ${expandido ? 'visible' : 'oculto'}`}>
                       {elemento.etiqueta}
                     </span>
 
                     {elemento.tieneSubmenu && (
                       <div className="flecha-submenu">
-                        {((elemento.id === 'Ventas' && ventasAbierto) ||
-                          (elemento.id === 'Documentos' && documentosAbierto) ||
-                          (elemento.id === 'Operaciones' && operacionesAbierto) ||
-                          (elemento.id === 'Servicios' && serviciosAbierto) ||
-                          (elemento.id === 'Mantenimiento' && mantenimientoAbierto) ||
-                          (elemento.id === "Administracion" && administracionAbierto)) ? (
-                          <ChevronDown className="icono-flecha" />
-                        ) : (
-                          <ChevronUp className="icono-flecha" />
-                        )}
+                        {submenuAbierto
+                          ? <ChevronDown className="icono-flecha" />
+                          : <ChevronUp className="icono-flecha" />
+                        }
                       </div>
                     )}
                   </button>
 
-                  {(responsive.esMovil || responsive.esTablet) && !estaAbierto && renderTooltipSubmenu(elemento)}
+                  {(responsive.esMovil || responsive.esTablet) && !estaAbierto &&
+                    renderTooltipSubmenu(elemento)}
 
-                  {
-                    elemento.tieneSubmenu && (((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido)) && (
-                      ((elemento.id === 'Ventas' && ventasAbierto) ||
-                        (elemento.id === 'Documentos' && documentosAbierto) ||
-                        (elemento.id === 'Operaciones' && operacionesAbierto) ||
-                        (elemento.id === 'Servicios' && serviciosAbierto) ||
-                        (elemento.id === 'Mantenimiento' && mantenimientoAbierto) ||
-                        (elemento.id === "Administracion" && administracionAbierto))
-                    ) && (
-                      <ul className="submenu">
-                        {elemento.submenu.map(subElemento => renderElementoSubmenu(subElemento))}
-                      </ul>
-                    )
-                  }
+                  {elemento.tieneSubmenu && expandido && submenuAbierto && (
+                    <ul className="submenu">
+                      {elemento.submenu.map(sub => renderElementoSubmenu(sub))}
+                    </ul>
+                  )}
                 </li>
               );
             })}
@@ -571,14 +516,14 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
               onClick={manejarCerrarSesion}
             >
               <LogOut className="icono-cerrar-sesion" />
-              <span className={`texto-cerrar-sesion ${((responsive.esMovil || responsive.esTablet) && estaAbierto) || (!(responsive.esMovil || responsive.esTablet) && hoverExpandido) ? 'visible' : 'oculto'}`}>
+              <span className={`texto-cerrar-sesion ${expandido ? 'visible' : 'oculto'}`}>
                 Cerrar Sesión
               </span>
             </button>
           </div>
         </nav>
       </aside>
-    </div >
+    </div>
   );
 };
 

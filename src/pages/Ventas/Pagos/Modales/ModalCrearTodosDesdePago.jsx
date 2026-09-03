@@ -34,8 +34,6 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
     fecha_orden_servicio: new Date().toISOString().split("T")[0],
     conductor_id: "",
     vehiculo_id: "",
-    domicilio: "",
-    rfc: "",
     tipo_pasaje: "Turismo Estatal",
     n_unidades_contratadas: "1",
 
@@ -148,6 +146,18 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
         console.error("Error al cargar datos:", error);
       }
 
+      const cotizacion = pago.cotizacion;
+      const stopsData = cotizacion?.stops
+        ? (typeof cotizacion.stops === "string"
+          ? JSON.parse(cotizacion.stops)
+          : cotizacion.stops)
+        : [];
+
+      const destinoCotizacion =
+        cotizacion?.destino ||
+        (stopsData.length > 0 ? stopsData[stopsData.length - 1]?.destino : "") ||
+        "";
+
       setFormulario({
         folio_orden: "",
         fecha_orden_servicio: new Date().toISOString().split("T")[0],
@@ -155,16 +165,19 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
         vehiculo_id: "",
         coordinador_id: "",
         guia_id: "",
+        // Contrato
         domicilio: "",
-        rfc: pago.cotizacion?.cliente?.rfc || "",
         tipo_pasaje: "Turismo Estatal",
         n_unidades_contratadas: "1",
+        // Reserva
         folio_reserva: "",
         fecha_reserva: new Date().toISOString().split("T")[0],
-        num_habitantes: "1",
-        servicio: pago.cotizacion?.descripcion || "",
+        num_habitantes: String(cotizacion?.num_pasajeros || "1"),
+        servicio: cotizacion?.descripcion || "",
         forma_pago: "efectivo",
         pagado: "no pagado",
+        // Clave: la cotizacion une todo
+        cotizacion_id: pago.cotizacion?.id || pago.cotizacion_id || "",
       });
       setErrores({});
 
@@ -182,36 +195,43 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
   };
 
   useEffect(() => {
-    if (conductoresDisponibles.length > 0 && ordenesExistentes.length > 0) {
-      const conductoresAsignados = ordenesExistentes
-        .filter((o) => o.operador_id)
-        .map((o) => parseInt(o.operador_id));
-
-      const conductoresLibres = conductoresDisponibles.filter(
-        (c) => !conductoresAsignados.includes(c.id)
-      );
-
-      setConductoresFiltrados(conductoresLibres);
-    } else {
+    if (!pago?.cotizacion || ordenesExistentes.length === 0) {
       setConductoresFiltrados(conductoresDisponibles);
-    }
-  }, [conductoresDisponibles, ordenesExistentes]);
-
-  useEffect(() => {
-    if (vehiculosDisponibles.length > 0 && ordenesExistentes.length > 0) {
-      const vehiculosAsignados = ordenesExistentes
-        .filter((o) => o.vehiculo_id)
-        .map((o) => parseInt(o.vehiculo_id));
-
-      const vehiculosLibres = vehiculosDisponibles.filter(
-        (v) => !vehiculosAsignados.includes(v.id)
-      );
-
-      setVehiculosFiltrados(vehiculosLibres);
-    } else {
       setVehiculosFiltrados(vehiculosDisponibles);
+      return;
     }
-  }, [vehiculosDisponibles, ordenesExistentes]);
+
+    const cot = pago.cotizacion;
+    const inicioNuevo = new Date(`${cot.fecha_salida}T${cot.hora_salida || "00:00"}:00`);
+    const finNuevo = new Date(`${cot.fecha_regreso || cot.fecha_salida}T${cot.hora_regreso || "23:59"}:00`);
+    const margen = 2 * 60 * 60 * 1000; // 2 horas en ms
+
+    const conductoresConConflicto = new Set();
+    const vehiculosConConflicto = new Set();
+
+    ordenesExistentes.forEach((o) => {
+      if (!o.fecha_inicio_servicio) return;
+
+      const inicioExistente = new Date(`${o.fecha_inicio_servicio}T${o.horario_inicio_servicio || "00:00"}:00`);
+      const finExistente = new Date(`${o.fecha_final_servicio || o.fecha_inicio_servicio}T${o.horario_final_servicio || "23:59"}:00`);
+
+      const hayConflicto =
+        inicioNuevo < finExistente.getTime() + margen &&
+        finNuevo > inicioExistente.getTime() - margen;
+
+      if (hayConflicto) {
+        if (o.operador_id) conductoresConConflicto.add(parseInt(o.operador_id));
+        if (o.vehiculo_id) vehiculosConConflicto.add(parseInt(o.vehiculo_id));
+      }
+    });
+
+    setConductoresFiltrados(
+      conductoresDisponibles.filter((c) => !conductoresConConflicto.has(c.id))
+    );
+    setVehiculosFiltrados(
+      vehiculosDisponibles.filter((v) => !vehiculosConConflicto.has(v.id))
+    );
+  }, [conductoresDisponibles, vehiculosDisponibles, ordenesExistentes, pago]);
 
   const validarFormulario = () => {
     const nuevosErrores = {};
@@ -220,9 +240,6 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
       nuevosErrores.folio_orden = "El folio de orden es obligatorio";
     if (!formulario.fecha_orden_servicio)
       nuevosErrores.fecha_orden_servicio = "La fecha es obligatoria";
-
-    if (!formulario.domicilio.trim())
-      nuevosErrores.domicilio = "El domicilio es obligatorio";
     if (!formulario.tipo_pasaje)
       nuevosErrores.tipo_pasaje = "El tipo de pasaje es obligatorio";
     if (!formulario.n_unidades_contratadas)
@@ -514,38 +531,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
 
           {seccionActiva === "contrato" && (
             <div className="modal-abono-seccion">
-              <div className="modal-abono-campo">
-                <label className="modal-abono-label">Domicilio *</label>
-                <input
-                  type="text"
-                  value={formulario.domicilio}
-                  onChange={(e) => manejarCambio("domicilio", e.target.value)}
-                  className={`modal-abono-input ${errores.domicilio ? "error" : ""
-                    }`}
-                  disabled={guardando}
-                  placeholder="Calle, número, colonia..."
-                />
-                {errores.domicilio && (
-                  <p className="modal-abono-error">
-                    <AlertCircle size={12} /> {errores.domicilio}
-                  </p>
-                )}
-              </div>
-
               <div className="modal-abono-campo-grupo">
-                <div className="modal-abono-campo">
-                  <label className="modal-abono-label">RFC</label>
-                  <input
-                    type="text"
-                    value={formulario.rfc}
-                    onChange={(e) => manejarCambio("rfc", e.target.value)}
-                    className="modal-abono-input"
-                    disabled={guardando}
-                    placeholder="XAXX010101000"
-                    maxLength="13"
-                  />
-                </div>
-
                 <div className="modal-abono-campo">
                   <label className="modal-abono-label">Tipo de Pasaje *</label>
                   <select

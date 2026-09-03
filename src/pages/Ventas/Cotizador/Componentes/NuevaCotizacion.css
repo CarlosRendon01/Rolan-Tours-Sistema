@@ -722,3 +722,10 @@
   gap: 10px;
   margin-bottom: 12px;
 }
+
+.formulario-cotizacion label div input,
+.formulario-cotizacion label div gmp-place-autocomplete,
+.paso-contenido label div input {
+  color: #000000;
+  background-color: #ffffff;
+}

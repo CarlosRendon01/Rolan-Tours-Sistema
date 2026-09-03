@@ -10,7 +10,8 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
     canal_contacto: '',
     rfc: '',
     direccion: '',
-    fecha_registro: ''
+    fecha_registro: '',
+    nacionalidad: '',
   });
 
   const [errores, setErrores] = useState({});
@@ -32,7 +33,8 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
         canal_contacto: cliente.canal_contacto || '',
         rfc: cliente.rfc || '',
         direccion: cliente.direccion || '',
-        fecha_registro: cliente.fecha_registro || ''
+        fecha_registro: cliente.fecha_registro || '',
+        nacionalidad: cliente.nacionalidad || '',
       });
       setErrores({});
     }
@@ -396,6 +398,23 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="campo-formulario-editar">
+            <label htmlFor="nacionalidad" className="etiqueta-formulario-editar">
+              <Globe size={18} />
+              Nacionalidad
+            </label>
+            <input
+              type="text"
+              id="nacionalidad"
+              name="nacionalidad"
+              value={datosFormulario.nacionalidad}
+              onChange={manejarCambioFormulario}
+              className="entrada-formulario-editar"
+              placeholder="Mexicana, Estadounidense..."
+              disabled={guardando}
+            />
           </div>
 
           <div className="acciones-modal-editar">
