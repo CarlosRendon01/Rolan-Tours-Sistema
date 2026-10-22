@@ -51,7 +51,7 @@ const TablaReservas = ({
     return (
       nombreCliente.includes(busqueda) ||
       reserva.folio.toString().includes(busqueda) ||
-      reserva.telefono.includes(busqueda) ||
+      (reserva.telefono || "").includes(busqueda) ||
       reserva.servicio.toLowerCase().includes(busqueda)
     );
   });
@@ -67,7 +67,9 @@ const TablaReservas = ({
   ).length;
 
   const formatearTelefono = (telefono) => {
-    const limpio = telefono.replace(/\D/g, "");
+    if (!telefono) return "N/A";
+
+    const limpio = String(telefono).replace(/\D/g, "");
     if (limpio.length === 10) {
       return `(${limpio.substring(0, 3)}) ${limpio.substring(
         3,
