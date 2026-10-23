@@ -2,4 +2,4 @@ allowBuilds:
   core-js: false
   esbuild: false
 minimumReleaseAgeExclude:
-  - docx@9.13.0
+  - docx@9.13.0 || 9.14.0
