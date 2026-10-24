@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
   Home, ShoppingCart, FileText, Settings, Truck, Users, LogOut,
-  ChevronDown, ChevronUp, User, FileCheck, CreditCard, FileSignature,
+  ChevronDown, ChevronUp, User, CreditCard, FileSignature,
   Receipt, FileBarChart, ClipboardList, Calendar, UserCheck, Car,
   Map, Building, UserCog, Plane, UtensilsCrossed, MapPin, Bed,
   Wrench, X, Moon, Sun
@@ -12,7 +12,7 @@ import { useResponsive } from "../../../utils/useResponsive";
 import "./Sidebar.css";
 import { API_CONFIG } from "../../../config/api";
 
-const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
+const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }) => {
   const [elementoActivo, setElementoActivo] = useState("Principal");
   const [ventasAbierto, setVentasAbierto] = useState(false);
   const [documentosAbierto, setDocumentosAbierto] = useState(false);
@@ -22,8 +22,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const [administracionAbierto, setAdministracionAbierto] = useState(false);
   // FIX 4: eliminado viajesAbierto — "Viajes" es un item directo sin submenú
   const [tooltipAbierto, setTooltipAbierto] = useState(null);
-  // FIX 5: modoOscuro era una constante que sobreescribía el estado; ahora es solo estado
-  const [modoOscuro, setModoOscuro] = useState(false);
   const [hoverExpandido, setHoverExpandido] = useState(false);
 
   const navigate = useNavigate();
@@ -47,10 +45,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
 
       case '/clientes':
         setElementoActivo('Clientes');
-        setVentasAbierto(true);
-        break;
-      case '/cotizaciones':
-        setElementoActivo('Cotizaciones');
         setVentasAbierto(true);
         break;
       case '/pagos':
@@ -173,7 +167,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
   const alternarServicios = () => setServiciosAbierto(v => !v);
   const alternarMantenimiento = () => setMantenimientoAbierto(v => !v);
   const alternarAdministracion = () => setAdministracionAbierto(v => !v);
-  const alternarModoOscuro = () => setModoOscuro(v => !v);
 
   const manejarCerrarSesion = async () => {
     try {
@@ -182,7 +175,8 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         await axios.post(`${API_CONFIG.BASE_URL}/logout`);
       }
-    } catch (_) {
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -238,7 +232,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
       tieneSubmenu: true,
       submenu: [
         { id: 'Clientes', icono: User, etiqueta: 'Clientes', permiso: 'ventas.clientes.ver' },
-        { id: 'Cotizaciones', icono: FileCheck, etiqueta: 'Cotizaciones', permiso: 'ventas.cotizaciones.ver' },
         { id: 'Pagos', icono: CreditCard, etiqueta: 'Pagos', permiso: 'ventas.pagos.ver' },
       ]
     },
@@ -321,7 +314,6 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
     const rutas = {
       Principal: '/',
       Clientes: '/clientes',
-      Cotizaciones: '/cotizaciones',
       Pagos: '/pagos',
       Contratos: '/contratos',
       OrdenServicio: '/orden-servicio',
@@ -508,6 +500,23 @@ const Sidebar = ({ estaAbierto, setEstaAbierto }) => {
               </button>
             </div>
           )}
+
+          <div className="seccion-modo-oscuro">
+            <button
+              type="button"
+              className="btn-modo-oscuro"
+              onClick={alternarModoOscuro}
+              aria-label={modoOscuro ? 'Desactivar modo oscuro' : 'Activar modo oscuro'}
+              aria-pressed={modoOscuro}
+              title={modoOscuro ? 'Desactivar modo oscuro' : 'Activar modo oscuro'}
+            >
+              {modoOscuro ? <Sun className="icono-modo-oscuro" /> : <Moon className="icono-modo-oscuro" />}
+              <span className={`texto-modo-oscuro ${expandido ? 'visible' : 'oculto'}`}>
+                Modo oscuro
+              </span>
+              {expandido && <span className="toggle-modo-oscuro" aria-hidden="true" />}
+            </button>
+          </div>
 
           <div className="seccion-cerrar-sesion">
             <button

@@ -124,6 +124,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.clientes-sin-resultados {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
 .clientes-filtro-activo,
 .clientes-filtro-inactivo {
   padding: 0.75rem 1.5rem;

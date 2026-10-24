@@ -33,7 +33,7 @@ const TablaPagos = () => {
   };
 
   return (
-    <div style={{width: '100%', background: '#f8f9fa'}}>
+    <div className="pagos-vista-contenedor">
       {renderVistaActual()}
     </div>
   );

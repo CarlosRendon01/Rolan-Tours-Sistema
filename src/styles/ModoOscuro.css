@@ -573,3 +573,286 @@ body.modo-oscuro * {
     color 0.3s ease,
     border-color 0.3s ease;
 }
+
+/* Las tablas usan clases propias por módulo; sus fondos claros no heredan el tema. */
+body.modo-oscuro .contenido-pagina [class*="-contenedor-principal"] {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .pagos-vista-contenedor {
+  background: var(--color-fondo-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina [class*="-controles"],
+body.modo-oscuro .contenido-pagina [class*="-contenedor-tabla"],
+body.modo-oscuro .contenido-pagina [class*="-estado-vacio"],
+body.modo-oscuro .contenido-pagina [class*="-pie-tabla"] {
+  background-color: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina [class*="-control-registros"],
+body.modo-oscuro .contenido-pagina [class*="-filtro-estado"],
+body.modo-oscuro .contenido-pagina [class*="-mensaje-vacio"],
+body.modo-oscuro .contenido-pagina [class*="-informacion-registros"] {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina [class*="-icono-vacio"] {
+  color: #94a3b8;
+}
+
+body.modo-oscuro .contenido-pagina [class*="-fila-encabezado"] th {
+  background-color: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina [class^="contenedor-principal-"],
+body.modo-oscuro .contenido-pagina :is(
+  .reservas-principal, .vehiculos-principal, .proveedores-principal,
+  .guias-principal, .operadores-principal, .coordinadores-principal,
+  .transporte-principal, .tours-principal, .restaurante-principal,
+  .hospedaje-principal, .roles-principal, .usuarios-principal
+) {
+  background: var(--color-fondo-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina .mantenimiento-principal {
+  background: var(--color-fondo-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina .vehiculos-principal-wrapper,
+body.modo-oscuro .contenedor-buscador {
+  background: var(--color-fondo-oscuro);
+}
+
+body.modo-oscuro .mantenimiento-estadistica,
+body.modo-oscuro .mantenimiento-vacio,
+body.modo-oscuro .card-vehiculo,
+body.modo-oscuro .card-vehiculo .card-footer {
+  background: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .mantenimiento-numero,
+body.modo-oscuro .card-vehiculo .card-nombre,
+body.modo-oscuro .card-vehiculo .card-ultimo-tipo {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .mantenimiento-label,
+body.modo-oscuro .card-vehiculo .card-detalles,
+body.modo-oscuro .card-vehiculo .card-placa,
+body.modo-oscuro .card-vehiculo .card-ultimo-label {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .card-vehiculo .card-estado-mensaje.verde,
+body.modo-oscuro .card-vehiculo .card-estado-mensaje.amarillo,
+body.modo-oscuro .card-vehiculo .card-estado-mensaje.rojo {
+  color: #f8fafc;
+}
+
+body.modo-oscuro .card-vehiculo .card-estado-mensaje.verde { background: #065f46; }
+body.modo-oscuro .card-vehiculo .card-estado-mensaje.amarillo { background: #78350f; }
+body.modo-oscuro .card-vehiculo .card-estado-mensaje.rojo { background: #7f1d1d; }
+
+body.modo-oscuro .card-vehiculo .card-ultimo-mantenimiento,
+body.modo-oscuro .card-vehiculo .card-metrica {
+  background: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .card-vehiculo .card-foto {
+  background: var(--color-fondo-terciario-oscuro);
+}
+
+body.modo-oscuro .card-vehiculo .card-estado-badge {
+  background: var(--color-fondo-secundario-oscuro);
+}
+
+body.modo-oscuro .card-vehiculo .card-estado-mensaje p {
+  color: inherit;
+}
+
+body.modo-oscuro .mantenimiento-btn-filtro:not(.active) {
+  background: var(--color-fondo-terciario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .mantenimiento-filtros svg,
+body.modo-oscuro .mantenimiento-vacio svg {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .dashboard-contenedor-principal {
+  background: var(--color-fondo-oscuro);
+}
+
+body.modo-oscuro .dashboard-tarjeta-estadistica,
+body.modo-oscuro .tarjeta-buscador,
+body.modo-oscuro .historial-item,
+body.modo-oscuro .calendario-contenedor-principal,
+body.modo-oscuro .calendario-dia,
+body.modo-oscuro .calendario-contenido-modal {
+  background: var(--color-fondo-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .calendario-dias-semana,
+body.modo-oscuro .calendario-estadisticas-rapidas,
+body.modo-oscuro .calendario-tarjeta-estadistica,
+body.modo-oscuro .calendario-dia:hover,
+body.modo-oscuro .calendario-leyenda-tipos,
+body.modo-oscuro .calendario-dia-vacio,
+body.modo-oscuro .calendario-info-vehiculo {
+  background: var(--color-fondo-terciario-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .calendario-dia-hoy,
+body.modo-oscuro .calendario-dia-seleccionado {
+  background: #1e3a5f;
+}
+
+body.modo-oscuro .dashboard-tarjeta-estadistica :is(p, span),
+body.modo-oscuro .calendario-contenedor-principal :is(.calendario-numero-total, .calendario-elemento-dia-semana, .calendario-etiqueta-estadistica, .calendario-valor-estadistica) {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .contenedor-buscador .etiqueta-campo,
+body.modo-oscuro .calendario-contenedor-principal .calendario-titulo {
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .contenedor-buscador .campo-fecha:focus,
+body.modo-oscuro .contenedor-buscador .estado-listo,
+body.modo-oscuro .contenedor-buscador .estado-pendiente,
+body.modo-oscuro .contenedor-buscador .estado-error,
+body.modo-oscuro .contenedor-buscador .error-general {
+  background: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .contenedor-principal-viajes {
+  background: var(--color-fondo-oscuro);
+}
+
+body.modo-oscuro .dv-root,
+body.modo-oscuro .dv-nav,
+body.modo-oscuro .dv-stat-card,
+body.modo-oscuro .dv-card,
+body.modo-oscuro .dv-search-wrap {
+  background: var(--color-fondo-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .dv-root { background: var(--color-fondo-oscuro); }
+
+body.modo-oscuro .dv-thead-tr,
+body.modo-oscuro .dv-dist-barra-bg,
+body.modo-oscuro .dv-chip,
+body.modo-oscuro .dv-pag-btn,
+body.modo-oscuro .dv-pag-num {
+  background: var(--color-fondo-terciario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina [class*="-pie-tabla"] {
+  background-image: none;
+}
+
+body.modo-oscuro .clientes-contenedor-filtros {
+  background: var(--color-fondo-secundario-oscuro);
+  border: 1px solid var(--color-borde-oscuro);
+}
+
+body.modo-oscuro .clientes-filtro-inactivo {
+  background: var(--color-fondo-terciario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+body.modo-oscuro .clientes-sin-resultados {
+  color: var(--color-texto-secundario-oscuro);
+}
+
+body.modo-oscuro .contenido-pagina [class*="-boton-paginacion"]:not(:disabled),
+body.modo-oscuro .contenido-pagina [class*="-numero-pagina"]:not(.clientes-activo) {
+  background: var(--color-fondo-terciario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}
+
+/* Los diálogos de cada módulo tienen nombres distintos; se tematizan sus
+   superficies sin alterar las vistas de PDF ni los encabezados de color. */
+body.modo-oscuro :is(
+  .modal-mant-contenido, .modal-reg-mant-contenido,
+  .mvg-contenido, .mvc-contenido, .mvo-contenido, .mvp-contenido,
+  .mvv-contenido, .mvh-contenido, .mvr-contenido, .mvt-contenido,
+  .meo-contenido, .meg-contenido, .mec-contenido, .mep-contenido,
+  .mev-contenido, .meh-contenido, .mer-contenido, .met-contenido,
+  .mar-contenido, .modal-coord-contenido, .modal-guia-contenido,
+  .modal-proveedor-contenido, .modal-resto-contenido,
+  .modal-transporte-contenido, .modal-agregar-contenido,
+  .modal-agregar-hosp-contenido, .modal-agregar-tour-contenido,
+  .modal-agregar-usuario-contenido, .modal-editar-usuario-contenido,
+  .modal-ver-usuario-contenido, .contenido-modal-ver,
+  .contenido-modal-editar, .contenido-modal-pago,
+  .modal-editar-contenedor, .modal-abono-contenedor,
+  .modal-ver-abono-contenedor, .modal-factura-contenedor,
+  .modal-recibo-contenedor, .modal-reactivar-contenido,
+  .modal-contenido-eliminar, .modal-eliminar-contenedor,
+  .modal-restaurar-contenedor, .modal-regenerar-contenedor,
+  .modal-regenerar-fact-contenedor, .modal-eliminar-def-fact-contenedor,
+  .modal-container-simple, .modal-contenedor, .modal-container,
+  .eliminar-factura-popup, .modal-resultados
+) {
+  background: var(--color-fondo-secundario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro :is(
+  .modal-mant-card, .modal-mant-detalle-item, .modal-mant-historial-item,
+  .mvg-detalle-item, .mvc-detalle-item, .mvo-detalle-item,
+  .mvp-detalle-item, .mvv-detalle-item, .mvh-detalle-item,
+  .mvr-detalle-item, .mvt-detalle-item,
+  .mvg-card-estadistica, .mvc-card-estadistica, .mvo-card-estadistica,
+  .mvp-card-estadistica, .mvv-card-estadistica, .mvh-card-estadistica,
+  .mvr-card-estadistica, .mvt-card-estadistica,
+  .modal-ver-usuario-info-item, .modal-ver-abono-campo,
+  .modal-ver-abono-info-item, .modal-ver-abono-tarjeta-stat,
+  .tour-item, .filtros-section, .filtros-tabs
+) {
+  background: var(--color-fondo-terciario-oscuro);
+  color: var(--color-texto-oscuro);
+  border-color: var(--color-borde-oscuro);
+}
+
+body.modo-oscuro :is(
+  .modal-mant-footer, .modal-reg-mant-footer, .meo-footer, .meg-footer,
+  .mec-footer, .mep-footer, .mev-footer, .meh-footer, .mer-footer,
+  .met-footer, .mar-footer, .modal-coord-footer, .modal-guia-footer,
+  .modal-proveedor-footer, .modal-resto-footer, .modal-transporte-footer,
+  .modal-agregar-footer, .modal-agregar-hosp-footer,
+  .modal-agregar-tour-footer, .modal-agregar-usuario-footer,
+  .modal-editar-usuario-footer, .modal-ver-usuario-footer,
+  .modal-editar-footer, .modal-abono-footer, .modal-factura-footer,
+  .modal-ver-abono-footer, .modal-eliminar-footer,
+  .modal-restaurar-footer, .modal-regenerar-footer,
+  .modal-regenerar-fact-footer, .modal-eliminar-def-fact-footer,
+  .resultados-footer
+) {
+  background: var(--color-fondo-secundario-oscuro);
+  border-color: var(--color-borde-oscuro);
+  color: var(--color-texto-oscuro);
+}

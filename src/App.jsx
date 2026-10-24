@@ -7,7 +7,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AccesoDenegado from "./pages/AccesoDenegado";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import PrincipalCliente from "./pages/Ventas/Clientes/PrincipalCliente.jsx";
-import PrincipalCotizacion from "./pages/Ventas/Cotizador/PrincipalCotizacion.jsx";
 import PrincipalPago from "./pages/Ventas/Pagos/PrincipalPago.jsx";
 import PrincipalLogin from "./pages/Login/PrincipalLogin.jsx";
 import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrincipal.jsx";
@@ -80,14 +79,6 @@ function App() {
             element={
               <ProtectedRoute requiredPermission="ventas.clientes.ver">
                 <PrincipalCliente />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/cotizaciones"
-            element={
-              <ProtectedRoute requiredPermission="ventas.cotizaciones.ver">
-                <PrincipalCotizacion />
               </ProtectedRoute>
             }
           />

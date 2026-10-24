@@ -31,12 +31,6 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
             editar: false,
             eliminar: false,
           },
-          cotizaciones: {
-            activo: false,
-            ver: false,
-            editar: false,
-            eliminar: false,
-          },
           pagos: { activo: false, ver: false, editar: false, eliminar: false },
         },
       },
@@ -144,9 +138,9 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
       id: "ventas",
       nombre: "Ventas",
       icono: <ShoppingCart size={20} />,
-      descripcion: "Gestión de clientes, cotizaciones y pagos",
+      descripcion: "Gestión de clientes y pagos",
       color: "#10b981",
-      submodulos: ["clientes", "cotizaciones", "pagos"],
+      submodulos: ["clientes", "pagos"],
     },
     {
       id: "documentos",
@@ -196,7 +190,6 @@ const ModalEditarRol = ({ rol, onGuardar, onCerrar, permissions = [], recargarPe
         activo: false,
         modulos: {
           clientes: { activo: false, ver: false, editar: false, eliminar: false },
-          cotizaciones: { activo: false, ver: false, editar: false, eliminar: false },
           pagos: { activo: false, ver: false, editar: false, eliminar: false },
         },
       },

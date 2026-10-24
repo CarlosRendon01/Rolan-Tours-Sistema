@@ -1,3 +1,8 @@
+.pagos-vista-contenedor {
+  width: 100%;
+  background: #f8f9fa;
+}
+
 .navegacion-pestanas {
   background: #ffffff;
   border-bottom: 2px solid #ffffff;

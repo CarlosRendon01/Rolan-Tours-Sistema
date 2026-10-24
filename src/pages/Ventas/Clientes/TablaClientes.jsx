@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw, Filter, CheckCircle, XCircle, Clock, FileText } from 'lucide-react';
+import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw, Filter, CheckCircle, XCircle, Clock } from 'lucide-react';
 import ModalVerCliente from './Modales/ModalVerCliente';
 import ModalEditarCliente from './Modales/ModalEditarCliente';
 import ModalEliminarCliente from './Modales/ModalEliminarCliente';
 import ModalRestaurarCliente from './Modales/ModalRestaurarCliente';
 import ModalEliminarDefinitivo from './Modales/ModalEliminarDefinitivo';
-import ModalCrearCotizacion from './Modales/ModalCrearCotizacion';
 import './TablaClientes.css';
 import { API_CONFIG } from '../../../config/api';
 
@@ -31,7 +30,6 @@ const TablaClientes = () => {
 
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
-  const [modalCotizarAbierto, setModalCotizarAbierto] = useState(false);
   const [clienteAEliminar, setClienteAEliminar] = useState(null);
   const [clienteARestaurar, setClienteARestaurar] = useState(null);
   const [clienteAEliminarDefinitivo, setClienteAEliminarDefinitivo] = useState(null);
@@ -319,10 +317,6 @@ const TablaClientes = () => {
         setClienteSeleccionado(cliente);
         setModalEditarAbierto(true);
         break;
-      case 'cotizar':
-        setClienteSeleccionado(cliente);
-        setModalCotizarAbierto(true);
-        break;
       case 'eliminar':
         if (esAdministrador && !cliente.activo) {
           setClienteAEliminarDefinitivo(cliente);
@@ -345,11 +339,6 @@ const TablaClientes = () => {
 
   const cerrarModalEditar = () => {
     setModalEditarAbierto(false);
-    setClienteSeleccionado(null);
-  };
-
-  const cerrarModalCotizar = () => {
-    setModalCotizarAbierto(false);
     setClienteSeleccionado(null);
   };
 
@@ -432,33 +421,10 @@ const TablaClientes = () => {
         </div>
       </div>
 
-      <div style={{
-        display: 'flex',
-        gap: '1rem',
-        marginBottom: '1.5rem',
-        flexWrap: 'wrap',
-        padding: '1rem',
-        backgroundColor: 'white',
-        borderRadius: '10px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-      }}>
+      <div className="clientes-contenedor-filtros">
         <button
           onClick={mostrarTodosLosPipelines}
           className={mostrarTodos ? 'clientes-filtro-activo' : 'clientes-filtro-inactivo'}
-          style={{
-            padding: '0.75rem 1.5rem',
-            borderRadius: '8px',
-            border: mostrarTodos ? '2px solid #667eea' : '2px solid #e5e7eb',
-            background: mostrarTodos ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'white',
-            color: mostrarTodos ? 'white' : '#374151',
-            fontSize: '0.95rem',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}
         >
           <Filter size={16} />
           Todos los Pipelines
@@ -471,19 +437,6 @@ const TablaClientes = () => {
               key={pipeline.pipeline_id}
               onClick={() => seleccionarPipeline(pipeline)}
               className={esActivo ? 'clientes-filtro-activo' : 'clientes-filtro-inactivo'}
-              style={{
-                padding: '0.75rem 1.5rem',
-                borderRadius: '8px',
-                border: esActivo ? '2px solid #667eea' : '2px solid #e5e7eb',
-                background: esActivo ?
-                  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
-                  'white',
-                color: esActivo ? 'white' : '#374151',
-                fontSize: '0.95rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
             >
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <span>{pipeline.nombre}</span>
@@ -557,7 +510,7 @@ const TablaClientes = () => {
               </tr>
             ) : clientesPaginados.length === 0 ? (
               <tr>
-                <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                <td colSpan="7" className="clientes-sin-resultados">
                   No se encontraron clientes
                 </td>
               </tr>
@@ -572,10 +525,7 @@ const TablaClientes = () => {
                     <tr
                       key={`${cliente.id}-${lead.id}`}
                       className="clientes-fila-cliente"
-                      style={{
-                        animationDelay: `${(index + leadIndex) * 0.05}s`,
-                        background: cliente.activo ? 'white' : '#f8d7da'
-                      }}
+                      style={{ animationDelay: `${(index + leadIndex) * 0.05}s` }}
                     >
                       {leadIndex === 0 && (
                         <>
@@ -686,17 +636,6 @@ const TablaClientes = () => {
                               </button>
                             )}
 
-                            <button
-                              className="clientes-boton-accion clientes-cotizar"
-                              onClick={() => manejarAccion('cotizar', cliente)}
-                              title="Crear cotización"
-                              style={{
-                                background: 'linear-gradient(45deg, #10b981, #059669)',
-                                color: 'white'
-                              }}
-                            >
-                              <FileText size={16} />
-                            </button>
                           </div>
                         </td>
                       )}
@@ -825,13 +764,6 @@ const TablaClientes = () => {
         />
       )}
 
-      {modalCotizarAbierto && clienteSeleccionado && (
-        <ModalCrearCotizacion
-          estaAbierto={modalCotizarAbierto}
-          cliente={clienteSeleccionado}
-          alCerrar={cerrarModalCotizar}
-        />
-      )}
     </div>
   );
 };

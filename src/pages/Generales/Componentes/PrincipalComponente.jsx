@@ -7,7 +7,14 @@ import "./PrincipalComponente.css";
 const PrincipalComponente = ({ children }) => {
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
   const [sidebarHoverExpandido, setSidebarHoverExpandido] = useState(false);
+  const [modoOscuro, setModoOscuro] = useState(() => localStorage.getItem('modoOscuro') === 'true');
   const responsive = useResponsive();
+
+  useEffect(() => {
+    document.body.classList.toggle('modo-oscuro', modoOscuro);
+    localStorage.setItem('modoOscuro', String(modoOscuro));
+    return () => document.body.classList.remove('modo-oscuro');
+  }, [modoOscuro]);
 
   useEffect(() => {
     if (responsive.esMovil) {
@@ -63,10 +70,12 @@ const PrincipalComponente = ({ children }) => {
   };
 
   return (
-    <div className="principal-componente">
+    <div className={`principal-componente ${modoOscuro ? 'modo-oscuro' : ''}`}>
       <Sidebar
         estaAbierto={sidebarAbierto}
         setEstaAbierto={setSidebarAbierto}
+        modoOscuro={modoOscuro}
+        alternarModoOscuro={() => setModoOscuro(valor => !valor)}
       />
 
       <Navbar

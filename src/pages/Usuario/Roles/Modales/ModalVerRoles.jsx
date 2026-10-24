@@ -32,9 +32,9 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
       id: "ventas",
       nombre: "Ventas",
       icono: <ShoppingCart size={20} />,
-      descripcion: "Gestión de clientes, cotizaciones y pagos",
+      descripcion: "Gestión de clientes y pagos",
       color: "#10b981",
-      submodulos: ["clientes", "cotizaciones", "pagos"],
+      submodulos: ["clientes", "pagos"],
     },
     {
       id: "documentos",
@@ -84,7 +84,6 @@ const ModalVerRoles = ({ rol, onCerrar }) => {
         activo: false,
         modulos: {
           clientes: { activo: false, ver: false, editar: false, eliminar: false },
-          cotizaciones: { activo: false, ver: false, editar: false, eliminar: false },
           pagos: { activo: false, ver: false, editar: false, eliminar: false },
         },
       },
