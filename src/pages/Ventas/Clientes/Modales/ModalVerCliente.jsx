@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import axios from 'axios';
+import { API_CONFIG } from '../../../../config/api';
 import {
   User,
   Mail,
@@ -35,7 +37,35 @@ const formatearTelefono = (telefono) => {
   return telefono;
 };
 
-const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
+const ModalVerCliente = ({ estaAbierto, cliente, alCerrar, puedeEditar = false, onAssigned }) => {
+  const [users, setUsers] = useState([]);
+  const [assignments, setAssignments] = useState({});
+  const [savingLeadId, setSavingLeadId] = useState(null);
+  const [assignmentError, setAssignmentError] = useState('');
+  useEffect(() => {
+    if (!estaAbierto || !puedeEditar) return;
+    const token = localStorage.getItem('token');
+    axios.get(`${API_CONFIG.BASE_URL}/users`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(({ data }) => setUsers(data.filter((user) => !user.deleted_at && user.estado !== 'inactivo')))
+      .catch(() => setAssignmentError('No se pudo cargar la lista de usuarios.'));
+  }, [estaAbierto, puedeEditar]);
+
+  const guardarAsignacion = async (leadId) => {
+    setSavingLeadId(leadId);
+    setAssignmentError('');
+    try {
+      const token = localStorage.getItem('token');
+      await axios.patch(`${API_CONFIG.BASE_URL}/leads/${leadId}/assignment`, {
+        assigned_user_id: assignments[leadId] ? Number(assignments[leadId]) : null,
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      await onAssigned?.();
+    } catch (cause) {
+      setAssignmentError(cause.response?.data?.error || 'No se pudo asignar el usuario.');
+    } finally {
+      setSavingLeadId(null);
+    }
+  };
+
   const restaurarScroll = useCallback(() => {
     document.body.style.overflow = '';
     document.body.style.overflowY = '';
@@ -184,6 +214,44 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar }) => {
                 {fechaFormateada}
               </div>
             </div>
+          </div>
+
+          <div className="cliente-leads-detalle">
+            <h3>Leads del cliente</h3>
+            {(cliente.leads || []).length === 0 && <p>Este cliente todavía no tiene leads.</p>}
+            {assignmentError && <p role="alert" className="cliente-asignacion-error">{assignmentError}</p>}
+            {(cliente.leads || []).map((lead) => (
+              <section key={lead.id} className="cliente-lead-card">
+                <h4>{lead.nombre || `Lead #${lead.id}`}</h4>
+                <p>Embudo: {lead.pipeline_id ?? 'Sin dato'} · Etapa: {lead.etapa_id ?? 'Sin dato'}</p>
+                <p>Nombre en Kommo (etiqueta): {lead.responsible_name || 'Sin dato'}</p>
+                <p>Usuario asignado: {lead.assigned_user ? [lead.assigned_user.nombre, lead.assigned_user.apellido_paterno, lead.assigned_user.apellido_materno].filter(Boolean).join(' ') : 'Sin asignar'}</p>
+                {puedeEditar && <div className="cliente-lead-asignacion">
+                  <select aria-label={`Usuario del lead ${lead.id}`} value={assignments[lead.id] ?? lead.assigned_user_id ?? ''} onChange={(event) => setAssignments((current) => ({ ...current, [lead.id]: event.target.value }))}>
+                    <option value="">Sin asignar</option>
+                    {users.map((user) => <option key={user.id} value={user.id}>{[user.nombre, user.apellido_paterno, user.apellido_materno].filter(Boolean).join(' ')}</option>)}
+                  </select>
+                  <button type="button" disabled={savingLeadId === lead.id} onClick={() => guardarAsignacion(lead.id)}>{savingLeadId === lead.id ? 'Guardando...' : 'Asignar usuario'}</button>
+                </div>}
+                {lead.descripcion && <p>{lead.descripcion}</p>}
+                {lead.precio != null && <p>Precio: ${Number(lead.precio).toLocaleString('es-MX')}</p>}
+                {Array.isArray(lead.tags) && lead.tags.length > 0 && (
+                  <div className="cliente-lead-tags">{lead.tags.map((tag, index) => <span key={tag.id || index}>{tag.name || tag.value || String(tag)}</span>)}</div>
+                )}
+                {Array.isArray(lead.custom_fields_values) && lead.custom_fields_values.length > 0 && (
+                  <details>
+                    <summary>Campos personalizados ({lead.custom_fields_values.length})</summary>
+                    <dl>{lead.custom_fields_values.map((field, index) => (
+                      <div key={field.field_id || index}>
+                        <dt>{field.field_name || `Campo ${field.field_id}`}</dt>
+                        <dd>{Array.isArray(field.values) ? field.values.map((item) => String(item.value ?? '')).join(', ') : 'Sin valor'}</dd>
+                      </div>
+                    ))}</dl>
+                  </details>
+                )}
+                {lead.kommo_payload && <details><summary>Datos completos de Kommo</summary><pre>{JSON.stringify(lead.kommo_payload, null, 2)}</pre></details>}
+              </section>
+            ))}
           </div>
 
           <div className="contenedor-boton-inferior-ver">

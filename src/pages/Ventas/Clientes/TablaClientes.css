@@ -860,3 +860,7 @@
   background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
   border-radius: 8px;
 }
+
+.clientes-boton-nuevo{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;background:#b91c1c;color:#fff;font-weight:700;padding:10px 14px;cursor:pointer;white-space:nowrap}
+.clientes-boton-nuevo:hover{background:#991b1b}
+@media(max-width:640px){.clientes-boton-nuevo{width:100%;white-space:normal}}

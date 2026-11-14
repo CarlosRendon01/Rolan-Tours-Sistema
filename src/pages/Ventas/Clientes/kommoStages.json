@@ -1,0 +1,167 @@
+[
+  {
+    "id": 83869252,
+    "name": "CONTACTADO",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 83869256,
+    "name": "URGE LARGA ESPERA",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 84477464,
+    "name": "INTENCION DE COMPRA A LARGO PLAZO",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 76566640,
+    "name": "PROPUESTA ENVIADA",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 83869264,
+    "name": "BOT SEGUIMIENTO DESPUES DE PROPUESTA",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 76566632,
+    "name": "NEGOCIACION",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 109091996,
+    "name": "VENTA CERRADA NO OPERADA PENDIENTE DE PAGO",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 83869272,
+    "name": "VENTA CERRADA NO OPERADA PAGADA",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 110739107,
+    "name": "VENTA CERRADA NO OPERADA CON PAGO POST OPERACION",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 83869276,
+    "name": "SEGUIMIENTO POST VENTA",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 109092000,
+    "name": "MENSAJE POST OPERACIÓN",
+    "pipelineId": 9974080
+  },
+  {
+    "id": 80703904,
+    "name": "CONTACTADO",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 80703908,
+    "name": "URGE LARGA ESPERA",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 104349900,
+    "name": "INTENCION DE COMPRA A LARGO PLAZO",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 73531684,
+    "name": "PROPUESTA ENVIADA",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 78631148,
+    "name": "BOT SEGUIMIENTO DESPUES DE PROPUESTA",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 73531324,
+    "name": "NEGOCIACION",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 109122524,
+    "name": "VENTA CERRADA NO OPERADA PENDIENTE DE PAGO",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 82330396,
+    "name": "VENTA CERRADA NO OPERADA PAGADA",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 110738771,
+    "name": "VENTA CERRADA NO OPERADA CON PAGO POST OPERACION",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 81647916,
+    "name": "SEGUIMIENTO POST VENTA",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 109122528,
+    "name": "MENSAJE POST OPERACION",
+    "pipelineId": 9524560
+  },
+  {
+    "id": 66210523,
+    "name": "CONTACTADO",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 109119164,
+    "name": "URGE LARGA ESPERA",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 66210531,
+    "name": "INTENCION DE COMPRA A LARGO PLAZO",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 66210527,
+    "name": "PROPUESTA ENVIADA",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 89538240,
+    "name": "BOT SEGUIMIENTO DESPUES DE PROPUESTA",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 89538244,
+    "name": "NEGOCIACION",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 94949496,
+    "name": "VENTA CERRADA NO OPERADA PENDIENTE DE PAGO",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 108897048,
+    "name": "VENTA CERRADA NO OPERADA PAGADA",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 110739203,
+    "name": "VENTA CERRADA NO OPERADA CON PAGO POST OPERACION",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 108897052,
+    "name": "SEGUIMIENTO POST VENTA",
+    "pipelineId": 8347111
+  },
+  {
+    "id": 108897056,
+    "name": "MENSAJE POST OPERACION",
+    "pipelineId": 8347111
+  }
+]

@@ -1,0 +1,836 @@
+[
+  {
+    "id": 894076,
+    "name": "utm_content",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894078,
+    "name": "utm_medium",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894080,
+    "name": "utm_campaign",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894082,
+    "name": "utm_source",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894084,
+    "name": "utm_term",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894086,
+    "name": "utm_referrer",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894088,
+    "name": "referrer",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894090,
+    "name": "gclientid",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894092,
+    "name": "gclid",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 894094,
+    "name": "fbclid",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 956999,
+    "name": "PAX",
+    "type": "numeric",
+    "enums": []
+  },
+  {
+    "id": 1466429,
+    "name": "UNIDAD DE NEGOCIO",
+    "type": "multiselect",
+    "enums": [
+      {
+        "id": 1174049,
+        "value": "TRAVELS"
+      },
+      {
+        "id": 1174051,
+        "value": "TOURS"
+      },
+      {
+        "id": 1174053,
+        "value": "TRANSPORTE"
+      },
+      {
+        "id": 1174055,
+        "value": "SALÓN DE EVENTOS"
+      },
+      {
+        "id": 1186955,
+        "value": "CORPORATIVO ROLAN"
+      }
+    ]
+  },
+  {
+    "id": 1466433,
+    "name": "MEDIO DE CONTACTO",
+    "type": "select",
+    "enums": [
+      {
+        "id": 1174059,
+        "value": "MESSENGER FACEBOOK"
+      },
+      {
+        "id": 1186031,
+        "value": "MENSAJE INSTAGRAM"
+      },
+      {
+        "id": 1186033,
+        "value": "FORMULARIO WEB"
+      },
+      {
+        "id": 1186035,
+        "value": "LLAMADA TELEFONICA"
+      },
+      {
+        "id": 1186037,
+        "value": "WHATS APP"
+      },
+      {
+        "id": 1186039,
+        "value": "UNO A UNO"
+      },
+      {
+        "id": 1186807,
+        "value": "CORREO ELECTRONICO"
+      },
+      {
+        "id": 1186959,
+        "value": "OTRO"
+      },
+      {
+        "id": 1195577,
+        "value": "VISITA  A OFICINA"
+      },
+      {
+        "id": 1211928,
+        "value": "OTRA (PLATAFORMAS)"
+      },
+      {
+        "id": 1212808,
+        "value": "TIK TOK"
+      }
+    ]
+  },
+  {
+    "id": 1467863,
+    "name": "TIPO DE CLIENTE",
+    "type": "select",
+    "enums": [
+      {
+        "id": 1185053,
+        "value": "Particular nacional"
+      },
+      {
+        "id": 1185055,
+        "value": "Agencia de Viajes"
+      },
+      {
+        "id": 1185057,
+        "value": "Empresa"
+      },
+      {
+        "id": 1185059,
+        "value": "Particular internacional"
+      },
+      {
+        "id": 1185061,
+        "value": "Otro"
+      },
+      {
+        "id": 1186481,
+        "value": "OPERADOR TURÍSTICO/GUÍA"
+      },
+      {
+        "id": 1191037,
+        "value": "ESCUELA"
+      },
+      {
+        "id": 1192617,
+        "value": "GOBIERNO"
+      },
+      {
+        "id": 1199586,
+        "value": "DMC"
+      },
+      {
+        "id": 1199588,
+        "value": "EVENT O WEDDING PLANER"
+      },
+      {
+        "id": 1211960,
+        "value": "HOTEL/ AIRBNB"
+      }
+    ]
+  },
+  {
+    "id": 1468849,
+    "name": "FECHA FIN DEL SERVICIO",
+    "type": "date_time",
+    "enums": []
+  },
+  {
+    "id": 1468851,
+    "name": "FECHA INICIO DEL SERVICIO",
+    "type": "date_time",
+    "enums": []
+  },
+  {
+    "id": 1468855,
+    "name": "ORIGEN DEL SERVICIO",
+    "type": "text",
+    "enums": []
+  },
+  {
+    "id": 1468857,
+    "name": "DESTINO A",
+    "type": "text",
+    "enums": []
+  },
+  {
+    "id": 1468859,
+    "name": "DESTINO B",
+    "type": "text",
+    "enums": []
+  },
+  {
+    "id": 1468863,
+    "name": "NÚM DE COTIZACIÓN",
+    "type": "numeric",
+    "enums": []
+  },
+  {
+    "id": 1468923,
+    "name": "SERVICIO TRAVEL",
+    "type": "multiselect",
+    "enums": [
+      {
+        "id": 1186149,
+        "value": "PAQUETE JAPON SETH"
+      },
+      {
+        "id": 1186151,
+        "value": "PAQUETE EUROPA MEGA"
+      },
+      {
+        "id": 1186153,
+        "value": "PAQUETE EGIPTO"
+      },
+      {
+        "id": 1186296,
+        "value": "PAQUETE JAPÓN MEGA"
+      },
+      {
+        "id": 1186298,
+        "value": "PAQUETE COSTA RICA"
+      },
+      {
+        "id": 1186451,
+        "value": "SOLO VUELOS"
+      },
+      {
+        "id": 1186453,
+        "value": "SOLO HOSPEDAJE"
+      },
+      {
+        "id": 1186455,
+        "value": "PAQUETE NACIONAL"
+      },
+      {
+        "id": 1186457,
+        "value": "RENTA DE VEHÍCULO SIN CHOFER"
+      },
+      {
+        "id": 1186479,
+        "value": "PAQUETE INTERNACIONAL"
+      },
+      {
+        "id": 1186526,
+        "value": "SERVICIOS ESPECIALES"
+      },
+      {
+        "id": 1189143,
+        "value": "BARRANCAS CHEPE"
+      }
+    ]
+  },
+  {
+    "id": 1468925,
+    "name": "SERVICIO TOURS",
+    "type": "multiselect",
+    "enums": [
+      {
+        "id": 1186155,
+        "value": "PAQUETE MUERTOS"
+      },
+      {
+        "id": 1186157,
+        "value": "PAQUETE BASICO 4 DIA 3 NOCHES"
+      },
+      {
+        "id": 1186159,
+        "value": "RUTA HIERVE EL AGUA"
+      },
+      {
+        "id": 1186163,
+        "value": "RUTA SENDEROS DEL AGAVE"
+      },
+      {
+        "id": 1186167,
+        "value": "RUTA MONTE ALBÁN"
+      },
+      {
+        "id": 1186292,
+        "value": "PAQUETE MUERTOS BÁSICO"
+      },
+      {
+        "id": 1186294,
+        "value": "RUTA PUEBLOS ARTESANOS"
+      },
+      {
+        "id": 1186789,
+        "value": "RUTA ESPECIAL"
+      },
+      {
+        "id": 1187870,
+        "value": "RUTA MITLA SIN HIERVE"
+      },
+      {
+        "id": 1187872,
+        "value": "RUTA DOMINICA"
+      },
+      {
+        "id": 1187874,
+        "value": "RUTA SIERRA"
+      },
+      {
+        "id": 1191047,
+        "value": "TOURS HUATULCO"
+      },
+      {
+        "id": 1191049,
+        "value": "TOURS PUERTO ESCONDIDO"
+      },
+      {
+        "id": 1191051,
+        "value": "PAQUETE PERSONALIZADO"
+      },
+      {
+        "id": 1195579,
+        "value": "PAQUETE GUELAGUEZA"
+      },
+      {
+        "id": 1204327,
+        "value": "andabus"
+      },
+      {
+        "id": 1204379,
+        "value": "EN LA CIUDAD DE LOS MUERTOS"
+      },
+      {
+        "id": 1204381,
+        "value": "COSECHANDO LA OFRENDA"
+      },
+      {
+        "id": 1204383,
+        "value": "BAILANDO CON LA CATRINA"
+      },
+      {
+        "id": 1205856,
+        "value": "CITY TOUR"
+      },
+      {
+        "id": 1212806,
+        "value": "RECORRIDO DE PANTEONES"
+      }
+    ]
+  },
+  {
+    "id": 1469042,
+    "name": "SERVICIO SALON",
+    "type": "multiselect",
+    "enums": [
+      {
+        "id": 1186274,
+        "value": "RENTA DE SALON"
+      },
+      {
+        "id": 1186276,
+        "value": "RENTA DE MOVILIARIO"
+      },
+      {
+        "id": 1186278,
+        "value": "BANQUETE"
+      }
+    ]
+  },
+  {
+    "id": 1469044,
+    "name": "SERVICIO TRANSPORTE",
+    "type": "multiselect",
+    "enums": [
+      {
+        "id": 1186280,
+        "value": "TRASLADO SENCILLO LOCAL"
+      },
+      {
+        "id": 1186282,
+        "value": "TRASLADO REDONDO LOCAL"
+      },
+      {
+        "id": 1186284,
+        "value": "TRASLADO SENCILLO NACIONAL"
+      },
+      {
+        "id": 1186286,
+        "value": "TRASLADO REDONDO NACIONAL"
+      },
+      {
+        "id": 1186288,
+        "value": "SERVICIO A DISPOSICIÓN"
+      },
+      {
+        "id": 1186290,
+        "value": "TRF IN / TRF OUT"
+      },
+      {
+        "id": 1190293,
+        "value": "SCOUTING"
+      }
+    ]
+  },
+  {
+    "id": 1469134,
+    "name": "STATUS PAGO",
+    "type": "multiselect",
+    "enums": [
+      {
+        "id": 1186356,
+        "value": "ANTICIPO"
+      },
+      {
+        "id": 1186358,
+        "value": "PAGO TOTAL"
+      },
+      {
+        "id": 1186459,
+        "value": "PENDIENTE DE PAGO/POR DEFINIR"
+      }
+    ]
+  },
+  {
+    "id": 1469201,
+    "name": "DESCRIPCIÓN DETALLADA",
+    "type": "text",
+    "enums": []
+  },
+  {
+    "id": 1469259,
+    "name": "FECHA DE CIERRE DE VENTA",
+    "type": "date",
+    "enums": []
+  },
+  {
+    "id": 1469362,
+    "name": "TIPO DE VEHÍCULO REQUERIDO",
+    "type": "multiselect",
+    "enums": [
+      {
+        "id": 1186570,
+        "value": "AUTO SEDÁN"
+      },
+      {
+        "id": 1186572,
+        "value": "HIGLANDER"
+      },
+      {
+        "id": 1186574,
+        "value": "SUBURBAN"
+      },
+      {
+        "id": 1186576,
+        "value": "VITO/VIANO 7 PAX"
+      },
+      {
+        "id": 1186578,
+        "value": "HIACE 11 PAX"
+      },
+      {
+        "id": 1186580,
+        "value": "SPRINTER 20 PAX"
+      },
+      {
+        "id": 1186582,
+        "value": "AUTOBÚS GRANDE/EJECUTIVO"
+      },
+      {
+        "id": 1186584,
+        "value": "AUTOBÚS CHICO/SENCILLO"
+      },
+      {
+        "id": 1188376,
+        "value": "SPRINTER 15 PAX"
+      },
+      {
+        "id": 1205163,
+        "value": "VEHICULO COMPARTIDO"
+      },
+      {
+        "id": 1211924,
+        "value": "NO REQYUERE VEHICULO"
+      }
+    ]
+  },
+  {
+    "id": 1469852,
+    "name": "COSTO PROVEEDOR $",
+    "type": "numeric",
+    "enums": []
+  },
+  {
+    "id": 1470946,
+    "name": "TIPO DE SERVICIO",
+    "type": "select",
+    "enums": [
+      {
+        "id": 1187866,
+        "value": "COMPARTIDO"
+      },
+      {
+        "id": 1187868,
+        "value": "PRIVADO"
+      }
+    ]
+  },
+  {
+    "id": 1470950,
+    "name": "BLOQUEO TRAVEL",
+    "type": "select",
+    "enums": [
+      {
+        "id": 1187876,
+        "value": "SI"
+      },
+      {
+        "id": 1187878,
+        "value": "NO"
+      }
+    ]
+  },
+  {
+    "id": 1470952,
+    "name": "PROVEEDOR",
+    "type": "text",
+    "enums": []
+  },
+  {
+    "id": 1473685,
+    "name": "CAMPAÑA",
+    "type": "select",
+    "enums": [
+      {
+        "id": 1190915,
+        "value": "GUELAGUETZA 2027"
+      },
+      {
+        "id": 1191053,
+        "value": "JAPON 2027"
+      },
+      {
+        "id": 1191055,
+        "value": "OAXACA BASICO"
+      },
+      {
+        "id": 1198471,
+        "value": "COLOMBIA"
+      },
+      {
+        "id": 1198473,
+        "value": "CANCUN"
+      },
+      {
+        "id": 1199532,
+        "value": "TRANSPORTE AFUERA"
+      },
+      {
+        "id": 1199534,
+        "value": "TRANSPORTE DENTRO"
+      },
+      {
+        "id": 1199895,
+        "value": "HOTEL VICTORIA"
+      },
+      {
+        "id": 1200507,
+        "value": "SIN CAMPAÑA"
+      },
+      {
+        "id": 1200671,
+        "value": "PERU"
+      },
+      {
+        "id": 1204385,
+        "value": "MUERTOS 2026"
+      },
+      {
+        "id": 1213117,
+        "value": "CACERIA DE ESTRELLAS"
+      },
+      {
+        "id": 1213551,
+        "value": "EXPERIENCIAS MUERTOS 2026"
+      }
+    ]
+  },
+  {
+    "id": 1474597,
+    "name": "Formulario",
+    "type": "url",
+    "enums": []
+  },
+  {
+    "id": 1477727,
+    "name": "BANCO RECEPTOR",
+    "type": "select",
+    "enums": [
+      {
+        "id": 1205179,
+        "value": "SANT RT"
+      },
+      {
+        "id": 1205181,
+        "value": "MP GHR"
+      },
+      {
+        "id": 1205183,
+        "value": "PAYPAL PAG. WEB"
+      },
+      {
+        "id": 1205185,
+        "value": "CLIP"
+      },
+      {
+        "id": 1205187,
+        "value": "BX RT"
+      },
+      {
+        "id": 1205189,
+        "value": "BANORTE MRC"
+      },
+      {
+        "id": 1205191,
+        "value": "BX FHR"
+      },
+      {
+        "id": 1205193,
+        "value": "SANT FHR"
+      },
+      {
+        "id": 1205195,
+        "value": "BBVA GHR"
+      },
+      {
+        "id": 1205197,
+        "value": "SPIN"
+      },
+      {
+        "id": 1212410,
+        "value": "CAJA EFECTIVO"
+      }
+    ]
+  },
+  {
+    "id": 1478045,
+    "name": "FORMA DE PAGO",
+    "type": "multiselect",
+    "enums": [
+      {
+        "id": 1205495,
+        "value": "EFECTIVO"
+      },
+      {
+        "id": 1205497,
+        "value": "TRANSFERENCIA"
+      },
+      {
+        "id": 1205499,
+        "value": "TDD/TDC"
+      },
+      {
+        "id": 1205501,
+        "value": "LINK DE PAGO"
+      },
+      {
+        "id": 1205503,
+        "value": "PÁGINA WEB CORP. ROLAN"
+      },
+      {
+        "id": 1205505,
+        "value": "DEPÓSITO"
+      },
+      {
+        "id": 1205507,
+        "value": "RETIRO SIN TARJETA"
+      },
+      {
+        "id": 1205509,
+        "value": "PAYPAL"
+      },
+      {
+        "id": 1205511,
+        "value": "OUTTRIP"
+      }
+    ]
+  },
+  {
+    "id": 1479926,
+    "name": "Próxima cita",
+    "type": "date_time",
+    "enums": []
+  },
+  {
+    "id": 1480035,
+    "name": "FRECUENCIA DE COMPRA",
+    "type": "select",
+    "enums": [
+      {
+        "id": 1211009,
+        "value": "CLIENTE PRMERA VEZ"
+      },
+      {
+        "id": 1211011,
+        "value": "RECOMPRA MISMO MES"
+      },
+      {
+        "id": 1211013,
+        "value": "RECOMPRA MISMO AÑO"
+      },
+      {
+        "id": 1211015,
+        "value": "RECOMPRA AÑOS ANTERIORES"
+      },
+      {
+        "id": 1213036,
+        "value": "CLIENTE RECUPERADO"
+      },
+      {
+        "id": 1213038,
+        "value": "RECOMPRA PASIVA"
+      },
+      {
+        "id": 1213040,
+        "value": "RECOMPRA ACTIVA"
+      }
+    ]
+  },
+  {
+    "id": 1480296,
+    "name": "Saldo Pendiente",
+    "type": "numeric",
+    "enums": []
+  },
+  {
+    "id": 1480772,
+    "name": "URL DOC",
+    "type": "text",
+    "enums": []
+  },
+  {
+    "id": 1481110,
+    "name": "Requerimientos especiales",
+    "type": "text",
+    "enums": []
+  },
+  {
+    "id": 1481463,
+    "name": "FECHA DE COTIZACION",
+    "type": "date",
+    "enums": []
+  },
+  {
+    "id": 1481645,
+    "name": "RECOMPRA",
+    "type": "select",
+    "enums": [
+      {
+        "id": 1213579,
+        "value": "PASIVA"
+      },
+      {
+        "id": 1213581,
+        "value": "ACTIVA"
+      },
+      {
+        "id": 1213715,
+        "value": "NA"
+      }
+    ]
+  },
+  {
+    "id": 1482455,
+    "name": "Meta Ads ID del anuncio",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 1482457,
+    "name": "Meta Ads ID del conjunto de anuncios",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 1482459,
+    "name": "Meta Ads ID de campaña",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 1482461,
+    "name": "Meta Ads ID del contenido",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 1482463,
+    "name": "Meta Ads fuente",
+    "type": "tracking_data",
+    "enums": []
+  },
+  {
+    "id": 1482465,
+    "name": "Meta Ads ref",
+    "type": "tracking_data",
+    "enums": []
+  }
+]

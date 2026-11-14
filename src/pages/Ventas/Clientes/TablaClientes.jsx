@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw, Filter, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw, Filter, Plus } from 'lucide-react';
 import ModalVerCliente from './Modales/ModalVerCliente';
+import ModalCrearClienteLead from './Modales/ModalCrearClienteLead';
 import ModalEditarCliente from './Modales/ModalEditarCliente';
 import ModalEliminarCliente from './Modales/ModalEliminarCliente';
 import ModalRestaurarCliente from './Modales/ModalRestaurarCliente';
@@ -29,6 +30,7 @@ const TablaClientes = () => {
   const [cargando, setCargando] = useState(true);
 
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
+  const [modalCrearAbierto, setModalCrearAbierto] = useState(false);
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [clienteAEliminar, setClienteAEliminar] = useState(null);
   const [clienteARestaurar, setClienteARestaurar] = useState(null);
@@ -48,7 +50,7 @@ const TablaClientes = () => {
       setRoles(userData.roles || []);
 
       cargarConfiguracionPipelines();
-    } catch (error) {
+    } catch {
       setCargando(false);
     }
   }, []);
@@ -87,7 +89,9 @@ const TablaClientes = () => {
       });
 
       setPipelines(response.data.pipelines);
-    } catch (error) {
+    } catch {
+      setCargando(false);
+      alert('No se pudo cargar la configuración de embudos.');
     }
   };
 
@@ -174,7 +178,7 @@ const TablaClientes = () => {
       );
 
       await cargarClientes();
-    } catch (error) {
+    } catch {
       alert('Error al actualizar estado del lead');
     }
   };
@@ -351,14 +355,6 @@ const TablaClientes = () => {
     }
   };
 
-  const getEstadoIcon = (estado) => {
-    switch (estado) {
-      case 'contactado': return <Clock size={14} />;
-      case 'ganado': return <CheckCircle size={14} />;
-      case 'perdido': return <XCircle size={14} />;
-      default: return <Clock size={14} />;
-    }
-  };
 
   if (!localStorage.getItem('token')) {
     return (
@@ -471,6 +467,11 @@ const TablaClientes = () => {
         </div>
 
         <div className="clientes-controles-derecha">
+          {(esAdministrador || permisos.includes('ventas.clientes.editar')) && (
+            <button type="button" className="clientes-boton-nuevo" onClick={() => setModalCrearAbierto(true)}>
+              <Plus size={18} /> Añadir cliente con lead
+            </button>
+          )}
           <div className="clientes-control-busqueda">
             <label htmlFor="buscar">Buscar:</label>
             <div className="clientes-entrada-busqueda">
@@ -727,10 +728,28 @@ const TablaClientes = () => {
         </div>
       </div>
 
+      {modalCrearAbierto && (
+        <ModalCrearClienteLead
+          onClose={() => setModalCrearAbierto(false)}
+          onSaved={() => {
+            setMostrarTodos(true);
+            setFiltroActivo({ pipeline_id: null, etapa_id: null, estado_lead: null });
+            setPaginaActual(1);
+          }}
+        />
+      )}
+
       <ModalVerCliente
         estaAbierto={modalVerAbierto}
         cliente={clienteSeleccionado}
         alCerrar={cerrarModalVer}
+        puedeEditar={esAdministrador || permisos.includes('ventas.clientes.editar')}
+        onAssigned={async () => {
+          const token = localStorage.getItem('token');
+          const response = await axios.get(`${API_CONFIG.BASE_URL}/clientes/${clienteSeleccionado.id}`, { headers: { Authorization: `Bearer ${token}` } });
+          setClienteSeleccionado(response.data);
+          await cargarClientes();
+        }}
       />
 
       <ModalEditarCliente
