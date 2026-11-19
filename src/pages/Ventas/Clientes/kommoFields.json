@@ -1,65 +1,5 @@
 [
   {
-    "id": 894076,
-    "name": "utm_content",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894078,
-    "name": "utm_medium",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894080,
-    "name": "utm_campaign",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894082,
-    "name": "utm_source",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894084,
-    "name": "utm_term",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894086,
-    "name": "utm_referrer",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894088,
-    "name": "referrer",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894090,
-    "name": "gclientid",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894092,
-    "name": "gclid",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 894094,
-    "name": "fbclid",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
     "id": 956999,
     "name": "PAX",
     "type": "numeric",
@@ -796,41 +736,5 @@
         "value": "NA"
       }
     ]
-  },
-  {
-    "id": 1482455,
-    "name": "Meta Ads ID del anuncio",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 1482457,
-    "name": "Meta Ads ID del conjunto de anuncios",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 1482459,
-    "name": "Meta Ads ID de campaña",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 1482461,
-    "name": "Meta Ads ID del contenido",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 1482463,
-    "name": "Meta Ads fuente",
-    "type": "tracking_data",
-    "enums": []
-  },
-  {
-    "id": 1482465,
-    "name": "Meta Ads ref",
-    "type": "tracking_data",
-    "enums": []
   }
 ]

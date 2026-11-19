@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import ModalServicio from '../Servicios/ModalServicio';
+import '../Servicios/ServiciosCliente.css';
 import { Search, Edit, Eye, ChevronLeft, ChevronRight, Trash2, Users, BarChart3, RotateCcw, Filter, Plus } from 'lucide-react';
 import ModalVerCliente from './Modales/ModalVerCliente';
 import ModalCrearClienteLead from './Modales/ModalCrearClienteLead';
@@ -31,6 +34,8 @@ const TablaClientes = () => {
 
   const [modalVerAbierto, setModalVerAbierto] = useState(false);
   const [modalCrearAbierto, setModalCrearAbierto] = useState(false);
+  const [servicioContexto, setServicioContexto] = useState(null);
+  const [avisoServicio, setAvisoServicio] = useState('');
   const [modalEditarAbierto, setModalEditarAbierto] = useState(false);
   const [clienteAEliminar, setClienteAEliminar] = useState(null);
   const [clienteARestaurar, setClienteARestaurar] = useState(null);
@@ -417,6 +422,7 @@ const TablaClientes = () => {
         </div>
       </div>
 
+      {avisoServicio && <p role="status" className="servicios-aviso">{avisoServicio}</p>}
       <div className="clientes-contenedor-filtros">
         <button
           onClick={mostrarTodosLosPipelines}
@@ -568,6 +574,10 @@ const TablaClientes = () => {
                               ${lead.precio.toLocaleString()}
                             </div>
                           )}
+                        </div>
+                        <div className="clientes-servicios-lead">
+                          {cliente.activo && (esAdministrador || permisos.includes('ventas.servicios.editar')) && <button type="button" onClick={() => { setServicioContexto({ cliente, lead }); setAvisoServicio(''); }}><Plus size={14}/>Añadir servicio</button>}
+                          {permisos.includes('ventas.servicios.ver') && <Link to={`/servicios-clientes?cliente_id=${cliente.id}&lead_id=${lead.id}`}><Eye size={14}/>Ver servicios</Link>}
                         </div>
                       </td>
 
@@ -728,6 +738,7 @@ const TablaClientes = () => {
         </div>
       </div>
 
+      {servicioContexto && <ModalServicio cliente={servicioContexto.cliente} lead={servicioContexto.lead} onClose={() => setServicioContexto(null)} onSaved={() => setAvisoServicio('Servicio añadido al lead correctamente. Puedes añadir otro o consultarlos en Ver servicios.')} />}
       {modalCrearAbierto && (
         <ModalCrearClienteLead
           onClose={() => setModalCrearAbierto(false)}

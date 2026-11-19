@@ -47,6 +47,10 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
         setElementoActivo('Clientes');
         setVentasAbierto(true);
         break;
+      case '/servicios-clientes':
+        setElementoActivo('ServiciosClientes');
+        setVentasAbierto(true);
+        break;
       case '/pagos':
         setElementoActivo('Pagos');
         setVentasAbierto(true);
@@ -232,6 +236,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
       tieneSubmenu: true,
       submenu: [
         { id: 'Clientes', icono: User, etiqueta: 'Clientes', permiso: 'ventas.clientes.ver' },
+        { id: 'ServiciosClientes', icono: FileText, etiqueta: 'Servicios', permiso: 'ventas.servicios.ver' },
         { id: 'Pagos', icono: CreditCard, etiqueta: 'Pagos', permiso: 'ventas.pagos.ver' },
       ]
     },
@@ -314,6 +319,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
     const rutas = {
       Principal: '/',
       Clientes: '/clientes',
+      ServiciosClientes: '/servicios-clientes',
       Pagos: '/pagos',
       Contratos: '/contratos',
       OrdenServicio: '/orden-servicio',

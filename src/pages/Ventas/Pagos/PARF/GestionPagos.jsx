@@ -214,7 +214,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
           break;
         case "crearTodos":
           establecerPagoSeleccionado(pago);
-          setModalTodosAbierto(true);
+          window.location.assign("/servicios-clientes");
           break;
         default:
           console.warn("Acción no reconocida:", accion);
@@ -606,10 +606,10 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
                             onClick={() => manejarAccion("crearTodos", pago)}
                             title={
                               puedeCrearOrden(pago)
-                                ? "Crear Orden + Contrato + Reserva"
-                                : "Requiere al menos 50% pagado"
+                                ? "Generar órdenes desde Servicios"
+                                : "Generar órdenes desde Servicios"
                             }
-                            disabled={cargando || !puedeCrearOrden(pago)}
+                            disabled={cargando}
                           >
                             <Plus size={14} />
                           </button>

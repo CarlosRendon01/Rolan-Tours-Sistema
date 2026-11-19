@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AccesoDenegado from "./pages/AccesoDenegado";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import PrincipalCliente from "./pages/Ventas/Clientes/PrincipalCliente.jsx";
+import ServiciosCliente from "./pages/Ventas/Servicios/ServiciosCliente.jsx";
 import PrincipalPago from "./pages/Ventas/Pagos/PrincipalPago.jsx";
 import PrincipalLogin from "./pages/Login/PrincipalLogin.jsx";
 import OperadoresPrincipal from "./pages/Operaciones/Operadores/OperadoresPrincipal.jsx";
@@ -44,7 +45,8 @@ function App() {
   const manejarLogout = useCallback(async () => {
     try {
       await axios.post(`${API_CONFIG.BASE_URL}/logout`);
-    } catch (_) {
+    } catch {
+      // El cierre local continúa aunque el servidor no responda.
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -74,6 +76,7 @@ function App() {
           />
 
           {/* VENTAS */}
+          <Route path="/servicios-clientes" element={<ProtectedRoute requiredPermission="ventas.servicios.ver"><ServiciosCliente /></ProtectedRoute>} />
           <Route
             path="/clientes"
             element={

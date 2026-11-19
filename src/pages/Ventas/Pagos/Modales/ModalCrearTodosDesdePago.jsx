@@ -177,7 +177,7 @@ const ModalCrearTodosDesdePago = ({ estaAbierto, pago, alCerrar }) => {
         forma_pago: "efectivo",
         pagado: "no pagado",
         // Clave: la cotizacion une todo
-        cotizacion_id: pago.cotizacion?.id || pago.cotizacion_id || "",
+        servicio_id: pago.cotizacion?.id || pago.servicio_id || "",
       });
       setErrores({});
 
