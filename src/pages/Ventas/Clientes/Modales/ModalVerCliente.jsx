@@ -14,6 +14,10 @@ import {
   Hash
 } from 'lucide-react';
 import './ModalVerCliente.css';
+import customFieldDefinitions from '../kommoFields.json';
+import { formatKommoValue } from '../../../../utils/kommoFormatting';
+
+const definitionsById = new Map(customFieldDefinitions.map((field) => [Number(field.id), field]));
 
 const formatearFecha = (fecha) => {
   if (!fecha) return 'No disponible';
@@ -244,12 +248,11 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar, puedeEditar = false, 
                     <dl>{lead.custom_fields_values.map((field, index) => (
                       <div key={field.field_id || index}>
                         <dt>{field.field_name || `Campo ${field.field_id}`}</dt>
-                        <dd>{Array.isArray(field.values) ? field.values.map((item) => String(item.value ?? '')).join(', ') : 'Sin valor'}</dd>
+                        <dd>{Array.isArray(field.values) && field.values.length ? field.values.map((item) => formatKommoValue(item.value, field.field_type || definitionsById.get(Number(field.field_id ?? field.id))?.type)).join(', ') : 'Sin valor'}</dd>
                       </div>
                     ))}</dl>
                   </details>
                 )}
-                {lead.kommo_payload && <details><summary>Datos completos de Kommo</summary><pre>{JSON.stringify(lead.kommo_payload, null, 2)}</pre></details>}
               </section>
             ))}
           </div>

@@ -1,3 +1,4 @@
+import { dateForInput } from '../../../../utils/documentFormatting';
 import { useState, useEffect, useCallback } from "react";
 import { X, Save, Upload } from "lucide-react";
 import "./ModalEditarReserva.css";
@@ -29,7 +30,7 @@ const ModalEditarReserva = ({ reserva, onGuardar, onCerrar }) => {
     if (reserva) {
       setFormData({
         folio: reserva.folio || "",
-        fechaReserva: reserva.fechaReserva || new Date().toISOString().split("T")[0],
+        fechaReserva: dateForInput(reserva.fechaReserva) || dateForInput(new Date()),
         numHabitantes: reserva.numHabitantes || "",
         incluye: reserva.incluye || "",
         noIncluye: reserva.noIncluye || "",

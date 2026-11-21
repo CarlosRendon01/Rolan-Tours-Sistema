@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { dateForInput, singleLinePdfText, wrapPdfText } from '../../../../utils/documentFormatting';
+import React, { useState } from "react";
 import axios from "axios";
 import {
   Search,
@@ -25,7 +26,6 @@ import { API_CONFIG } from "../../../../config/api";
 
 const TablaReservas = ({
   reservasDatos,
-  setReservasDatos,
   cargando,
   onRecargar,
 }) => {
@@ -46,13 +46,13 @@ const TablaReservas = ({
   const reservasFiltradas = reservasDatos.filter((reserva) => {
     if (!reserva.activo) return false;
     const busqueda = terminoBusqueda.toLowerCase();
-    const nombreCliente = reserva.nombreCliente.toLowerCase();
+    const nombreCliente = String(reserva.nombreCliente ?? "").toLowerCase();
 
     return (
       nombreCliente.includes(busqueda) ||
-      reserva.folio.toString().includes(busqueda) ||
+      String(reserva.folio ?? "").includes(busqueda) ||
       (reserva.telefono || "").includes(busqueda) ||
-      reserva.servicio.toLowerCase().includes(busqueda)
+      String(reserva.servicio ?? "").toLowerCase().includes(busqueda)
     );
   });
 
@@ -96,7 +96,8 @@ const TablaReservas = ({
     });
   };
 
-  const obtenerInicialesCliente = (nombreCompleto) => {
+  const obtenerInicialesCliente = (value) => {
+    const nombreCompleto = String(value ?? "");
     const palabras = nombreCompleto.split(" ");
     if (palabras.length >= 2) {
       return `${palabras[0].charAt(0)}${palabras[1].charAt(0)}`;
@@ -250,64 +251,46 @@ const TablaReservas = ({
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      const dibujar = (texto, x, y, size) => {
-        if (texto) {
-          firstPage.drawText(texto.toString(), {
-            x,
-            y,
-            size,
-            font,
-            color: rgb(0, 0, 0),
-          });
+      const dibujar = (value, x, y, size) => {
+        const text = singleLinePdfText(value);
+        if (text) firstPage.drawText(text, { x, y, size, font, color: rgb(0,0,0) });
+      };
+      const date = dateForInput(reserva.fechaReserva);
+      const fechaReserva = date ? new Date(`${date}T12:00:00`).toLocaleDateString('es-MX', {year:'numeric',month:'long',day:'numeric'}) : '';
+      const importe = reserva.importe == null || reserva.importe === '' ? '' : `$ ${reserva.importe}`;
+      [
+        { value:reserva.folio, x:495, y:325, size:12 },
+        { value:fechaReserva, x:190, y:272, size:11 },
+        { value:reserva.numHabitantes, x:486, y:273, size:11 },
+        { value:reserva.numPasajeros, x:110, y:208, size:11 },
+        { value:reserva.telefono, x:230, y:208, size:11 },
+        { value:importe, x:450, y:208, size:11 },
+        { value:reserva.nombreCliente, x:108, y:240, size:11 },
+      ].forEach(({value,x,y,size}) => dibujar(value,x,y,size));
+
+      const annex = [];
+      for (const field of [
+        { title:'Servicios', value:reserva.servicio, x:120, y:174 },
+        { title:'Incluye', value:reserva.incluye, x:128, y:142 },
+        { title:'No incluye', value:reserva.noIncluye, x:130, y:108 },
+      ]) {
+        const lines = wrapPdfText(field.value,font,9,440);
+        lines.slice(0,2).forEach((line,index) => dibujar(line,field.x,field.y-index*12,9));
+        if (lines.length>2) annex.push(field.title,...lines,'');
+      }
+      if (annex.length) {
+        dibujar('Ver detalle completo en anexo.',330,35,8);
+        const {width,height} = firstPage.getSize();
+        const capacity = Math.max(1,Math.floor((height-130)/12));
+        for (let start=0;start<annex.length;start+=capacity) {
+          const page = pdfDoc.addPage([width,height]);
+          page.drawText(`Reserva ${singleLinePdfText(reserva.folio)} - Detalle de servicios`,{x:60,y:height-55,size:12,font:fontBold});
+          annex.slice(start,start+capacity).forEach((line,index) => page.drawText(line,{x:60,y:height-85-index*12,size:9,font}));
         }
-      };
-
-      const fechaActual = new Date();
-      const formatoActual = {
-        weeyday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-
-      const fechaCompleta = fechaActual.toLocaleDateString(
-        "es-ES",
-        formatoActual
-      );
-      const formatearFecha = (fecha) =>
-        new Date(fecha).toLocaleDateString("es-MX");
-      const formatearFecha2 = (fecha) =>
-        new Date(fecha).toLocaleDateString("es-ES", formatoActual);
-      const convercionLetraMayuscula = (cadena) => {
-        return `${cadena.charAt(0).toUpperCase()}${cadena.slice(1)}`;
-      };
-
-      const campos = [
-        { valor: reserva.folio.toString(), x: 495, y: 325, z: 12 },
-        { valor: formatearFecha2(reserva.fechaReserva), x: 190, y: 272, z: 11 },
-        { valor: reserva.numHabitantes.toString(), x: 486, y: 273, z: 11 },
-        { valor: reserva.numPasajeros.toString(), x: 110, y: 208, z: 11 },
-        { valor: reserva.telefono, x: 230, y: 208, z: 11 },
-        { valor: `$ ${reserva.importe}`, x: 450, y: 208, z: 11 },
-        { valor: reserva.nombreCliente, x: 108, y: 240, z: 11 },
-        { valor: reserva.servicio, x: 120, y: 174, z: 9 },
-        { valor: reserva.incluye, x: 128, y: 142, z: 9 },
-        { valor: reserva.noIncluye, x: 130, y: 108, z: 9 },
-      ];
-
-      campos.forEach(({ valor, x, y, z }) => dibujar(valor, x, y, z));
-
-      if (reserva.formaPago === "transferencia") {
-        dibujar(convercionLetraMayuscula(reserva.formaPago), 158, 76, 11);
-      } else if (reserva.formaPago === "efectivo") {
-        dibujar(convercionLetraMayuscula(reserva.formaPago), 158, 76, 11);
       }
-
-      if (reserva.pagado === "pagado") {
-        dibujar(convercionLetraMayuscula(reserva.pagado), 358, 75, 11);
-      } else if (reserva.pagado === "no pagado") {
-        dibujar(convercionLetraMayuscula(reserva.pagado), 358, 75, 11);
-      }
+      const capitalize = (value) => value.charAt(0).toUpperCase()+value.slice(1);
+      if (['transferencia','efectivo'].includes(reserva.formaPago)) dibujar(capitalize(reserva.formaPago),158,76,11);
+      if (['pagado','no pagado'].includes(reserva.pagado)) dibujar(capitalize(reserva.pagado),358,75,11);
 
       const pdfBytes = await pdfDoc.save();
       return pdfBytes;

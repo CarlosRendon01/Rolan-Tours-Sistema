@@ -1,3 +1,4 @@
+import { dateForInput } from '../../../../utils/documentFormatting';
 import React, { useState, useEffect, useCallback } from "react";
 import {
   X,
@@ -90,7 +91,7 @@ const ModalEditarContrato = ({
         otro_tipo_pasaje_especificacion: contrato.otro_tipo_pasaje_especificacion || "",
         n_unidades_contratadas: contrato.n_unidades_contratadas || "",
         anticipo: contrato.anticipo || "",
-        fecha_liquidacion: contrato.fecha_liquidacion || "",
+        fecha_liquidacion: dateForInput(contrato.fecha_liquidacion),
         costos_cubiertos: contrato.costos_cubiertos || [],
         otro_costo_especificacion: contrato.otro_costo_especificacion || "",
         aire_acondicionado: contrato.aire_acondicionado || false,
@@ -103,9 +104,9 @@ const ModalEditarContrato = ({
         punto_intermedio: contrato.punto_intermedio || "",
         destino: contrato.destino || "",
         numero_pasajeros: contrato.numero_pasajeros || "",
-        fecha_inicio_servicio: contrato.fecha_inicio_servicio || "",
+        fecha_inicio_servicio: dateForInput(contrato.fecha_inicio_servicio),
         horario_inicio_servicio: contrato.horario_inicio_servicio || "",
-        fecha_final_servicio: contrato.fecha_final_servicio || "",
+        fecha_final_servicio: dateForInput(contrato.fecha_final_servicio),
         horario_final_servicio: contrato.horario_final_servicio || "",
         itinerario_detallado: contrato.itinerario_detallado || "",
         importe_servicio: contrato.importe_servicio || "",
@@ -178,9 +179,6 @@ const ModalEditarContrato = ({
     }
   };
 
-  const limpiarHora = (h) =>
-    h && typeof h === "string" ? h.substring(0, 5) : null;
-
   const manejarEnvio = async (evento) => {
     evento.preventDefault();
 
@@ -242,11 +240,6 @@ const ModalEditarContrato = ({
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      const datosActualizados = {
-        ...datosFormulario,
-        fecha_actualizacion: new Date().toISOString(),
-      };
 
       const datosLimpios = {
         id: contrato.id,

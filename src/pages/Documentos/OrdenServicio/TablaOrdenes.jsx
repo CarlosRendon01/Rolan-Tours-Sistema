@@ -1,3 +1,4 @@
+import { displayCalendarDate, singleLinePdfText, wrapPdfText } from '../../../utils/documentFormatting';
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -23,7 +24,7 @@ import "./TablaOrdenes.css";
 import { API_CONFIG } from "../../../config/api";
 
 const TablaOrdenes = () => {
-  const [rolUsuario, setRolUsuario] = useState(
+  const [rolUsuario] = useState(
     localStorage.getItem("rol") || "vendedor"
   );
   const [vehiculosDisponibles, setVehiculosDisponibles] = useState([]);
@@ -353,7 +354,7 @@ const TablaOrdenes = () => {
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const toStr = (value) => {
         if (value === null || value === undefined) return "";
-        return String(value);
+        return singleLinePdfText(value);
       };
 
       const toNum = (value) => {
@@ -362,29 +363,7 @@ const TablaOrdenes = () => {
         return isNaN(num) ? "0" : String(Math.trunc(num));
       };
 
-      const dividirTexto = (texto, ancho) => {
-        if (!texto) return [""];
-
-        const palabras = texto.split(" ");
-        const lineas = [];
-        let actual = "";
-
-        palabras.forEach((palabra) => {
-          const prueba = actual ? `${actual} ${palabra}` : palabra;
-          if (font.widthOfTextAtSize(prueba, 9) > ancho && actual) {
-            lineas.push(actual);
-            actual = palabra;
-          } else {
-            actual = prueba;
-          }
-        });
-        if (actual) lineas.push(actual);
-        return lineas.length > 0 ? lineas : [""];
-      };
-
-      const fechaOrden = orden.fecha_inicio_servicio
-        ? new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX")
-        : "";
+      const fechaOrden = displayCalendarDate(orden.fecha_orden_servicio);
 
       firstPage.drawText(fechaOrden, {
         x: 70,
@@ -458,9 +437,7 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      const fechaInicio = orden.fecha_inicio_servicio
-        ? new Date(orden.fecha_inicio_servicio).toLocaleDateString("es-MX")
-        : "";
+      const fechaInicio = displayCalendarDate(orden.fecha_inicio_servicio);
 
       firstPage.drawText(fechaInicio, {
         x: 160,
@@ -478,9 +455,7 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      const fechaFinal = orden.fecha_final_servicio
-        ? new Date(orden.fecha_final_servicio).toLocaleDateString("es-MX")
-        : "";
+      const fechaFinal = displayCalendarDate(orden.fecha_final_servicio);
 
       firstPage.drawText(fechaFinal, {
         x: 160,
@@ -498,17 +473,24 @@ const TablaOrdenes = () => {
         color: rgb(0, 0, 0),
       });
 
-      const itinerario = toStr(orden.itinerario_detallado);
-      const lineas = dividirTexto(itinerario, 450);
-      lineas.forEach((linea, i) => {
-        firstPage.drawText(linea, {
-          x: 100,
-          y: 528 - i * 12,
-          size: 9,
-          font: font,
-          color: rgb(0, 0, 0),
-        });
+      const lineas = wrapPdfText(orden.itinerario_detallado, font, 9, 450);
+      const firstPageLines = 7;
+      lineas.slice(0, firstPageLines).forEach((linea, i) => {
+        firstPage.drawText(linea, { x: 100, y: 528 - i * 12, size: 9, font, color: rgb(0,0,0) });
       });
+      const continuation = lineas.slice(firstPageLines);
+      if (continuation.length) {
+        firstPage.drawText('Itinerario: continúa en anexo.', { x: 100, y: 442, size: 8, font, color: rgb(0,0,0) });
+        const { width, height } = firstPage.getSize();
+        const capacity = Math.max(1, Math.floor((height-130)/12));
+        for (let start = 0; start < continuation.length; start += capacity) {
+          const page = pdfDoc.addPage([width,height]);
+          page.drawText(`Orden ${toStr(orden.folio)} - Continuación del itinerario`, { x: 60, y: height-55, font: fontBold, size: 12 });
+          continuation.slice(start,start+capacity).forEach((line,index) => {
+            page.drawText(line, { x: 60, y: height-85-index*12, font, size: 9 });
+          });
+        }
+      }
 
       firstPage.drawText(toStr(orden.direccion_retorno), {
         x: 150,
@@ -775,7 +757,7 @@ const TablaOrdenes = () => {
               </tr>
             </thead>
             <tbody>
-              {ordenesPaginados.map((orden, index) => (
+              {ordenesPaginados.map((orden) => (
                 <tr
                   key={orden.id}
                   className={`Ordenes-fila-orden ${!orden.activo ? "Ordenes-fila-inactiva" : ""

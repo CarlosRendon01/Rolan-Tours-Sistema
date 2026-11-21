@@ -1,3 +1,4 @@
+import { dateForInput } from '../../../../utils/documentFormatting';
 import React, { useState, useEffect, useCallback } from "react";
 import {
   X,
@@ -27,7 +28,7 @@ const ModalEditarOrden = ({
   const [datosFormulario, setDatosFormulario] = useState({
     folio: "",
     fecha_orden_servicio: "",
-    nombre_prestador: "" || "Antonio Alonso Meza",
+    nombre_prestador: "Antonio Alonso Meza",
     operador_id: "",
     vehiculo_id: "",
     coordinador_id: "",
@@ -72,7 +73,7 @@ const ModalEditarOrden = ({
     if (estaAbierto && orden) {
       setDatosFormulario({
         folio: orden.folio || "",
-        fecha_orden_servicio: orden.fecha_orden_servicio || "",
+        fecha_orden_servicio: dateForInput(orden.fecha_orden_servicio),
         nombre_prestador: orden.nombre_prestador || "Antonio Alonso Meza",
         operador_id: orden.operador_id || "",
         vehiculo_id: orden.vehiculo_id || "",
@@ -96,9 +97,9 @@ const ModalEditarOrden = ({
         punto_intermedio: orden.punto_intermedio || "",
         destino: orden.destino || "",
         numero_pasajeros: orden.numero_pasajeros || "",
-        fecha_inicio_servicio: orden.fecha_inicio_servicio || "",
+        fecha_inicio_servicio: dateForInput(orden.fecha_inicio_servicio),
         horario_inicio_servicio: orden.horario_inicio_servicio || "",
-        fecha_final_servicio: orden.fecha_final_servicio || "",
+        fecha_final_servicio: dateForInput(orden.fecha_final_servicio),
         horario_final_servicio: orden.horario_final_servicio || "",
         itinerario_detallado: orden.itinerario_detallado || "",
         marca: orden.marca || "",
