@@ -1,3 +1,4 @@
+import { ClientContactFieldsView } from '../ContactCustomFields';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { API_CONFIG } from '../../../../config/api';
@@ -220,6 +221,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar, puedeEditar = false, 
             </div>
           </div>
 
+          <ClientContactFieldsView client={cliente}/>
           <div className="cliente-leads-detalle">
             <h3>Leads del cliente</h3>
             {(cliente.leads || []).length === 0 && <p>Este cliente todavía no tiene leads.</p>}

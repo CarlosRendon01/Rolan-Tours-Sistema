@@ -1,3 +1,5 @@
+import ContactCustomFields from '../ContactCustomFields';
+import { clientContactFields, mergeClientContactFields } from '../contactFields';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Edit, User, Mail, Phone, FileText, Globe, MapPin, X, Save, AlertCircle } from 'lucide-react';
 import './ModalEditarCliente.css';
@@ -14,6 +16,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
     nacionalidad: '',
   });
 
+  const [contactFields,setContactFields] = useState([]);
   const [errores, setErrores] = useState({});
   const [guardando, setGuardando] = useState(false);
 
@@ -26,6 +29,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
 
   useEffect(() => {
     if (estaAbierto && cliente) {
+      setContactFields(clientContactFields(cliente));
       setDatosFormulario({
         nombre: cliente.nombre || '',
         email: cliente.email || '',
@@ -82,25 +86,16 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
       nuevosErrores.nombre = 'El nombre debe tener al menos 3 caracteres';
     }
 
-    if (!datosFormulario.email.trim()) {
-      nuevosErrores.email = 'El email es obligatorio';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datosFormulario.email)) {
+    if (datosFormulario.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datosFormulario.email)) {
       nuevosErrores.email = 'El email no tiene un formato válido';
     }
 
-    if (!datosFormulario.telefono.trim()) {
-      nuevosErrores.telefono = 'El teléfono es obligatorio';
-    } else if (!/^\d{10}$/.test(datosFormulario.telefono.replace(/\D/g, ''))) {
-      nuevosErrores.telefono = 'El teléfono debe tener 10 dígitos';
+    if (datosFormulario.telefono.trim() && !/^\d{7,15}$/.test(datosFormulario.telefono.replace(/\D/g, ''))) {
+      nuevosErrores.telefono = 'El teléfono debe tener entre 7 y 15 dígitos';
     }
 
-    if (!datosFormulario.canal_contacto) {
-      nuevosErrores.canal_contacto = 'Debe seleccionar un canal de contacto';
-    }
 
-    if (!datosFormulario.rfc.trim()) {
-      nuevosErrores.rfc = 'El RFC es obligatorio';
-    } else if (!/^[A-Z&Ñ]{3,4}\d{6}[A-Z\d]{3}$/.test(datosFormulario.rfc.toUpperCase())) {
+    if (datosFormulario.rfc.trim() && !/^[A-Z&Ñ]{3,4}\d{6}[A-Z\d]{3}$/.test(datosFormulario.rfc.toUpperCase())) {
       nuevosErrores.rfc = 'El formato del RFC no es válido';
     }
     return nuevosErrores;
@@ -189,6 +184,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
         ...cliente,
         ...datosFormulario,
         rfc: datosFormulario.rfc.toUpperCase(),
+        contact_custom_fields:mergeClientContactFields(contactFields,datosFormulario),
         fecha_actualizacion: new Date().toISOString()
       };
 
@@ -196,11 +192,11 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
 
       mostrarNotificacionExito();
 
-      const timeoutId = setTimeout(() => {
+      setTimeout(() => {
         manejarCerrar();
       }, 500);
 
-    } catch (error) {
+    } catch {
 
       if (typeof window !== 'undefined' && window.Swal) {
         window.Swal.fire({
@@ -274,7 +270,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
             <div className="campo-formulario-editar">
               <label htmlFor="email" className="etiqueta-formulario-editar">
                 <Mail size={18} />
-                Correo Electrónico *
+                Correo Electrónico
               </label>
               <input
                 type="email"
@@ -298,7 +294,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
             <div className="campo-formulario-editar">
               <label htmlFor="telefono" className="etiqueta-formulario-editar">
                 <Phone size={18} />
-                Teléfono *
+                Teléfono
               </label>
               <input
                 type="tel"
@@ -322,7 +318,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
             <div className="campo-formulario-editar">
               <label htmlFor="canal_contacto" className="etiqueta-formulario-editar">
                 <Globe size={18} />
-                Canal de Contacto *
+                Canal de Contacto
               </label>
               <select
                 id="canal_contacto"
@@ -354,7 +350,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
             <div className="campo-formulario-editar">
               <label htmlFor="rfc" className="etiqueta-formulario-editar">
                 <FileText size={18} />
-                RFC *
+                RFC
               </label>
               <input
                 type="text"
@@ -378,7 +374,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
             <div className="campo-formulario-editar">
               <label htmlFor="direccion" className="etiqueta-formulario-editar">
                 <MapPin size={18} />
-                Dirección Completa *
+                Dirección Completa
               </label>
               <input
                 type="text"
@@ -417,6 +413,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
             />
           </div>
 
+          <ContactCustomFields fields={contactFields} onChange={setContactFields} primary={datosFormulario} disabled={guardando}/>
           <div className="acciones-modal-editar">
             <button
               type="button"

@@ -1,0 +1,330 @@
+[
+  {
+    "id": 894066,
+    "name": "Posición",
+    "type": "text",
+    "code": "POSITION",
+    "enums": []
+  },
+  {
+    "id": 894068,
+    "name": "Teléfono",
+    "type": "multitext",
+    "code": "PHONE",
+    "enums": [
+      {
+        "id": 742968,
+        "value": "WORK",
+        "sort": 2
+      },
+      {
+        "id": 742970,
+        "value": "WORKDD",
+        "sort": 4
+      },
+      {
+        "id": 742972,
+        "value": "MOB",
+        "sort": 6
+      },
+      {
+        "id": 742974,
+        "value": "FAX",
+        "sort": 8
+      },
+      {
+        "id": 742976,
+        "value": "HOME",
+        "sort": 10
+      },
+      {
+        "id": 742978,
+        "value": "OTHER",
+        "sort": 12
+      }
+    ]
+  },
+  {
+    "id": 894070,
+    "name": "Email",
+    "type": "multitext",
+    "code": "EMAIL",
+    "enums": [
+      {
+        "id": 742980,
+        "value": "WORK",
+        "sort": 2
+      },
+      {
+        "id": 742982,
+        "value": "PRIV",
+        "sort": 4
+      },
+      {
+        "id": 742984,
+        "value": "OTHER",
+        "sort": 6
+      }
+    ]
+  },
+  {
+    "id": 1466395,
+    "name": "Nombre del Viajero Principal",
+    "type": "text",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1466405,
+    "name": "País de Procedencia",
+    "type": "text",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1466407,
+    "name": "Ciudad de Procedencia",
+    "type": "text",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1471068,
+    "name": "fecha de ingreso",
+    "type": "date",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1471700,
+    "name": "Como conocio la empresa?",
+    "type": "multiselect",
+    "code": null,
+    "enums": [
+      {
+        "id": 1188670,
+        "value": "FACEBOOK",
+        "sort": 500
+      },
+      {
+        "id": 1188672,
+        "value": "INSTAGRAM",
+        "sort": 1
+      },
+      {
+        "id": 1188674,
+        "value": "GOOGLE",
+        "sort": 2
+      },
+      {
+        "id": 1188676,
+        "value": "RECOMENDACIÓN",
+        "sort": 3
+      },
+      {
+        "id": 1188680,
+        "value": "BNI",
+        "sort": 4
+      },
+      {
+        "id": 1188682,
+        "value": "VENDEDOR",
+        "sort": 5
+      },
+      {
+        "id": 1188686,
+        "value": "EVENTO DE TURISMO",
+        "sort": 6
+      },
+      {
+        "id": 1188692,
+        "value": "PUBLICIDAD IMPRESA",
+        "sort": 7
+      },
+      {
+        "id": 1188836,
+        "value": "VISITA OFICINA",
+        "sort": 8
+      },
+      {
+        "id": 1188838,
+        "value": "ROTULOS DE VEHICULOS",
+        "sort": 9
+      },
+      {
+        "id": 1188840,
+        "value": "TIKTOK",
+        "sort": 10
+      },
+      {
+        "id": 1188878,
+        "value": "OTRO",
+        "sort": 11
+      },
+      {
+        "id": 1188987,
+        "value": "GRUPOS DE TURISMO",
+        "sort": 12
+      },
+      {
+        "id": 1188989,
+        "value": "GRUPO AIRBNB",
+        "sort": 13
+      },
+      {
+        "id": 1191039,
+        "value": "CONOCIDO DE RT",
+        "sort": 14
+      },
+      {
+        "id": 1191041,
+        "value": "FAMILIAR RT",
+        "sort": 15
+      },
+      {
+        "id": 1191043,
+        "value": "CONOCIDO VENDEDOR",
+        "sort": 16
+      },
+      {
+        "id": 1191045,
+        "value": "FAMILIAR VENDEROR",
+        "sort": 17
+      },
+      {
+        "id": 1204049,
+        "value": "HOTEL VICTORIA",
+        "sort": 18
+      },
+      {
+        "id": 1206554,
+        "value": "PERSONAL HV",
+        "sort": 19
+      },
+      {
+        "id": 1207010,
+        "value": "FITUR",
+        "sort": 20
+      },
+      {
+        "id": 1211926,
+        "value": "OTA ( PLATAFORMAS)",
+        "sort": 21
+      },
+      {
+        "id": 1213553,
+        "value": "CAMPAÑA REDES SOCIALES",
+        "sort": 22
+      }
+    ]
+  },
+  {
+    "id": 1475591,
+    "name": "Dirección",
+    "type": "text",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1478159,
+    "name": "RFC PUB. GRAL.",
+    "type": "select",
+    "code": null,
+    "enums": [
+      {
+        "id": 1205573,
+        "value": "N: XAXX010101000",
+        "sort": 500
+      },
+      {
+        "id": 1205575,
+        "value": "I: XEXX010101000",
+        "sort": 1
+      }
+    ]
+  },
+  {
+    "id": 1478163,
+    "name": "CORREO ELECTRÓNICO",
+    "type": "text",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1478209,
+    "name": "USO DE CFDI",
+    "type": "select",
+    "code": null,
+    "enums": [
+      {
+        "id": 1205611,
+        "value": "G03 Gastos en general",
+        "sort": 500
+      },
+      {
+        "id": 1205613,
+        "value": "G02 Devoluciones, descuentos o bonificaciones",
+        "sort": 1
+      },
+      {
+        "id": 1205615,
+        "value": "I02 Mobiliario y equipo de oficina para inversiones",
+        "sort": 2
+      },
+      {
+        "id": 1205617,
+        "value": "D04 Donativos",
+        "sort": 3
+      },
+      {
+        "id": 1205619,
+        "value": "D08 Gastos de transportación escolar obligatoria",
+        "sort": 4
+      },
+      {
+        "id": 1205621,
+        "value": "S01 Sin efectos fiscales",
+        "sort": 5
+      }
+    ]
+  },
+  {
+    "id": 1478610,
+    "name": "RFC",
+    "type": "textarea",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1478612,
+    "name": "REGIMEN",
+    "type": "textarea",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1478614,
+    "name": "CP",
+    "type": "text",
+    "code": null,
+    "enums": []
+  },
+  {
+    "id": 1478616,
+    "name": "IVA",
+    "type": "radiobutton",
+    "code": null,
+    "enums": [
+      {
+        "id": 1206116,
+        "value": "SÍ",
+        "sort": 500
+      },
+      {
+        "id": 1206118,
+        "value": "NO",
+        "sort": 1
+      }
+    ]
+  }
+]

@@ -1,3 +1,5 @@
+import ContactCustomFields from '../ContactCustomFields';
+import { mergeClientContactFields } from '../contactFields';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Plus, Trash2, X } from 'lucide-react';
@@ -35,7 +37,8 @@ const buildCustomFields = (selected, values) => selected.flatMap((fieldId) => {
 });
 
 export default function ModalCrearClienteLead({ onClose, onSaved }) {
-  const [cliente, setCliente] = useState({ nombre: '', email: '', telefono: '', canal_contacto: '' });
+  const [cliente, setCliente] = useState({ nombre: '', email: '', telefono: '', canal_contacto: '',rfc:'',direccion:'' });
+  const [contactFields,setContactFields] = useState([]);
   const [lead, setLead] = useState({ nombre: '', descripcion: '', precio: '', pipeline_id: pipelines[0].id, etapa_id: stages.find((item) => item.pipelineId === pipelines[0].id)?.id, assigned_user_id: '' });
   const [users, setUsers] = useState([]);
   const [usersError, setUsersError] = useState('');
@@ -70,6 +73,9 @@ export default function ModalCrearClienteLead({ onClose, onSaved }) {
           email: cliente.email.trim() || null,
           telefono: cliente.telefono.trim() || null,
           canal_contacto: cliente.canal_contacto.trim() || null,
+          rfc:cliente.rfc.trim() || null,
+          direccion:cliente.direccion.trim() || null,
+          contact_custom_fields:mergeClientContactFields(contactFields,cliente),
         },
         lead: {
           nombre: lead.nombre.trim(),
@@ -111,8 +117,11 @@ export default function ModalCrearClienteLead({ onClose, onSaved }) {
                 <label>Correo<input type="email" value={cliente.email} onChange={(e) => setClientValue('email', e.target.value)} /></label>
                 <label>Teléfono<input value={cliente.telefono} onChange={(e) => setClientValue('telefono', e.target.value)} /></label>
                 <label>Canal de contacto<input value={cliente.canal_contacto} onChange={(e) => setClientValue('canal_contacto', e.target.value)} /></label>
+                <label>RFC<input value={cliente.rfc} onChange={(e) => setClientValue('rfc',e.target.value)}/></label>
+                <label>Dirección<input value={cliente.direccion} onChange={(e) => setClientValue('direccion',e.target.value)}/></label>
               </div>
             </fieldset>
+            <ContactCustomFields fields={contactFields} onChange={setContactFields} primary={cliente} disabled={saving}/>
             <fieldset>
               <legend>Lead</legend>
               <div className="nuevo-cliente-grid">
