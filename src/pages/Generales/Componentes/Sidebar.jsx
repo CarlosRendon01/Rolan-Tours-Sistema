@@ -267,7 +267,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
     {
       id: 'Servicios',
       icono: Truck,
-      etiqueta: 'Servicios',
+      etiqueta: 'Tipos',
       tieneSubmenu: true,
       submenu: [
         { id: 'Transporte', icono: Plane, etiqueta: 'Transporte', permiso: 'servicios.transporte.ver' },
