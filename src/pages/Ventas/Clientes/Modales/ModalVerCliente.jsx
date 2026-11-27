@@ -8,7 +8,6 @@ import {
   Phone,
   FileText,
   Calendar,
-  Globe,
   MapPin,
   X,
   IdCard,
@@ -166,7 +165,7 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar, puedeEditar = false, 
                 Correo Electrónico
               </div>
               <div className="valor-informacion-ver">
-                {cliente.email || 'No disponible'}
+                {cliente.email || cliente['CORREO ELECTRÓNICO'] || 'No disponible'}
               </div>
             </div>
 
@@ -180,15 +179,6 @@ const ModalVerCliente = ({ estaAbierto, cliente, alCerrar, puedeEditar = false, 
               </div>
             </div>
 
-            <div className="elemento-informacion-ver">
-              <div className="etiqueta-informacion-ver">
-                <Globe size={16} />
-                Canal de Contacto
-              </div>
-              <div className="valor-informacion-ver">
-                {cliente.canal_contacto || 'No especificado'}
-              </div>
-            </div>
 
             <div className="elemento-informacion-ver">
               <div className="etiqueta-informacion-ver">

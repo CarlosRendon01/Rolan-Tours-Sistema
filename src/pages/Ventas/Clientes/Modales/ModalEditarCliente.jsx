@@ -32,7 +32,7 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
       setContactFields(clientContactFields(cliente));
       setDatosFormulario({
         nombre: cliente.nombre || '',
-        email: cliente.email || '',
+        email: cliente.email || cliente['CORREO ELECTRÓNICO'] || '',
         telefono: cliente.telefono || '',
         canal_contacto: cliente.canal_contacto || '',
         rfc: cliente.rfc || '',
@@ -315,37 +315,6 @@ const ModalEditarCliente = ({ estaAbierto, cliente, alCerrar, alGuardar }) => {
               )}
             </div>
 
-            <div className="campo-formulario-editar">
-              <label htmlFor="canal_contacto" className="etiqueta-formulario-editar">
-                <Globe size={18} />
-                Canal de Contacto
-              </label>
-              <select
-                id="canal_contacto"
-                name="canal_contacto"
-                value={datosFormulario.canal_contacto}
-                onChange={manejarCambioFormulario}
-                className={`entrada-formulario-editar ${errores.canal_contacto ? 'entrada-error' : ''}`}
-                disabled={guardando}
-              >
-                <option value="">Seleccionar canal de contacto</option>
-                <option value="WhatsApp">WhatsApp</option>
-                <option value="Facebook">Facebook</option>
-                <option value="Instagram">Instagram</option>
-                <option value="LinkedIn">LinkedIn</option>
-                <option value="Sitio Web">Sitio Web</option>
-                <option value="Teléfono">Teléfono</option>
-                <option value="Email">Email</option>
-                <option value="Referido">Referido</option>
-                <option value="Presencial">Presencial</option>
-              </select>
-              {errores.canal_contacto && (
-                <div className="mensaje-error">
-                  <AlertCircle size={14} />
-                  {errores.canal_contacto}
-                </div>
-              )}
-            </div>
 
             <div className="campo-formulario-editar">
               <label htmlFor="rfc" className="etiqueta-formulario-editar">

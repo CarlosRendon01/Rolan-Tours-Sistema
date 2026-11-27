@@ -2,13 +2,21 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Save, X, Plus, Trash2, Search } from 'lucide-react';
 import { API_CONFIG } from '../../../config/api';
+import { datosServicioDelLead } from './datosServicioDelLead';
 import '../Clientes/Modales/ModalCrearClienteLead.css';
 import './ServiciosCliente.css';
 
 const initial = { proveedor_id: '', nombre: '', tipo_servicio: '', cantidad: 1, precio_unitario: '', descripcion: '', origen: '', destino: '', num_pasajeros: '', fecha_salida: '', fecha_regreso: '', hora_salida: '', hora_regreso: '' };
 const fields = [['nombre','Nombre del servicio','text'],['tipo_servicio','Tipo de servicio','text'],['cantidad','Cantidad','number'],['precio_unitario','Importe por servicio','number'],['origen','Origen','text'],['destino','Destino','text'],['num_pasajeros','Pasajeros','number'],['fecha_salida','Fecha de inicio','date'],['fecha_regreso','Fecha de fin','date'],['hora_salida','Hora de inicio','time'],['hora_regreso','Hora de fin','time']];
 export default function ModalServicio({ cliente, lead, servicio, onClose, onSaved }) {
-  const [form, setForm] = useState(() => Object.fromEntries(Object.keys(initial).map((key) => [key, servicio?.[key] ?? initial[key]])));
+  const [form, setForm] = useState(() => {
+    if (!servicio) return { ...initial, ...datosServicioDelLead(lead) };
+
+    return Object.fromEntries(Object.entries(initial).map(([key, defaultValue]) => {
+      const value = servicio[key] ?? defaultValue;
+      return [key, key.startsWith('hora_') ? String(value).slice(0, 5) : value];
+    }));
+  });
   const [catalog,setCatalog] = useState([]);
   const [query,setQuery] = useState('');
   const [providerFilter,setProviderFilter] = useState('');

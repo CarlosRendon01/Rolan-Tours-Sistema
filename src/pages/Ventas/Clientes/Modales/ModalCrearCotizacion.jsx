@@ -163,10 +163,10 @@ const ModalCrearCotizacion = ({ estaAbierto, cliente, alCerrar }) => {
         ...prev,
         lead_id: leadId,
         num_pasajeros: lead.pax || 1,
-        tipo_servicio: lead.tipo_servicio || "Transporte",
-        destino: lead.destino_servicio || "",
-        origen: lead.origen_servicio || prev.origen,
-        tipo_cliente: tipoClienteMap[lead.tipo_cliente] || "tipo_1",
+        tipo_servicio: lead["TIPO DE SERVICIO"] || "Transporte",
+        destino: lead["DESTINO A"] || "",
+        origen: lead["ORIGEN DEL SERVICIO"] || prev.origen,
+        tipo_cliente: tipoClienteMap[lead["TIPO DE CLIENTE"]] || "tipo_1",
       }));
     } else {
       setLeadSeleccionado(null);

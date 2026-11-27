@@ -286,7 +286,7 @@ const TablaClientes = () => {
       (cliente.telefono && cliente.telefono.toLowerCase().includes(busqueda)) ||
       (cliente.email && cliente.email.toLowerCase().includes(busqueda)) ||
       (cliente.numero_lead && cliente.numero_lead.toLowerCase().includes(busqueda)) ||
-      (cliente.canal_contacto && cliente.canal_contacto.toLowerCase().includes(busqueda))
+      (clientContactChannel(cliente) && clientContactChannel(cliente).toLowerCase().includes(busqueda))
     );
   });
 
@@ -556,8 +556,8 @@ const TablaClientes = () => {
                             <span className="clientes-telefono">{cliente.telefono}</span>
                           </td>
                           <td data-label="Canal Contacto" className="clientes-columna-canal" rowSpan={numLeads}>
-                            <span className={`clientes-badge-canal ${cliente.canal_contacto ? `clientes-canal-${cliente.canal_contacto.toLowerCase().replace(' ', '-')}` : 'clientes-canal-sin-datos'}`}>
-                              {cliente.canal_contacto || 'Sin canal'}
+                            <span className={`clientes-badge-canal ${clientContactChannel(cliente) ? `clientes-canal-${clientContactChannel(cliente).toLowerCase().replace(' ', '-')}` : 'clientes-canal-sin-datos'}`}>
+                              {clientContactChannel(cliente) || 'Sin canal'}
                             </span>
                           </td>
                         </>
@@ -799,3 +799,4 @@ const TablaClientes = () => {
 };
 
 export default TablaClientes;
+import { clientContactChannel } from './contactFields';

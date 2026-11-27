@@ -116,7 +116,6 @@ export default function ModalCrearClienteLead({ onClose, onSaved }) {
                 <label>Nombre *<input value={cliente.nombre} onChange={(e) => setClientValue('nombre', e.target.value)} required maxLength={255} /></label>
                 <label>Correo<input type="email" value={cliente.email} onChange={(e) => setClientValue('email', e.target.value)} /></label>
                 <label>Teléfono<input value={cliente.telefono} onChange={(e) => setClientValue('telefono', e.target.value)} /></label>
-                <label>Canal de contacto<input value={cliente.canal_contacto} onChange={(e) => setClientValue('canal_contacto', e.target.value)} /></label>
                 <label>RFC<input value={cliente.rfc} onChange={(e) => setClientValue('rfc',e.target.value)}/></label>
                 <label>Dirección<input value={cliente.direccion} onChange={(e) => setClientValue('direccion',e.target.value)}/></label>
               </div>
