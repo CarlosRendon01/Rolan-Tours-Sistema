@@ -125,7 +125,7 @@ const TablaOperadores = ({
   };
 
   return (
-    <div className="operadores-contenedor-principal">
+    <div className="operadores-contenedor-principal tabla-gestion">
       <div className="operadores-encabezado">
         <div className="operadores-seccion-logo">
           <div className="operadores-lineas-decorativas">

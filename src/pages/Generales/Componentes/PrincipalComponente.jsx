@@ -9,6 +9,7 @@ const PrincipalComponente = ({ children }) => {
   const [sidebarHoverExpandido, setSidebarHoverExpandido] = useState(false);
   const [modoOscuro, setModoOscuro] = useState(() => localStorage.getItem('modoOscuro') === 'true');
   const responsive = useResponsive();
+  const menuSuperpuesto = responsive.ancho <= 1024;
 
   useEffect(() => {
     document.body.classList.toggle('modo-oscuro', modoOscuro);
@@ -17,14 +18,8 @@ const PrincipalComponente = ({ children }) => {
   }, [modoOscuro]);
 
   useEffect(() => {
-    if (responsive.esMovil) {
-      setSidebarAbierto(false);
-    } else if (responsive.esTablet) {
-      setSidebarAbierto(responsive.ancho > 900);
-    } else {
-      setSidebarAbierto(false);
-    }
-  }, [responsive.esMovil, responsive.esTablet, responsive.ancho]);
+    setSidebarAbierto(false);
+  }, [menuSuperpuesto]);
 
   useEffect(() => {
     const detectarHoverSidebar = () => {
@@ -50,7 +45,7 @@ const PrincipalComponente = ({ children }) => {
   }, []);
 
   const cerrarSidebar = (event) => {
-    if ((responsive.esMovil || responsive.esTablet) &&
+    if ((responsive.ancho <= 1024) &&
       !event.target.closest('.sidebar') &&
       !event.target.closest('.btn-hamburguesa')) {
       setSidebarAbierto(false);
@@ -58,7 +53,7 @@ const PrincipalComponente = ({ children }) => {
   };
 
   const determinarClaseContenido = () => {
-    if (responsive.esMovil || responsive.esTablet) {
+    if (responsive.ancho <= 1024) {
       return "ancho-completo";
     }
 

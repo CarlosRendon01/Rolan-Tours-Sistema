@@ -69,12 +69,11 @@ export const useResponsive = (opciones = {}) => {
       alto: window.innerHeight
     };
     
-    // Evitar re-renders innecesarios con umbral de cambio
-    const cambioMinimo = 5;
+    // Registrar cambios de un píxel para respetar los cortes de las media queries.
     const { ancho: anchoAnterior, alto: altoAnterior } = ultimasDimensionesRef.current;
     
-    if (Math.abs(nuevasDimensiones.ancho - anchoAnterior) < cambioMinimo && 
-        Math.abs(nuevasDimensiones.alto - altoAnterior) < cambioMinimo) {
+    if (nuevasDimensiones.ancho === anchoAnterior &&
+        nuevasDimensiones.alto === altoAnterior) {
       return;
     }
     

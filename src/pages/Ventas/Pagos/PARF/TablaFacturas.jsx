@@ -329,7 +329,7 @@ const TablaFacturas = ({
   }, [paginaActual, totalPaginas]);
 
   return (
-    <div className="facturas-contenedor-principal">
+    <div className="facturas-contenedor-principal tabla-gestion">
       <div className="facturas-encabezado">
         <div className="facturas-seccion-logo">
           <div className="facturas-icono-principal">

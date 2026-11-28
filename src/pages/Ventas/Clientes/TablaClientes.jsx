@@ -12,8 +12,11 @@ import ModalRestaurarCliente from './Modales/ModalRestaurarCliente';
 import ModalEliminarDefinitivo from './Modales/ModalEliminarDefinitivo';
 import './TablaClientes.css';
 import { API_CONFIG } from '../../../config/api';
+import { useResponsive } from '../../../utils/useResponsive';
 
 const TablaClientes = () => {
+  const { ancho } = useResponsive();
+  const tablaMovil = ancho <= 768;
   const [permisos, setPermisos] = useState([]);
   const [roles, setRoles] = useState([]);
   const [datosClientes, setDatosClientes] = useState([]);
@@ -380,7 +383,7 @@ const TablaClientes = () => {
   }
 
   return (
-    <div className="clientes-contenedor-principal">
+    <div className="clientes-contenedor-principal tabla-gestion">
       <div className="clientes-encabezado">
         <div className="clientes-seccion-logo">
           <div className="clientes-lineas-decorativas">
@@ -525,7 +528,7 @@ const TablaClientes = () => {
 
               clientesPaginados.map((cliente, index) => {
                 const leads = cliente.leads || [];
-                const numLeads = leads.length;
+                const numLeads = tablaMovil ? 1 : leads.length;
 
                 return leads.length > 0 ? (
                   leads.map((lead, leadIndex) => (
@@ -534,7 +537,7 @@ const TablaClientes = () => {
                       className="clientes-fila-cliente"
                       style={{ animationDelay: `${(index + leadIndex) * 0.05}s` }}
                     >
-                      {leadIndex === 0 && (
+                      {(leadIndex === 0 || tablaMovil) && (
                         <>
                           <td data-label="ID" className="clientes-columna-id" rowSpan={numLeads}>
                             <span className="clientes-badge-id">#{cliente.id.toString().padStart(3, '0')}</span>
@@ -566,11 +569,11 @@ const TablaClientes = () => {
                       <td data-label="Lead" className="clientes-columna-lead">
                         <div style={{ fontSize: '0.9rem' }}>
                           <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{lead.nombre}</div>
-                          <div style={{ fontSize: '0.8rem', color: '#6b7280' }}>
+                          <div className="clientes-datos-lead" style={{ fontSize: '0.8rem' }}>
                             Pipeline: {lead.pipeline_id} | Etapa: {lead.etapa_id}
                           </div>
                           {lead.precio && (
-                            <div style={{ fontSize: '0.85rem', color: '#10b981', fontWeight: '600' }}>
+                            <div className="clientes-precio-lead" style={{ fontSize: '0.85rem', fontWeight: '600' }}>
                               ${lead.precio.toLocaleString()}
                             </div>
                           )}
@@ -602,7 +605,7 @@ const TablaClientes = () => {
                         </select>
                       </td>
 
-                      {leadIndex === 0 && (
+                      {(leadIndex === 0 || tablaMovil) && (
                         <td data-label="Acciones" className="clientes-columna-acciones" rowSpan={numLeads}>
                           <div className="clientes-botones-accion">
                             <button
@@ -671,7 +674,7 @@ const TablaClientes = () => {
         <div className="clientes-informacion-registros">
           Mostrando registros del {indiceInicio + 1} al {Math.min(indiceFin, totalRegistros)} de un total de {totalRegistros} registros
           {terminoBusqueda && (
-            <span style={{ color: '#6c757d', marginLeft: '0.5rem' }}>
+            <span className="clientes-info-filtro" style={{ marginLeft: '0.5rem' }}>
               (filtrado de {datosClientes.length} registros totales)
             </span>
           )}

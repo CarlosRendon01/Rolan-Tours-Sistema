@@ -609,7 +609,7 @@ const TablaOrdenes = () => {
   };
 
   return (
-    <div className="Ordenes-contenedor-principal">
+    <div className="Ordenes-contenedor-principal tabla-gestion">
       <div className="Ordenes-encabezado">
         <div className="Ordenes-seccion-logo">
           <div className="Ordenes-lineas-decorativas">

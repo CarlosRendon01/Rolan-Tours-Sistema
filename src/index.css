@@ -1,4 +1,6 @@
 @import './styles/ModoOscuro.css';
+@import './styles/TablasGestion.css';
+@import './styles/ModalesOscuros.css';
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

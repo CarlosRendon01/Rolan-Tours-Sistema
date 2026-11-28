@@ -112,7 +112,7 @@ const TablaGuias = ({
   };
 
   return (
-    <div className="guias-contenedor-principal">
+    <div className="guias-contenedor-principal tabla-gestion">
       <div className="guias-encabezado">
         <div className="guias-seccion-logo">
           <div className="guias-lineas-decorativas">

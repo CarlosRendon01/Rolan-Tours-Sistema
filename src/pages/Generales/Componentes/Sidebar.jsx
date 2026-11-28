@@ -27,6 +27,29 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
   const navigate = useNavigate();
   const location = useLocation();
   const responsive = useResponsive();
+  const menuSuperpuesto = responsive.ancho <= 1024;
+
+  useEffect(() => {
+    setHoverExpandido(false);
+    setTooltipAbierto(null);
+  }, [menuSuperpuesto]);
+
+  useEffect(() => {
+    if (!menuSuperpuesto || !estaAbierto) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const cerrarConEscape = (event) => {
+      if (event.key === 'Escape') {
+        setEstaAbierto(false);
+        document.querySelector('.btn-hamburguesa')?.focus();
+      }
+    };
+    document.addEventListener('keydown', cerrarConEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', cerrarConEscape);
+    };
+  }, [menuSuperpuesto, estaAbierto, setEstaAbierto]);
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const permisos = user.permisos || [];
@@ -205,14 +228,15 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
   };
 
   const manejarMouseEnter = () => {
-    if (!responsive.esMovil && !responsive.esTablet) {
+    if (responsive.ancho > 1024) {
       setHoverExpandido(true);
     }
   };
 
   const manejarMouseLeave = () => {
-    if (!responsive.esMovil && !responsive.esTablet) {
+    if (responsive.ancho > 1024) {
       setHoverExpandido(false);
+      if (estaAbierto) return;
       setVentasAbierto(false);
       setDocumentosAbierto(false);
       setOperacionesAbierto(false);
@@ -339,7 +363,10 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
       Usuarios: '/usuarios',
       Viajes: '/viajes',
     };
-    if (rutas[elementoId]) navigate(rutas[elementoId]);
+    if (rutas[elementoId]) {
+      navigate(rutas[elementoId]);
+      if (menuSuperpuesto) setEstaAbierto(false);
+    }
   };
 
   const alternarSubmenu = (elementoId) => {
@@ -367,7 +394,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
   };
 
   const expandido =
-    (responsive.esMovil || responsive.esTablet) ? estaAbierto : hoverExpandido;
+    (responsive.ancho <= 1024) ? estaAbierto : estaAbierto || hoverExpandido;
 
   const renderElementoSubmenu = (subElemento, esTooltip = false) => {
     const ComponenteSubIcono = subElemento.icono;
@@ -419,7 +446,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
 
   return (
     <div className="contenedor-sidebar" onClick={cerrarTooltip}>
-      {estaAbierto && responsive.esMovil && (
+      {estaAbierto && responsive.ancho <= 1024 && (
         <div className="superposicion-sidebar" onClick={() => setEstaAbierto(false)} />
       )}
 
@@ -427,12 +454,14 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
         <div className="superposicion-tooltip" onClick={() => setTooltipAbierto(null)} />
       )}
 
-      {!responsive.esMovil && !responsive.esTablet && (
+      {responsive.ancho > 1024 && (
         <div className="area-activacion-hover" onMouseEnter={manejarMouseEnter} />
       )}
 
       <aside
-        className={`sidebar ${responsive.esMovil || responsive.esTablet ? (estaAbierto ? 'abierto' : '') : ''} ${modoOscuro ? 'modo-oscuro' : ''} ${hoverExpandido ? 'hover-expandido' : ''}`}
+        id="menu-lateral"
+        inert={menuSuperpuesto && !estaAbierto ? true : undefined}
+        className={`sidebar ${responsive.ancho <= 1024 ? (estaAbierto ? 'abierto' : '') : ''} ${modoOscuro ? 'modo-oscuro' : ''} ${responsive.ancho > 1024 && expandido ? 'hover-expandido' : ''}`}
         onMouseEnter={manejarMouseEnter}
         onMouseLeave={manejarMouseLeave}
       >
@@ -453,7 +482,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
                       if (elemento.tieneSubmenu) {
                         if (expandido) {
                           alternarSubmenu(elemento.id);
-                        } else if (responsive.esMovil || responsive.esTablet) {
+                        } else if (responsive.ancho <= 1024) {
                           manejarTooltip(elemento.id, e);
                         }
                       } else {
@@ -464,6 +493,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
                     className={`elemento-navegacion elemento-con-tooltip ${estaActivo ? 'activo' : ''}`}
                     data-menu={elemento.id}
                     aria-label={elemento.etiqueta}
+                    aria-expanded={elemento.tieneSubmenu ? expandido && submenuAbierto : undefined}
                   >
                     <div className="contenedor-icono-navegacion">
                       <ComponenteIcono className="icono-navegacion" />
@@ -483,7 +513,7 @@ const Sidebar = ({ estaAbierto, setEstaAbierto, modoOscuro, alternarModoOscuro }
                     )}
                   </button>
 
-                  {(responsive.esMovil || responsive.esTablet) && !estaAbierto &&
+                  {(responsive.ancho <= 1024) && !estaAbierto &&
                     renderTooltipSubmenu(elemento)}
 
                   {elemento.tieneSubmenu && expandido && submenuAbierto && (

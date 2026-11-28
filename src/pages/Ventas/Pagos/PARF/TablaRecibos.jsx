@@ -526,7 +526,7 @@ const TablaRecibos = ({
     return numeros;
   }, [totalPaginas, paginaActual]);
   return (
-    <div className="recibos-contenedor-principal">
+    <div className="recibos-contenedor-principal tabla-gestion">
       <div className="recibos-encabezado">
         <div className="recibos-seccion-logo">
           <div className="recibos-icono-principal">

@@ -118,7 +118,7 @@ const TablaTours = ({
   };
 
   return (
-    <div className="tours-contenedor-principal">
+    <div className="tours-contenedor-principal tabla-gestion">
       <div className="tours-encabezado">
         <div className="tours-seccion-logo">
           <div className="tours-lineas-decorativas">

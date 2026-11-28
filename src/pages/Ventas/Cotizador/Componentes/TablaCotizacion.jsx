@@ -227,7 +227,7 @@ const TablaCotizacion = ({
   const alGuardarPago = useCallback(() => { }, []);
 
   return (
-    <main className="cotizaciones-contenedor-principal" role="main">
+    <main className="cotizaciones-contenedor-principal tabla-gestion" role="main">
       <header className="cotizaciones-encabezado">
         <div className="cotizaciones-seccion-logo">
           <div className="cotizaciones-lineas-decorativas" aria-hidden="true">

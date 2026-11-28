@@ -335,7 +335,7 @@ const TablaReservas = ({
     }
   };
   return (
-    <div className="reservas-contenedor-principal">
+    <div className="reservas-contenedor-principal tabla-gestion">
       <div className="reservas-encabezado">
         <div className="reservas-seccion-logo">
           <div className="reservas-lineas-decorativas">

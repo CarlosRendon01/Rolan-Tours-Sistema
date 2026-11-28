@@ -864,3 +864,6 @@
 .clientes-boton-nuevo{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;background:#b91c1c;color:#fff;font-weight:700;padding:10px 14px;cursor:pointer;white-space:nowrap}
 .clientes-boton-nuevo:hover{background:#991b1b}
 @media(max-width:640px){.clientes-boton-nuevo{width:100%;white-space:normal}}
+.clientes-datos-lead { color: #6b7280; }
+.clientes-precio-lead { color: #10b981; }
+.clientes-info-filtro { color: #6c757d; }

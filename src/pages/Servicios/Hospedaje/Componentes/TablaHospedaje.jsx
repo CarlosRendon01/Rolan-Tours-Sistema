@@ -129,7 +129,7 @@ const TablaHospedaje = ({
   };
 
   return (
-    <div className="hospedaje-contenedor-principal">
+    <div className="hospedaje-contenedor-principal tabla-gestion">
       <div className="hospedaje-encabezado">
         <div className="hospedaje-seccion-logo">
           <div className="hospedaje-lineas-decorativas">

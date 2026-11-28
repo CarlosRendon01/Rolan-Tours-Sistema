@@ -276,7 +276,7 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
     </div>
   ), [notificacionesNoLeidas, tamañoIcono, abrirModalNotificaciones]);
 
-  const mostrarBotonHamburguesa = responsiveData.esMovil || responsiveData.esTablet;
+  const mostrarBotonHamburguesa = true;
 
   return (
     <>
@@ -292,6 +292,7 @@ const Navbar = React.memo(({ sidebarAbierto, setSidebarAbierto, responsive }) =>
                 className="btn-hamburguesa"
                 aria-label={sidebarAbierto ? "Cerrar menú" : "Abrir menú"}
                 aria-expanded={sidebarAbierto}
+                aria-controls="menu-lateral"
               >
                 {sidebarAbierto ? (
                   <X size={responsiveData.esMovil && responsiveData.ancho <= 480 ? 20 : 24} />

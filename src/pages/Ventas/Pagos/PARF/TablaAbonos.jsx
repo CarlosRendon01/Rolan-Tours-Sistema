@@ -281,7 +281,7 @@ const TablaAbonos = ({ vistaActual, onCambiarVista }) => {
 
   return (
     <>
-      <div className="abonos-contenedor-principal">
+      <div className="abonos-contenedor-principal tabla-gestion">
         <div className="abonos-encabezado">
           <div className="abonos-seccion-logo">
             <div className="abonos-icono-principal">

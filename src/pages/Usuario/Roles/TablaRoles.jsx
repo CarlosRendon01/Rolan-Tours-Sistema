@@ -152,7 +152,7 @@ const TablaRoles = ({
   };
 
   return (
-    <div className="roles-contenedor-principal">
+    <div className="roles-contenedor-principal tabla-gestion">
       <div className="roles-encabezado">
         <div className="roles-seccion-logo">
           <div className="roles-lineas-decorativas">

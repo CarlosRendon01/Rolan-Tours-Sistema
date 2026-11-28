@@ -299,7 +299,7 @@ const GestionPagos = ({ vistaActual, onCambiarVista }) => {
 
   return (
     <>
-      <div className="pagos-contenedor-principal">
+      <div className="pagos-contenedor-principal tabla-gestion">
         <div className="pagos-encabezado">
           <div className="pagos-seccion-logo">
             <div className="pagos-icono-principal">

@@ -95,7 +95,7 @@ const TablaUsuarios = ({
   };
 
   return (
-    <div className="usuarios-contenedor-principal">
+    <div className="usuarios-contenedor-principal tabla-gestion">
       <div className="usuarios-encabezado">
         <div className="usuarios-seccion-logo">
           <div className="usuarios-lineas-decorativas">

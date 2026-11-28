@@ -96,7 +96,7 @@ const TablaTransporte = ({
   };
 
   return (
-    <div className="transporte-contenedor-principal">
+    <div className="transporte-contenedor-principal tabla-gestion">
       <div className="transporte-encabezado">
         <div className="transporte-seccion-logo">
           <div className="transporte-lineas-decorativas">

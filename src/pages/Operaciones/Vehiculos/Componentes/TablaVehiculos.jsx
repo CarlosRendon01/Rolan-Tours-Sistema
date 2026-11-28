@@ -108,7 +108,7 @@ const TablaVehiculos = ({
   };
 
   return (
-    <div className="vehiculos-contenedor-principal">
+    <div className="vehiculos-contenedor-principal tabla-gestion">
       <div className="vehiculos-encabezado">
         <div className="vehiculos-seccion-logo">
           <div className="vehiculos-lineas-decorativas">

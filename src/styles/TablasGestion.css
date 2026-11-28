@@ -1,0 +1,412 @@
+/* Formato común basado en Usuarios para los listados de gestión. */
+.contenido-pagina .tabla-gestion {
+  --tabla-fondo: #fff;
+  --tabla-alterno: #f8fafc;
+  --tabla-cabecera: #eff6ff;
+  --tabla-texto: #1e293b;
+  --tabla-secundario: #495057;
+  --tabla-borde: #dee2e6;
+  --tabla-controles: #f8f9fa;
+  --tabla-hover: #eff6ff;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 1rem 0;
+  border-radius: 12px;
+  background: var(--tabla-fondo);
+  color: var(--tabla-texto);
+}
+
+body.modo-oscuro .contenido-pagina .tabla-gestion {
+  --tabla-fondo: #1e293b;
+  --tabla-alterno: #253247;
+  --tabla-cabecera: #334155;
+  --tabla-texto: #f1f5f9;
+  --tabla-secundario: #cbd5e1;
+  --tabla-borde: #475569;
+  --tabla-controles: #1e293b;
+  --tabla-hover: #334155;
+}
+
+body.modo-oscuro .contenido-pagina .tabla-gestion table [style*="color"]:not(button):not(svg) {
+  color: #e2e8f0 !important;
+}
+body.modo-oscuro .contenido-pagina .tabla-gestion table [style*="background"]:not(button):not(img) {
+  background-color: #334155 !important;
+  background-image: none !important;
+  color: #f1f5f9 !important;
+}
+
+body.modo-oscuro .contenido-pagina .tabla-gestion :is(
+  [class$="-nombre-principal"], [class$="-nombre-servicio"],
+  [class$="-nombre-modulo"], [class$="-fecha"], [class$="-telefono"],
+  [class*="-valor-"], [class$="-columna-cliente"],
+  .dv-operador-nombre, .dv-cliente, .dv-fecha, .dv-ruta-origen
+) {
+  color: var(--tabla-texto);
+}
+
+body.modo-oscuro .contenido-pagina .tabla-gestion :is(
+  [class$="-subtexto"], [class$="-texto-correo"],
+  [class$="-texto-descripcion"], [class$="-precio-tipo"],
+  [class$="-proveedor-texto"], [class$="-informacion-registros"],
+  [class$="-control-busqueda"], [class$="-control-registros"],
+  [class$="-texto-filtrado"], [class$="-mensaje-vacio"],
+  [class$="-submensaje-vacio"], [class$="-descripcion-servicio"],
+  [class$="-fecha-abono"], [class$="-conteo-abonos"],
+  [class$="-serie-folio"], [class$="-uuid-contenedor"],
+  .dv-operador-sub, .dv-hora, .dv-pag-info, .dv-tabla-count,
+  .clientes-datos-lead, .clientes-info-filtro
+) {
+  color: var(--tabla-secundario);
+}
+
+body.modo-oscuro .contenido-pagina .tabla-gestion [class$="-mensaje-cargando"] {
+  background: var(--tabla-controles);
+  color: var(--tabla-texto);
+}
+
+body.modo-oscuro .contenido-pagina .tabla-gestion :is(
+  [class$="-monto-progreso"], [class$="-texto-finalizado"], .clientes-precio-lead
+) {
+  color: #6ee7b7;
+}
+
+body.modo-oscuro .contenido-pagina .tabla-gestion table a {
+  color: #93c5fd;
+}
+
+body.modo-oscuro .contenido-pagina .tabla-gestion [class$="-numero-pagina"][class*="-activo"] {
+  background: #2563eb;
+  color: #fff;
+}
+
+.contenido-pagina .tabla-gestion > [class$="-encabezado"] {
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.contenido-pagina .tabla-gestion > [class$="-encabezado"] [class$="-titulo"] {
+  font-size: 2.2rem;
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 700;
+}
+
+.contenido-pagina .tabla-gestion :is([class$="-contenedor-estadisticas"], [class$="-estadisticas-header"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+}
+
+.contenido-pagina .tabla-gestion [class*="-tarjeta-estadistica"] {
+  display: grid;
+  grid-template-columns: 60px auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 0 1rem;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  text-align: left;
+  transform: none;
+}
+
+.contenido-pagina .tabla-gestion [class*="-tarjeta-estadistica"]::before { content: none; }
+
+.contenido-pagina .tabla-gestion [class*="-tarjeta-estadistica"] > svg {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  box-sizing: border-box;
+  width: 60px;
+  height: 60px;
+  padding: 18px;
+  border-radius: 8px;
+  background: #8b5cf6;
+  color: #fff;
+}
+
+.contenido-pagina .tabla-gestion [class$="-valor-estadistica"] {
+  grid-column: 2;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.contenido-pagina .tabla-gestion [class$="-etiqueta-estadistica"] {
+  grid-column: 2;
+  font-size: .9rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.contenido-pagina .tabla-gestion > [class$="-controles"] {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--tabla-controles);
+  color: var(--tabla-secundario);
+  text-transform: none;
+}
+
+.contenido-pagina .tabla-gestion > [class$="-controles"] > div {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.contenido-pagina .tabla-gestion :is([class$="-entrada-buscar"], [class*="-selector-"]) {
+  padding: .625rem .75rem;
+  border: 1px solid var(--tabla-borde);
+  border-radius: 6px;
+  background: var(--tabla-fondo);
+  color: var(--tabla-texto);
+  font-size: .95rem;
+  min-height: 38px;
+}
+
+.contenido-pagina .tabla-gestion [class$="-entrada-busqueda"] {
+  min-width: 0;
+}
+
+.contenido-pagina .tabla-gestion [class$="-entrada-buscar"] {
+  width: 200px;
+  max-width: 100%;
+  padding-right: 2.5rem;
+}
+
+.contenido-pagina .tabla-gestion :is([class$="-contenedor-tabla"], .dv-tabla-scroll) {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 0 1.5rem 1.5rem;
+  border: 1px solid var(--tabla-borde);
+  border-radius: 12px;
+  background: var(--tabla-fondo);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
+  overscroll-behavior-x: contain;
+}
+
+.contenido-pagina .tabla-gestion table {
+  display: table;
+  width: 100%;
+  min-width: 1100px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+  font-size: .85rem;
+  overflow: visible;
+  background: var(--tabla-fondo);
+  color: var(--tabla-texto);
+}
+
+.contenido-pagina .tabla-gestion table thead { display: table-header-group; }
+.contenido-pagina .tabla-gestion table tbody { display: table-row-group; }
+
+.contenido-pagina .tabla-gestion table tr {
+  display: table-row;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+
+.contenido-pagina .tabla-gestion table th {
+  display: table-cell;
+  padding: 1rem .75rem;
+  background: var(--tabla-cabecera);
+  color: var(--tabla-texto);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  border: 0;
+  border-right: 1px solid var(--tabla-borde);
+  border-bottom: 1px solid var(--tabla-borde);
+}
+
+.contenido-pagina .tabla-gestion table td {
+  display: table-cell;
+  padding: 1rem .75rem;
+  vertical-align: middle;
+  font-size: .85rem;
+  color: var(--tabla-texto);
+  background: var(--tabla-fondo);
+  border: 0;
+  border-right: 1px solid var(--tabla-borde);
+  border-bottom: 1px solid var(--tabla-borde);
+}
+
+.contenido-pagina .tabla-gestion table td::before { display: none; content: none; }
+.contenido-pagina .tabla-gestion table :is(th, td):last-child { border-right: 0; }
+.contenido-pagina .tabla-gestion table tbody tr:nth-child(even) td { background: var(--tabla-alterno); }
+.contenido-pagina .tabla-gestion table tbody tr:hover td { background: var(--tabla-hover); }
+.contenido-pagina .tabla-gestion table td[colspan] { text-align: center; padding: 3rem 2rem; }
+
+.contenido-pagina .tabla-gestion [class$="-botones-accion"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  justify-content: center;
+}
+
+.contenido-pagina .tabla-gestion [class*="-boton-accion"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .45rem;
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: 6px;
+}
+
+.contenido-pagina .tabla-gestion > [class$="-pie-tabla"] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--tabla-borde);
+  background: var(--tabla-controles);
+  color: var(--tabla-secundario);
+}
+
+.contenido-pagina .tabla-gestion [class$="-controles-paginacion"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+}
+
+.contenido-pagina .tabla-gestion :is([class$="-boton-paginacion"], [class*="-numero-pagina"]) {
+  padding: .5rem .75rem;
+  border: 1px solid var(--tabla-borde);
+  border-radius: 6px;
+  background: var(--tabla-fondo);
+  color: var(--tabla-texto);
+  font-size: .875rem;
+}
+
+.contenido-pagina .tabla-gestion [class$="-numero-pagina"][class*="-activo"] {
+  background: #2563eb;
+  color: #fff;
+}
+
+.contenido-pagina .tabla-gestion [class$="-boton-paginacion"]:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .contenido-pagina .tabla-gestion table {
+    display: block;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .contenido-pagina .tabla-gestion table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .contenido-pagina .tabla-gestion table tbody {
+    display: block;
+    width: 100%;
+  }
+  .contenido-pagina .tabla-gestion table tbody tr {
+    display: block;
+    margin: 0 0 1rem;
+    border: 1px solid var(--tabla-borde);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--tabla-fondo);
+  }
+  .contenido-pagina .tabla-gestion table tbody td {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    padding: .75rem 1rem;
+    border-right: 0;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .contenido-pagina .tabla-gestion table tbody td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    position: static;
+    width: auto;
+    margin-bottom: .375rem;
+    color: var(--tabla-secundario);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  .contenido-pagina .tabla-gestion table tbody td > * {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .contenido-pagina .tabla-gestion table tbody td :is(span, p, small, a, strong) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .contenido-pagina .tabla-gestion table tbody td :is(input, select, textarea) {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .contenido-pagina .tabla-gestion table tbody td:last-child { border-bottom: 0; }
+  .contenido-pagina .tabla-gestion [class$="-botones-accion"] { justify-content: flex-start; }
+  .contenido-pagina .tabla-gestion :is([class$="-contenedor-tabla"], .dv-tabla-scroll) {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    width: auto;
+  }
+  .contenido-pagina .tabla-gestion > [class$="-encabezado"] {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem 1rem;
+  }
+  .contenido-pagina .tabla-gestion > [class$="-encabezado"] [class$="-titulo"] {
+    font-size: 1.6rem;
+    overflow-wrap: anywhere;
+  }
+  .contenido-pagina .tabla-gestion > :is([class$="-controles"], [class$="-pie-tabla"]) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+  .contenido-pagina .tabla-gestion :is([class$="-contenedor-tabla"], .dv-tabla-scroll) {
+    margin: 0 1rem 1rem;
+  }
+  .contenido-pagina .tabla-gestion :is([class$="-control-busqueda"], [class$="-entrada-busqueda"], [class$="-entrada-buscar"]) {
+    width: 100%;
+  }
+}

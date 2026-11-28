@@ -805,7 +805,7 @@ const TablaContratos = () => {
   };
 
   return (
-    <div className="Contratos-contenedor-principal">
+    <div className="Contratos-contenedor-principal tabla-gestion">
       <div className="Contratos-encabezado">
         <div className="Contratos-seccion-logo">
           <div className="Contratos-lineas-decorativas">

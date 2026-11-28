@@ -124,7 +124,7 @@ const TablaProveedores = ({
   };
 
   return (
-    <div className="proveedores-contenedor-principal">
+    <div className="proveedores-contenedor-principal tabla-gestion">
       <div className="proveedores-encabezado">
         <div className="proveedores-seccion-logo">
           <div className="proveedores-lineas-decorativas">

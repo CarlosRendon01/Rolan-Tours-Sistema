@@ -58,7 +58,7 @@ export default function ServiciosCliente() {
   const pages = Math.max(1,Math.ceil(filtered.length / limit));
   const current = Math.min(page,pages);
   const visible = filtered.slice((current-1)*limit,current*limit);
-  return <PrincipalComponente><main className="clientes-contenedor-principal servicios-cliente-pagina">
+  return <PrincipalComponente><main className="clientes-contenedor-principal servicios-cliente-pagina tabla-gestion">
     <div className="clientes-encabezado"><div className="clientes-seccion-logo"><div className="clientes-lineas-decorativas">{['roja','azul','verde','amarilla'].map((color) => <div key={color} className={`clientes-linea clientes-${color}`}/>)}</div><h1 className="clientes-titulo">Gestión de Servicios</h1></div><div className="clientes-contenedor-estadisticas"><div className="clientes-estadistica"><div className="clientes-icono-estadistica-circular"><ClipboardList size={22}/></div><span className="clientes-label-estadistica">SERVICIOS: {services.length}</span></div><div className="clientes-estadistica"><div className="clientes-icono-estadistica-cuadrado"><FileText size={22}/></div><span className="clientes-label-estadistica">ÓRDENES: {services.reduce((sum,s) => sum+s.ordenes.length,0)}</span></div></div></div>
     <div className="servicios-introduccion"><p>{scope ? 'Servicios del lead seleccionado.' : 'Consulta los servicios, sus pagos y órdenes. Para añadir uno, abre el lead en Clientes.'}</p><Link className="clientes-boton-nuevo" to="/clientes">Ir a Clientes y Leads</Link>{scope && <Link to="/servicios-clientes">Ver todos los servicios</Link>}</div>
     {error && <p role="alert" className="nuevo-cliente-error servicios-aviso">{error}</p>}{notice && <p role="status" className="servicios-aviso">{notice}</p>}

@@ -49,11 +49,11 @@ const FilaViaje = ({ viaje, onVer, showPrioridad = false, showCalificacion = fal
       onMouseEnter={(e) => (e.currentTarget.style.background = "#F8FAFC")}
       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
     >
-      <td className="dv-td">
+      <td data-label="Folio" className="dv-td">
         <span className="dv-folio">{viaje.folio}</span>
       </td>
 
-      <td className="dv-td">
+      <td data-label="Operador y unidad" className="dv-td">
         <div className="dv-operador">
           <div className="dv-avatar">{viaje.operador?.iniciales}</div>
           <div>
@@ -67,7 +67,7 @@ const FilaViaje = ({ viaje, onVer, showPrioridad = false, showCalificacion = fal
         </div>
       </td>
 
-      <td className="dv-td">
+      <td data-label="Ruta" className="dv-td">
         <div className="dv-ruta-origen">
           <Navigation size={10} /> {viaje.ruta?.origen}
         </div>
@@ -76,15 +76,15 @@ const FilaViaje = ({ viaje, onVer, showPrioridad = false, showCalificacion = fal
         </div>
       </td>
 
-      <td className="dv-td dv-cliente">{viaje.cliente}</td>
+      <td data-label="Cliente" className="dv-td dv-cliente">{viaje.cliente}</td>
 
-      <td className="dv-td">
+      <td data-label="Fecha y hora" className="dv-td">
         <div className="dv-fecha">{viaje.fechaFin}</div>
         <div className="dv-hora">{viaje.horaFin}</div>
       </td>
 
       {showPrioridad && (
-        <td className="dv-td">
+        <td data-label="Prioridad" className="dv-td">
           <span className="dv-badge" style={{ background: pri.bg, color: pri.color }}>
             {pri.label}
           </span>
@@ -95,7 +95,7 @@ const FilaViaje = ({ viaje, onVer, showPrioridad = false, showCalificacion = fal
       )}
 
       {showCalificacion && (
-        <td className="dv-td">
+        <td data-label="Calificación" className="dv-td">
           {viaje.encuestaCliente ? (
             <Stars n={viaje.encuestaCliente.calificacion} />
           ) : (
@@ -104,7 +104,7 @@ const FilaViaje = ({ viaje, onVer, showPrioridad = false, showCalificacion = fal
         </td>
       )}
 
-      <td className="dv-td">
+      <td data-label="Estado" className="dv-td">
         <span
           className="dv-badge dv-badge-estado"
           style={{ background: cfg.bg, color: cfg.color }}
@@ -113,7 +113,7 @@ const FilaViaje = ({ viaje, onVer, showPrioridad = false, showCalificacion = fal
         </span>
       </td>
 
-      <td className="dv-td">
+      <td data-label="Acciones" className="dv-td">
         <button className="dv-btn-ver" onClick={() => onVer(viaje)}>
           <Eye size={12} /> Ver
         </button>
@@ -356,7 +356,7 @@ const DashboardViajes = () => {
   // ─────────────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="dv-root">
+    <div className="dv-root tabla-gestion">
 
       {/* ── Top bar ── */}
       <div className="dv-topbar">

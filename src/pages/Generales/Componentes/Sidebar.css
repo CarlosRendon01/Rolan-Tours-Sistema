@@ -1,6 +1,6 @@
 .sidebar {
   position: fixed;
-  top: 80px;
+  top: var(--altura-navbar, 80px);
   left: 0;
   height: calc(100vh - 80px);
   width: 72px;
@@ -10,6 +10,7 @@
   transition: all 0.3s ease;
   z-index: 998;
   overflow: hidden;
+  height: calc(100dvh - var(--altura-navbar, 80px));
 }
 
 .sidebar.hover-expandido {
@@ -121,6 +122,8 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
 }
 
 .elemento-navegacion {
@@ -579,8 +582,7 @@
 @media (max-width: 1024px) {
   .sidebar {
     width: 280px;
-    top: 80px;
-    height: calc(100vh - 80px);
+    max-width: calc(100vw - 32px);
     transform: translateX(-100%);
   }
 
@@ -607,8 +609,6 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    top: 60px;
-    height: calc(100vh - 60px);
     width: 280px;
     transform: translateX(-100%);
   }
@@ -635,8 +635,6 @@
 
 @media (max-width: 480px) {
   .sidebar {
-    top: 56px;
-    height: calc(100vh - 56px);
     width: 260px;
   }
 

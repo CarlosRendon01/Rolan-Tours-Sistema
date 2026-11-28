@@ -120,7 +120,7 @@ const TablaCoordinadores = ({
   };
 
   return (
-    <div className="coord-contenedor-principal">
+    <div className="coord-contenedor-principal tabla-gestion">
       <div className="coord-encabezado">
         <div className="coord-seccion-logo">
           <div className="coord-lineas-decorativas">

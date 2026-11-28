@@ -99,7 +99,7 @@ const TablaRestaurante = ({
   };
 
   return (
-    <div className="resto-contenedor-principal">
+    <div className="resto-contenedor-principal tabla-gestion">
       <div className="resto-encabezado">
         <div className="resto-seccion-logo">
           <div className="resto-lineas-decorativas">
